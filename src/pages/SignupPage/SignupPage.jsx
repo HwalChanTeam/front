@@ -12,7 +12,8 @@ function SignupPage(props) {
         password: "",
         checkPassword: "",
         name: "",
-        email: ""
+        email: "",
+        phone: ""
     });
 
     const LogoOnCLick = () => {
@@ -50,31 +51,39 @@ function SignupPage(props) {
                         <input type="text"
                             onChange={handleInputOnchange}
                             name="username"
+                            value={user.username}
                             placeholder='아이디를 입력해 주세요'
                         />
                         <input type="text"
                             onChange={handleInputOnchange}
                             name="password"
+                            value={user.password}
                             placeholder='비밀번호를 입력해 주세요'
                         />
                         <input type="text"
                             onChange={handleInputOnchange}
                             name="checkPassword"
+                            value={user.checkPassword}
                             placeholder='비밀번호를 한번 더 입력해 주세요'
                         />
                         <input type="text"
                             onChange={handleInputOnchange}
                             name="name"
-                            placeholder='이름을 주세요'
+                            value={user.name}
+                            placeholder='이름을 작성해 주세요'
                         />
                         <input type="text"
                             onChange={handleInputOnchange}
                             name="email"
+                            value={user.email}
                             placeholder='이메일을 입력해 주세요'
                         />
                     </div>
                     <div css={s.inputPhone}>
-                        <input type="text" name="phone" placeholder='휴대폰 번호를 입력해 주세요' />
+                        <input type="text"
+                            name="phone"
+                            value={user.phone}
+                            placeholder='휴대폰 번호를 입력해 주세요' />
                         <button onClick={phoneCkectButtonOnClick}>인증요청</button>
 
                         {/* 인증번호 요청 누르면 인증번호 칸 활성화되게(추가) */}

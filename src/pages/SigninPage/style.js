@@ -14,6 +14,7 @@ export const layout = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     margin-top: 100px;
     padding: 50px;
@@ -26,10 +27,11 @@ export const layout = css`
 export const headerLayout = css`
     font-size: 20px;
     display: flex;
+    align-items: center;
     position: relative;
 
     & h1 {
-        margin-top: 0;
+        margin-top: 200px;
         margin-bottom: 30px;
         color: #CD2222;
         padding-right: 50px;
@@ -72,44 +74,6 @@ export const inputUser = css`
     }
 `;
 
-export const inputPhone = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative; /* 버튼을 절대 위치로 배치할 부모 요소 */
-
-    & input[type="text"] {
-        width: 450px;
-        height: 50px;
-        margin-top: 10px;
-        border: 1px solid #000000;
-        border-radius: 10px;
-    }
-
-    /* 인증 요청 버튼만 절대 위치로 배치 */
-    & button {
-        position: absolute;
-        top: 10px; /* 적절한 위치로 설정 */
-        right: 0;
-        height: 53px;
-        background-color: #D98585;
-        border: 1px solid #000000;
-        border-bottom: none;
-        color: white;
-        border-radius: 10px;
-        padding: 0 20px;
-    }
-
-    & input[name="phoneCheck"] {
-        margin-top: 10px;
-        width: 450px;
-        height: 50px;
-        border: 1px solid #000000;
-        border-radius: 10px;
-    }
-`;
-
 export const joinOkButton = css`
     box-sizing: border-box;
     display: flex;
@@ -125,5 +89,15 @@ export const joinOkButton = css`
         font-size: 35px;
         font-weight: 600;
         border-radius: 10px;
+    }
+`;
+
+export const joinAndSearchUser = css`
+    box-sizing: border-box;
+    display: flex;
+
+    & > a {
+        margin: 10px;
+        color: #FF1A1A;
     }
 `;
