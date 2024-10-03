@@ -1,0 +1,98 @@
+/** @jsxImportSource @emotion/react */
+import { useEffect, useState } from 'react';
+import * as s from './style';
+import { useNavigate } from 'react-router-dom';
+
+function SignupPage(props) {
+    const navigate = useNavigate();
+
+    const [certification, setCertification] = useState(0);
+    const [user, setUser] = useState({
+        username: "",
+        password: "",
+        checkPassword: "",
+        name: "",
+        email: ""
+    });
+
+    const LogoOnCLick = () => {
+        navigate("/")
+    }
+
+    const handleInputOnchange = (e) => {
+        setUser(user => ({
+            ...user,
+            [e.target.name]: e.target.value
+        }));
+    };
+
+    const phoneCkectButtonOnClick = () => {
+        if (certification == 1) {
+            alert("이미 인증 요청이 되었습니다.")
+            return;
+        }
+        setCertification(1);
+    }
+
+    const handleSubmitButtonOnClick = () => {
+        // 백엔드로 요청 들어가야함(post요청)
+    }
+
+    return (
+        <div css={s.mainLayout}>
+            <div css={s.layout}>
+                <div css={s.headerLayout}>
+                    <h2 onClick={LogoOnCLick}>로고</h2>
+                    <h1>회원가입</h1>
+                </div>
+                <div css={s.container}>
+                    <div css={s.inputUser}>
+                        <input type="text"
+                            onChange={handleInputOnchange}
+                            name="username"
+                            placeholder='아이디를 입력해 주세요'
+                        />
+                        <input type="text"
+                            onChange={handleInputOnchange}
+                            name="password"
+                            placeholder='비밀번호를 입력해 주세요'
+                        />
+                        <input type="text"
+                            onChange={handleInputOnchange}
+                            name="checkPassword"
+                            placeholder='비밀번호를 한번 더 입력해 주세요'
+                        />
+                        <input type="text"
+                            onChange={handleInputOnchange}
+                            name="name"
+                            placeholder='이름을 주세요'
+                        />
+                        <input type="text"
+                            onChange={handleInputOnchange}
+                            name="email"
+                            placeholder='이메일을 입력해 주세요'
+                        />
+                    </div>
+                    <div css={s.inputPhone}>
+                        <input type="text" name="phone" placeholder='휴대폰 번호를 입력해 주세요' />
+                        <button onClick={phoneCkectButtonOnClick}>인증요청</button>
+
+                        {/* 인증번호 요청 누르면 인증번호 칸 활성화되게(추가) */}
+                        {
+                            certification === 0
+                                ?
+                                <></>
+                                :
+                                <input type="text" neme="phoneCheck" placeholder='인증번호를 입력해 주세요' />
+                        }
+                    </div>
+                </div>
+                <div css={s.joinOkButton}>
+                    <button onClick={handleSubmitButtonOnClick}>회원가입 하기</button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default SignupPage;
