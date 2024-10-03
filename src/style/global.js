@@ -11,4 +11,11 @@ export const reset = css`
     button {
         cursor: pointer;
     }
+
+    a:visited {
+    color: inherit; /* 링크가 클릭되었을 때도 본래 색상 유지 */
+    text-decoration: none; /* 방문 후에도 밑줄 등 스타일 유지 */
+    }
+
+    cursor: default;
 `;
