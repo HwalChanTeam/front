@@ -62,6 +62,7 @@ export const inputUser = css`
 
     & input {
         margin-bottom: 10px;
+        padding: 0px 20px;
         width: 450px;
         height: 50px;
         border: 1px solid #000000;
@@ -80,6 +81,7 @@ export const inputPhone = css`
     position: relative; /* 버튼을 절대 위치로 배치할 부모 요소 */
 
     & input[type="text"] {
+        padding: 0px 20px;
         width: 450px;
         height: 50px;
         margin-top: 10px;
@@ -97,7 +99,9 @@ export const inputPhone = css`
         border: 1px solid #000000;
         border-bottom: none;
         color: white;
-        border-radius: 10px;
+        font-size: 16px;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
         padding: 0 20px;
     }
 
