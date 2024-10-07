@@ -64,6 +64,7 @@ export const inputUser = css`
 
     & input {
         margin-bottom: 10px;
+        padding: 0px 20px;
         width: 450px;
         height: 50px;
         border: 1px solid #000000;
