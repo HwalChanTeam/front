@@ -19,6 +19,7 @@ export const headerLayout = css`
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 0px 0px 0px 170px;
         margin:0px;
         font-size: 50px;
     }
@@ -28,7 +29,6 @@ export const headerLayout = css`
 export const buttonLayout = css`
     box-sizing: border-box;
     display: flex;
-
 
     & button {
         height: 20px;
