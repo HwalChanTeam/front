@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from "react";
 import * as s from "./style";
-import DefaultComponent from "../../components/Admin/DefaultComponent/DefaultComponent";
-import ProductView from "../../components/Admin/ProductView/ProductView";
-import ProductRegister from "../../components/Admin/ProductRegister/ProductRegister";
-import ProductEdit from "../../components/Admin/ProductEdit/ProductEdit";
-import ProductDelete from "../../components/Admin/ProductDelete/ProductDelete";
-import UserView from "../../components/Admin/UserView/UserView";
+import DefaultComponent from "../../../components/Admin/DefaultComponent/DefaultComponent";
+import ProductView from "../../../components/Admin/ProductView/ProductView";
+import ProductRegister from "../../../components/Admin/ProductRegister/ProductRegister";
+import ProductEdit from "../../../components/Admin/ProductEdit/ProductEdit";
+import ProductDelete from "../../../components/Admin/ProductDelete/ProductDelete";
+import UserView from "../../../components/Admin/UserView/UserView";
 
 function AdminMainPage(props) {
   const [selectedMenu, setSelectedMenu] = useState("");
