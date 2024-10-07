@@ -1,6 +1,6 @@
 import { instance } from "./util/instance";
 
-export const adminSigninApi = async(admin) => {
+export const signinApi = async(admin) => {
     let signinData = {
         isSuccess: false,
         token: null,
