@@ -12,11 +12,17 @@ function ProductRegister(props) {
   });
 
   const inputOnChange = (e) => {
-    setProduct(product => ({
-        ...product,
-        [e.target.name] : e.target.value
+    const { name, value } = e.target;
+    
+    // 금액 입력일 때 숫자만 허용
+    if (name === "price" && isNaN(value)) {
+      return; // 숫자가 아닐 경우 아무 것도 하지 않음
+    }
+    setProduct((product) => ({
+      ...product,
+      [e.target.name]: e.target.value,
     }));
-  }
+  };
 
   const refresh = () => {
     setProduct({
@@ -29,6 +35,14 @@ function ProductRegister(props) {
   }
 
   const handleSubmitOnClick = async(product) => {
+    try {
+      const response = await instance.post("/admin/product/add", product)
+      alert("상품 등록이 완료되었습니다.")
+    } catch(e) {
+      console.error(e)
+      // 중복되었을때 에러
+    }
+
     refresh();
   }
 
