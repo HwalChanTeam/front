@@ -31,3 +31,28 @@ export const line = css`
     width: 95%;
     border: 1px solid #000000;
 `;
+
+export const menuLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+`;
+
+export const menuListBox = css`
+    box-sizing: border-box;
+    margin-top: 15px;
+    width: 95%;
+    height: 100%;
+    border: 2px solid #D84343;
+`;
+
+export const footLayout = css`
+    box-sizing: border-box;
+    margin-top: 50px;
+    width: 100%;
+    height: 200px;
+    background-color: #dbdbdb;
+`;
