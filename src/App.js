@@ -7,7 +7,7 @@ import SigninPage from "./pages/SigninPage/SigninPage";
 import ShoppingBasket from "./pages/ShoppingBasket/ShoppingBasket";
 import MainLayout from "./components/MainLayout/MainLayout";
 import AdminSignin from "./pages/Admin/AdminSignin/AdminSignin";
-import AdminMainPage from "./pages/AdminMainPage/AdminMainPage";
+import AdminMainPage from "./pages/Admin/AdminMainPage/AdminMainPage";
 
 function App() {
   const location = useLocation();
