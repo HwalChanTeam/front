@@ -1,40 +1,365 @@
-import React from 'react';
+/** @jsxImportSource @emotion/react */
+import *as s from './style';
 
 function CategoryView(props) {
     return (
-        <div>
+        <div css={s.layout}>
+            <div css={s.titleLayout}>
+                <h2>카테고리</h2>
+            </div>
+            <div css={s.contentLayout}>
+                <table css={s.tableLayout}>
+                    <div css={s.subLayout}>
+                        <h2>냉동식품</h2>
+                    </div>
 
-            <div>
-                <img src="" alt="" />
-                <h2>상품이름</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
-                <h2>가격</h2>
+                    <tbody css={s.menuLayout}>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        
+                        
+                    </tbody>
+                </table>
+
+                {/* 냉장식품 */}
+                <table css={s.tableLayout}>
+                    <div css={s.subLayout}>
+                        <h2>냉장식품</h2>
+                    </div>
+
+                    <tbody css={s.menuLayout}>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr>
+                            <div css={s.menuList}>
+                                <div css={s.imgLayout}>
+                                    <img src="" alt="" />
+                                </div>
+                                <div css={s.productLayout}>
+                                    <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                    <h2>11,000</h2>
+                                </div>
+                            </div>
+                        </tr>
+                        
+                        
+                    </tbody>
+                </table>
             </div>
         </div>
     );
