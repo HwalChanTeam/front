@@ -1,35 +1,12 @@
 import { css } from '@emotion/react';
 
 export const cartContainer = css`
-  width: 80%;
+  width: 85%;
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
 `;
 
-export const searchSection = css`
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-`;
-
-export const searchInput = css`
-  width: 50%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-`;
-
-export const searchButton = css`
-  padding: 10px 20px;
-  margin-left: 10px;
-  background-color: #D98585;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-`;
 
 export const cartListSection = css`
   margin-top: 30px;
