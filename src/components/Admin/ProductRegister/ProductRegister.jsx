@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
+import { instance } from "../../../apis/util/instance";
 
 function ProductRegister(props) {
   const [product, setProduct] = useState({
     category: "냉동",
     productName: "",
-    money: "",
-    country: "대한민국",
+    price: "",
+    origin: "대한민국",
+    stock: "",
     img: null,
   });
 
   const inputOnChange = (e) => {
     const { name, value } = e.target;
-    
+
     // 금액 입력일 때 숫자만 허용
     if (name === "price" && isNaN(value)) {
+      return; // 숫자가 아닐 경우 아무 것도 하지 않음
+    }
+    if (name === "stock" && isNaN(value)) {
       return; // 숫자가 아닐 경우 아무 것도 하지 않음
     }
     setProduct((product) => ({
@@ -26,49 +31,91 @@ function ProductRegister(props) {
 
   const refresh = () => {
     setProduct({
-        category: "냉동",
-        productName: "",
-        money: "",
-        country: "대한민국",
-        img: null,
-    })
-  }
+      category: "냉동",
+      productName: "",
+      price: "",
+      origin: "대한민국",
+      stock: "",
+      img: null,
+    });
+  };
 
-  const handleSubmitOnClick = async(product) => {
+  const handleSubmitOnClick = async () => {
+    if(product.category === "냉동") {
+      product.category = "1"
+    }
+    if(product.category === "냉장") {
+      product.category = "2"
+    }
     try {
-      const response = await instance.post("/admin/product/add", product)
-      alert("상품 등록이 완료되었습니다.")
-    } catch(e) {
-      console.error(e)
+      console.log(product);
+      const response = await instance.post("/admin/product/add", product);
+      alert("상품 등록이 완료되었습니다.");
+    } catch (e) {
+      console.error(e);
       // 중복되었을때 에러
     }
 
     refresh();
-  }
+  };
 
   return (
     <div css={s.mainBox}>
       <h1>상품 등록 페이지</h1>
-      {/* 작성해야 하는 칸
-                    분류(냉동, 냉장)
-                    상품명
-                    금액
-                    원산지
-                    이미지
-                */}
+      <div css={s.imgBox}>
+        <img src="" alt="" />
+      </div>
       <div css={s.inputBox}>
-        <label for="category">카테고리 : </label>
-        <select name="category" id="category" value={product.category} onChange={inputOnChange}>
-          <option value="냉동" >냉동</option>
-          <option value="냉장" >냉장</option>
-        </select>
-        <label for="category">상품명 : </label>
-        <input type="text" name="productName" value={product.productName} onChange={inputOnChange}/>
-        <label for="category">금액 : </label>
-        <input type="text" name="money" value={product.money} onChange={inputOnChange}/>
-        <label for="category">원산지 : </label>
-        <input type="text" name="country" value={product.country} onChange={inputOnChange}/>
-        <span>이미지 넣는 칸</span>
+        <span>
+          <label for="category">카테고리 : </label>
+          <select
+            name="category"
+            id="category"
+            value={product.category}
+            onChange={inputOnChange}
+          >
+            <option value="냉동">냉동</option>
+            <option value="냉장">냉장</option>
+          </select>
+        </span>
+        <span>
+          <label for="productName">상품명 : </label>
+          <input
+            type="text"
+            name="productName"
+            value={product.productName}
+            onChange={inputOnChange}
+          />
+        </span>
+        <span>
+          <label for="price">금액 : </label>
+          <input
+            type="text"
+            name="price"
+            value={product.price}
+            onChange={inputOnChange}
+          />
+        </span>
+        <span>
+          <label for="origin">원산지 : </label>
+          <input
+            type="text"
+            name="origin"
+            value={product.origin}
+            onChange={inputOnChange}
+          />
+        </span>
+        <span>
+          <label for="stock">재고 : </label>
+          <input
+            type="text"
+            name="stock"
+            value={product.stock}
+            onChange={inputOnChange}
+          />
+        </span>
+      </div>
+      <div css={s.buttonBox}>
         <button onClick={handleSubmitOnClick}>등록</button>
       </div>
     </div>
