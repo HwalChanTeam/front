@@ -24,12 +24,12 @@ export const buttonLayout = css`
         border: none;
         color: #5B5B5B;
     }
+    border-bottom: 2px solid #000000;
+    width: 1863px;
 
 `;
 
 export const line = css`
-    width: 95%;
-    border: 1px solid #000000;
 `;
 
 export const menuLayout = css`
@@ -37,6 +37,7 @@ export const menuLayout = css`
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0px 20px;
     width: 100%;
     height: 100%;
 `;
@@ -44,7 +45,9 @@ export const menuLayout = css`
 export const menuListBox = css`
     box-sizing: border-box;
     margin-top: 15px;
-    width: 95%;
+    padding: 0px;
+    padding: 0px 20px;
+    width: 100%;
     height: 100%;
     border: 2px solid #D84343;
 `;

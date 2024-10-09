@@ -4,7 +4,7 @@ import * as s from "./style";
 
 function MainLayout({ children }) {
   return (
-    <div>
+    <div css={s.layout}>
       <MainHeader />
       {children}
     </div>
