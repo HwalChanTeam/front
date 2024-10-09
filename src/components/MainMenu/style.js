@@ -25,7 +25,7 @@ export const buttonLayout = css`
         color: #5B5B5B;
     }
     border-bottom: 2px solid #000000;
-    width: 1863px;
+    width: 100%;
 
 `;
 
