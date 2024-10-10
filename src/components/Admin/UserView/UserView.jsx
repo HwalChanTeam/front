@@ -11,7 +11,6 @@ function UserView(props) {
                 장바구니 정보
                 구매목록
                 배송현황??(옵션)
-                
             */}
         </div>
     );

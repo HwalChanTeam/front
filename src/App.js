@@ -24,8 +24,8 @@ function App() {
         <MainLayout>
           <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/signin" element={<SigninPage />} />
+            <Route path="/user/signup" element={<SignupPage />} />
+            <Route path="/user/signin" element={<SigninPage />} />
             <Route path="/basket" element={<ShoppingBasket />} />
           </Routes>
         </MainLayout>
