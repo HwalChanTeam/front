@@ -10,7 +10,7 @@ export const mainBox = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 100px;
+    margin-bottom: 40px;
     border: 1px solid #000000;
     height: 70px;
     width: 500px;
@@ -19,7 +19,7 @@ export const mainBox = css`
 
 export const tableBox = css`
     box-sizing: border-box;
-    width: 80%;
+    width: 980px;
     height: 500px;
     overflow-y: scroll;
     border: 1px solid #000000;
