@@ -28,7 +28,7 @@ function SignupPage(props) {
     };
 
     const phoneCkectButtonOnClick = () => {
-        if (certification === 1) {
+        if (certification == 1) {
             alert("이미 인증 요청이 되었습니다.")
             return;
         }
