@@ -104,6 +104,7 @@ export const buttonLayout = css`
         height: 60px;
         background-color: white;
         border: 1px solid #000000;
+        border-radius: 10px;
 
         &:nth-last-of-type(1) {
             margin-left: 80px;

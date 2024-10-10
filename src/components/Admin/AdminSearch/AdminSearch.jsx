@@ -7,11 +7,11 @@ import ProductView from "../ProductView/ProductView";
 
 function AdminSearch({ onSearch }) {
   const [searchProduct, setSearchProduct] = useState({
-    productName: "",
+    title: "",
   });
   //   const [searchProduct, setSearchProduct] = useState({
   //     category: "",
-  //     productName: "",
+  //     title: "",
   //     price: "",
   //     origin: "",
   //     salesCount: "",
@@ -29,14 +29,14 @@ function AdminSearch({ onSearch }) {
   //   const handleSubmitButtonOnClick = async () => {
   //     const response = instance.get(
   //       "/admin/product/search",
-  //       searchProduct.productName
+  //       searchProduct.title
   //     );
   //   };
 
   const handleSubmitButtonOnClick = (e) => {
     e.preventDefault();
-    onSearch(searchProduct.productName); // 검색어 전달
-    console.log(searchProduct.productName)
+    onSearch(searchProduct.title); // 검색어 전달
+    console.log(searchProduct.title)
   };
 
 
@@ -46,8 +46,8 @@ function AdminSearch({ onSearch }) {
       <div css={s.searchSection}>
         <input
           type="text"
-          name="productName"
-          value={searchProduct.productName}
+          name="title"
+          value={searchProduct.title}
           onChange={handleSearchOnChange}
           placeholder="검색어를 입력하세요"
           css={s.searchInput}
