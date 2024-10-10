@@ -34,13 +34,18 @@ export const menuBox = css`
     height: 70px;
     font-size: 25px;
     background-color: white;
+    border: 1px solid #000000;
     border-bottom: none;
-
-    border-radius: 5px;
-    :nth-last-of-type(1) {
-      border: 1px solid #000000;
-    }
+    &:hover {
+        background-color: #efefef99;
+      }
+      &:active {
+        background-color: #aaaaaa99;
+      }
   }
+  & :nth-last-of-type(1) {
+      border-bottom: 1px solid #000000;
+    }
 `;
 
 

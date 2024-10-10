@@ -44,6 +44,7 @@ export const inputBox = css`
     font-size: 18px;
     border-radius: 5px;
     padding: 0px 10px;
+    border: 1px solid #000000;
   }
   & span {
     display: flex;
