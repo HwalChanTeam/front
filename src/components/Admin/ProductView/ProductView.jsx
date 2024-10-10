@@ -6,14 +6,14 @@ import { instance } from "../../../apis/util/instance";
 
 function ProductView() {
   const [product, setProduct] = useState(null);
-  const [productName, setProductName] = useState("");
+  const [title, settitle] = useState("");
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (productName) {
+      if (title) {
         try {
           const response = await instance.get(
-            `/admin/product/search?productName=${productName}`
+            `/admin/product/search?title=${title}`
           );
           setProduct(response.data);
         } catch (error) {
@@ -27,14 +27,14 @@ function ProductView() {
     };
 
     fetchProduct();
-  }, [productName]);
+  }, [title]);
 
   const handleSearch = (name) => {
-    setProductName(name); // 검색어 업데이트
+    settitle(name); // 검색어 업데이트
   };
 
   // const handleReset = () => {
-  //     setProductName(""); // 검색어 초기화
+  //     settitle(""); // 검색어 초기화
   // };
 
   //   수정기능
@@ -55,7 +55,7 @@ function ProductView() {
                 <div css={s.tableDiv}>
                   <div css={s.spanBox}>
                     <span>{product?.data?.category}</span>
-                    <span>{product?.data?.productName}</span>
+                    <span>{product?.data?.title}</span>
                     <span>{product?.data?.price}</span>
                     <span>{product?.data?.origin}</span>
                     <span>{product?.data?.salesCount}</span>
@@ -70,7 +70,7 @@ function ProductView() {
               </tr>
             </tbody>
           ) : (
-            <p>상품이 없습니다.</p>
+            <h2>상품이 없습니다.</h2>
           )}
         </table>
       </div>

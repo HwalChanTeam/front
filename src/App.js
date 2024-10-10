@@ -8,6 +8,7 @@ import ShoppingBasket from "./pages/ShoppingBasket/ShoppingBasket";
 import MainLayout from "./components/MainLayout/MainLayout";
 import AdminSignin from "./pages/Admin/AdminSignin/AdminSignin";
 import AdminMainPage from "./pages/Admin/AdminMainPage/AdminMainPage";
+import TestExam from "./pages/Test/TestExam";
 
 function App() {
   const location = useLocation();
@@ -27,6 +28,7 @@ function App() {
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />
             <Route path="/basket" element={<ShoppingBasket />} />
+            <Route path="/test" element={<TestExam />} />
           </Routes>
         </MainLayout>
       )}
