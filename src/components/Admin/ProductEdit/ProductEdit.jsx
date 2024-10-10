@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import MainSearch from '../../MainSearch/MainSearch';
 import *as s from './style';
+import AdminSearch from '../AdminSearch/AdminSearch';
+import { instance } from '../../../apis/util/instance';
 
 // 이름
 // 카테고리
@@ -18,35 +20,50 @@ import *as s from './style';
 */
 function ProductEdit(props) {
 
-    const [ checked, setChecked ] = useState(false);
+    const [ checked, setChecked ] = useState([]);
 
     const productList = [{ 
-        productName: ""
+        id: 0,
+        category: "",
+        title: "",
+        price: "",
+        origin: "",
+        stock: 0,
+        salesCounts: 0,
+        createData: ""
     }];
 
-    const handleCheckBoxOnChange = (product) => {
-        if(checked === product) {
-            setChecked(false);
-        } else {
-            setChecked(product);
-        }
+    const handleCheckBoxOnChange = (id) => {
+        setChecked((prevChecked) => {
+            if (prevChecked.includes(id)) {
+                // 이미 체크된 경우: 체크 해제
+                return prevChecked.filter(item => item !== id);
+            } else {
+                // 체크되지 않은 경우: 체크
+                return [...prevChecked, id];
+            }
+        });
+    };
+
+    const hadleModifyOnClick = async() => {
+        const response = await instance.put(`/admin/modify/${productList.id}`)
     }
 
     return (
         <div css={s.mainBox}>
             <h1>상품 관리 페이지</h1>
-            <MainSearch />
+            <AdminSearch />
             <div css={s.container}>
                 <table css={s.tableLayout}>
                     <tbody css={s.tbodyLayout}>
                         { productList.map((product) => (
-                            <tr css={s.layout}>
+                            <tr css={s.layout} key={2}>
                                 <td css={s.listBox}>
-                                    <input type="checkbox" name="productName" 
-                                        onChange={() => handleCheckBoxOnChange(product.productName)} 
-                                        checked={checked === product.productName}/>
+                                    <input type="checkbox"
+                                        onChange={() => handleCheckBoxOnChange(product.id)} 
+                                        checked={checked} id={`checkbox-${product.id}`}/>
                                     <span>[냉동]</span>
-                                    <span>상품 이름</span>
+                                    <span>{product.title}</span>
                                     <span>11,000</span>
                                     <span>대한민국</span>
                                     <span>100</span>
@@ -60,7 +77,7 @@ function ProductEdit(props) {
             </div>
 
             <div css={s.buttonLayout}>
-                <button>수정하기</button>
+                <button onClick={hadleModifyOnClick}>수정하기</button>
                 <button>삭제하기</button>
             </div>
         </div>

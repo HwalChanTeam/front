@@ -19,11 +19,11 @@ function ProductView() {
         } catch (error) {
           console.error("상품을 가져오는 데 실패했습니다:", error);
         }
-      } else {
-        //   검색어가 없을 때 전체 조회 로직
-        const response = await instance.get(`/admin/product/search`);
-        setProduct(response.data);
-      }
+      } // else {
+      //   //   검색어가 없을 때 전체 조회 로직
+      //   const response = await instance.get(`/admin/product/search`);
+      //   setProduct(response.data);
+      // }
     };
 
     fetchProduct();
