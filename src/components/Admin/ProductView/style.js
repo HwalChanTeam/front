@@ -26,15 +26,15 @@ export const tableBox = css`
 `;
 
 export const table = css`
-    box-sizing: border-box;
-    padding: 20px;
-    overflow-y: hidden;
-    width: 100%;
-    height: 500px;
-    & p {
-        display: flex;
-        justify-content: center;
-    }
+  box-sizing: border-box;
+  padding: 20px;
+  overflow-y: hidden;
+  width: 100%;
+  height: 500px;
+  & h2 {
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 export const productBox = css`
@@ -52,43 +52,43 @@ export const productBox = css`
     width: 100%;
     height: 75px;
     margin-bottom: 10px;
-
-
   }
 `;
 
 export const tableDiv = css`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
 `;
 
 export const spanBox = css`
-    display: flex;
-    flex-grow: 1; /* 추가: 남는 공간을 차지하도록 설정 */
-    padding-left: 40px;
-    & span {
-        font-size: 20px;
-        font-weight: 600;
-        margin-right: 30px;
-    }
+  display: flex;
+  flex-grow: 1; /* 추가: 남는 공간을 차지하도록 설정 */
+  padding-left: 40px;
+  & span {
+    font-size: 20px;
+    font-weight: 600;
+    margin-right: 30px;
+  }
 `;
 
 export const buttonBox = css`
-    display: flex;
-    & button {
-      font-size: 20px;
-      border: 1px solid #000000;
-      background-color: white;
-      border-radius: 5px;
-      margin-left: 7px;
-      &:hover {
-        background-color: #efefef99;
-      }
-      &:active {
-        background-color: #aaaaaa99;
-      }
+  display: flex;
+  & button {
+    font-size: 20px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 1px solid #000000;
+    background-color: white;
+    border-radius: 5px;
+    margin-left: 7px;
+    &:hover {
+      background-color: #efefef99;
     }
+    &:active {
+      background-color: #aaaaaa99;
+    }
+  }
 `;

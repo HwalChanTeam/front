@@ -6,7 +6,7 @@ import { instance } from "../../../apis/util/instance";
 function ProductRegister(props) {
   const [product, setProduct] = useState({
     category: "냉동",
-    productName: "",
+    title: "",
     price: "",
     origin: "대한민국",
     stock: "",
@@ -32,7 +32,7 @@ function ProductRegister(props) {
   const refresh = () => {
     setProduct({
       category: "냉동",
-      productName: "",
+      title: "",
       price: "",
       origin: "대한민국",
       stock: "",
@@ -79,11 +79,11 @@ function ProductRegister(props) {
           </select>
         </span>
         <span>
-          <label for="productName">상품명 : </label>
+          <label for="title">상품명 : </label>
           <input
             type="text"
-            name="productName"
-            value={product.productName}
+            name="title"
+            value={product.title}
             onChange={inputOnChange}
           />
         </span>
