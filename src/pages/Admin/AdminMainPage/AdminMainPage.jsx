@@ -13,11 +13,10 @@ function AdminMainPage(props) {
   const [selectedMenu, setSelectedMenu] = useState("");
 
   const renderComponent = () => {
-    if (selectedMenu === "상품 조회") {
-      return <ProductView />;
-    } else if (selectedMenu === "상품 등록") {
+    
+    if (selectedMenu === "상품 등록") {
       return <ProductRegister />;
-    } else if (selectedMenu === "상품 관리") {
+    } else if (selectedMenu === "상품 관리") { 
       return <ProductEdit />;
     } else if (selectedMenu === "직원 관리") {
       return <StaffManagement />;
@@ -34,7 +33,7 @@ function AdminMainPage(props) {
       <div css={s.mainBox}>
         <div css={s.menuBox}>
           {/* 메뉴 선택 페이지 */}
-          <button onClick={() => setSelectedMenu("상품 조회")}>상품 조회</button>
+          {/* <button onClick={() => setSelectedMenu("상품 조회")}>상품 조회</button> */}
           <button onClick={() => setSelectedMenu("상품 등록")}>상품 등록</button>
           <button onClick={() => setSelectedMenu("상품 관리")}>상품 관리</button>
           <button onClick={() => setSelectedMenu("직원 관리")}>직원 관리</button>

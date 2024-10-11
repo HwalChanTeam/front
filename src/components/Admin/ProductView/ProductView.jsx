@@ -4,20 +4,168 @@ import * as s from "./style";
 import AdminSearch from "../AdminSearch/AdminSearch";
 import { instance } from "../../../apis/util/instance";
 
+const tempProductList = [
+  {
+      id: 1,
+      category: "냉동",
+      title: "상품이름1",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 2,
+      category: "냉동",
+      title: "상품이름2",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 3,
+      category: "냉동",
+      title: "상품이름3",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 4,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 5,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 6,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 7,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 8,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 9,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 10,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 11,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 12,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 13,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+  {
+      id: 14,
+      category: "냉동",
+      title: "상품이름4",
+      price: "1000",
+      origin: "대한민국",
+      stock: 10,
+      salesCount: 5,
+      createdDate: "2024-10-11"
+  },
+
+]
+
 function ProductView() {
-  const [product, setProduct] = useState(null);
-  const productList = [
-    {
-      id: 0,
-      category: "",
-      title: "",
-      price: "",
-      origin: "",
-      salesCount: "",
-      stock: "",
-      createdDate: "",
-    },
-  ];
+
+  const [product, setProduct] = useState(
+    tempProductList.map((product) => ({ ...product }))
+  );
+
+  // const productList = [
+  //   {
+  //     id: 0,
+  //     category: "",
+  //     title: "",
+  //     price: "",
+  //     origin: "",
+  //     salesCount: "",
+  //     stock: "",
+  //     createdDate: "",
+  //   },
+  // ];
   const [title, settitle] = useState("");
 
   useEffect(() => {
@@ -63,31 +211,31 @@ function ProductView() {
         <table css={s.table}>
           {product ? (
             <tbody>
-              {productList.map((product) => (
+              {tempProductList.map((product) => (
                 <tr css={s.productBox}>
                   <div css={s.tableDiv}>
                     <div css={s.spanBox}>
-                      <tr>
+                      <td>
                         <span>{product.category}</span>
-                      </tr>
-                      <tr>
+                      </td>
+                      <td>
                         <span>{product.title}</span>
-                      </tr>
-                      <tr>
+                      </td>
+                      <td>
                         <span>{product.price}</span>
-                      </tr>
-                      <tr>
+                      </td>
+                      <td>
                         <span>{product.origin}</span>
-                      </tr>
-                      <tr>
-                        <span>{product.salesCount}</span>
-                      </tr>
-                      <tr>
+                      </td>
+                      <td>
                         <span>{product.stock}</span>
-                      </tr>
-                      <tr>
+                      </td>
+                      <td>
+                        <span>{product.salesCount}</span>
+                      </td>
+                      <td>
                         <span>{product.createdDate}</span>
-                      </tr>
+                      </td>
                     </div>
                     <div css={s.buttonBox}>
                       <button>수정</button>
