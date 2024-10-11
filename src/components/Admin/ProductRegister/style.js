@@ -11,7 +11,9 @@ export const mainBox = css`
     justify-content: center;
     align-items: center;
     margin-bottom: 100px;
+    background-color: #364F6B;
     border: 1px solid #000000;
+    color: #ffffff;
     height: 70px;
     width: 500px;
   }

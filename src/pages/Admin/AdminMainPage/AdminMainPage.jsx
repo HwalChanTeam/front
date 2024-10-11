@@ -33,7 +33,6 @@ function AdminMainPage(props) {
     <div css={s.layout}>
       <div css={s.mainBox}>
         <div css={s.menuBox}>
-          <h1>선택된 메뉴 이름</h1>
           {/* 메뉴 선택 페이지 */}
           <button onClick={() => setSelectedMenu("상품 조회")}>상품 조회</button>
           <button onClick={() => setSelectedMenu("상품 등록")}>상품 등록</button>

@@ -11,50 +11,42 @@ export const mainBox = css`
   align-items: center;
   width: 100%;
   height: 100%;
-  border: 1px solid #000000;
 `;
 
 export const menuBox = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  width: 450px;
-  border: 1px solid #000000;
-
-  & > h1 {
-    display: flex;
-    justify-content: center;
     box-sizing: border-box;
-    width: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 300px;
     border: 1px solid #000000;
-    border-radius: 5px;
-  }
+    background-color: #364F6B;
+
 
   & button {
-    width: 350px;
+    width: 200px;
     height: 70px;
     font-size: 25px;
-    background-color: white;
-    border: 1px solid #000000;
-    border-bottom: none;
+    margin-bottom: 20px;
+    background-color: #3FC1C9;
+    border: 1px solid #ffffff;
+    color: #F5F5F5;
+    /* border-bottom: none; */
     &:hover {
-        background-color: #efefef99;
-      }
-      &:active {
-        background-color: #aaaaaa99;
-      }
-  }
-  & :nth-last-of-type(1) {
-      border-bottom: 1px solid #000000;
+      background-color: #37B7C3;
     }
+    &:active {
+      background-color: #088395;
+    }
+  }
 `;
 
-
 export const contentBox = css`
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;  
-    width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;
