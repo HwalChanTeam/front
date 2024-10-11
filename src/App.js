@@ -27,7 +27,7 @@ function App() {
       ) : (
         <MainLayout>
           <Routes>
-            <Route path="/" element={<MainPage />} />
+            <Route path="/*" element={<MainPage />} />
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />
             <Route path="/basket" element={<ShoppingBasket />} />
