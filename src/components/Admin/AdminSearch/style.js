@@ -2,9 +2,9 @@ import { css } from "@emotion/react";
 
 export const layout = css`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   margin-top: 20px;
-  width: 100%;
+  margin-left: 20px;
 `;
 
 export const searchSection = css`
@@ -15,11 +15,10 @@ export const searchSection = css`
 
 export const searchInput = css`
   box-sizing: border-box;
-  width: 900px;
+  width: 920px;
   height: 50px;
   padding: 20px;
   border: 1px solid #000000;
-  border-radius: 10px;
   font-size: 18px;
   outline: none;
 `;
@@ -29,9 +28,8 @@ export const searchButton = css`
   margin-left: 10px;
   color: black;
   cursor: pointer;
-  background-color: #364F6B;
+  background-color: #3a3a3a;
     border: 1px solid #000000;
-    border-radius: 5px;
     color: #F5F5F5;
     font-weight: 600;
     font-size: 16px;

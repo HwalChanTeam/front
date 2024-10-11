@@ -61,64 +61,65 @@ function ProductRegister(props) {
 
   return (
     <div css={s.mainBox}>
-      <h1>상품 등록</h1>
-      <div css={s.imgBox}>
-        <img src="" alt="" />
+        <h1>상품 등록</h1>
+        <div css={s.registerBox}>
+          <div css={s.inputBox}>
+            <span>
+              <label for="category">카테고리</label>
+              <select
+                name="category"
+                id="category"
+                value={product.category}
+                onChange={inputOnChange}
+                css={s.selectBox}
+              >
+                <option value="냉동">냉동</option>
+                <option value="냉장">냉장</option>
+              </select>
+            </span>
+            <span>
+              <label for="title">상품명</label>
+              <input
+                type="text"
+                name="title"
+                value={product.title}
+                onChange={inputOnChange}
+              />
+            </span>
+            <span>
+              <label for="price">금액</label>
+              <input
+                type="text"
+                name="price"
+                value={product.price}
+                onChange={inputOnChange}
+              />
+            </span>
+            <span>
+              <label for="origin">원산지</label>
+              <input
+                type="text"
+                name="origin"
+                value={product.origin}
+                onChange={inputOnChange}
+              />
+            </span>
+            <span>
+              <label for="stock">재고</label>
+              <input
+                type="text"
+                name="stock"
+                value={product.stock}
+                onChange={inputOnChange}
+              />
+            </span>
+            <img src="" alt="" />
+          </div>
+          <div css={s.buttonBox}>
+            <button onClick={handleSubmitOnClick}>등록</button>
+          </div>
+        </div>
       </div>
-      <div css={s.inputBox}>
-        <span>
-          <label for="category">카테고리 : </label>
-          <select
-            name="category"
-            id="category"
-            value={product.category}
-            onChange={inputOnChange}
-          >
-            <option value="냉동">냉동</option>
-            <option value="냉장">냉장</option>
-          </select>
-        </span>
-        <span>
-          <label for="title">상품명 : </label>
-          <input
-            type="text"
-            name="title"
-            value={product.title}
-            onChange={inputOnChange}
-          />
-        </span>
-        <span>
-          <label for="price">금액 : </label>
-          <input
-            type="text"
-            name="price"
-            value={product.price}
-            onChange={inputOnChange}
-          />
-        </span>
-        <span>
-          <label for="origin">원산지 : </label>
-          <input
-            type="text"
-            name="origin"
-            value={product.origin}
-            onChange={inputOnChange}
-          />
-        </span>
-        <span>
-          <label for="stock">재고 : </label>
-          <input
-            type="text"
-            name="stock"
-            value={product.stock}
-            onChange={inputOnChange}
-          />
-        </span>
-      </div>
-      <div css={s.buttonBox}>
-        <button onClick={handleSubmitOnClick}>등록</button>
-      </div>
-    </div>
   );
 }
 

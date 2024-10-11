@@ -19,7 +19,6 @@ export const menuBox = css`
   flex-direction: column;
   height: 100%;
   width: 300px;
-  border: 1px solid #000000;
   background-color: #3a3a3a;
   /* #1F2544 */
 

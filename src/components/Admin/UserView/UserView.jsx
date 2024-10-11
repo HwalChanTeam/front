@@ -1,8 +1,9 @@
-import React from 'react';
+/** @jsxImportSource @emotion/react */
+import * as s from './style';
 
 function UserView(props) {
     return (
-        <div>
+        <div css={s.mainBox}>
             <h1>유저 조회</h1>
             {/* 가져와야 할거
                 아이디

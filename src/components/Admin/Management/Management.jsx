@@ -1,8 +1,9 @@
-import React from "react";
+/** @jsxImportSource @emotion/react */
+import * as s from './style';
 
 function Management(props) {
   return (
-    <div>
+    <div css={s.mainBox}>
       <h1>허경영 관리</h1>
       {/* 
                 1. 판매량 인기 순위 top 5

@@ -1,127 +1,157 @@
 import { css } from "@emotion/react";
 
 export const mainBox = css`
-  display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   width: 100%;
+  height: 100%;
   & > h1 {
     display: flex;
+    margin: 0px;
+    padding: 20px;
     justify-content: center;
     align-items: center;
-    margin-bottom: 40px;
-    background-color: #364F6B;
+    background-color: #3a3a3a;
     color: #ffffff;
-    border: 1px solid #ffffff;
-    border-radius: 5px;
-    height: 70px;
-    width: 500px;
   }
 `;
 
-export const titleLayout = css`
+export const buttonLayout = css`
+  box-sizing: border-box;
+  padding-left: 20px;
+  width: 300px;
+  height: 50px;
+
+  & button {
     box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0px 40px 0px 15px;
-    font-size: 18px;
-    width: 980px;
-    height: 60px;
+    width: 50px;
+    height: 30px;
+    background-color: #3a3a3a;
     border: 1px solid #000000;
-    border-bottom: none;
+    color: #f5f5f5;
+    font-size: 14px;
+    font-weight: 600;
 
-    & input {
-        width: 20px;
-        height: 20px;
-        border: 1px solid #000000;
+    &:hover {
+      background-color: #686d76;
     }
-
-`;
-
-export const container = css`
-    box-sizing: border-box;
-    padding-bottom: 5px;
-    width: 980px;
-    height: 500px;
-    border: 1px solid #000000;
-    border-radius: 5px;
-    overflow-y: scroll;
-    -ms-overflow-style: none;
-    ::-webkit-scrollbar {
-        display: none;
-    }
-`;
-
-export const tableLayout = css`
-    width: 100%;
-    border-collapse: collapse;
-    
-`;
-
-export const tbodyLayout = css`
-    width: 100%;
-`;
-
-export const productItem = css`
-    box-sizing: border-box;
-    border-bottom: 1px solid #000000;
-    border-right: 1px solid #000000;
-    padding: 0px;
-    width: 100px;
-    height: 40px;
-    cursor: default;
-
-    & span {
-        display: flex;
-        justify-content: center;
+    &:active {
+      background-color: #3d3b40;
     }
 
     &:nth-last-of-type(1) {
-        border-right: none;
+      margin-left: 20px;
     }
-
-    &:nth-of-type(1) {
-        box-sizing: border-box;
-        padding-left: 22px;
-        width: 50px;
-        height: 40px;
-        
-    }
-    
+  }
 `;
 
+export const container = css`
+  box-sizing: border-box;
+  /* padding: 10px; */
+  margin: 0px 20px;
+  border-bottom: 1px solid #000000;
+  width: 1000px;
+  height: 500px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
-export const buttonLayout = css`
-    box-sizing: border-box;
-    margin-top: 10px;
+export const theadLayout = css`
+  box-sizing: border-box;
+  border-collapse: collapse;
+  width: 100%;
+  position: sticky; /* 스티키 포지션 적용 */
+  top: 0; /* 상단 고정 */
+  background-color: #fff; /* 배경색 추가 */
+  z-index: 1; /* 다른 요소 위에 있도록 설정 */
+`;
+
+export const theadItems = css`
+  box-sizing: border-box;
+  border: 1px solid #000000;
+  padding: 0px;
+  width: 100px;
+  cursor: default;
+
+  & span {
     display: flex;
     justify-content: center;
-    align-items: center;
-    width: 700px;
-    height: 100px;
-
-    & button {
-        box-sizing: border-box;
-        width: 150px;
-        height: 60px;
-        background-color: #364F6B;
-        border: 1px solid #000000;
-        border-radius: 5px;
-        color: #F5F5F5;
-        font-size: 18px;
-        font-weight: 600;
-        
-        &:hover {
-        background-color: #686D76;
-        }
-        &:active {
-        background-color: #3D3B40;
-        }
-
-        &:nth-last-of-type(1) {
-            margin-left: 80px;
-        }
-    }
+  }
+  &:nth-of-type(1) {
+    text-align: center;
+    width: 25px;
+  }
+  &:nth-of-type(2) {
+    width: 50px;
+  }
+  &:nth-of-type(3) {
+    width: 100px;
+  }
+  &:nth-of-type(4) {
+    width: 70px;
+  }
+  &:nth-of-type(5) {
+    width: 70px;
+  }
+  &:nth-of-type(6) {
+    width: 70px;
+  }
+  &:nth-of-type(7) {
+    width: 70px;
+  }
+  &:nth-of-type(8) {
+    width: 70px;
+  }
 `;
+
+export const tableLayout = css`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+export const tbodyLayout = css`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+export const productItem = css`
+  box-sizing: border-box;
+  border: 1px solid #000000;
+  padding: 0px;
+  width: 100px;
+  cursor: default;
+
+  &:nth-of-type(1) {
+    text-align: center;
+    width: 25px;
+  }
+  &:nth-of-type(2) {
+    width: 50px;
+  }
+  &:nth-of-type(3) {
+    width: 100px;
+  }
+  &:nth-of-type(4) {
+    width: 70px;
+  }
+  &:nth-of-type(5) {
+    text-align: right;
+    width: 70px;
+  }
+  &:nth-of-type(6) {
+    width: 70px;
+    text-align: right;
+  }
+  &:nth-of-type(7) {
+    width: 70px;
+    text-align: right;
+  }
+  &:nth-of-type(8) {
+    width: 70px;
+    text-align: right;
+  }
+`;
+
+
