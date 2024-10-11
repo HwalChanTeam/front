@@ -59,21 +59,127 @@ const tempProductList = [
         salesCounts: 5,
         createDate: "2024-10-11"
     },
+    {
+        id: 5,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 6,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 7,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 8,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 9,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 10,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 11,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 12,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 13,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 14,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
 
 ]
 
 
 function ProductEdit(props) {
 
-    const [productList, setProductList] = useState(tempProductList.map(tempProduct => ({ ...tempProduct, checked: false })));
+    const [productList, setProductList] = useState(
+        tempProductList.map(
+            tempProduct => ({ ...tempProduct, checked: false })
+        )
+    );
 
 
     const handleCheckBoxOnChange = (id) => {
-        setProductList(productList => productList.map(product => product.id === id ? ({ ...product, checked: !product.checked }) : product));
+        setProductList(productList => productList.map(
+            product => product.id === id ? ({ ...product, checked: !product.checked }) : product
+        ));
     };
 
 
-    const hadleModifyOnClick = async (e) => {
+    const hadleModifyOnClick = async () => {
         try {
             const response = await instance.put(`/admin/modify/${productList[0].id}`);
 

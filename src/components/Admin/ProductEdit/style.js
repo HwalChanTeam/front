@@ -39,15 +39,22 @@ export const titleLayout = css`
 
 export const container = css`
     box-sizing: border-box;
+    padding-bottom: 5px;
     width: 980px;
     height: 500px;
     border: 1px solid #000000;
+    border-radius: 5px;
     overflow-y: scroll;
+    -ms-overflow-style: none;
+    ::-webkit-scrollbar {
+        display: none;
+    }
 `;
 
 export const tableLayout = css`
     width: 100%;
     border-collapse: collapse;
+    
 `;
 
 export const tbodyLayout = css`
@@ -56,9 +63,30 @@ export const tbodyLayout = css`
 
 export const productItem = css`
     box-sizing: border-box;
-    border: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+    padding: 0px;
+    width: 100px;
     height: 40px;
     cursor: default;
+
+    & span {
+        display: flex;
+        justify-content: center;
+    }
+
+    &:nth-last-of-type(1) {
+        border-right: none;
+    }
+
+    &:nth-of-type(1) {
+        box-sizing: border-box;
+        padding-left: 22px;
+        width: 50px;
+        height: 40px;
+        
+    }
+    
 `;
 
 
