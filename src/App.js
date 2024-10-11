@@ -14,7 +14,7 @@ import { QueryClient } from "react-query";
 function App() {
   const location = useLocation();
 
-  const queryClient = new QueryClient;
+  const queryClient = new QueryClient();
 
   return (
     <>
@@ -22,7 +22,7 @@ function App() {
       {location.pathname.startsWith("/admin") ? (
         <Routes>
           <Route path="/admin/signin" element={<AdminSignin />} />
-          <Route path="/admin/main" element={<AdminMainPage />} />
+          <Route path="/admin/*" element={<AdminMainPage />} />
         </Routes>
       ) : (
         <MainLayout>

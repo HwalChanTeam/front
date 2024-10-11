@@ -11,7 +11,10 @@ export const mainBox = css`
     justify-content: center;
     align-items: center;
     margin-bottom: 130px;
-    border: 1px solid #000000;
+    background-color: #364F6B;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
     height: 70px;
     width: 500px;
   }
@@ -41,7 +44,12 @@ export const container = css`
   width: 980px;
   height: 500px;
   border: 1px solid #000000;
+  border-radius: 5px;
   overflow-y: scroll;
+  -ms-overflow-style: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const tableLayout = css`
@@ -81,21 +89,22 @@ export const listBox = css`
 `;
 
 export const buttonBox = css`
-  display: flex;
-  & button {
-    font-size: 20px;
-    font-weight: 600;
-    border: 1px solid #000000;
-    background-color: white;
-    border-radius: 5px;
-    margin-left: 7px;
-    &:hover {
-      background-color: #efefef99;
-    }
-    &:active {
-      background-color: #aaaaaa99;
-    }
-  }
+    display: flex;
+        & button {
+            font-size: 20px;
+            font-weight: 600;
+            margin-left: 7px;
+            background-color: #364F6B;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            color: #F5F5F5;
+            &:hover {
+                background-color: #686D76;
+            }
+            &:active {
+                background-color: #3D3B40;
+            }
+            }
 `;
 
 export const buttonLayout = css`
@@ -111,19 +120,21 @@ export const buttonLayout = css`
     box-sizing: border-box;
     width: 150px;
     height: 60px;
-    background-color: white;
+    background-color: #364F6B;
     border: 1px solid #000000;
+    border-radius: 5px;
+    color: #F5F5F5;
 
     &:nth-last-of-type(1) {
       margin-left: 80px;
     }
 
     &:hover {
-      background-color: #f0f0f0;
+      background-color: #686D76;
     }
 
     &:active {
-      background-color: #dbdbdb;
+      background-color: #3D3B40;
     }
   }
 `;
@@ -141,16 +152,17 @@ export const createManager = css`
     font-weight: 600;
     width: 150px;
     height: 60px;
-    background-color: white;
-    border-radius: 10px;
+    background-color: #364F6B;
     border: 1px solid #000000;
+    border-radius: 5px;
+    color: #F5F5F5;
 
     &:hover {
-      background-color: #f0f0f0;
+      background-color: #686D76;
     }
 
     &:active {
-      background-color: #dbdbdb;
+      background-color: #3D3B40;
     }
   }
 `;

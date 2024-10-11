@@ -3,7 +3,7 @@ import React from "react";
 function Management(props) {
   return (
     <div>
-      <h1>허경영 관리 페이지 입니다.</h1>
+      <h1>허경영 관리</h1>
       {/* 
                 1. 판매량 인기 순위 top 5
                 2. 판매량 추이

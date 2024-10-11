@@ -61,7 +61,7 @@ function ProductRegister(props) {
 
   return (
     <div css={s.mainBox}>
-      <h1>상품 등록 페이지</h1>
+      <h1>상품 등록</h1>
       <div css={s.imgBox}>
         <img src="" alt="" />
       </div>

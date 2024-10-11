@@ -27,15 +27,18 @@ export const searchInput = css`
 export const searchButton = css`
   padding: 10px 20px;
   margin-left: 10px;
-  background-color: white;
-  border: 1px solid black;
-  border-radius: 10px;
   color: black;
   cursor: pointer;
-  &:hover {
-    background-color: #efefef99;
-  }
-  &:active {
-    background-color: #aaaaaa99;
-  }
+  background-color: #364F6B;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    color: #F5F5F5;
+    font-weight: 600;
+    font-size: 16px;
+    &:hover {
+      background-color: #686D76;
+    }
+    &:active {
+      background-color: #3D3B40;
+    }
 `;
