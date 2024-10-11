@@ -11,7 +11,10 @@ export const mainBox = css`
     justify-content: center;
     align-items: center;
     margin-bottom: 40px;
-    border: 1px solid #000000;
+    background-color: #364F6B;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
     height: 70px;
     width: 500px;
   }

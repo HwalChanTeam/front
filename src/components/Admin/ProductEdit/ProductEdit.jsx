@@ -84,7 +84,7 @@ function ProductEdit(props) {
 
     return (
         <div css={s.mainBox}>
-            <h1>상품 관리 페이지</h1>
+            <h1>상품 관리</h1>
             <AdminSearch />
             <div css={s.container}>
                 <table css={s.tableLayout}>

@@ -11,7 +11,10 @@ export const mainBox = css`
     justify-content: center;
     align-items: center;
     margin-bottom: 40px;
-    border: 1px solid #000000;
+    background-color: #364F6B;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
     height: 70px;
     width: 500px;
   }
@@ -75,20 +78,22 @@ export const buttonLayout = css`
         box-sizing: border-box;
         width: 150px;
         height: 60px;
-        background-color: white;
+        background-color: #364F6B;
         border: 1px solid #000000;
-        border-radius: 10px;
+        border-radius: 5px;
+        color: #F5F5F5;
+        font-size: 18px;
+        font-weight: 600;
+        
+        &:hover {
+        background-color: #686D76;
+        }
+        &:active {
+        background-color: #3D3B40;
+        }
 
         &:nth-last-of-type(1) {
             margin-left: 80px;
-        }
-
-        &:hover {
-            background-color: #f0f0f0;
-        }
-
-        &:active {
-            background-color: #dbdbdb;
         }
     }
 `;

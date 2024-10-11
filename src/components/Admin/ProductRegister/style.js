@@ -63,18 +63,19 @@ export const inputBox = css`
 `;
 
 export const buttonBox = css`
-    & button {
-  font-size: 20px;
-  border: 1px solid #000000;
-  background-color: white;
-  border-radius: 5px;
-  margin-top: 40px;
-  margin-left: 7px;
-  &:hover {
-      background-color: #efefef99;
+  & button {
+    font-size: 20px;
+    margin-top: 40px;
+    margin-left: 7px;
+    background-color: #364F6B;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    color: #F5F5F5;
+    &:hover {
+      background-color: #686D76;
+    }
+    &:active {
+      background-color: #3D3B40;
+    }
   }
-  &:active {
-      background-color: #aaaaaa99;
-  }
-}
 `;

@@ -57,7 +57,7 @@ function ProductView() {
 
   return (
     <div css={s.mainBox}>
-      <h1>상품 조회 페이지</h1>
+      <h1>상품 조회</h1>
       <AdminSearch onSearch={handleSearch} />
       <div css={s.tableBox}>
         <table css={s.table}>
