@@ -18,35 +18,68 @@ import { instance } from '../../../apis/util/instance';
     최신 날짜로 조회되게
 
 */
+const tempProductList = [
+    {
+        id: 1,
+        category: "냉동",
+        title: "상품이름1",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 2,
+        category: "냉동",
+        title: "상품이름2",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 3,
+        category: "냉동",
+        title: "상품이름3",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+    {
+        id: 4,
+        category: "냉동",
+        title: "상품이름4",
+        price: "1000",
+        origin: "대한민국",
+        stock: 10,
+        salesCounts: 5,
+        createDate: "2024-10-11"
+    },
+
+]
+
+
 function ProductEdit(props) {
 
-    const [ checked, setChecked ] = useState([]);
+    const [productList, setProductList] = useState(tempProductList.map(tempProduct => ({ ...tempProduct, checked: false })));
 
-    const productList = [{ 
-        id: 0,
-        category: "",
-        title: "",
-        price: "",
-        origin: "",
-        stock: 0,
-        salesCounts: 0,
-        createData: ""
-    }];
 
     const handleCheckBoxOnChange = (id) => {
-        setChecked((prevChecked) => {
-            if (prevChecked.includes(id)) {
-                // 이미 체크된 경우: 체크 해제
-                return prevChecked.filter(item => item !== id);
-            } else {
-                // 체크되지 않은 경우: 체크
-                return [...prevChecked, id];
-            }
-        });
+        setProductList(productList => productList.map(product => product.id === id ? ({ ...product, checked: !product.checked }) : product));
     };
 
-    const hadleModifyOnClick = async() => {
-        const response = await instance.put(`/admin/modify/${productList.id}`)
+
+    const hadleModifyOnClick = async (e) => {
+        try {
+            const response = await instance.put(`/admin/modify/${productList[0].id}`);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -56,20 +89,20 @@ function ProductEdit(props) {
             <div css={s.container}>
                 <table css={s.tableLayout}>
                     <tbody css={s.tbodyLayout}>
-                        { productList.map((product) => (
-                            <tr css={s.layout} key={2}>
-                                <td css={s.listBox}>
+                        {productList.map((product) => (
+                            <tr key={product.id}>
+                                <td css={s.productItem}>
                                     <input type="checkbox"
-                                        onChange={() => handleCheckBoxOnChange(product.id)} 
-                                        checked={checked} id={`checkbox-${product.id}`}/>
-                                    <span>[냉동]</span>
-                                    <span>{product.title}</span>
-                                    <span>11,000</span>
-                                    <span>대한민국</span>
-                                    <span>100</span>
-                                    <span>500</span>
-                                    <span>2024-10-10</span>
+                                        onChange={() => handleCheckBoxOnChange(product.id)}
+                                        checked={product.checked} id={product.id} />
                                 </td>
+                                <td css={s.productItem}><span>{product.category}</span></td>
+                                <td css={s.productItem}><span>{product.title}</span></td>
+                                <td css={s.productItem}><span>{product.price}</span></td>
+                                <td css={s.productItem}><span>{product.origin}</span></td>
+                                <td css={s.productItem}><span>{product.stock}</span></td>
+                                <td css={s.productItem}><span>{product.salesCounts}</span></td>
+                                <td css={s.productItem}><span>{product.createDate}</span></td>
                             </tr>
                         ))}
                     </tbody>

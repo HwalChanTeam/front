@@ -30,20 +30,22 @@ function AdminMainPage(props) {
     }
   };
   return (
-    <div css={s.mainBox}>
-      <div css={s.menuBox}>
-        <h1>선택된 메뉴 이름</h1>
-        {/* 메뉴 선택 페이지 */}
-        <button onClick={() => setSelectedMenu("상품 조회")}>상품 조회</button>
-        <button onClick={() => setSelectedMenu("상품 등록")}>상품 등록</button>
-        <button onClick={() => setSelectedMenu("상품 관리")}>상품 관리</button>
-        <button onClick={() => setSelectedMenu("직원 관리")}>직원 관리</button>
-        <button onClick={() => setSelectedMenu("경영 관리")}>경영 관리</button>
-        <button onClick={() => setSelectedMenu("유저 조회")}>유저 조회</button>
-      </div>
-      <div css={s.contentBox}>
-        {/* 메뉴 상세 페이지 */}
-        {renderComponent()}
+    <div css={s.layout}>
+      <div css={s.mainBox}>
+        <div css={s.menuBox}>
+          <h1>선택된 메뉴 이름</h1>
+          {/* 메뉴 선택 페이지 */}
+          <button onClick={() => setSelectedMenu("상품 조회")}>상품 조회</button>
+          <button onClick={() => setSelectedMenu("상품 등록")}>상품 등록</button>
+          <button onClick={() => setSelectedMenu("상품 관리")}>상품 관리</button>
+          <button onClick={() => setSelectedMenu("직원 관리")}>직원 관리</button>
+          <button onClick={() => setSelectedMenu("경영 관리")}>경영 관리</button>
+          <button onClick={() => setSelectedMenu("유저 조회")}>유저 조회</button>
+        </div>
+        <div css={s.contentBox}>
+          {/* 메뉴 상세 페이지 */}
+          {renderComponent()}
+        </div>
       </div>
     </div>
   );
