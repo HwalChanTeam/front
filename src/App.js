@@ -9,9 +9,12 @@ import MainLayout from "./components/MainLayout/MainLayout";
 import AdminSignin from "./pages/Admin/AdminSignin/AdminSignin";
 import AdminMainPage from "./pages/Admin/AdminMainPage/AdminMainPage";
 import TestExam from "./pages/Test/TestExam";
+import { QueryClient } from "react-query";
 
 function App() {
   const location = useLocation();
+
+  const queryClient = new QueryClient;
 
   return (
     <>

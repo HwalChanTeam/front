@@ -6,6 +6,18 @@ import { instance } from "../../../apis/util/instance";
 
 function ProductView() {
   const [product, setProduct] = useState(null);
+  const productList = [
+    {
+      id: 0,
+      category: "",
+      title: "",
+      price: "",
+      origin: "",
+      salesCount: "",
+      stock: "",
+      createdDate: "",
+    },
+  ];
   const [title, settitle] = useState("");
 
   useEffect(() => {
@@ -51,23 +63,39 @@ function ProductView() {
         <table css={s.table}>
           {product ? (
             <tbody>
-              <tr css={s.productBox}>
-                <div css={s.tableDiv}>
-                  <div css={s.spanBox}>
-                    <span>{product?.data?.category}</span>
-                    <span>{product?.data?.title}</span>
-                    <span>{product?.data?.price}</span>
-                    <span>{product?.data?.origin}</span>
-                    <span>{product?.data?.salesCount}</span>
-                    <span>{product?.data?.stock}</span>
-                    <span>{product?.data?.createdDate}</span>
+              {productList.map((product) => (
+                <tr css={s.productBox}>
+                  <div css={s.tableDiv}>
+                    <div css={s.spanBox}>
+                      <tr>
+                        <span>{product.category}</span>
+                      </tr>
+                      <tr>
+                        <span>{product.title}</span>
+                      </tr>
+                      <tr>
+                        <span>{product.price}</span>
+                      </tr>
+                      <tr>
+                        <span>{product.origin}</span>
+                      </tr>
+                      <tr>
+                        <span>{product.salesCount}</span>
+                      </tr>
+                      <tr>
+                        <span>{product.stock}</span>
+                      </tr>
+                      <tr>
+                        <span>{product.createdDate}</span>
+                      </tr>
+                    </div>
+                    <div css={s.buttonBox}>
+                      <button>수정</button>
+                      <button>삭제</button>
+                    </div>
                   </div>
-                  <div css={s.buttonBox}>
-                    <button>수정</button>
-                    <button>삭제</button>
-                  </div>
-                </div>
-              </tr>
+                </tr>
+              ))}
             </tbody>
           ) : (
             <h2>상품이 없습니다.</h2>

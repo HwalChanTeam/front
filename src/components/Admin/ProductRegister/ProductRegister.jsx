@@ -41,11 +41,11 @@ function ProductRegister(props) {
   };
 
   const handleSubmitOnClick = async () => {
-    if(product.category === "냉동") {
-      product.category = "1"
+    if (product.category === "냉동") {
+      product.category = "1";
     }
-    if(product.category === "냉장") {
-      product.category = "2"
+    if (product.category === "냉장") {
+      product.category = "2";
     }
     try {
       console.log(product);
