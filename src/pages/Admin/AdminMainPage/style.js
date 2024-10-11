@@ -1,14 +1,16 @@
 import { css } from "@emotion/react";
 
+export const layout = css`
+  width: 100%;
+  height: 100%;
+`;
+
 export const mainBox = css`
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 95%;
-  height: 95%;
-  padding: 0 50px;
-  margin: 0 auto;
+  width: 100%;
+  height: 100%;
   border: 1px solid #000000;
 `;
 
@@ -52,12 +54,7 @@ export const menuBox = css`
 export const contentBox = css`
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 1500px;
-    height: 100%;
-    border: 1px solid #000000;
-    border-top: none;
-    border-bottom: none;
-    border-left: none;
+    justify-content: center;
+    align-items: center;  
+    width: 100%;
 `;

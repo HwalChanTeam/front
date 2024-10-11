@@ -47,47 +47,20 @@ export const container = css`
 
 export const tableLayout = css`
     width: 100%;
-    height: 100%;
+    border-collapse: collapse;
 `;
 
 export const tbodyLayout = css`
     width: 100%;
-    height: 100%;
 `;
 
-export const layout = css`
+export const productItem = css`
     box-sizing: border-box;
-    padding: 0px 20px 0px 15px;
-    width: 100%;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #000000;
+    border: 1px solid #000000;
+    height: 40px;
+    cursor: default;
 `;
 
-
-
-export const listBox = css`
-    box-sizing: border-box;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-
-    & input {
-        width: 20px;
-        height: 20px;
-        border: 1px solid #000000;
-    }
-
-    & span {
-        font-size: 20px;
-        font-weight: 600;
-
-        &:nth-of-type(5) {
-            margin-right: 20px;
-        }
-    }
-`;
 
 export const buttonLayout = css`
     box-sizing: border-box;
