@@ -89,136 +89,6 @@ const tempProductList = [
     salesCounts: 5,
     createDate: "2024-10-11",
   },
-  {
-    id: 8,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 9,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 10,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 11,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 12,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 13,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 14,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 14,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 14,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 14,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 14,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 14,
-    category: "냉동",
-    title: "상품이름4",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
-  {
-    id: 14,
-    category: "냉동",
-    title: "상품이름14",
-    price: "1000",
-    origin: "대한민국",
-    stock: 10,
-    salesCounts: 5,
-    createDate: "2024-10-11",
-  },
 ];
 
 function ProductEdit(props) {
@@ -273,7 +143,7 @@ function ProductEdit(props) {
           </tr>
         </table>
         <table css={s.tableLayout}>
-          <tbody css={s.tbodyLayout}>
+          {/* <tbody css={s.tbodyLayout}> */}
             {productList.map((product) => (
               <tr key={product.id}>
                 <td css={s.productItem}>
@@ -293,7 +163,7 @@ function ProductEdit(props) {
                 <td css={s.productItem}>{product.createDate}</td>
               </tr>
             ))}
-          </tbody>
+          {/* </tbody> */}
         </table>
       </div>
     </div>
