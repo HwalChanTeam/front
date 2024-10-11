@@ -17,7 +17,7 @@ export const mainBox = css`
 
 export const buttonLayout = css`
   box-sizing: border-box;
-  padding-left: 20px;
+  padding: 90px 0 50px 20px;
   width: 300px;
   height: 50px;
 
@@ -46,9 +46,8 @@ export const buttonLayout = css`
 
 export const container = css`
   box-sizing: border-box;
-  /* padding: 10px; */
   margin: 0px 20px;
-  border-bottom: 1px solid #000000;
+  border: 1px solid #000000;
   width: 1000px;
   height: 500px;
   overflow-y: scroll;
@@ -70,15 +69,11 @@ export const theadLayout = css`
 
 export const theadItems = css`
   box-sizing: border-box;
-  border: 1px solid #000000;
+  border-right: 1px solid #000000;
   padding: 0px;
   width: 100px;
   cursor: default;
 
-  & span {
-    display: flex;
-    justify-content: center;
-  }
   &:nth-of-type(1) {
     text-align: center;
     width: 25px;
@@ -96,13 +91,14 @@ export const theadItems = css`
     width: 70px;
   }
   &:nth-of-type(6) {
-    width: 70px;
+    width: 120px;
   }
   &:nth-of-type(7) {
     width: 70px;
   }
   &:nth-of-type(8) {
     width: 70px;
+    border-right: none;
   }
 `;
 
@@ -126,6 +122,7 @@ export const productItem = css`
   &:nth-of-type(1) {
     text-align: center;
     width: 25px;
+    border-left: none;
   }
   &:nth-of-type(2) {
     width: 50px;
@@ -141,7 +138,7 @@ export const productItem = css`
     width: 70px;
   }
   &:nth-of-type(6) {
-    width: 70px;
+    width: 120px;
     text-align: right;
   }
   &:nth-of-type(7) {
@@ -151,6 +148,7 @@ export const productItem = css`
   &:nth-of-type(8) {
     width: 70px;
     text-align: right;
+    border-right: none;
   }
 `;
 

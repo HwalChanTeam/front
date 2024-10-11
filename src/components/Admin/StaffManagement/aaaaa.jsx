@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { instance } from "../../../apis/util/instance";
-import AdminSearch from "../AdminSearch/AdminSearch";
-import * as s from "./style";
 import { useState } from "react";
-
+import * as s from "./style";
+import { instance } from "../../../apis/util/instance";
 
 // Modal 컴포넌트 추가
 const Modal = ({ isOpen, onClose }) => {
@@ -45,7 +43,7 @@ const tempStaffList = [
     username: "aaa",
     name: "직원명1",
     email: "aaa@aaa.com",
-    phone: "010-000",
+    phone: "010-0000-0000",
     role: "매니저",
     createDate: "2024-10-11",
   },
@@ -54,88 +52,7 @@ const tempStaffList = [
     username: "bbb",
     name: "직원명2",
     email: "aaa@aaa.com",
-    phone: "010-000",
-    role: "매니저",
-    createDate: "2024-10-11",
-  },
-  {
-    id: 3,
-    username: "ccc",
-    name: "직원명3",
-    email: "aaa@aaa.com",
-    phone: "010-000",
-    role: "매니저",
-    createDate: "2024-10-11",
-  },
-  {
-    id: 3,
-    username: "ccc",
-    name: "직원명3",
-    email: "aaa@aaa.com",
-    phone: "010-000",
-    role: "매니저",
-    createDate: "2024-10-11",
-  },
-  {
-    id: 3,
-    username: "ccc",
-    name: "직원명3",
-    email: "aaa@aaa.com",
-    phone: "010-000",
-    role: "매니저",
-    createDate: "2024-10-11",
-  },
-  {
-    id: 3,
-    username: "ccc",
-    name: "직원명3",
-    email: "aaa@aaa.com",
-    phone: "010-000",
-    role: "매니저",
-    createDate: "2024-10-11",
-  },
-  {
-    id: 3,
-    username: "ccc",
-    name: "직원명3",
-    email: "aaa@aaa.com",
-    phone: "010-000",
-    role: "매니저",
-    createDate: "2024-10-11",
-  },
-  {
-    id: 3,
-    username: "ccc",
-    name: "직원명3",
-    email: "aaa@aaa.com",
-    phone: "010-000",
-    role: "매니저",
-    createDate: "2024-10-11",
-  },
-  {
-    id: 3,
-    username: "ccc",
-    name: "직원명3",
-    email: "aaa@aaa.com",
-    phone: "010-000",
-    role: "매니저",
-    createDate: "2024-10-11",
-  },
-  {
-    id: 3,
-    username: "ccc",
-    name: "직원명3",
-    email: "aaa@aaa.com",
-    phone: "010-0000",
-    role: "매니저",
-    createDate: "2024-10-11",
-  },
-  {
-    id: 3,
-    username: "ccc",
-    name: "직원명3",
-    email: "aaa@aaa.com",
-    phone: "010-000",
+    phone: "010-0000-0000",
     role: "매니저",
     createDate: "2024-10-11",
   },
@@ -153,7 +70,7 @@ const tempStaffList = [
     username: "ccc",
     name: "직원명3",
     email: "aaa@aaa.com",
-    phone: "010-00",
+    phone: "010-0000-0000",
     role: "매니저",
     createDate: "2024-10-11",
   },
@@ -162,7 +79,7 @@ const tempStaffList = [
     username: "ccc",
     name: "직원명3",
     email: "aaa@aaa.com",
-    phone: "010-000",
+    phone: "010-0000-0000",
     role: "매니저",
     createDate: "2024-10-11",
   },
@@ -171,7 +88,7 @@ const tempStaffList = [
     username: "ccc",
     name: "직원명3",
     email: "aaa@aaa.com",
-    phone: "010-000",
+    phone: "010-0000-0000",
     role: "매니저",
     createDate: "2024-10-11",
   },
@@ -180,7 +97,88 @@ const tempStaffList = [
     username: "ccc",
     name: "직원명3",
     email: "aaa@aaa.com",
-    phone: "010-0000",
+    phone: "010-0000-0000",
+    role: "매니저",
+    createDate: "2024-10-11",
+  },
+  {
+    id: 3,
+    username: "ccc",
+    name: "직원명3",
+    email: "aaa@aaa.com",
+    phone: "010-0000-0000",
+    role: "매니저",
+    createDate: "2024-10-11",
+  },
+  {
+    id: 3,
+    username: "ccc",
+    name: "직원명3",
+    email: "aaa@aaa.com",
+    phone: "010-0000-0000",
+    role: "매니저",
+    createDate: "2024-10-11",
+  },
+  {
+    id: 3,
+    username: "ccc",
+    name: "직원명3",
+    email: "aaa@aaa.com",
+    phone: "010-0000-0000",
+    role: "매니저",
+    createDate: "2024-10-11",
+  },
+  {
+    id: 3,
+    username: "ccc",
+    name: "직원명3",
+    email: "aaa@aaa.com",
+    phone: "010-0000-0000",
+    role: "매니저",
+    createDate: "2024-10-11",
+  },
+  {
+    id: 3,
+    username: "ccc",
+    name: "직원명3",
+    email: "aaa@aaa.com",
+    phone: "010-0000-0000",
+    role: "매니저",
+    createDate: "2024-10-11",
+  },
+  {
+    id: 3,
+    username: "ccc",
+    name: "직원명3",
+    email: "aaa@aaa.com",
+    phone: "010-0000-0000",
+    role: "매니저",
+    createDate: "2024-10-11",
+  },
+  {
+    id: 3,
+    username: "ccc",
+    name: "직원명3",
+    email: "aaa@aaa.com",
+    phone: "010-0000-0000",
+    role: "매니저",
+    createDate: "2024-10-11",
+  },
+  {
+    id: 3,
+    username: "ccc",
+    name: "직원명3",
+    email: "aaa@aaa.com",
+    phone: "010-0000-0000",
+    role: "매니저",
+    createDate: "2024-10-11",
+  },
+  {
+    id: 3,
+    username: "ccc",
+    name: "직원명3",
+    email: "aaa@aaa.com",
+    phone: "010-0000-0000",
     role: "매니저",
     createDate: "2024-10-11",
   },
@@ -198,6 +196,8 @@ function StaffManagement(props) {
       )
     );
   };
+
+
 
   // // 모달 띄우는 상태 추가
   // const [openModal, setOpenModal] = useState(false);
@@ -223,11 +223,9 @@ function StaffManagement(props) {
   //   }
   // };
 
-
-
   return (
     <div css={s.mainBox}>
-      <h1>상품 관리</h1>
+      <h1>직원 관리</h1>
       <div css={s.buttonLayout}>
         <button>수정</button>
         <button>삭제</button>
@@ -235,7 +233,7 @@ function StaffManagement(props) {
       <div css={s.container}>
         <table css={s.theadLayout}>
           <tr>
-          <td css={s.theadItems}>선택</td>
+            <td css={s.theadItems}>선택</td>
             <td css={s.theadItems}>번호</td>
             <td css={s.theadItems}>직급</td>
             <td css={s.theadItems}>이름</td>
@@ -247,7 +245,7 @@ function StaffManagement(props) {
         </table>
         <table css={s.tableLayout}>
           {/* <tbody css={s.tbodyLayout}> */}
-          {staffList.map((staff) => (
+            {staffList.map((staff) => (
               <tr key={staff.id}>
                 <td css={s.productItem}>
                   <input
@@ -272,5 +270,3 @@ function StaffManagement(props) {
     </div>
   );
 }
-
-export default StaffManagement;
