@@ -7,23 +7,29 @@ export const headerLayout = css`
     width: 100%;
     height: 110px;
     background-color: #FF9191;
-    
 
+    & div {
+        &:nth-of-type(1) {
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+        }
+    }
+    
+    & h1 {
+        display: flex;
+        align-items: center;
+        margin: 0px;
+        padding-left: 50px;
+        font-size: 50px;
+    }
+        
     & > button {
         box-sizing: border-box;
         background-color: transparent;
         border: none;
     }
-
-    & > h1 {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0px 0px 0px 170px;
-        margin:0px;
-        font-size: 50px;
-    }
-
 `;
 
 export const buttonLayout = css`

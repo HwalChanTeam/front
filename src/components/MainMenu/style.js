@@ -14,30 +14,28 @@ export const buttonLayout = css`
     display: flex;
     justify-content: center;
 
-    & button {
+    & a {
         box-sizing: border-box;
-        width: 160px;
-        height: 80px;
-        margin-right: 10px;
+        height: 40px;
+        margin-right: 70px;
+        text-decoration: none;
         font-size: 25px;
-        background-color: transparent;
-        border: none;
-        color: #5B5B5B;
     }
     border-bottom: 2px solid #000000;
     width: 100%;
 
 `;
 
-export const line = css`
-`;
+export const selectedMenu = (isSelected) => css`
+    border-top: ${isSelected ? "2px solid #E21717" : "transparent"};
+`; 
 
 export const menuLayout = css`
     box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0px 20px;
+    padding: 0px 200px;
     width: 100%;
     height: 100%;
 `;
