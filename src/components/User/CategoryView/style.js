@@ -69,6 +69,13 @@ export const imgLayout = css`
     width: 160px;
     height: 160px;
     background-color: #dbdbdb;
+    cursor: pointer;
+
+    & img {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+    }
 `;
 
 

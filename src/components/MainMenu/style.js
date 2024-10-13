@@ -20,6 +20,7 @@ export const buttonLayout = css`
         margin-right: 70px;
         text-decoration: none;
         font-size: 25px;
+        color: #5B5B5B;
     }
     border-bottom: 2px solid #000000;
     width: 100%;
