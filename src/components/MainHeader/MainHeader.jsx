@@ -42,6 +42,22 @@ function MainHeader(props) {
         setMainSearch(name);
     };
 
+    const handleJoinClick = () => {
+      navigate("/user/signup");
+    };
+
+    const handleLoginClick = () => {
+      navigate("/user/signin");
+    };
+
+    const handleBasketClick = () => {
+      navigate("/basket");
+    };
+
+    const handleOrderClick = () => {
+
+    };
+
     return (
         <div css={s.headerLayout}>
             <h1 onClick={handleLogoOnClick}>LOGO</h1>
@@ -50,10 +66,10 @@ function MainHeader(props) {
                 <MainSearch onSearch={handleMainSearch}/>
             </div>
             <div css={s.buttonLayout}>
-                <button>회원가입</button>
-                <button>로그인</button>
-                <button>장바구니</button>
-                <button>주문/배송</button>
+                <button onClick={handleJoinClick}>회원가입</button>
+                <button onClick={handleLoginClick}>로그인</button>
+                <button onClick={handleBasketClick}>장바구니</button>
+                <button onClick={handleOrderClick}>주문/배송</button>
             </div>
         </div>
     );
