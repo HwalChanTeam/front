@@ -52,24 +52,32 @@ function MainMenu(props) {
                     </div>
                 </div>
             </header>
-            <body>
-                <div css={s.menuLayout}>
-                    <div css={s.menuListBox}>
-                        <Routes>
-                            <Route path="/" element={<CategoryView />}/>
-                            <Route path="/category" element={<CategoryView />}/>
-                            <Route path="/newproduct" element={<NewProductView />}/>
-                            <Route path="/popularityproduct" element={<PopularityProduct />}/>
-                            <Route path="/review" element={<Review />}/>
-                        </Routes>
-                    </div>
-                </div>
-            </body>
-            <footer>
-                <div css={s.footLayout}>
-                    
-                </div>
-            </footer>
+                        {
+                            location.pathname.startsWith("/product") ? (
+                                <></>
+                            ) : (
+                                <>
+                                    <body>
+                                        <div css={s.menuLayout}>
+                                            <div css={s.menuListBox}>
+                                                <Routes>
+                                                    <Route path="/" element={<CategoryView />}/>
+                                                    <Route path="/category" element={<CategoryView />}/>
+                                                    <Route path="/newproduct" element={<NewProductView />}/>
+                                                    <Route path="/popularityproduct" element={<PopularityProduct />}/>
+                                                    <Route path="/review" element={<Review />}/>
+                                                </Routes>
+                                            </div>
+                                        </div>
+                                    </body>
+                                    <footer>
+                                        <div css={s.footLayout}>
+                                            
+                                        </div>
+                                    </footer>
+                                </>
+                            )
+                        }
         </>
     );
 }
