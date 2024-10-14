@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
-import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+// import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import * as s from "./style";
 import { instance } from "../../../apis/util/instance";
 import { v4 as uuid } from 'uuid';
+
+import { MdDescription } from "react-icons/md";
+
 import { storage } from "../../../firebase/firebase";
+
 import { useQueryClient } from "react-query";
 import { updateProductImgApi } from "../../../apis/productApi";
 
@@ -71,6 +75,7 @@ function ProductRegister(props) {
     refresh();
   };
 
+
   const handleAddImgOnClick = () => {
     if (window.confirm("상품 사진을 등록하실??")) {
       const fileInput = document.createElement("input");
@@ -111,6 +116,7 @@ function ProductRegister(props) {
 
     }
   }
+
 
   const handleDefaultImgChangeOnClick = async () => {
     if (window.confirm("기본이미지로 변경하시겠습니까?")) {
@@ -178,7 +184,7 @@ return (
         <span>
           <label for="thumbnailImg">이미지</label>
           <img src="" alt="" />
-          <button onClick={handleAddImgOnClick} >상품 이미지 등록</button>
+          <button  >상품 이미지 등록</button>
         </span>
       </div>
       <div css={s.buttonBox}>

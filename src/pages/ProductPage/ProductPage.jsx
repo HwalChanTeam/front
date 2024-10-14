@@ -16,35 +16,35 @@ function ProductPage(props) {
                         <h2>부대찌개</h2>
                         <p>부대찌개 설명</p>
                     </div>
-                    <div>
-                        11,000
+                    <div css={s.price}>
+                        <p>11,000 원</p>
                     </div>
                     <div css={s.contentBox}>
-                        <div>
+                        <div css={s.contury}>
                             <p>원산지: 대한민국</p>
                             <p>배송구분: 일반배송</p>
                             <p>배송비: 3000원</p>
                         </div>
-                        <div>
+                        <div css={s.productNameBox}>
                             <p>상품명: 부대찌개</p>
                             <p>
                                 구매수량: 
                                     <span>
-                                        <button>+</button>
-                                                1
                                         <button>-</button>
+                                                1
+                                        <button>+</button>
                                     </span>
                             </p> 
                         </div>
                     </div>
-                    <div>
-                        <p>총 상품 금액: 14,000원
+                    <div css={s.buyProduct}>
+                        <p>
+                            총 상품 금액: 14,000원
                             <span>
                                 <button>구매하기</button>
-                                <FiShoppingCart />
+                                <FiShoppingCart size="40"/>
                             </span>
                         </p>
-                        
                     </div>
                 </div>
             </div>
