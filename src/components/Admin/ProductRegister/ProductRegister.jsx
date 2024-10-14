@@ -4,7 +4,6 @@ import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebas
 import * as s from "./style";
 import { instance } from "../../../apis/util/instance";
 import { v4 as uuid } from 'uuid';
-import { MdDescription } from "react-icons/md";
 import { storage } from "../../../firebase/firebase";
 import { useQueryClient } from "react-query";
 import { updateProductImgApi } from "../../../apis/productApi";
@@ -21,7 +20,8 @@ function ProductRegister(props) {
     category: "냉동",
     description: "",
     origin: "대한민국",
-    img: "",
+    thumbnailImg: "",
+    contentsImg: ""
   });
 
   const inputOnChange = (e) => {
@@ -48,7 +48,8 @@ function ProductRegister(props) {
       category: "냉동",
       description: "",
       origin: "대한민국",
-      img: "",
+      thumbnailImg: "",
+      contentsImg: ""
     });
   };
 
@@ -75,17 +76,18 @@ function ProductRegister(props) {
       const fileInput = document.createElement("input");
       fileInput.setAttribute("type", "file");
       fileInput.setAttribute("accept", "image/*");
-      fileInput.setAttribute("multiple", "");
-      fileInput.onclick();
+      // fileInput.setAttribute("multiple", "");
+      fileInput.click();
 
-      fileInput.onChange = (e) => {
+      fileInput.onchange = (e) => {
         const files = Array.from(e.target.files);
         const profileImage = files[0];
         setUploadPercent(0);
-
+        
         const storageRef = ref(storage, `user/profile/${uuid()}_${profileImage.name}`);
-
+        
         const uploadTask = uploadBytesResumable(storageRef, profileImage);
+        console.log(uploadTask);
         uploadTask.on(
           "state_changed",
           (snapshot) => {
@@ -98,9 +100,11 @@ function ProductRegister(props) {
           },
           async (success) => {
             const url = await getDownloadURL(storageRef);
+            console.log(url);
             const response = await updateProductImgApi(url);
             queryClient.invalidateQueries(["userInfoQuery"]);
           }
+          
         );
 
       }
@@ -172,7 +176,7 @@ return (
           />
         </span>
         <span>
-          <label for="img">이미지</label>
+          <label for="thumbnailImg">이미지</label>
           <img src="" alt="" />
           <button onClick={handleAddImgOnClick} >상품 이미지 등록</button>
         </span>
