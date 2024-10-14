@@ -14,9 +14,10 @@ export const adminSigninApi = async(admin) => {
     }
     try {
         const response = await instance.post("/admin", admin);
+        
         signinData = {
             isSuccess: true,
-            token: response?.data?.accessToken,
+            token: response?.data,
             successMessage: "로그인 성공!!"
         }
 

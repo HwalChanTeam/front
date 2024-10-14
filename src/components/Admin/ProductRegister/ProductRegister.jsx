@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
-// import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import * as s from "./style";
 import { instance } from "../../../apis/util/instance";
 import { v4 as uuid } from 'uuid';
@@ -11,6 +10,7 @@ import { storage } from "../../../firebase/firebase";
 
 import { useQueryClient } from "react-query";
 import { updateProductImgApi } from "../../../apis/productApi";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 function ProductRegister(props) {
   const queryClient = useQueryClient();
