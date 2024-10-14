@@ -7,20 +7,6 @@ export const layout = css`
     width: 100%;
 `;
 
-export const titleLayout = css`
-    box-sizing: border-box;
-    width: 100%;
-
-    & h2 {
-        margin-top: 15px;
-        padding-left: 8px;
-        margin-bottom: 5px;
-        border-bottom: 3px solid #AA1414;
-        width: 107px;
-    }
-
-`;
-
 export const contentLayout = css`
     box-sizing: border-box;
     width: 100%;
@@ -37,7 +23,7 @@ export const subLayout = css`
     box-sizing: border-box;
     margin-left: 95px;
     margin-bottom: 12px;
-    width: 107px;
+    width: 80px;
     display: flex;
     flex-direction: column;
     border-bottom: 3px solid #AA1414;
@@ -45,6 +31,7 @@ export const subLayout = css`
     & h2 {
         margin: 10px 0px 3px;
         padding-left: 5px;
+        font-size: 18px;
     }
 
 `;
@@ -65,7 +52,7 @@ export const menuList = css`
 
 export const imgLayout = css`
     box-sizing: border-box;
-    margin-left: 85px;
+    margin-left: 82px;
     width: 160px;
     height: 160px;
     background-color: #dbdbdb;
@@ -81,14 +68,15 @@ export const imgLayout = css`
 
 
 export const productLayout = css`
-    margin-left: 85px;
+    margin-left: 82px;
     & h2 {
         margin: 5px 0px;
-        font-size: 18px;
+        font-size: 15px;
         font-weight: 600;
         &:nth-last-of-type(1) {
             font-weight: 750;
             font-style: italic;
+            font-size: 15px;
             color: #5DB755;
         }
     }

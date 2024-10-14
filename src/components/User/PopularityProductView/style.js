@@ -7,20 +7,6 @@ export const layout = css`
     width: 100%;
 `;
 
-export const titleLayout = css`
-    box-sizing: border-box;
-    width: 100%;
-
-    & h2 {
-        margin-top: 15px;
-        padding-left: 8px;
-        margin-bottom: 5px;
-        border-bottom: 3px solid #AA1414;
-        width: 107px;
-    }
-
-`;
-
 export const contentLayout = css`
     box-sizing: border-box;
     width: 100%;
@@ -37,7 +23,7 @@ export const subLayout = css`
     box-sizing: border-box;
     margin-left: 95px;
     margin-bottom: 12px;
-    width: 156px;
+    width: 128px;
     display: flex;
     flex-direction: column;
     border-bottom: 3px solid #AA1414;
@@ -45,6 +31,7 @@ export const subLayout = css`
     & h2 {
         margin: 10px 0px 3px;
         padding-left: 5px;
+        font-size: 18px;
     }
 
 `;
