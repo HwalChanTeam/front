@@ -52,7 +52,7 @@ export const subLayout = css`
 export const menuLayout = css`
     box-sizing: border-box;
     width: 100%;
-    margin: 0px 10px;
+    margin: 20px 10px 0px 10px ;
     display: flex;
     flex-wrap: wrap;
 `;
