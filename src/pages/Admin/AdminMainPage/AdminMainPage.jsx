@@ -21,31 +21,31 @@ const menus = [
   {
     id: 1,
     name: "상품 등록",
-    path: "/admin/product/register",
+    path: "/admin/main/product/register",
     icon: <IoBagAddOutline />,
   },
   {
     id: 2,
     name: "상품 관리",
-    path: "/admin/product",
+    path: "/admin/main/product",
     icon: <RiProductHuntLine />,
   },
   {
     id: 3,
     name: "경영 관리",
-    path: "/admin/business",
+    path: "/admin/main/business",
     icon: <IoBusinessOutline />,
   },
   {
     id: 4,
     name: "직원 관리",
-    path: "/admin/staff",
+    path: "/admin/main/staff",
     icon: <PiUsersFourLight />,
   },
   {
     id: 5,
     name: "유저 관리",
-    path: "/admin/user",
+    path: "/admin/main/user",
     icon: <LuUser />,
   },
 ];

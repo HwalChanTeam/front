@@ -22,8 +22,8 @@ function App() {
       <Global styles={reset} />
       {location.pathname.startsWith("/admin") ? (
         <Routes>
-          <Route path="/admin/signin" element={<AdminSignin />} />
-          <Route path="/admin/*" element={<AdminMainPage />} />
+          <Route path="/admin" element={<AdminSignin />} />
+          <Route path="/admin/main/*" element={<AdminMainPage />} />
         </Routes>
       ) : (
         <MainLayout>
