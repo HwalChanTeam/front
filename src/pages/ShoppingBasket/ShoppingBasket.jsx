@@ -18,8 +18,6 @@ function ShoppingBasket(props) {
 
     return (
       <>
-          {/* 검색 섹션 */}
-          <MainSearch />
           <div css={s.cartContainer}>
           {/* 장바구니 목록 섹션 */}
           <div css={s.cartListSection}>

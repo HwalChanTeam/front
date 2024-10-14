@@ -1,5 +1,11 @@
 import { css } from "@emotion/react";
 
+export const headerLayout = css`
+    box-sizing: border-box;
+    margin: 0px 70px;
+    padding: 0px 50px;
+`;
+
 export const layout = css`
     box-sizing: border-box;
     display: flex;
@@ -11,13 +17,14 @@ export const layout = css`
 
 export const buttonLayout = css`
     box-sizing: border-box;
+    padding: 0px 50px;
     display: flex;
     justify-content: center;
 
     & a {
         box-sizing: border-box;
+        margin-right: 40px;
         height: 40px;
-        margin-right: 70px;
         text-decoration: none;
         font-size: 25px;
         color: #5B5B5B;

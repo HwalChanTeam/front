@@ -36,7 +36,7 @@ function MainMenu(props) {
 
     return (
         <>
-            <header>
+            <header css={s.headerLayout}>
                 <div css={s.layout}>
                     <div css={s.buttonLayout}>
                         {
