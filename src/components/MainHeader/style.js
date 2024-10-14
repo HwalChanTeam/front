@@ -37,10 +37,10 @@ export const buttonLayout = css`
     display: flex;
 
     & button {
-        height: 20px;
+        height: 28px;
         margin-top: 5px;
         padding-right: 5px;
-        size: 16px;
+        font-size: 16px;
         background-color: transparent;
         border: none;
         border-right: 1px solid #000000;

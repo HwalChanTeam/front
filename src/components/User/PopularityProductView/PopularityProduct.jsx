@@ -4,9 +4,6 @@ import *as s from './style';
 function PopularityProduct(props) {
     return (
         <div css={s.layout}>
-            <div css={s.titleLayout}>
-                <h2>인기상품</h2>
-            </div>
             <div css={s.contentLayout}>
                 <table css={s.tableLayout}>
                     <div css={s.subLayout}>

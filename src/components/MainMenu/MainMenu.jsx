@@ -35,7 +35,7 @@ function MainMenu(props) {
     const pathname = location.pathname;
 
     return (
-        <>
+        <div css={s.container}>
             <header css={s.headerLayout}>
                 <div css={s.layout}>
                     <div css={s.buttonLayout}>
@@ -78,7 +78,7 @@ function MainMenu(props) {
                                 </>
                             )
                         }
-        </>
+        </div>
     );
 }
 

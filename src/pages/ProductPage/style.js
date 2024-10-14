@@ -5,7 +5,6 @@ export const layout = css`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 40px;
     width: 100%;
 `;
 
