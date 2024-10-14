@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
-import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+// import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import * as s from "./style";
 import { instance } from "../../../apis/util/instance";
 import { v4 as uuid } from 'uuid';
 import { MdDescription } from "react-icons/md";
-import { storage } from "../../../firebase/firebase";
+// import { storage } from "../../../firebase/firebase";
 import { useQueryClient } from "react-query";
 import { updateProductImgApi } from "../../../apis/productApi";
 
@@ -70,43 +70,43 @@ function ProductRegister(props) {
     refresh();
   };
 
-  const handleAddImgOnClick = () => {
-    if (window.confirm("상품 사진을 등록하실??")) {
-      const fileInput = document.createElement("input");
-      fileInput.setAttribute("type", "file");
-      fileInput.setAttribute("accept", "image/*");
-      fileInput.setAttribute("multiple", "");
-      fileInput.onclick();
+  // const handleAddImgOnClick = () => {
+  //   if (window.confirm("상품 사진을 등록하실??")) {
+  //     const fileInput = document.createElement("input");
+  //     fileInput.setAttribute("type", "file");
+  //     fileInput.setAttribute("accept", "image/*");
+  //     fileInput.setAttribute("multiple", "");
+  //     fileInput.onclick();
 
-      fileInput.onChange = (e) => {
-        const files = Array.from(e.target.files);
-        const profileImage = files[0];
-        setUploadPercent(0);
+  //     fileInput.onChange = (e) => {
+  //       const files = Array.from(e.target.files);
+  //       const profileImage = files[0];
+  //       setUploadPercent(0);
 
-        const storageRef = ref(storage, `user/profile/${uuid()}_${profileImage.name}`);
+  //       const storageRef = ref(storage, `user/profile/${uuid()}_${profileImage.name}`);
 
-        const uploadTask = uploadBytesResumable(storageRef, profileImage);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            setUploadPercent(
-              Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            );
-          },
-          (error) => {
-            console.error(error);
-          },
-          async (success) => {
-            const url = await getDownloadURL(storageRef);
-            const response = await updateProductImgApi(url);
-            queryClient.invalidateQueries(["userInfoQuery"]);
-          }
-        );
+  //       const uploadTask = uploadBytesResumable(storageRef, profileImage);
+  //       uploadTask.on(
+  //         "state_changed",
+  //         (snapshot) => {
+  //           setUploadPercent(
+  //             Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100
+  //           );
+  //         },
+  //         (error) => {
+  //           console.error(error);
+  //         },
+  //         async (success) => {
+  //           const url = await getDownloadURL(storageRef);
+  //           const response = await updateProductImgApi(url);
+  //           queryClient.invalidateQueries(["userInfoQuery"]);
+  //         }
+  //       );
 
-      }
+  //     }
 
-    }
-  }
+  //   }
+  // }
 
   const handleDefaultImgChangeOnClick = async () => {
     if (window.confirm("기본이미지로 변경하시겠습니까?")) {
@@ -174,7 +174,7 @@ return (
         <span>
           <label for="img">이미지</label>
           <img src="" alt="" />
-          <button onClick={handleAddImgOnClick} >상품 이미지 등록</button>
+          <button  >상품 이미지 등록</button>
         </span>
       </div>
       <div css={s.buttonBox}>

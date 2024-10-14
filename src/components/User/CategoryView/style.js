@@ -77,7 +77,6 @@ export const productLayout = css`
             font-weight: 750;
             font-style: italic;
             font-size: 15px;
-            color: #5DB755;
         }
     }
 `;
