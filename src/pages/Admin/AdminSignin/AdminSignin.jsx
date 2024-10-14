@@ -2,6 +2,7 @@
 import { useState } from "react";
 import * as s from "./style";
 import { adminSigninApi } from "../../../apis/signupApi";
+import { instance } from "../../../apis/util/instance";
 
 function AdminSignin(props) {
     const [admin, setAdmin] = useState({
@@ -30,8 +31,15 @@ function AdminSignin(props) {
             }
             return;
         }
+        console.log(signinData.token.accessToken);
+        localStorage.setItem("accessToken", "Bearer " + signinData.token.accessToken);
+        instance.interceptors.request.use(config => {
+            config.headers["Authorization"] = localStorage.getItem("accessToken");
+            return config;
+        });
         window.confirm(signinData.successMessage);
         window.location.replace("/admin/main");
+    
     };
 
     return (
