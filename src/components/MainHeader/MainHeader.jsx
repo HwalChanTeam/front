@@ -50,6 +50,7 @@ function MainHeader(props) {
       navigate("/user/signin");
     };
 
+    // 로그인 되어 있지 않으면 로그인 페이지로 넘기기
     const handleBasketClick = () => {
       navigate("/basket");
     };
