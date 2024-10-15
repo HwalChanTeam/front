@@ -15,11 +15,12 @@ import { instance } from "./apis/util/instance";
 import { useEffect, useState } from "react";
 
 function App() {
+  const token = localStorage.getItem("accessToken");
   const queryClient = new QueryClient();
   const location = useLocation();
   // const navigate = useNavigate();
   const [authRefresh, setAuthRefresh] = useState(true);
- 
+
 
   useEffect(() => {
     if (!authRefresh) {
@@ -80,7 +81,7 @@ function App() {
       {location.pathname.startsWith("/admin") ? (
         <Routes>
           <Route path="/admin" element={<AdminSignin />} />
-          <Route path="/admin/main/*" element={<AdminMainPage />} />
+          <Route path="/admin/main/*" element={token ? <AdminMainPage/> : <AdminSignin/>} />
         </Routes>
       ) : (
         <MainLayout>
