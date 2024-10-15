@@ -17,7 +17,7 @@ export const basketHeader = css`
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    margin-left: 15%;
+    margin-left: 10%;
   }
 `;
 
@@ -26,9 +26,9 @@ export const cartListSection = css`
   margin-top: 30px;
 
   input[type="checkbox"] {
-  margin-bottom: 145px;
   width: 25px; 
-  height: 25px; 
+  height: 25px;
+  margin-bottom: 50px;
 }
 `;
 
@@ -51,7 +51,7 @@ export const cartItem = css`
   align-items: center;
   justify-content: space-between;
   border: 1px solid #ddd;
-  width: 1000px;
+  width: 1300px;
   padding: 20px;
   margin-bottom: 10px;
   border-radius: 10px;
@@ -64,6 +64,7 @@ display: flex;
     width: 170px;
     height: 170px;
     border-radius: 5px;
+    padding-bottom: 35px;
   }
 `;
 

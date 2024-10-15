@@ -62,10 +62,4 @@ export const menuListBox = css`
     border: 2px solid #D84343;
 `;
 
-export const footLayout = css`
-    box-sizing: border-box;
-    margin-top: 50px;
-    width: 100%;
-    height: 200px;
-    background-color: #dbdbdb;
-`;
+

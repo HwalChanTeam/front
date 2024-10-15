@@ -4,21 +4,20 @@ export const layout = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
     width: 100%;
 `;
 
 export const searchSection = css`
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
-  width: 900px;
+  width: 500px;
   height: 50px;
   border: 1px solid #000000;
   border-radius: 50px;
-  margin-bottom: 20px;
   padding-right: 20px;
   background-color: white;
   cursor: pointer;
-
 `;
 
 export const searchInput = css`
