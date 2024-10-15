@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 function App() {
   const queryClient = new QueryClient();
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [authRefresh, setAuthRefresh] = useState(true);
  
 
@@ -31,47 +31,47 @@ function App() {
     ["accessTokenValidQuery"],
     async () => {
       setAuthRefresh(false);
-      return await instance.get("/auth/access", {
+      return await instance.get("/user/access", {
         params: {
           accessToken: localStorage.getItem("accessToken"),
         },
       });
     },
-    {
-      enabled: authRefresh,
-      retry: 0,
-      refetchOnWindowFocus: false,
-      onSuccess: (response) => {
-        const permitAllPaths = ["/user"];
-        for (let permitAllPath of permitAllPaths) {
-          if (location.pathname.startsWith(permitAllPath)) {
-            navigate("/");
-            break;
-          }
-        }
-      },
-      onError: (error) => {
-        const authPaths = ["/profile"];
-        for (let authPath of authPaths) {
-          if (location.pathname.startsWith(authPath)) {
-            navigate("/user/login");
-            break;
-          }
-        }
-      },
-    }
+    // {
+    //   enabled: authRefresh,
+    //   retry: 0,
+    //   refetchOnWindowFocus: false,
+    //   onSuccess: (response) => {
+    //     const permitAllPaths = ["/user"];
+    //     for (let permitAllPath of permitAllPaths) {
+    //       if (location.pathname.startsWith(permitAllPath)) {
+    //         navigate("/");
+    //         break;
+    //       }
+    //     }
+    //   },
+    //   onError: (error) => {
+    //     const authPaths = ["/profile"];
+    //     for (let authPath of authPaths) {
+    //       if (location.pathname.startsWith(authPath)) {
+    //         navigate("/user/login");
+    //         break;
+    //       }
+    //     }
+    //   },
+    // }
   );
 
-  const userInfo = useQuery(
-    ["userInfoQuery"],
-    async () => {
-      return await instance.get("/user/me");
-    },
-    {
-      enabled: accessTokenValid.isSuccess && accessTokenValid.data?.data,
-      refetchOnWindowFocus: false,
-    }
-  );
+  // const userInfo = useQuery(
+  //   ["userInfoQuery"],
+  //   async () => {
+  //     return await instance.get("");
+  //   },
+  //   {
+  //     enabled: accessTokenValid.isSuccess && accessTokenValid.data?.data,
+  //     refetchOnWindowFocus: false,
+  //   }
+  // );
 
 
   return (

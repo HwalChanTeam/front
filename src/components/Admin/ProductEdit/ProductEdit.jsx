@@ -92,6 +92,7 @@ const tempProductList = [
 ];
 
 function ProductEdit(props) {
+  
   const [productList, setProductList] = useState(
     tempProductList.map((tempProduct) => ({ ...tempProduct, checked: false }))
   );
@@ -106,7 +107,7 @@ function ProductEdit(props) {
 
   const hadleModifyButtonOnClick = async () => {
     try {
-      const response = await instance.put("/admin/modify/", productList);
+      const response = await instance.put("/admin/main/modify/", productList);
     } catch (error) {
       console.error(error);
     }
@@ -115,7 +116,7 @@ function ProductEdit(props) {
   const handleDeleteButtonOnClick = async() => {
     try {
         console.log(productList[0].id)
-        const response = await instance.delete(`/admin/delete/${productList.checked.id}`)
+        const response = await instance.delete(`/admin/main/delete/${productList.checked.id}`)
     } catch (error) {
         console.log(error);
     }
