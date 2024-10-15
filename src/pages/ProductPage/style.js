@@ -2,6 +2,9 @@ import { css } from "@emotion/react";
 
 export const layout = css`
     box-sizing: border-box; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
 `;
 
@@ -155,8 +158,52 @@ export const buyProduct = css`
                 color: #ffffff;
                 border: none;
                 background-color: #D98585;
+
+                &:hover {
+                    background-color: #d19191;
+                }
+
+                &:active {
+                    background-color: #bd8484;
+                }
             }
 
         }
     }
 `;
+
+// 상품 상세 설명란
+
+export const menuLayout = css`
+    box-sizing: border-box;
+    margin-top: 60px;
+    width: 1200px;
+    height: 100%;
+    border: 1px solid #D84343;
+`;
+
+export const menuBox = css`
+    box-sizing: border-box;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    background-color: #dbdbdb;
+
+    & span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        height: 100%;
+        border-right: 2px solid #999999;
+
+        &:nth-last-of-type(1) {
+
+        }
+    }
+`;
+
+

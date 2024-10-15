@@ -4,7 +4,7 @@ export const headerLayout = css`
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    width: 1200px;
     height: 110px;
     background-color: #FF9191;
 
