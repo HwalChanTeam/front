@@ -11,8 +11,8 @@ export const headerLayout = css`
             box-sizing: border-box;
             display: flex;
             align-items: center;
-            margin-left: 170px;
-            margin-right: 190px;
+            margin-left: 230px;
+            margin-right: 130px;
         }
     }
     

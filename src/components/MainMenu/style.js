@@ -48,15 +48,16 @@ export const menuLayout = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0px 300px;
-    width: 100%;
+    width: 1300px;
     height: 100%;
 `;
 
 export const menuListBox = css`
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
     margin-top: 15px;
-    padding: 0px auto;
+    padding: 0px 50px 0px 50px;
     width: 100%;
     height: 100%;
     border: 2px solid #D84343;

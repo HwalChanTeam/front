@@ -22,6 +22,7 @@ export const searchSection = css`
 
 export const searchInput = css`
     width: 100%;
+    height: 100%;
     padding: 20px;
     font-size: 18px;
     outline: none;

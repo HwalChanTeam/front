@@ -70,6 +70,19 @@ function CategoryView(props) {
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <div css={s.menuList}>
+                                    <div css={s.imgLayout}>
+                                        <Link to={"/product"}><img src="" /></Link>
+                                    </div>
+                                    <div css={s.productLayout}>
+                                        <h2>상품이름어르이ㅇㄹㅇㄴㄹㅇㄴ</h2>
+                                        <h2>11,000</h2>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                         
                     </tbody>
                 </table>
