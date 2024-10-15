@@ -23,6 +23,7 @@ export const headerLayout = css`
         margin: 0px;
         padding-left: 50px;
         font-size: 50px;
+        cursor: pointer;
     }
         
     & > button {
