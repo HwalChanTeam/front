@@ -38,21 +38,24 @@ export const subLayout = css`
 
 export const menuLayout = css`
     box-sizing: border-box;
-    width: 100%;
-    margin: 0px 10px;
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
+
+    & td {
+        padding: 0px;
+    }
 `;
 
 export const menuList = css`
     box-sizing: border-box;
-    width: 245px;
+    width: 252px;
     padding: 0px;
 `;
 
 export const imgLayout = css`
     box-sizing: border-box;
-    margin-left: 82px;
+    margin-left: 92px;
     width: 160px;
     height: 160px;
     background-color: #dbdbdb;
@@ -68,8 +71,9 @@ export const imgLayout = css`
 
 
 export const productLayout = css`
-    margin-left: 82px;
+    margin-left: 92px;
     & h2 {
+        width: 160px;
         margin: 5px 0px;
         font-size: 15px;
         font-weight: 600;
