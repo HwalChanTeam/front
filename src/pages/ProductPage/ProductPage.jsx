@@ -2,8 +2,58 @@
 import * as s from "./style";
 import MainMenu from '../../components/MainMenu/MainMenu';
 import { FiShoppingCart } from "react-icons/fi";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const selectProductMenus = [
+    {
+        id: 1,
+        name: "상세정보",
+        path: "/product/information"
+
+    },
+    {
+        id: 2,
+        name: "구매후기",
+        path: "/product/information"
+
+    },
+    {
+        id: 3,
+        name: "상품문의",
+        path: "/product/information"
+
+    },
+    {
+        id: 4,
+        name: "배송",
+        path: "/product/information"
+
+    },
+]
 
 function ProductPage(props) {
+
+    const navigate = useNavigate();
+
+    // 구매수량 상태 
+    const [ productItems, setProductItems ] = useState({ buyItem: 1 });
+
+    // 구매수량 숫자 증가 감소
+    const handlebuyNumberChange = (delta) => {
+        setProductItems((prevItem) => ({
+            ...prevItem,
+            buyItem: Math.max(1, prevItem.buyItem + delta)
+        }));
+    }
+
+    // 구매하기 버튼
+    const handlebuyOnClick = () => {
+        if(window.confirm("장바구니에 추가하시겠습니까?")) {
+            navigate("/basket");
+        } 
+    };
+
     return (
         <div css={s.layout}>
             <MainMenu />
@@ -30,9 +80,9 @@ function ProductPage(props) {
                             <p>
                                 구매수량: 
                                     <span>
-                                        <button>-</button>
-                                                1
-                                        <button>+</button>
+                                        <button onClick={() => handlebuyNumberChange(-1)} >-</button>
+                                                {productItems.buyItem}
+                                        <button onClick={() => handlebuyNumberChange(1)}>+</button>
                                     </span>
                             </p> 
                         </div>
@@ -42,10 +92,21 @@ function ProductPage(props) {
                             총 상품 금액: 14,000원
                             <span>
                                 <button>구매하기</button>
-                                <FiShoppingCart size="40"/>
+                                <FiShoppingCart onClick={handlebuyOnClick} size="40"  style={{cursor:"pointer"}}/>
                             </span>
                         </p>
                     </div>
+                </div>
+            </div>
+            {/* 상품 상세설명란 */}
+            <div css={s.menuLayout}>
+                <div css={s.menuBox}>
+                    {
+                        selectProductMenus.map((menu) => (
+                            <span>{menu.name}</span>
+                        ))
+
+                    }
                 </div>
             </div>
         </div>

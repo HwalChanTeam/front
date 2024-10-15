@@ -9,6 +9,10 @@ export const reset = css`
   html,
   body,
   #root {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     height: 100%;
     margin: 0;
