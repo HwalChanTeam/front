@@ -7,6 +7,7 @@ import NewProductView from '../User/NewProductView/NewProductView';
 import PopularityProduct from '../User/PopularityProductView/PopularityProduct';
 import Review from '../User/Review/Review';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
+import MainFooter from '../MainFooter/MainFooter';
 
 const selectMainMenus = [
     {
@@ -71,11 +72,7 @@ function MainMenu(props) {
                                             </div>
                                         </div>
                                     </body>
-                                    <footer>
-                                        <div css={s.footLayout}>
-                                            
-                                        </div>
-                                    </footer>
+                                    <MainFooter />
                                 </>
                             )
                         }
