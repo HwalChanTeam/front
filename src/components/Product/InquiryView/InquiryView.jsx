@@ -1,9 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-function BuyReview(props) {
+function InquiryView(props) {
     const { id } = useParams();
-
     return (
         <div>
             
@@ -11,4 +10,4 @@ function BuyReview(props) {
     );
 }
 
-export default BuyReview;
+export default InquiryView;
