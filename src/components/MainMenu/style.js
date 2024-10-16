@@ -22,7 +22,6 @@ export const layout = css`
 
 export const buttonLayout = css`
     box-sizing: border-box;
-    padding: 0px 300px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -32,7 +31,7 @@ export const buttonLayout = css`
         margin-right: 60px;
         margin-bottom: 5px;
         text-decoration: none;
-        font-size: 13px;
+        font-size: 16px;
         color: #5B5B5B;
     }
     

@@ -3,7 +3,8 @@ import * as s from "./style";
 import MainMenu from '../../components/MainMenu/MainMenu';
 import { FiShoppingCart } from "react-icons/fi";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import MainFooter from "../../components/MainFooter/MainFooter";
 
 const selectProductMenus = [
     {
@@ -15,19 +16,19 @@ const selectProductMenus = [
     {
         id: 2,
         name: "구매후기",
-        path: "/product/information"
+        path: "/product/review"
 
     },
     {
         id: 3,
         name: "상품문의",
-        path: "/product/information"
+        path: "/product/inquiry"
 
     },
     {
         id: 4,
         name: "배송",
-        path: "/product/information"
+        path: "/product/delivery"
 
     },
 ]
@@ -35,6 +36,8 @@ const selectProductMenus = [
 function ProductPage(props) {
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const pathname = location.pathname;
 
     // 구매수량 상태 
     const [ productItems, setProductItems ] = useState({ buyItem: 1 });
@@ -103,12 +106,18 @@ function ProductPage(props) {
                 <div css={s.menuBox}>
                     {
                         selectProductMenus.map((menu) => (
-                            <span>{menu.name}</span>
+                            <Link 
+                                key={menu.id}
+                                to={menu.path}
+                                css={s.selectProductMenu(pathname === menu.path)}>
+                                <span>{menu.name}</span>
+                            </Link>
                         ))
 
                     }
                 </div>
             </div>
+            <MainFooter />
         </div>
     );
 }
