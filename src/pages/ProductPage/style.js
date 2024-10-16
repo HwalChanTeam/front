@@ -210,7 +210,12 @@ export const menuBox = css`
 
 export const selectProductMenu = (isSelected) => css`
     background-color: ${isSelected ? "#FF7171" : "#dbdbdb"};
-    color: ${isSelected ? "#ffffff" : "#000000"};
 `;  
+
+export const productInfor = css`
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+`;
 
 

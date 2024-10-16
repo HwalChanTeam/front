@@ -2,48 +2,110 @@
 import * as s from "./style";
 import MainMenu from '../../components/MainMenu/MainMenu';
 import { FiShoppingCart } from "react-icons/fi";
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import MainFooter from "../../components/MainFooter/MainFooter";
+import InformationView from "../../components/Product/InformationView/InformationView";
+import BuyReview from "../../components/Product/BuyReview/BuyReview";
+import InquiryView from "../../components/Product/InquiryView/InquiryView";
+import DeliveryView from "../../components/Product/Delivery/DeliveryView";
 
 const selectProductMenus = [
     {
-        id: 1,
+        selectedId: 1,
         name: "상세정보",
-        path: "/product/information"
+        path: "/product/:id/information"
 
     },
     {
-        id: 2,
+        selectedId: 2,
         name: "구매후기",
-        path: "/product/review"
+        path: "/product/:id/review"
+
+    },
+    {
+        selectedId: 3,
+        name: "상품문의",
+        path: "/product/:id/inquiry"
+
+    },
+    {
+        selectedId: 4,
+        name: "배송",
+        path: "/product/:id/delivery"
+
+    },
+];
+
+const products = [
+    {
+        id: 1,
+        img: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+        name: "부대찌개",
+        price: "11,000",
+        contury: "대한민국",
+        deliver: "일반배송",
+        deliverPrice: "3,000"
+    },
+    {
+        id: 2,
+        img: "",
+        name: "bbbb",
+        price: "11,000",
+        contury: "대한민국",
+        deliver: "일반배송",
+        deliverPrice: "3,000"
 
     },
     {
         id: 3,
-        name: "상품문의",
-        path: "/product/inquiry"
+        img: "",
+        name: "cccc",
+        price: "11,000",
+        contury: "대한민국",
+        deliver: "일반배송",
+        deliverPrice: "3,000"
 
     },
     {
         id: 4,
-        name: "배송",
-        path: "/product/delivery"
-
+        img: "",
+        name: "dddd",
+        price: "11,000",
+        contury: "대한민국",
+        deliver: "일반배송",
+        deliverPrice: "3,000"
+        
     },
-]
 
-function ProductPage(props) {
+];
+
+function ProductPage() {
+
+    const { id } = useParams();
 
     const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
 
+    const [ product, setProduct ] = useState("");
+
+    useEffect(() => {
+        const selectedProduct = products.find(p => p.id === Number(id));
+        if(selectedProduct) {
+            setProduct(selectedProduct);
+        } else {
+            console.error("오류");
+        }
+    }, [ id, products, navigate ]);
+
+
+
     // 구매수량 상태 
     const [ productItems, setProductItems ] = useState({ buyItem: 1 });
 
     // 구매수량 숫자 증가 감소
-    const handlebuyNumberChange = (delta) => {
+    const handlebuyNumberChange = (delta) => { 
         setProductItems((prevItem) => ({
             ...prevItem,
             buyItem: Math.max(1, prevItem.buyItem + delta)
@@ -62,24 +124,24 @@ function ProductPage(props) {
             <MainMenu />
             <div css={s.productLayout}>
                 <div css={s.imgLayout}>
-                    <img src="https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg" />
+                    <img src={product.img} />
                 </div>
                 <div css={s.productContent}>
                     <div css={s.titleLayout}>
-                        <h2>부대찌개</h2>
+                        <h2>{product.name}</h2>
                         <p>부대찌개 설명</p>
                     </div>
                     <div css={s.price}>
-                        <p>11,000 원</p>
+                        <p>{product.price} 원</p>
                     </div>
                     <div css={s.contentBox}>
                         <div css={s.contury}>
-                            <p>원산지: 대한민국</p>
-                            <p>배송구분: 일반배송</p>
-                            <p>배송비: 3000원</p>
+                            <p>원산지: {product.contury}</p>
+                            <p>배송구분: {product.deliver}</p>
+                            <p>배송비: {product.deliverPrice} 원</p>
                         </div>
                         <div css={s.productNameBox}>
-                            <p>상품명: 부대찌개</p>
+                            <p>상품명: {product.name}</p>
                             <p>
                                 구매수량: 
                                     <span>
@@ -107,17 +169,24 @@ function ProductPage(props) {
                     {
                         selectProductMenus.map((menu) => (
                             <Link 
-                                key={menu.id}
-                                to={menu.path}
-                                css={s.selectProductMenu(pathname === menu.path)}>
+                                key={menu.selectedId}
+                                to={menu.path.replace(':id', id)} // :id를 id로 대체 
+                                css={s.selectProductMenu(pathname === menu.path.replace(':id', id))}>
                                 <span>{menu.name}</span>
                             </Link>
                         ))
-
                     }
                 </div>
+                <div css={s.productInfor}>
+                    <Routes>
+                        <Route path="/" element={<InformationView />} />
+                        <Route path="/information" element={<InformationView />} />
+                        <Route path="/review" element={<BuyReview />} />
+                        <Route path="/inquiry" element={<InquiryView />} />
+                        <Route path="/delivery" element={<DeliveryView />} />
+                    </Routes>
+                </div>
             </div>
-            <MainFooter />
         </div>
     );
 }
