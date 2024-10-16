@@ -19,9 +19,33 @@ const tempItemList = [
     price: 10000,
     quantity: 1,
   },
+  {
+    id: 2,
+    name: "상품명2",
+    description: "상품설명 이것은 상품설명입니다.",
+    image:
+      "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    price: 10000,
+    quantity: 1,
+  },
+  {
+    id: 3,
+    name: "상품명3",
+    description: "상품설명 이것은 상품설명입니다.",
+    image:
+      "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    price: 10000,
+    quantity: 1,
+  },
 ];
 
 function ShoppingBasket(props) {
+  const navigate = useNavigate();
+
+  const [productList, setProductList] = useState(
+    tempItemList.map((tempItemList) => ({ ...tempItemList, checked: false }))
+  );
+
   const handleQuantityChange = (index, number) => {
     const updatedItems = productList.map((item, i) =>
       i === index
@@ -32,19 +56,29 @@ function ShoppingBasket(props) {
   };
 
   const haneldDeleteButtonOnClick = (id) => {
-    // 삭제 시키는 api동작
-    // 리프레시 동작
+    const deleteItems = productList.filter(item => item.id !== id);
+    setProductList(deleteItems);
   };
 
   const handleSubmitButtonOnClick = (id) => {
     // id를 가져옴 ->
+    const updateItems = productList.map(item =>
+      item.id === id ? {...item} : item
+    );
+    setProductList(updateItems);
+    //api연결
   };
 
-  const handleBuyButtonOnClick = () => {};
-
-  const [productList, setProductList] = useState(
-    tempItemList.map((tempItemList) => ({ ...tempItemList, checked: false }))
-  );
+  const handleBuyButtonOnClick = () => {
+    const selectedItems = productList.filter(item => item.checked);
+    const selectedIds = selectedItems.map(item => item.id).join(',');
+  
+    if (selectedIds) {
+      navigate(`/order?ids=${selectedIds}`);
+    } else {
+      alert("주문할 상품을 선택해 주세요.");
+    }
+  };
 
   const handleCheckBoxOnChange = (id) => {
     setProductList((productList) =>
