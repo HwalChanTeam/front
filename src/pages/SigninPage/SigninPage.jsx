@@ -13,13 +13,17 @@ function SigninPage(props) {
 
     const LogoOnCLick = () => {
         navigate("/")
-    }
+    };
 
     const userInputOnChange = (e) => {
         setUser(user => ({
             ...user,
             [e.target.name] : e.target.value
         }))
+    };
+
+    const handleLoginSubmitOnClick = () => {
+
     }
 
     return (
@@ -49,7 +53,7 @@ function SigninPage(props) {
                     <button>로그인 하기</button>
                 </div>
                 <div css={s.joinAndSearchUser}>
-                    <Link><h3>회원 가입</h3></Link>
+                    <Link to="/user/signup"><h3>회원 가입</h3></Link>
                     <Link><h3>아이디 비밀번호 찾기</h3></Link>
                 </div>
             </div>
