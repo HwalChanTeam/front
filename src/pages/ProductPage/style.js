@@ -177,9 +177,8 @@ export const buyProduct = css`
 export const menuLayout = css`
     box-sizing: border-box;
     margin-top: 60px;
-    width: 1200px;
+    width: 1300px;
     height: 100%;
-    border: 1px solid #D84343;
 `;
 
 export const menuBox = css`
@@ -190,20 +189,28 @@ export const menuBox = css`
     align-items: center;
     width: 100%;
     height: 50px;
-    background-color: #dbdbdb;
 
-    & span {
+    & a {
         display: flex;
         justify-content: center;
         align-items: center;
         flex: 1;
         height: 100%;
         border-right: 2px solid #999999;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 600;
 
         &:nth-last-of-type(1) {
-
+            border-right: none;
         }
+        
     }
 `;
+
+export const selectProductMenu = (isSelected) => css`
+    background-color: ${isSelected ? "#FF7171" : "#dbdbdb"};
+    color: ${isSelected ? "#ffffff" : "#000000"};
+`;  
 
 
