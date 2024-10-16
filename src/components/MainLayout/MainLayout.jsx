@@ -4,10 +4,12 @@ import * as s from "./style";
 
 function MainLayout({ children }) {
   return (
-    <div css={s.layout}>
-      <MainHeader />
+    <>
+      <div css={s.layout}>
+        <MainHeader />
+      </div>
       {children}
-    </div>
+    </>
   );
 }
 
