@@ -58,7 +58,6 @@ function MainMenu(props) {
                             location.pathname.startsWith("/product") ? (
                                 <></>
                             ) : (
-                                <>
                                     <body>
                                         <div css={s.menuLayout}>
                                             <div css={s.menuListBox}>
@@ -72,8 +71,6 @@ function MainMenu(props) {
                                             </div>
                                         </div>
                                     </body>
-                                    <MainFooter />
-                                </>
                             )
                         }
         </div>

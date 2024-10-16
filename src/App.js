@@ -13,6 +13,8 @@ import { QueryClient, useQuery } from "react-query";
 import ProductPage from "./pages/ProductPage/ProductPage";
 import { instance } from "./apis/util/instance";
 import { useEffect, useState } from "react";
+import OrderPage from "./pages/OrderPage/OrderPage";
+import MainFooter from "./components/MainFooter/MainFooter";
 
 function App() {
   const token = localStorage.getItem("accessToken");
@@ -84,6 +86,7 @@ function App() {
           <Route path="/admin/main/*" element={token ? <AdminMainPage/> : <AdminSignin/>} />
         </Routes>
       ) : (
+        <>
         <MainLayout>
           <Routes>
             <Route path="/*" element={<MainPage />} />
@@ -91,9 +94,12 @@ function App() {
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />
             <Route path="/basket" element={<ShoppingBasket />} />
+            <Route path="/order/*" element={<OrderPage />} />
             <Route path="/test" element={<TestExam />} />
           </Routes>
         </MainLayout>
+        <MainFooter />
+        </>
       )}
     </>
   );

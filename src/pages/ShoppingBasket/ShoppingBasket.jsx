@@ -4,6 +4,8 @@ import * as s from "./style";
 import { Link, useNavigate } from "react-router-dom";
 import MainSearch from "../../components/MainSearch/MainSearch";
 import MainFooter from "../../components/MainFooter/MainFooter";
+import { atom, useRecoilState } from "recoil";
+import { selectedItemsAtom } from "../../apis/util/atom";
 
 // 로그인 안하고 들어가면 로그인 페이지로 돌리기
 // 구매하기 버튼 누르면 상품 구매 페이지로 넘기기
@@ -42,6 +44,8 @@ const tempItemList = [
 function ShoppingBasket(props) {
   const navigate = useNavigate();
 
+  const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsAtom); // atom 사용
+
   const [productList, setProductList] = useState(
     tempItemList.map((tempItemList) => ({ ...tempItemList, checked: false }))
   );
@@ -71,10 +75,11 @@ function ShoppingBasket(props) {
 
   const handleBuyButtonOnClick = () => {
     const selectedItems = productList.filter(item => item.checked);
-    const selectedIds = selectedItems.map(item => item.id).join(',');
+    const selectedIds = selectedItems.map(item => item.id);
   
-    if (selectedIds) {
-      navigate(`/order?ids=${selectedIds}`);
+    if (selectedIds.length > 0) {
+      setSelectedItems(selectedIds);
+      navigate(`/order`);
     } else {
       alert("주문할 상품을 선택해 주세요.");
     }
@@ -93,7 +98,6 @@ function ShoppingBasket(props) {
   };
 
   return (
-    <>
       <div css={s.cartContainer}>
         {/* 장바구니 목록 섹션 */}
         <div css={s.cartListSection}>
@@ -171,8 +175,6 @@ function ShoppingBasket(props) {
           </div>
         </div>
       </div>
-      <MainFooter />
-    </>
   );
 }
 
