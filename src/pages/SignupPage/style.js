@@ -1,133 +1,178 @@
 import { css } from "@emotion/react";
 
 export const mainLayout = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 900px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1300px;
+`;
+
+export const logo = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 650px;
 `;
 
 export const layout = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 100px;
-    padding: 50px;
-    width: 700px;
-    height: 900px;
-    border: 3px solid #FF1A1A;
-    border-radius: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin: 50px 100px;
+  padding: 50px 50px;
+  border: 2px solid #964747;
+  border-radius: 4px;
+  flex-grow: 1;
 `;
 
 export const headerLayout = css`
-    font-size: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+
+  & h1 {
     display: flex;
-    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
 
-    & h1 {
-        margin-top: 0;
-        margin-bottom: 30px;
-        color: #CD2222;
-        padding-right: 50px;
+    & img {
+      width: 140%;
     }
+  }
 
-    & h2 {
-        position: relative;
-        right: 130px;
-        bottom: 20px;
-        cursor: pointer;
-    }
+  & h2 {
+    margin: 0px 0px 30px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 export const container = css`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-
-    & input {
-        font-size: 16px;
-        font-weight: 600;
-    }
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 export const inputUser = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 20px;
 
-    & input {
-        margin-bottom: 10px;
-        padding: 0px 20px;
-        width: 450px;
-        height: 50px;
-        border: 1px solid #000000;
-        border-radius: 10px;
-        :nth-last-of-type(1) {
-            margin-bottom: 0;
-        }
+  & input {
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    padding: 0px 20px;
+    outline: none;
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+    border: 1px solid #964747;
+    border-radius: 4px;
+    :nth-last-of-type(1) {
+      margin-bottom: 0;
     }
+  }
 `;
 
 export const inputEmail = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative; /* 버튼을 절대 위치로 배치할 부모 요소 */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 20px 0;
 
     & input[type="text"] {
-        padding: 0px 20px;
-        width: 450px;
-        height: 50px;
-        margin-top: 10px;
-        border: 1px solid #000000;
-        border-radius: 10px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    padding: 0px 20px;
+    outline: none;
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+    border: 1px solid #964747;
+    border-radius: 4px;
     }
-
-    /* 인증 요청 버튼만 절대 위치로 배치 */
-    & button {
-        position: absolute;
-        top: 10px; /* 적절한 위치로 설정 */
-        right: 0;
-        height: 53px;
-        background-color: #D98585;
-        border: 1px solid #000000;
-        border-bottom: none;
-        color: white;
-        font-size: 16px;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        padding: 0 20px;
-    }
-
+    
     & input[name="emailCheck"] {
         margin-top: 10px;
         width: 450px;
         height: 50px;
         border: 1px solid #000000;
-        border-radius: 10px;
     }
+    & button {
+    margin-bottom: 10px;
+    width: 100%;
+    height: 40px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    color: #964747;
+    font-weight: 600;
+  }
 `;
 
 export const joinOkButton = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  width: 100%;
 
     & > button {
-        margin-top: 80px;
-        width: 450px;
-        height: 80px;
-        background-color: #D98585;
-        border: 1px solid #000000;
-        color: white;
-        font-size: 35px;
-        font-weight: 600;
-        border-radius: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    height: 40px;
+    background-color: #222222;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    color: white;
+    font-weight: 600;
     }
+`;
+
+export const oauth2Buttons = css`
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+
+  & > button {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 173px;
+    height: 40px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+
+    &:nth-of-type(1) {
+      margin-right: 5px;
+      background-color: #03c75a;
+      color: #ffffff;
+    }
+
+    &:nth-of-type(2) {
+      margin-left: 5px;
+      background-color: #242424;
+      color: #ffffff;
+    }
+
+    & svg {
+      margin-right: 10px;
+    }
+  }
 `;
