@@ -29,6 +29,7 @@ export const cartListSection = css`
   width: 25px; 
   height: 25px;
   margin-bottom: 50px;
+  margin-right: 8px;
 }
 `;
 
@@ -53,8 +54,7 @@ export const cartItem = css`
   border: 1px solid #ddd;
   width: 1300px;
   padding: 20px;
-  margin-bottom: 10px;
-  border-radius: 10px;
+  margin-bottom: 20px;
   background-color: #f9f9f9;
 `;
 
@@ -73,6 +73,10 @@ export const itemDetails = css`
   flex-wrap: wrap;
   flex-grow: 1;
   margin-left: 20px;
+
+  & p {
+    margin-bottom: 0;
+  }
 `;
 
 /* 상품명, 상품설명, 수량 버튼을 감싸는 컨테이너 */
@@ -96,11 +100,13 @@ export const quantityControl = css`
 
 export const quantityButton = css`
   padding: 5px 10px;
-  border: 1px solid #ccc;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #D98585;
-  color: white;
+  background-color: #ffffff;
+  border: 1px solid #964747;
+  color: #964747;
+  font-size: 12px;
+  font-weight: 600;
 `;
 
 export const quantityValue = css`
@@ -126,9 +132,7 @@ export const itemDescription = css`
 
 export const itemActions = css`
   display: flex;
-  margin-top: 30px;
-  justify-content: center;
-  padding-right: 10%;
+  justify-content: right;
   & button:nth-of-type(1) {
     margin-right: 10px;
   }
@@ -136,35 +140,31 @@ export const itemActions = css`
 
 export const confirmButton = css`
   padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
-  background-color: #D98585;
-  color: white;
+  background-color: #ffffff;
+  border: 1px solid #964747;
+  color: #964747;
 `;
 
 export const deleteButton = css`
   padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
-  background-color: #D98585;
-  color: white;
+  background-color: #ffffff;
+  border: 1px solid #964747;
+  color: #964747;
 `;
 
 export const orderButton = css`
-  display: block;
-  width: 150px;
-  margin: 30px auto;
-  padding: 15px;
-  background-color: #D98585;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  width: 100px;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #964747;
+  color: #964747;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
 export const bottonBox = css`
-
+  display: flex;
+  justify-content: center;
 `;
