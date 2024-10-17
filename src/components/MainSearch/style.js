@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
 
 export const layout = css`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;
 
 export const searchSection = css`
@@ -12,22 +12,26 @@ export const searchSection = css`
   align-items: center;
   box-sizing: border-box;
   width: 500px;
-  height: 50px;
-  border: 1px solid #000000;
-  border-radius: 50px;
+  height: 40px;
+  border: none;
+  border-bottom: 1px solid #964747;
   padding-right: 20px;
-  background-color: white;
+  background-color: transparent;
   cursor: pointer;
+
+  & svg {
+    color: #964747;
+  }
 `;
 
 export const searchInput = css`
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-    font-size: 18px;
-    outline: none;
-    background-color: transparent;
-    border: none;
+  padding-left: 20px;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  outline: none;
+  background-color: transparent;
+  border: none;
 `;
 
 export const searchButton = css`
@@ -47,5 +51,4 @@ export const searchButton = css`
   &:active {
     background-color: #a86363;
   }
-
 `;
