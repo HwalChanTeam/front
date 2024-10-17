@@ -38,13 +38,13 @@ export const headerLayout = css`
 export const buttonLayout = css`
   box-sizing: border-box;
   display: flex;
-  padding-bottom: 30px;
   padding-right: 60px;
 
-  & button {
+  & a {
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: 24px;
     background-color: transparent;
+    margin-left: 15px;
     border: none;
     height: 30px;
     font-weight: 600;

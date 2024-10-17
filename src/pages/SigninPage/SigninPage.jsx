@@ -1,65 +1,73 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
-import * as s from './style';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import * as s from "./style";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../../assets/images/logo.png";
+import { SiNaver } from "react-icons/si";
+import { FcGoogle } from "react-icons/fc";
 
 function SigninPage(props) {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [user, setUser] = useState({
-        username: "",
-        password: ""
-    });
+  const [user, setUser] = useState({
+    username: "",
+    password: "",
+  });
 
-    const LogoOnCLick = () => {
-        navigate("/")
-    };
+  const userInputOnChange = (e) => {
+    setUser((user) => ({
+      ...user,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-    const userInputOnChange = (e) => {
-        setUser(user => ({
-            ...user,
-            [e.target.name] : e.target.value
-        }))
-    };
+  const handleLoginSubmitOnClick = () => {};
 
-    const handleLoginSubmitOnClick = () => {
-
-    }
-
-    return (
-        <div css={s.mainLayout}>
-            <div css={s.layout}>
-                <div css={s.headerLayout}>
-                    <h2 onClick={LogoOnCLick}>로고</h2>
-                    <h1>로그인</h1>
-                </div>
-                <div css={s.container}>
-                    <div css={s.inputUser}>
-                        <input type="text"
-                            name='username'
-                            onChange={userInputOnChange}
-                            value={user.username}
-                            placeholder='아이디를 입력해 주세요'
-                        />
-                        <input type="text"
-                            name='password'
-                            onChange={userInputOnChange}
-                            value={user.password}
-                            placeholder='비밀번호를 입력해 주세요'
-                        />
-                    </div>
-                </div>
-                <div css={s.joinOkButton}>
-                    <button>로그인 하기</button>
-                </div>
-                <div css={s.joinAndSearchUser}>
-                    <Link to="/user/signup"><h3>회원 가입</h3></Link>
-                    <Link><h3>아이디 비밀번호 찾기</h3></Link>
-                </div>
-            </div>
+  return (
+    <div css={s.mainLayout}>
+      <h1 css={s.logo}>
+        <img src={logo} />
+      </h1>
+      <div css={s.layout}>
+        <div css={s.headerLayout}>
+          <h2>로그인</h2>
         </div>
-    );
-
+        <div css={s.inputUser}>
+          <input
+            type="text"
+            name="username"
+            onChange={userInputOnChange}
+            value={user.username}
+            placeholder="아이디를 입력해 주세요"
+          />
+          <input
+            type="text"
+            name="password"
+            onChange={userInputOnChange}
+            value={user.password}
+            placeholder="비밀번호를 입력해 주세요"
+          />
+        </div>
+        <div css={s.joinOkButton}>
+          <button>로그인 하기</button>
+        </div>
+        <div css={s.oauth2Buttons}>
+          <button>
+            <SiNaver />
+            네이버 로그인
+          </button>
+          <button>
+            <FcGoogle />
+            구글 로그인
+          </button>
+        </div>
+        <div css={s.joinAndSearchUser}>
+          <Link to="/user/signup">회원 가입</Link>
+          <Link>아이디 비밀번호 찾기</Link>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default SigninPage;
