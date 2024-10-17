@@ -13,22 +13,22 @@ const selectMainMenus = [
     {
         id: 1,
         name: "카테고리",
-        path: "/category"
+        path: "/"
     },
     {
         id: 2,
         name: "신상품",
-        path: "/category/newproduct"
+        path: "/newproduct"
     },
     {
         id: 3,
         name: "인기 상품",
-        path: "/category/popularityproduct"
+        path: "/popularityproduct"
     },
     {
         id: 4,
         name: "상품 후기",
-        path: "/category/review"
+        path: "/review"
     },
 ]
 

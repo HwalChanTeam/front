@@ -2,6 +2,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import *as s from './style';
 import { useState } from 'react';
+import MainMenu from '../../MainMenu/MainMenu';
 
 const products = [
     {
@@ -42,7 +43,7 @@ function CategoryView() {
 
     });
 
-    const productPath = (id) => `/product/${id}/information`;
+    const productPath = (id) => `/product/${id}`;
 
     return (
         <div css={s.layout}>

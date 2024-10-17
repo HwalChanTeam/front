@@ -39,7 +39,7 @@ export const buttonLayout = css`
 `;
 
 export const selectedMenu = (isSelected) => css`
-    border-top: ${isSelected ? "2px solid #E21717" : "transparent"};
+    border-top: ${isSelected ? "2px solid #964747" : "transparent"};
 `; 
 
 export const menuLayout = css`
@@ -59,7 +59,7 @@ export const menuListBox = css`
     padding: 0px 50px 0px 50px;
     width: 100%;
     height: 100%;
-    border: 2px solid #D84343;
+    border: 2px solid #964747;
 `;
 
 
