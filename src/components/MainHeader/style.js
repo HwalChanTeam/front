@@ -1,44 +1,56 @@
 import { css } from "@emotion/react";
 
+export const background = css`
+  background-color: #f4f4f4;
+`;
+
 export const headerLayout = css`
-    box-sizing: border-box;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  width: 1300px;
+
+  & > a {
+    text-decoration: none;
+  }
+
+  & h1 {
     display: flex;
     justify-content: center;
-    height: 100%;
+    align-items: center;
+    margin: 0;
+    padding-left: 40px;
+    height: 80px;
+    overflow: hidden;
+    font-family: "Dancing Script", cursive;
+    font-size: 30px;
+    color: #964747;
 
-    & > div {
-        &:nth-of-type(1) {
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            margin-left: 230px;
-            margin-right: 130px;
-        }
+    & > img {
+      width: 80px;
+      height: 80px;
     }
-    
-    & h1 {
-        width: 140px;
-        margin: 0px;
-        font-size: 50px;
-        cursor: pointer;
-    }
+  }
 `;
 
 export const buttonLayout = css`
+  box-sizing: border-box;
+  display: flex;
+  padding-bottom: 30px;
+  padding-right: 60px;
+
+  & button {
     box-sizing: border-box;
-    display: flex;
-
-    & button {
-        box-sizing: border-box;
-        font-size: 16px;
-        background-color: transparent;
-        border: none;
-        width: 80px;
-        height: 30px;
-        border-right: 1px solid #000000;
-        &:nth-last-of-type(1) {
-            border: none;
-        }
-}
+    font-size: 14px;
+    background-color: transparent;
+    border: none;
+    height: 30px;
+    font-weight: 600;
+    color: #964747;
+    &:nth-last-of-type(1) {
+      border: none;
+    }
+  }
 `;
-
