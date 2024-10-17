@@ -42,7 +42,7 @@ function CategoryView() {
 
     });
 
-    const productPath = (id) => `/product/${id}`;
+    const productPath = (id) => `/product/${id}/information`;
 
     return (
         <div css={s.layout}>

@@ -18,17 +18,17 @@ const selectMainMenus = [
     {
         id: 2,
         name: "신상품",
-        path: "/newproduct"
+        path: "/category/newproduct"
     },
     {
         id: 3,
         name: "인기 상품",
-        path: "/popularityproduct"
+        path: "/category/popularityproduct"
     },
     {
         id: 4,
         name: "상품 후기",
-        path: "/review"
+        path: "/category/review"
     },
 ]
 
@@ -63,7 +63,6 @@ function MainMenu(props) {
                                             <div css={s.menuListBox}>
                                                 <Routes>
                                                     <Route path="/" element={<CategoryView />}/>
-                                                    <Route path="/category" element={<CategoryView />}/>
                                                     <Route path="/newproduct" element={<NewProductView />}/>
                                                     <Route path="/popularityproduct" element={<PopularityProduct />}/>
                                                     <Route path="/review" element={<Review />}/>

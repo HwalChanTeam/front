@@ -20,19 +20,19 @@ const selectProductMenus = [
     {
         selectedId: 2,
         name: "구매후기",
-        path: "/product/:id/review"
+        path: "/product/:id/information/review"
 
     },
     {
         selectedId: 3,
         name: "상품문의",
-        path: "/product/:id/inquiry"
+        path: "/product/:id/information/inquiry"
 
     },
     {
         selectedId: 4,
         name: "배송",
-        path: "/product/:id/delivery"
+        path: "/product/:id/information/delivery"
 
     },
 ];
@@ -180,7 +180,6 @@ function ProductPage() {
                 <div css={s.productInfor}>
                     <Routes>
                         <Route path="/" element={<InformationView />} />
-                        <Route path="/information" element={<InformationView />} />
                         <Route path="/review" element={<BuyReview />} />
                         <Route path="/inquiry" element={<InquiryView />} />
                         <Route path="/delivery" element={<DeliveryView />} />
