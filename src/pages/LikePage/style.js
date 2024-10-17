@@ -1,116 +1,111 @@
 import { css } from '@emotion/react';
 
 export const wishListContainer = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
+    box-sizing: border-box;
+    width: 1300px;
 `;
 
 export const wishListSection = css`
-  margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
 
-  input[type="checkbox"] {
-  width: 25px; 
-  height: 25px;
-  margin-right: 8px;
+    input[type="checkbox"] {
+    width: 25px; 
+    height: 25px;
+    margin-right: 8px;
 }
 `;
 
 export const wishListHeader = css`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  & > h2 {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-grow: 1;
-    margin-left: 10%;
-  }
-`;
 
-
-
-export const title = css`
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
+    & h2 {
+        margin: 0px;
+        margin-bottom: 20px;
+    }
 `;
 
 export const emptyCartMessage = css`
-  text-align: center;
-  color: #888;
-  font-size: 18px;
+    text-align: center;
+    color: #888;
+    font-size: 18px;
 `;
 
-export const cartItem = css`
+export const tableLayout = css`
     box-sizing: border-box;
-    display: flex;
-    align-items: flex-start;
-    border: 1px solid #ddd;
     width: 1300px;
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
+    height: 100%;
 `;
 
-export const itemBox = css`
+export const menuLayout = css`
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     width: 100%;
+
+    & td {
+        padding: 0px;
+    }
 `;
 
-export const itemImage = css`
-display: flex;
-  img {
+export const menuList = css`
     box-sizing: border-box;
-    width: 170px;
-    height: 170px;
-  }
+    margin-left: 80px;
+    margin-bottom: 15px;
+    padding: 0px;
 `;
 
-export const itemDetails = css`
-  box-sizing: border-box;
-  flex-wrap: wrap;
-  flex-grow: 1;
-  margin-left: 20px;
+export const imgLayout = css`
+    box-sizing: border-box;
+    width: 160px;
+    height: 160px;
+    background-color: #dbdbdb;
+    cursor: pointer;
+
+    & img {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+    }
 `;
 
-/* 상품명, 상품설명 컨테이너 */
-export const nameDescriptionContainer = css`
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  padding: 10px;
-  height: 100px;
-  background-color: #fff;
+export const contentLayout = css`
+    box-sizing: border-box;
+    width: 160px;
+    display: flex;
+
+    & svg {
+        margin: 5px 0px;
+    }
 `;
 
-/* 수량 조절 버튼 */
-export const quantityControl = css`
-  display: flex;
-  align-items: center;
-  gap: 10px;
+export const productLayout = css`
+    box-sizing: border-box;
+    width: 160px;
+
+    & h2 {
+        margin: 5px 0px;
+        font-size: 15px;
+        font-weight: 600;
+        &:nth-last-of-type(1) {
+            font-weight: 750;
+            font-style: italic;
+            font-size: 15px;
+        }
+    }
 `;
 
-export const quantityButton = css`
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: #D98585;
-  color: white;
-`;
-
-export const quantityValue = css`
-  font-size: 16px;
-  font-weight: bold;
+export const icons = css`
+    box-sizing: border-box;
+    display: flex;
+    & a {
+        margin-right: 5px;
+        height: 26px;
+    }
 `;
 
 export const itemName = css`
@@ -120,79 +115,79 @@ export const itemName = css`
 `;
 
 export const itemDescription = css`
-  box-sizing: border-box;
-  margin: 0;
-  color: #555;
-  font-size: 14px;
-  width: 880px;
-  overflow: hidden; /* 추가 */
-  text-overflow: ellipsis;
-  white-space: normal;
+    box-sizing: border-box;
+    margin: 0;
+    color: #555;
+    font-size: 14px;
+    width: 880px;
+    overflow: hidden; /* 추가 */
+    text-overflow: ellipsis;
+    white-space: normal;
 `;
 
 export const itemActions = css`
-  display: flex;
-  margin-top: 20px;
-  justify-content: flex-end;
+    display: flex;
+    margin-top: 20px;
+    justify-content: flex-end;
 `;
 
 export const confirmButton = css`
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: #D98585;
-  color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #D98585;
+    color: white;
 `;
 
 export const containButton = css`
-  margin-right: 10px;
-  padding: 5px 10px;
-  border: 1px solid #964747;
-  cursor: pointer;
-  background-color: #ffffff;
-  color: #964747;
-  font-weight: 600;
+    margin-right: 10px;
+    padding: 5px 10px;
+    border: 1px solid #964747;
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #964747;
+    font-weight: 600;
 `;
 
 export const deleteButton = css`
-  padding: 5px 10px;
-  border: 1px solid #964747;
-  cursor: pointer;
-  background-color: #ffffff;
-  color: #964747;
-  font-weight: 600;
+    padding: 5px 10px;
+    border: 1px solid #964747;
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #964747;
+    font-weight: 600;
 `;
 
 export const bottonBox = css`
-  box-sizing: border-box;
-  display: flex;
-  width: 100px;
-  height: 40px;
+    box-sizing: border-box;
+    display: flex;
+    width: 100px;
+    height: 40px;
 
 `;
 
 
 export const orderButton = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding: 0px;
-  border: 1px solid #964747;
-  color: #964747;
-  font-weight: 600;
-  background-color: #ffffff;
-  cursor: pointer;
-  font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    border: 1px solid #964747;
+    color: #964747;
+    font-weight: 600;
+    background-color: #ffffff;
+    cursor: pointer;
+    font-size: 18px;
 
-  &:hover {
-    background-color: #e6e4e4;
-  }
+    &:hover {
+        background-color: #e6e4e4;
+    }
 
-  &:active {
-    background-color: #cfcfcf;
-  }
+    &:active {
+        background-color: #cfcfcf;
+    }
 `;
 
