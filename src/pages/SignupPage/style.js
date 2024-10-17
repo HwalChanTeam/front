@@ -116,7 +116,7 @@ export const inputEmail = css`
     width: 100%;
     height: 40px;
     background-color: #ffffff;
-    border: 1px solid #000000;
+    border: 1px solid #964747;
     border-radius: 4px;
     color: #964747;
     font-weight: 600;
