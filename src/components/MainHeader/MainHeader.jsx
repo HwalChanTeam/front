@@ -6,6 +6,11 @@ import { BsList } from "react-icons/bs";
 import MainSearch from "../MainSearch/MainSearch";
 import { instance } from "../../apis/util/instance";
 import logo from "../../assets/images/logo.png";
+import { RiLoginBoxLine } from "react-icons/ri";
+import { BsBasket3 } from "react-icons/bs";
+import { SlBasket } from "react-icons/sl";
+import { MdOutlineLocalShipping } from "react-icons/md";
+
 
 function MainHeader(props) {
   const navigate = useNavigate();
@@ -38,21 +43,6 @@ function MainHeader(props) {
     setMainSearch(name);
   };
 
-  const handleJoinClick = () => {
-    navigate("/user/signup");
-  };
-
-  const handleLoginClick = () => {
-    navigate("/user/signin");
-  };
-
-  // 로그인 되어 있지 않으면 로그인 페이지로 넘기기
-  const handleBasketClick = () => {
-    navigate("/basket");
-  };
-
-  const handleOrderClick = () => {};
-
   return (
     <div css={s.background}>
       <div css={s.headerLayout}>
@@ -67,10 +57,9 @@ function MainHeader(props) {
           <MainSearch onSearch={handleMainSearch} />
         </div>
         <div css={s.buttonLayout}>
-          <button onClick={handleJoinClick}>회원가입</button>
-          <button onClick={handleLoginClick}>로그인</button>
-          <button onClick={handleBasketClick}>장바구니</button>
-          <button onClick={handleOrderClick}>주문/배송</button>
+          <Link to={"/user/signin"}><RiLoginBoxLine /></Link>
+          <Link to={"/basket"}><SlBasket /></Link>
+          <Link to={"/order"}><BsBasket3 /></Link>
         </div>
       </div>
     </div>
