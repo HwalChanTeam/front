@@ -73,7 +73,7 @@ export const inputUser = css`
     }
 `;
 
-export const inputPhone = css`
+export const inputEmail = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -105,7 +105,7 @@ export const inputPhone = css`
         padding: 0 20px;
     }
 
-    & input[name="phoneCheck"] {
+    & input[name="emailCheck"] {
         margin-top: 10px;
         width: 450px;
         height: 50px;

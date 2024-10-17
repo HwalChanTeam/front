@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import * as s from './style';
 import { useNavigate } from 'react-router-dom';
+import { instance } from '../../apis/util/instance';
+import { sendEmailApi } from '../../apis/sendEmailApi';
 
 function SignupPage(props) {
     const navigate = useNavigate();
@@ -16,6 +18,12 @@ function SignupPage(props) {
         phone: ""
     });
 
+    const [sendEmail, setSendEmail] = useState({
+        toEmail: "",
+        subject: "",
+        content: ""
+    })
+
     const LogoOnCLick = () => {
         navigate("/")
     }
@@ -27,8 +35,21 @@ function SignupPage(props) {
         }));
     };
 
-    const phoneCkectButtonOnClick = () => {
-        if (certification == 1) {
+    const handleEmailInputOnchange = (e) => {
+        setUser(user => ({
+            ...user,
+            [e.target.name]: e.target.value
+            }));
+        setSendEmail(email => ({
+            ...email,
+            toEmail :user.email
+        }))
+    };
+
+    const emailCkectButtonOnClick = async () => {
+        console.log(sendEmail)
+        const emailData = await sendEmailApi(sendEmail);
+        if (certification == 1) { 
             alert("이미 인증 요청이 되었습니다.")
             return;
         }
@@ -74,17 +95,19 @@ function SignupPage(props) {
                         />
                         <input type="text"
                             onChange={handleInputOnchange}
-                            name="email"
-                            value={user.email}
-                            placeholder='이메일을 입력해 주세요'
-                        />
-                    </div>
-                    <div css={s.inputPhone}>
-                        <input type="text"
                             name="phone"
                             value={user.phone}
-                            placeholder='휴대폰 번호를 입력해 주세요' />
-                        <button onClick={phoneCkectButtonOnClick}>인증요청</button>
+                            placeholder='휴대폰 번호를 입력해 주세요'
+                        />
+                    </div>
+                    <div css={s.inputEmail}>
+                        <input type="text"
+                            name="email"
+                            value={user.email}
+                            placeholder='이메일 번호를 입력해 주세요' 
+                            onChange={handleEmailInputOnchange}
+                            />
+                        <button onClick={emailCkectButtonOnClick}>인증요청</button>
 
                         {/* 인증번호 요청 누르면 인증번호 칸 활성화되게(추가) */}
                         {
@@ -92,7 +115,7 @@ function SignupPage(props) {
                                 ?
                                 <></>
                                 :
-                                <input type="text" neme="phoneCheck" placeholder='인증번호를 입력해 주세요' />
+                                <input type="text" neme="emailCheck" placeholder='인증번호를 입력해 주세요' />
                         }
                     </div>
                 </div>
