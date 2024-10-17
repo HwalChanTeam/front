@@ -14,25 +14,25 @@ const selectProductMenus = [
     {
         selectedId: 1,
         name: "상세정보",
-        path: "/product/:id/information"
+        path: "/product/:id"
 
     },
     {
         selectedId: 2,
         name: "구매후기",
-        path: "/product/:id/information/review"
+        path: "/product/:id/review"
 
     },
     {
         selectedId: 3,
         name: "상품문의",
-        path: "/product/:id/information/inquiry"
+        path: "/product/:id/inquiry"
 
     },
     {
         selectedId: 4,
         name: "배송",
-        path: "/product/:id/information/delivery"
+        path: "/product/:id/delivery"
 
     },
 ];

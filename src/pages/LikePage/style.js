@@ -22,6 +22,7 @@ export const wishListSection = css`
 export const wishListHeader = css`
   display: flex;
   justify-content: space-around;
+  align-items: center;
   & > h2 {
     display: flex;
     justify-content: center;
@@ -49,12 +50,11 @@ export const emptyCartMessage = css`
 export const cartItem = css`
     box-sizing: border-box;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     border: 1px solid #ddd;
     width: 1300px;
     padding: 20px;
-    margin-bottom: 10px;
-    border-radius: 10px;
+    margin-bottom: 20px;
     background-color: #f9f9f9;
 `;
 
@@ -71,7 +71,6 @@ display: flex;
     box-sizing: border-box;
     width: 170px;
     height: 170px;
-    border-radius: 5px;
   }
 `;
 
@@ -90,7 +89,6 @@ export const nameDescriptionContainer = css`
   border: 1px solid #ccc;
   padding: 10px;
   height: 100px;
-  border-radius: 5px;
   background-color: #fff;
 `;
 
@@ -147,29 +145,54 @@ export const confirmButton = css`
   color: white;
 `;
 
-export const deleteButton = css`
+export const containButton = css`
+  margin-right: 10px;
   padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
+  border: 1px solid #964747;
   cursor: pointer;
-  background-color: #D98585;
-  color: white;
+  background-color: #ffffff;
+  color: #964747;
+  font-weight: 600;
 `;
 
-export const orderButton = css`
-  display: block;
-  width: 120px;
-  margin-bottom: 20px;
-  padding: 15px;
-  background-color: #D98585;
-  color: white;
-  border: none;
-  border-radius: 5px;
+export const deleteButton = css`
+  padding: 5px 10px;
+  border: 1px solid #964747;
   cursor: pointer;
-  font-size: 18px;
+  background-color: #ffffff;
+  color: #964747;
+  font-weight: 600;
 `;
 
 export const bottonBox = css`
+  box-sizing: border-box;
   display: flex;
+  width: 100px;
+  height: 40px;
 
 `;
+
+
+export const orderButton = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  border: 1px solid #964747;
+  color: #964747;
+  font-weight: 600;
+  background-color: #ffffff;
+  cursor: pointer;
+  font-size: 18px;
+
+  &:hover {
+    background-color: #e6e4e4;
+  }
+
+  &:active {
+    background-color: #cfcfcf;
+  }
+`;
+

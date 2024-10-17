@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from 'react';
 import *as s from './style';
+import { useNavigate } from 'react-router-dom';
 
 const tempItemList = [
     {
@@ -26,21 +27,28 @@ const tempItemList = [
     },
   ];
 
-function WishlistPage(props) {
+function LikePage(props) {
+
+    const navigate = useNavigate();
 
     const [ productList, setProductList ] = useState(
         tempItemList.map((tempItemList) => 
-            ({ ...tempItemList, checked: false })
+            ({ ...tempItemList })
         )
     );
 
-    const handleCheckBoxOnChange = (id) => {
-        setProductList((productList) => 
-            productList.map((product) => 
-                product.id === id ? { ...product, checked: !product.checked } : product
-            )
-        );
-    }
+
+    const handleContainOnClick = () => {
+        const wishlistSeleted = productList.filter((item) => item.checked);
+        const wishlistSeletedIds = wishlistSeleted.map(item => item.id);
+
+        if(wishlistSeletedIds.length > 0) {
+            setProductList(wishlistSeletedIds);
+            navigate("/basket");
+        } else {
+            alert("상품을 체크해주십시오");
+        }
+    };
 
     return (
         <div css={s.wishListContainer}>
@@ -48,11 +56,6 @@ function WishlistPage(props) {
         <div css={s.wishListSection}>
           <div css={s.wishListHeader}>
             <h2 css={s.title}>찜 목록</h2>
-            <div css={s.bottonBox}>
-              <button css={s.orderButton}>
-                담기 
-              </button>
-            </div>
           </div>
           { productList.length === 0 ? (
               <p css={s.emptyCartMessage}>찜목록이 비었습니다.</p>
@@ -62,12 +65,6 @@ function WishlistPage(props) {
             (
                 productList.map((item) => (
                     <div css={s.cartItem}>
-                        <input
-                            type="checkbox"
-                            onChange={() => handleCheckBoxOnChange(item.id)}
-                            checked={item.checked}
-                            id={item.id}
-                        />
                         <div css={s.itemImage}>
                             <img src={item.image} alt="상품 이미지" />
                         </div>
@@ -80,7 +77,12 @@ function WishlistPage(props) {
                             </div>
                             <div css={s.itemActions}>
                                 <button
-                                css={s.deleteButton}
+                                    css={s.containButton}
+                                >
+                                담기
+                                </button>
+                                <button
+                                    css={s.deleteButton}
                                 >
                                 삭제
                                 </button>
@@ -97,4 +99,4 @@ function WishlistPage(props) {
     );
 }
 
-export default WishlistPage;
+export default LikePage;

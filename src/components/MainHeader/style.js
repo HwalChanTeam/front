@@ -21,7 +21,7 @@ export const headerLayout = css`
     justify-content: center;
     align-items: center;
     margin: 0;
-    padding-left: 40px;
+    /* padding-left: 40px; */
     height: 80px;
     overflow: hidden;
     font-family: "Dancing Script", cursive;
@@ -38,7 +38,7 @@ export const headerLayout = css`
 export const buttonLayout = css`
   box-sizing: border-box;
   display: flex;
-  padding-right: 60px;
+  /* padding-right: 60px; */
 
   & a {
     box-sizing: border-box;
