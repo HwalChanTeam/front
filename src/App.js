@@ -15,6 +15,8 @@ import { instance } from "./apis/util/instance";
 import { useEffect, useState } from "react";
 import OrderPage from "./pages/OrderPage/OrderPage";
 import MainFooter from "./components/MainFooter/MainFooter";
+import WishlistPage from "./pages/WishlistPage/WishlistPage";
+import CategoryView from "./components/User/CategoryView/CategoryView";
 
 function App() {
   const token = localStorage.getItem("accessToken");
@@ -89,11 +91,12 @@ function App() {
         <>
         <MainLayout>
           <Routes>
-            <Route path="/*" element={<MainPage />} />
-            <Route path="/product/:id/*" element={<ProductPage />} />
+            <Route path="/category/*" element={<MainPage />} />
+            <Route path="/product/:id/information/*" element={<ProductPage />} />
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />
             <Route path="/basket" element={<ShoppingBasket />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
             <Route path="/order/*" element={<OrderPage />} />
             <Route path="/test" element={<TestExam />} />
           </Routes>

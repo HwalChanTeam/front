@@ -12,6 +12,7 @@ function MainHeader(props) {
   const [productList, setProductList] = useState([]);
   const [mainSearch, setMainSearch] = useState("");
 
+
   useEffect(() => {
     const fetchProduct = async () => {
       if (mainSearch) {
