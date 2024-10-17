@@ -34,7 +34,7 @@ function MainHeader(props) {
 
     const handleLogoOnClick = () => {
         if(window.confirm("메인 화면으로 돌아가시겠습니까?")) {
-            navigate("/")
+            navigate("/category")
         }
     };
 

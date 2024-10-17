@@ -200,6 +200,7 @@ export const menuBox = css`
         text-decoration: none;
         font-size: 18px;
         font-weight: 600;
+        color: #000000;
 
         &:nth-last-of-type(1) {
             border-right: none;
