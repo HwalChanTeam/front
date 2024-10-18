@@ -14,7 +14,7 @@ import { selectedItemsAtom } from "../../apis/util/atom";
 const tempItemList = [
   {
     id: 1,
-    name: "상품명1",
+    title: "엄마의 손맛 김치찌개",
     description: "상품설명 이것은 상품설명입니다.",
     image:
       "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
@@ -23,16 +23,16 @@ const tempItemList = [
   },
   {
     id: 2,
-    name: "상품명2",
+    title: "우리엄마의 완자고기",
     description: "상품설명 이것은 상품설명입니다.",
     image:
       "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
     price: 10000,
-    quantity: 1,
+    quantity: 3,
   },
   {
     id: 3,
-    name: "상품명3",
+    title: "삼겹살",
     description: "상품설명 이것은 상품설명입니다.",
     image:
       "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
@@ -60,23 +60,23 @@ function ShoppingBasket(props) {
   };
 
   const haneldDeleteButtonOnClick = (id) => {
-    const deleteItems = productList.filter(item => item.id !== id);
+    const deleteItems = productList.filter((item) => item.id !== id);
     setProductList(deleteItems);
   };
 
   const handleSubmitButtonOnClick = (id) => {
     // id를 가져옴 ->
-    const updateItems = productList.map(item =>
-      item.id === id ? {...item} : item
+    const updateItems = productList.map((item) =>
+      item.id === id ? { ...item } : item
     );
     setProductList(updateItems);
     //api연결
   };
 
   const handleBuyButtonOnClick = () => {
-    const selectedItems = productList.filter(item => item.checked);
-    const selectedIds = selectedItems.map(item => item.id);
-  
+    const selectedItems = productList.filter((item) => item.checked);
+    const selectedIds = selectedItems.map((item) => item.id);
+
     if (selectedIds.length > 0) {
       setSelectedItems(selectedIds);
       navigate(`/order`);
@@ -87,8 +87,8 @@ function ShoppingBasket(props) {
 
   const handleCheckBoxOnChange = (id) => {
     setProductList((productList) =>
-      productList.map((product) =>
-        product.id === id ? { ...product, checked: !product.checked } : product
+      productList.map((item) =>
+        item.id === id ? { ...item, checked: !item.checked } : item
       )
     );
   };
@@ -102,76 +102,68 @@ function ShoppingBasket(props) {
         {/* 장바구니 목록 섹션 */}
         <div css={s.cartListSection}>
           <div css={s.basketHeader}>
-            <h2 css={s.title}>장바구니 목록</h2>
-            <div css={s.bottonBox}>
-              <button onClick={handleBuyButtonOnClick} css={s.orderButton}>
-                주문하기
-              </button>
-            </div>
+            <h2 css={s.title}>장바구니</h2>
           </div>
-          {productList.length === 0 ? (
-            <p css={s.emptyCartMessage}>장바구니가 비었습니다.</p>
-          ) : (
-            productList.map((item, index) => (
-              <div key={index} css={s.cartItem}>
-                <input
-                  type="checkbox"
-                  onChange={() => handleCheckBoxOnChange(item.id)}
-                  checked={item.checked}
-                  id={item.id}
-                />
-                <div css={s.itemImage}>
-                  <img src={item.image} alt="상품 이미지" />
-                </div>
-                <div css={s.itemDetails}>
-                  {/* 상품명, 상품설명, 수량 버튼을 하나의 div로 묶음 */}
-                  <div css={s.nameDescriptionContainer}>
-                    <h3 css={s.itemName}>{item.name}</h3>
-                    <p css={s.itemDescription}>{item.description}</p>
-                    {/* 수량 조절 버튼 */}
-                    <div css={s.quantityControl}>
-                      <button
-                        onClick={() => handleQuantityChange(index, -1)}
-                        css={s.quantityButton}
-                      >
+          <div css={s.basketBox}>
+            <table css={s.productTable}>
+              <thead css={s.thead}>
+                <tr>
+                  <td>
+                    <input type="checkbox" />
+                  </td>
+                  <th>상품</th>
+                  <th>상품명</th>
+                  <th>수량</th>
+                  <th>금액</th>
+                  <th>할인</th>
+                  <th>합계금액</th>
+                  <th>삭제</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productList.map((item, index) => (
+                  <tr key={item.id}>
+                    <td>
+                    <input
+                    type="checkbox"
+                    onChange={() => handleCheckBoxOnChange(item.id)}
+                    checked={item.checked}
+                  />
+                    </td>
+                    <td>
+                      <div css={s.img}>
+                        <img src={item.image} />
+                      </div>
+                    </td>
+                    <td>
+                      <div css={s.productName}>{item.title}</div>
+                      <tr>{item.description}</tr>
+                    </td>
+                    <td>
+                      <button onClick={() => handleQuantityChange(index, -1)}>
                         -
                       </button>
-                      <span css={s.quantityValue}>{item.quantity}</span>
-                      <button
-                        onClick={() => handleQuantityChange(index, 1)}
-                        css={s.quantityButton}
-                      >
+                      {item.quantity}
+                      <button onClick={() => handleQuantityChange(index, +1)}>
                         +
                       </button>
-                    </div>
-                  </div>
-                  {/* 총 금액 표시 */}
-                  <p>
-                    총 금액: {calculateTotalPrice(item).toLocaleString()} 원
-                  </p>
-                  <div css={s.itemActions}>
-                    <button
-                      css={s.confirmButton}
-                      onClick={() => handleSubmitButtonOnClick(item.id)}
-                    >
-                      확인
-                    </button>
-                    <button
-                      css={s.deleteButton}
-                      onClick={() => haneldDeleteButtonOnClick(item.id)}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-          {/* 주문하기 버튼 */}
-          <div css={s.bottonBox}>
-            <button onClick={handleBuyButtonOnClick} css={s.orderButton}>
-              주문하기
-            </button>
+                    </td>
+                    <td>{item.price.toLocaleString()} 원</td>
+                    <td>-</td>
+                    <td> {calculateTotalPrice(item).toLocaleString()} 원</td>
+                    <td>
+                      <button onClick={() => haneldDeleteButtonOnClick(item.id)}>
+                        삭제
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div css={s.buttonBox}>
+            <button onClick={handleBuyButtonOnClick}>주문하기</button>
+            <button onClick={() => setProductList([])}>전체삭제</button>
           </div>
         </div>
       </div>
