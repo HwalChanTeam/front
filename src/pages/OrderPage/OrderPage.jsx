@@ -35,7 +35,10 @@ function OrderPage(props) {
                 <label htmlFor="phone">연락처 : </label>
                 <input type="text" name="phone" placeholder="연락처를 입력해 주세요"/>
                 </div>
-                <div css={s.inputBox}>
+                    <div css={s.adressButton}>
+                        <button>배송지 저장</button>
+                    </div>
+                <div css={s.adressInputBox}>
                 <label htmlFor="adress">배송지 : </label>
                 <input type="text" name="adress" placeholder="배송지 입력해 주세요"/>
                 </div>
@@ -46,7 +49,19 @@ function OrderPage(props) {
             </div>
             <div css={s.productInfo}>
                 <h2>주문상품 정보</h2>
-
+                <div css={s.productTable}>
+                    <tr>
+                        <td>찹쌀누룽지 반계탕</td>
+                        <td><img src="https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg" alt="" /></td>
+                        <td>수량 : 1개</td>
+                        <td>상품금액 12,000원</td>
+                        <td>할인금액 0원</td>
+                        <td>합계금액 12,000원</td>
+                    </tr>
+                    </div>
+                    <tr>
+                        <td>배송비 : 3,000원</td>
+                    </tr>
             </div>
             <div css={s.payInfo}>
                 <h2>결제수단 선택</h2>
@@ -55,13 +70,30 @@ function OrderPage(props) {
             </div>
         </div>
         <div css={s.rightBox}>
-            <div css={s.payInfoRight}>
+            <div css={s.payInfoMain}>
+                <div css={s.payinfo}>
                 <h2>결제금액</h2>
+                </div>
+                <div css={s.payinfo}>
                 <p>상품 금액 : </p>
+                <p>12,000</p>
+                </div>
+                <div css={s.payinfo}>
                 <p>할인 금액 : </p>
+                <p>0</p>
+                </div>
+                <div css={s.payinfo}>
                 <p>배송비 : </p>
+                <p>3,000</p>
+                </div>
+                <div css={s.payinfo}>
                 <p>추가 배송비 : </p>
+                <p>0</p>
+                </div>
+                <div css={s.payinfo}>
                 <p>총 결제 금액 : </p>
+                <p>15,000</p>
+                </div>
             </div>
             <div css={s.submitButton}>
                 <button>결제하기</button>
