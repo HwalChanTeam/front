@@ -42,6 +42,7 @@ const products = [
         id: 1,
         img: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
         name: "부대찌개",
+        description: "aaaa",
         price: "11,000",
         contury: "대한민국",
         deliver: "일반배송",
@@ -51,6 +52,7 @@ const products = [
         id: 2,
         img: "",
         name: "bbbb",
+        description: "aaaa",
         price: "11,000",
         contury: "대한민국",
         deliver: "일반배송",
@@ -61,6 +63,7 @@ const products = [
         id: 3,
         img: "",
         name: "cccc",
+        description: "aaaa",
         price: "11,000",
         contury: "대한민국",
         deliver: "일반배송",
@@ -71,6 +74,7 @@ const products = [
         id: 4,
         img: "",
         name: "dddd",
+        description: "aaaa",
         price: "11,000",
         contury: "대한민국",
         deliver: "일반배송",
@@ -129,7 +133,7 @@ function ProductPage() {
                 <div css={s.productContent}>
                     <div css={s.titleLayout}>
                         <h2>{product.name}</h2>
-                        <p>부대찌개 설명</p>
+                        <p>{product.description}</p>
                     </div>
                     <div css={s.price}>
                         <p>{product.price} 원</p>
