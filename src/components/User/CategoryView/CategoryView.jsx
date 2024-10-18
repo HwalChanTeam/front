@@ -29,6 +29,12 @@ const products = [
         name: "dddd",
         price: "11,000"
     },
+    {
+        id: 5,
+        img: "",
+        name: "ffff",
+        price: "11,000"
+    },
 ];
 
 function CategoryView() {
@@ -63,7 +69,7 @@ function CategoryView() {
                                                     <Link 
                                                         key={product.id}
                                                         to={productPath(product.id)}>
-                                                        <img src={product.img} />
+                                                            <img src={product.img} />
                                                     </Link>
                                                 </div>
                                                 <div css={s.productLayout}>

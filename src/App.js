@@ -15,9 +15,7 @@ import { instance } from "./apis/util/instance";
 import { useEffect, useState } from "react";
 import OrderPage from "./pages/OrderPage/OrderPage";
 import MainFooter from "./components/MainFooter/MainFooter";
-import WishlistPage from "./pages/LikePage/LikePage";
-import CategoryView from "./components/User/CategoryView/CategoryView";
-import LikePage from "./pages/LikePage/LikePage";
+import WishListPage from "./pages/WishListPage/WishListPage";
 
 function App() {
   const token = localStorage.getItem("accessToken");
@@ -97,7 +95,7 @@ function App() {
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />
             <Route path="/basket" element={<ShoppingBasket />} />
-            <Route path="/product/like" element={<LikePage />} />
+            <Route path="/product/like" element={<WishListPage />} />
             <Route path="/order/*" element={<OrderPage />} />
             <Route path="/test" element={<TestExam />} />
           </Routes>
