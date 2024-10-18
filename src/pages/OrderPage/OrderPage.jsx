@@ -1,21 +1,44 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
-import { useRecoilState } from "recoil";
-import { selectedItemsAtom } from "../../apis/util/atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { selectedItemsAtom, userIdAtom } from "../../apis/util/atom";
 import { useState } from "react";
+import { buyProductApi, orderGetApi } from "../../apis/productApi";
 
 function OrderPage(props) {
   const selectedItems = useRecoilState(selectedItemsAtom); // atom 사용
+  const token = localStorage.getItem("accessToken");
 
   const [userInfo, serUserInfo] = useState({
     name: "",
     email: "",
     phone: "",
-    
+    address: "",
+    message: ""
   })
 
-  const handleInputChange = (e) => {
+  const [ product, setProduct ] = useState({
+    productId: "",
+    title: "",
+    price: "",
+    img: "",
+    origin: "",
+    description: "",
+    category: ""
+ });
 
+  const handleInputChange = (e) => {
+    serUserInfo(user => ({
+        [e.target.name] : e.target.value
+    }))
+  }
+
+  const addressSaveButtonOnClick = () => {
+
+  }
+
+  const buyButtonOnClick = async () => {
+    const responce = await buyProductApi(product.productId)
   }
 
   return (
@@ -25,31 +48,32 @@ function OrderPage(props) {
                 <h2>주문자 정보</h2>
                 <div css={s.inputBox}>
                 <span>이름 : </span>
-                <input type="text" name="name" placeholder="이름을 입력해 주세요"/>
+                <input onChange={handleInputChange} type="text" name="name" placeholder="이름을 입력해 주세요"/>
                 </div>
                 <div css={s.inputBox}>
                 <label htmlFor="email">이메일 : </label>
-                <input type="text" name="email" placeholder="이메일 주소를 입력해 주세요"/>
+                <input onChange={handleInputChange} type="text" name="email" placeholder="이메일 주소를 입력해 주세요"/>
                 </div>
                 <div css={s.inputBox}>
                 <label htmlFor="phone">연락처 : </label>
-                <input type="text" name="phone" placeholder="연락처를 입력해 주세요"/>
+                <input onChange={handleInputChange} type="text" name="phone" placeholder="연락처를 입력해 주세요"/>
                 </div>
                     <div css={s.adressButton}>
-                        <button>배송지 저장</button>
+                        <button onClick={addressSaveButtonOnClick}>배송지 저장</button>
                     </div>
                 <div css={s.adressInputBox}>
-                <label htmlFor="adress">배송지 : </label>
-                <input type="text" name="adress" placeholder="배송지 입력해 주세요"/>
+                <label htmlFor="address">배송지 : </label>
+                <input onChange={handleInputChange} type="text" name="address" placeholder="배송지 입력해 주세요"/>
                 </div>
                 <div css={s.inputBox}>
                 <label htmlFor="message">배송 메세지 : </label>
-                <input type="text" name="message"  placeholder="배송 메시지를 입력해 주세요"/>
+                <input onChange={handleInputChange} type="text" name="message"  placeholder="배송 메시지를 입력해 주세요"/>
                 </div>
             </div>
             <div css={s.productInfo}>
                 <h2>주문상품 정보</h2>
                 <div css={s.productTable}>
+
                     <tr>
                         <td>찹쌀누룽지 반계탕</td>
                         <td><img src="https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg" alt="" /></td>
@@ -96,7 +120,7 @@ function OrderPage(props) {
                 </div>
             </div>
             <div css={s.submitButton}>
-                <button>결제하기</button>
+                <button onClick={buyButtonOnClick}>결제하기</button>
             </div>
         </div>
     </div>
