@@ -21,9 +21,9 @@ export const tableLayout = css`
 
 export const subLayout = css`
     box-sizing: border-box;
-    margin-left: 95px;
+    margin-left: 74px;
     margin-bottom: 12px;
-    width: 80px;
+    width: 77px;
     display: flex;
     flex-direction: column;
     border-bottom: 3px solid #AA1414;
@@ -49,13 +49,13 @@ export const menuLayout = css`
 
 export const menuList = css`
     box-sizing: border-box;
-    width: 252px;
+    width: 232px;
     padding: 0px;
 `;
 
 export const imgLayout = css`
     box-sizing: border-box;
-    margin-left: 92px;
+    margin-left: 72px;
     width: 160px;
     height: 160px;
     background-color: #dbdbdb;
@@ -71,7 +71,7 @@ export const imgLayout = css`
 
 
 export const productLayout = css`
-    margin-left: 92px;
+    margin-left: 72px;
     & h2 {
         width: 160px;
         margin: 5px 0px;

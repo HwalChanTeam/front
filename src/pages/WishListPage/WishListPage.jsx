@@ -2,83 +2,85 @@
 import { useState } from 'react';
 import *as s from './style';
 import { Link, useNavigate } from 'react-router-dom';
-import { IoMdHeartEmpty } from "react-icons/io";
-import { FiShoppingCart } from 'react-icons/fi';
+import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
+import { SlBasket } from "react-icons/sl";
+import { useQuery } from 'react-query';
+import { instance } from '../../apis/util/instance';
 
 const tempItemList = [
     {
-    id: 1,
+    productId: 1,
     name: "상품명1",
     description: "상품설명 이것은 상품설명입니다.",
     image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
     price: 10000,
     },
     {
-    id: 2,
+    productId: 2,
     name: "상품명2",
     description: "상품설명 이것은 상품설명입니다.",
-    image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    image: "",
     price: 10000,
     },
     {
-    id: 3,
+    productId: 3,
     name: "상품명3",
     description: "상품설명 이것은 상품설명입니다.",
-    image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    image: "",
     price: 10000,
     },
     {
-    id: 4,
+    productId: 4,
     name: "상품명3",
     description: "상품설명 이것은 상품설명입니다.",
-    image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    image: "",
     price: 10000,
     },
     {
-    id: 5,
+    productId: 5,
     name: "상품명3",
     description: "상품설명 이것은 상품설명입니다.",
-    image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    image: "",
     price: 10000,
     },
     {
-    id: 6,
+    productId: 6,
     name: "상품명3",
     description: "상품설명 이것은 상품설명입니다.",
-    image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    image: "",
     price: 10000,
     },
     {
-    id: 7,
+    productId: 7,
     name: "상품명3",
     description: "상품설명 이것은 상품설명입니다.",
-    image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    image: "",
     price: 10000,
     },
     {
-    id: 8,
+    productId: 8,
     name: "상품명3",
     description: "상품설명 이것은 상품설명입니다.",
-    image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    image: "",
     price: 10000,
     },
     {
-    id: 9,
+    productId: 9,
     name: "상품명3",
     description: "상품설명 이것은 상품설명입니다.",
-    image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    image: "",
     price: 10000,
     },
     {
-    id: 10,
+    productId: 10,
     name: "상품명3",
     description: "상품설명 이것은 상품설명입니다.",
-    image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
+    image: "",
     price: 10000,
     },
 ];
 
-function LikePage(props) {
+function WishListPage(props) {
 
     const navigate = useNavigate();
 
@@ -87,6 +89,21 @@ function LikePage(props) {
             ({ ...tempItemList })
         )
     );
+
+    const productLike = useQuery(
+        ["productLikeQuery"],
+        async (productId) => {
+            return instance.get(`/proudct/like/${productId}`);
+        },
+        {
+            refetchOnWindowFocus: false,
+            retry: 0
+        }
+    );
+
+    const disLikeOnClick = () => {
+        
+    }
 
     return (
         <div css={s.wishListContainer}>
@@ -108,7 +125,7 @@ function LikePage(props) {
                                 <div css={s.menuList}>
                                         <div css={s.imgLayout}>
                                             <Link 
-                                                key={item.id}
+                                                key={item.productId}
                                                 to="">
                                                 <img src={item.image} />
                                             </Link>
@@ -119,9 +136,8 @@ function LikePage(props) {
                                                 <h2>{item.price}</h2>
                                             </div>
                                             <div css={s.icons}>
-                                                <Link to="/basket"><FiShoppingCart size="24" /></Link>
-                                                <IoMdHeartEmpty size="26"/>
-
+                                                <Link to="/basket"><SlBasket size="24" /></Link>
+                                                <button onClick={disLikeOnClick} ><IoIosHeart size="26"/></button>
                                             </div>
                                         </div>
                                 </div>
@@ -138,4 +154,4 @@ function LikePage(props) {
     );
 }
 
-export default LikePage;
+export default WishListPage;
