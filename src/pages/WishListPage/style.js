@@ -80,6 +80,7 @@ export const contentLayout = css`
 
     & svg {
         margin: 5px 0px;
+        color: #964747;
     }
 `;
 
@@ -105,6 +106,14 @@ export const icons = css`
     & a {
         margin-right: 5px;
         height: 26px;
+    }
+
+    & button {
+      display: flex;
+      justify-content: flex-start;
+      padding: 0px;
+      border: none;
+      background-color: transparent;
     }
 `;
 
