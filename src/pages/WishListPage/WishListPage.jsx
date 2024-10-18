@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import *as s from './style';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
+import { IoIosHeart } from "react-icons/io";
 import { SlBasket } from "react-icons/sl";
 import { useMutation, useQuery } from 'react-query';
 import { instance } from '../../apis/util/instance';

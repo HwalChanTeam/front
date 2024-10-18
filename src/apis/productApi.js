@@ -27,6 +27,8 @@ export const deleteProductDisLikeApi = async (userId, id) => {
     try {
         response = await instance.get("/product/dislike", {userId, id});
     } catch (e) {
+
+    }
 }
 
 export const basketAddProductApi = async (productId) => {
@@ -43,6 +45,7 @@ export const basketAddProductApi = async (productId) => {
     }
     return response;
 }
+
 
 export const basketViewProductApi = async () => {
     let response = null;

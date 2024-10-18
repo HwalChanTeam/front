@@ -91,7 +91,7 @@ function App() {
         <MainLayout>
           <Routes>
             <Route path="/*" element={<MainPage />} />
-            <Route path="/product/:id/*" element={<ProductPage />} />
+            <Route path="/product/:productId/*" element={<ProductPage />} />
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />
             <Route path="/basket" element={<ShoppingBasket />} />

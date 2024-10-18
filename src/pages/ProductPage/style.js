@@ -85,11 +85,10 @@ export const contury = css`
     }
 `;
 
-export const productNameBox = css`
+export const producttitleBox = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     padding-left: 15px;
 
     & p {
@@ -107,23 +106,29 @@ export const productNameBox = css`
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                padding-top: 3px;
+                padding-top: 4px;
                 font-size: 18px;
 
                 & button {
                     box-sizing: border-box;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
                     margin: 0px 5px;
                     padding: 0px;
-                    width: 20px;
-                    height: 20px;
-                    background-color: #D98585;
-                    border-radius: 5px;
-                    border: none;
-                    color: #ffffff;
+                    width: 24px;
+                    height: 24px;
+                    background-color: transparent;
+                    border: 1px solid #964747;
+                    font-weight: 600;
+                    color: #964747;
                     cursor: pointer;
+
+                    &:nth-of-type(1) {
+                        box-sizing: border-box;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        padding-bottom: 5px;
+                        font-size: 18px;
+                    }
                 }
             }
 
@@ -139,13 +144,13 @@ export const buyProduct = css`
     & p {
         box-sizing: border-box;
         display: flex;
+        justify-content: space-between;
         margin: 0px;
-        font-size: 20px;
+        font-size: 24px;
 
         & span {
             box-sizing: border-box;
             display: flex;
-            margin-left: 20px;
 
             & button {
                 box-sizing: border-box;
@@ -155,16 +160,21 @@ export const buyProduct = css`
                 height: 40px;
                 font-size: 20px;
                 font-weight: 600;
-                color: #ffffff;
-                border: none;
-                background-color: #D98585;
+                color: #964747;
+                border: 1px solid #964747;
+                background-color: transparent;
 
                 &:hover {
-                    background-color: #d19191;
+                    background-color: #eaeaea;
                 }
 
                 &:active {
-                    background-color: #bd8484;
+                    background-color: #dbdbdb;
+                }
+            }
+            & svg {
+                &:nth-last-of-type(1) {
+                    margin: 0px 10px;
                 }
             }
 
@@ -196,21 +206,16 @@ export const menuBox = css`
         align-items: center;
         flex: 1;
         height: 100%;
-        border-right: 2px solid #999999;
         text-decoration: none;
         font-size: 18px;
         font-weight: 600;
         color: #000000;
-
-        &:nth-last-of-type(1) {
-            border-right: none;
-        }
         
     }
 `;
 
 export const selectProductMenu = (isSelected) => css`
-    background-color: ${isSelected ? "#FF7171" : "#dbdbdb"};
+    border: ${isSelected ? "2px solid #964747" : "transparent"};
 `;  
 
 export const productInfor = css`

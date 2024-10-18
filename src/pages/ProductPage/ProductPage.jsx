@@ -10,66 +10,66 @@ import BuyReview from "../../components/Product/BuyReview/BuyReview";
 import InquiryView from "../../components/Product/InquiryView/InquiryView";
 import DeliveryView from "../../components/Product/Delivery/DeliveryView";
 import { basketAddProductApi, buyProductApi } from "../../apis/productApi";
-import { atom, useRecoilValue } from "recoil";
-import { userIdAtom } from "../../apis/util/atom";
+import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
+
 
 const selectProductMenus = [
     {
         selectedId: 1,
-        name: "상세정보",
-        path: "/product/:id"
+        title: "상세정보",
+        path: "/product/:productId"
 
     },
     {
         selectedId: 2,
-        name: "구매후기",
-        path: "/product/:id/review"
+        title: "구매후기",
+        path: "/product/:productId/review"
 
     },
     {
         selectedId: 3,
-        name: "상품문의",
-        path: "/product/:id/inquiry"
+        title: "상품문의",
+        path: "/product/:productId/inquiry"
 
     },
     {
         selectedId: 4,
-        name: "배송",
-        path: "/product/:id/delivery"
+        title: "배송",
+        path: "/product/:productId/delivery"
 
     },
 ];
 
 const products = [
     {
-        id: 1,
+        productId: 1,
         img: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-        name: "부대찌개",
+        title: "부대찌개",
         description: "aaaa",
         price: 11000,
-        contury: "대한민국",
+        origin: "대한민국",
         deliver: "일반배송",
         deliverPrice: "3,000"
     },
   
     {
-        id: 2,
+        productId: 2,
         img: "",
-        name: "bbbb",
+        title: "bbbb",
         description: "aaaa",
-        price: "11,000",
-        contury: "대한민국",
+        price: 11000,
+        origin: "대한민국",
         deliver: "일반배송",
         deliverPrice: "3,000"
 
     },
     {
-        id: 3,
+        productId: 3,
         img: "",
-        name: "cccc",
+        title: "cccc",
         description: "aaaa",
-        price: "11,000",
-        contury: "대한민국",
+        price: 11000,
+        origin: "대한민국",
         deliver: "일반배송",
         deliverPrice: "3,000"
 
@@ -77,10 +77,10 @@ const products = [
     {
         productId: 4,
         img: "",
-        name: "dddd",
+        title: "dddd",
         description: "aaaa",
-        price: "11,000",
-        contury: "대한민국",
+        price: 11000,
+        origin: "대한민국",
         
     },
 
@@ -96,13 +96,15 @@ function ProductPage() {
 
 
 
+    // const [ product, setProduct ] = useState("");
+
     const [ product, setProduct ] = useState({
-        productId: "",
-        title: "",
-        price: "",
+        productId: 0,
         img: "",
-        origin: "",
+        title: "",
         description: "",
+        origin: "",
+        price: 0,
         category: ""
      });
 
@@ -165,19 +167,19 @@ function ProductPage() {
                 </div>
                 <div css={s.productContent}>
                     <div css={s.titleLayout}>
-                        <h2>{product.name}</h2>
+                        <h2>{product.title}</h2>
                         <p>{product.description}</p>
                     </div>
                     <div css={s.price}>
-                        <p>{(product.price).toLocaleString()} 원</p>
+                        <p>{product.price.toLocaleString()} 원</p>
                     </div>
                     <div css={s.contentBox}>
                         <div css={s.contury}>
-                            <p>원산지: {product.contury}</p>
+                            <p>원산지: {product.origin}</p>
                             <p>배송비: 3,000 원</p>
                         </div>
-                        <div css={s.productNameBox}>
-                            <p>상품명: {product.name}</p>
+                        <div css={s.producttitleBox}>
+                            <p>상품명: {product.title}</p>
                             <p>
                                 구매수량: 
                                     <span>
@@ -190,9 +192,10 @@ function ProductPage() {
                     </div>
                     <div css={s.buyProduct}>
                         <p>
-                        {calculateTotalPrice(product).toLocaleString()} 원
+                            총 {calculateTotalPrice(product).toLocaleString()} 원
                             <span>
                                 <button>구매하기</button>
+                                <IoMdHeartEmpty size="40"/>
                                 <FiShoppingCart onClick={basketAddProductButton} size="40"  style={{cursor:"pointer"}}/>
                             </span>
                         </p>
@@ -208,7 +211,7 @@ function ProductPage() {
                                 key={menu.selectedId}
                                 to={menu.path.replace(':productId', productId)} // :id를 id로 대체 
                                 css={s.selectProductMenu(pathname === menu.path.replace(':productId', productId))}>
-                                <span>{menu.name}</span>
+                                <span>{menu.title}</span>
                             </Link>
                         ))
                     }
