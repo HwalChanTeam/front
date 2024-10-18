@@ -9,6 +9,9 @@ import InformationView from "../../components/Product/InformationView/Informatio
 import BuyReview from "../../components/Product/BuyReview/BuyReview";
 import InquiryView from "../../components/Product/InquiryView/InquiryView";
 import DeliveryView from "../../components/Product/Delivery/DeliveryView";
+import { basketAddProductApi, buyProductApi } from "../../apis/productApi";
+import { atom, useRecoilValue } from "recoil";
+import { userIdAtom } from "../../apis/util/atom";
 
 const selectProductMenus = [
     {
@@ -42,7 +45,7 @@ const products = [
         id: 1,
         img: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
         name: "부대찌개",
-        price: "11,000",
+        price: 11000,
         contury: "대한민국",
         deliver: "일반배송",
         deliverPrice: "3,000"
@@ -68,36 +71,46 @@ const products = [
 
     },
     {
-        id: 4,
+        productId: 4,
         img: "",
         name: "dddd",
         price: "11,000",
         contury: "대한민국",
-        deliver: "일반배송",
-        deliverPrice: "3,000"
         
     },
 
 ];
 
 function ProductPage() {
-
-    const { id } = useParams();
+    const token = localStorage.getItem("accessToken");
+    const { productId } = useParams();
 
     const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
 
-    const [ product, setProduct ] = useState("");
+
+
+    const [ product, setProduct ] = useState({
+        productId: "",
+        title: "",
+        price: "",
+        img: "",
+        origin: "",
+        description: "",
+        category: ""
+     });
+
+
 
     useEffect(() => {
-        const selectedProduct = products.find(p => p.id === Number(id));
+        const selectedProduct = products.find(p => p.productId === Number(productId));
         if(selectedProduct) {
             setProduct(selectedProduct);
         } else {
             console.error("오류");
         }
-    }, [ id, products, navigate ]);
+    }, [ productId, products, navigate ]);
 
 
 
@@ -112,12 +125,31 @@ function ProductPage() {
         }));
     }
 
+    // 장바구니 버튼
+    const basketAddProductButton = async () => {
+        if (!token) {
+            if(window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
+            navigate("/user/signin");
+        }
+            return;
+          }
+            const response = await basketAddProductApi(productId);
+        };
+
     // 구매하기 버튼
-    const handlebuyOnClick = () => {
-        if(window.confirm("장바구니에 추가하시겠습니까?")) {
-            navigate("/basket");
-        } 
-    };
+    const handleBuyButton = async () => {
+        if (!token) {
+            if(window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
+            navigate("/user/signin");
+        }
+            return;
+          }
+          const response = await buyProductApi(productId);
+    }
+
+    const calculateTotalPrice = (product) => {
+        return product.price * productItems.buyItem;
+      };
 
     return (
         <div css={s.layout}>
@@ -132,13 +164,12 @@ function ProductPage() {
                         <p>부대찌개 설명</p>
                     </div>
                     <div css={s.price}>
-                        <p>{product.price} 원</p>
+                        <p>{(product.price).toLocaleString()} 원</p>
                     </div>
                     <div css={s.contentBox}>
                         <div css={s.contury}>
                             <p>원산지: {product.contury}</p>
-                            <p>배송구분: {product.deliver}</p>
-                            <p>배송비: {product.deliverPrice} 원</p>
+                            <p>배송비: 3,000 원</p>
                         </div>
                         <div css={s.productNameBox}>
                             <p>상품명: {product.name}</p>
@@ -154,10 +185,10 @@ function ProductPage() {
                     </div>
                     <div css={s.buyProduct}>
                         <p>
-                            총 상품 금액: 14,000원
+                        {calculateTotalPrice(product).toLocaleString()} 원
                             <span>
                                 <button>구매하기</button>
-                                <FiShoppingCart onClick={handlebuyOnClick} size="40"  style={{cursor:"pointer"}}/>
+                                <FiShoppingCart onClick={basketAddProductButton} size="40"  style={{cursor:"pointer"}}/>
                             </span>
                         </p>
                     </div>
@@ -170,8 +201,8 @@ function ProductPage() {
                         selectProductMenus.map((menu) => (
                             <Link 
                                 key={menu.selectedId}
-                                to={menu.path.replace(':id', id)} // :id를 id로 대체 
-                                css={s.selectProductMenu(pathname === menu.path.replace(':id', id))}>
+                                to={menu.path.replace(':productId', productId)} // :id를 id로 대체 
+                                css={s.selectProductMenu(pathname === menu.path.replace(':productId', productId))}>
                                 <span>{menu.name}</span>
                             </Link>
                         ))
