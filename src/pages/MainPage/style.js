@@ -2,6 +2,6 @@ import { css } from "@emotion/react";
 
 export const layout = css`
     box-sizing: border-box;
-    width: 100%;
+    width: 1200px;
 `;
 

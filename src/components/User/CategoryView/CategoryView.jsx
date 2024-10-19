@@ -55,9 +55,6 @@ function CategoryView() {
         <div css={s.layout}>
             <div css={s.contentLayout}>
                 <table css={s.tableLayout}>
-                    <div css={s.subLayout}>
-                        <h2>냉동식품</h2>
-                    </div>
 
                     <tbody css={s.menuLayout}>
                         {   
@@ -87,9 +84,6 @@ function CategoryView() {
 
                 {/* 냉장식품 */}
                 <table css={s.tableLayout}>
-                    <div css={s.subLayout}>
-                        <h2>냉장식품</h2>
-                    </div>
 
                     <tbody css={s.menuLayout}>
                         <tr>
