@@ -49,15 +49,14 @@ export const menuLayout = css`
 
 export const menuList = css`
     box-sizing: border-box;
-    width: 232px;
+    width: 272px;
     padding: 0px;
 `;
 
 export const imgLayout = css`
     box-sizing: border-box;
-    margin-left: 72px;
-    width: 160px;
-    height: 160px;
+    width: 200px;
+    height: 200px;
     background-color: #dbdbdb;
     cursor: pointer;
 
@@ -71,16 +70,15 @@ export const imgLayout = css`
 
 
 export const productLayout = css`
-    margin-left: 72px;
     & h2 {
-        width: 160px;
+        width: 200px;
         margin: 5px 0px;
-        font-size: 15px;
+        font-size: 20px;
         font-weight: 600;
         &:nth-last-of-type(1) {
-            font-weight: 750;
+            font-weight: 600;
             font-style: italic;
-            font-size: 15px;
+            font-size: 20px;
         }
     }
 `;

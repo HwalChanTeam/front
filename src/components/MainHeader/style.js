@@ -10,9 +10,15 @@ export const headerLayout = css`
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
-  width: 1300px;
+  width: 1200px;
+  height: 100px;
 
   & > a {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    padding-left: 40px;
+    width: 100%;
     text-decoration: none;
   }
 
@@ -22,15 +28,15 @@ export const headerLayout = css`
     align-items: center;
     margin: 0;
     /* padding-left: 40px; */
-    height: 80px;
+    height: 100px;
     overflow: hidden;
     font-family: "Dancing Script", cursive;
-    font-size: 30px;
+    font-size: 48px;
     color: #964747;
 
     & > img {
-      width: 80px;
-      height: 80px;
+      width: 110px;
+      height: 100px;
     }
   }
 `;

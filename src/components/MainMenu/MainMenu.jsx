@@ -1,6 +1,6 @@
 
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import *as s from './style';
 import CategoryView from '../User/CategoryView/CategoryView';
 import NewProductView from '../User/NewProductView/NewProductView';
@@ -8,6 +8,8 @@ import PopularityProduct from '../User/PopularityProductView/PopularityProduct';
 import Review from '../User/Review/Review';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import MainFooter from '../MainFooter/MainFooter';
+import MainSearch from '../MainSearch/MainSearch';
+import { instance } from '../../apis/util/instance';
 
 const selectMainMenus = [
     {
@@ -36,6 +38,36 @@ function MainMenu(props) {
     const location = useLocation();
     const pathname = location.pathname;
 
+    const [productList, setProductList] = useState([]);
+    const [mainSearch, setMainSearch] = useState("");
+
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+        if (mainSearch) {
+            try {
+            const response = await instance.get(
+                `/admin/product/search?title=${mainSearch}`
+            );
+            setProductList(response.data);
+            } catch (error) {
+            console.error("상품을 가져오는 데 실패했습니다:", error);
+            }
+        } // else {
+        //   //   검색어가 없을 때 전체 조회 로직
+        //   const response = await instance.get(`/admin/product/search`);
+        //   setProduct(response.data);
+        // }
+        };
+
+        fetchProduct();
+    }, [mainSearch]);
+
+    
+    const handleMainSearch = (name) => {
+        setMainSearch(name);
+    };
+
     return (
         <div css={s.container}>
             <header css={s.headerLayout}>
@@ -52,6 +84,7 @@ function MainMenu(props) {
                             ))
                         }
                     </div>
+                    <MainSearch onSearch={handleMainSearch} />
                 </div>
             </header>
                         {
