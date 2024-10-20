@@ -103,8 +103,8 @@ function App() {
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/test" element={<TestExam />} />
           </Routes>
-        </MainLayout>
         <MainFooter />
+        </MainLayout>
         </>
       )}
     </>

@@ -11,7 +11,7 @@ export const cartContainer = css`
 
 export const cartListSection = css`
   margin-top: 30px;
-  width: 1300px;
+  width: 1200px;
 
 `;
 
