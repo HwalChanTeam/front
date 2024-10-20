@@ -187,7 +187,7 @@ export const buyProduct = css`
 export const menuLayout = css`
     box-sizing: border-box;
     margin-top: 60px;
-    width: 1300px;
+    width: 1200px;
     height: 100%;
 `;
 

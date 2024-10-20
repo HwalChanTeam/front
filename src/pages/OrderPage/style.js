@@ -4,9 +4,9 @@ export const layout = css`
   box-sizing: border-box;
   display: flex;
   justify-content: center;
-  width: 1300px;
+  width: 1200px;
   height: 100%;
-  margin: 20px;
+  margin: 20px 0px;
   & > div:nth-of-type(1) {
     margin-right: 80px;
   }
