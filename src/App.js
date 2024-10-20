@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import OrderPage from "./pages/OrderPage/OrderPage";
 import MainFooter from "./components/MainFooter/MainFooter";
 import WishListPage from "./pages/WishListPage/WishListPage";
+import MyPage from "./pages/MyPage/MyPage";
 
 function App() {
   const token = localStorage.getItem("accessToken");
@@ -97,6 +98,7 @@ function App() {
             <Route path="/basket" element={<ShoppingBasket />} />
             <Route path="/product" element={<WishListPage />} />
             <Route path="/order/*" element={<OrderPage />} />
+            <Route path="/mypage" element={<MyPage />} />
             <Route path="/test" element={<TestExam />} />
           </Routes>
         </MainLayout>
