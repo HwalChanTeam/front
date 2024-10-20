@@ -15,22 +15,22 @@ const selectMainMenus = [
     {
         id: 1,
         name: "카테고리",
-        path: "/"
+        path: "/user/category"
     },
     {
         id: 2,
         name: "신상품",
-        path: "/newproduct"
+        path: "/user/newproduct"
     },
     {
         id: 3,
         name: "인기 상품",
-        path: "/popularityproduct"
+        path: "/user/popularityproduct"
     },
     {
         id: 4,
         name: "상품 후기",
-        path: "/review"
+        path: "/user/review"
     },
 ]
 
@@ -90,19 +90,20 @@ function MainMenu(props) {
                         {
                             location.pathname.startsWith("/product") ? (
                                 <></>
-                            ) : (
-                                    <body>
-                                        <div css={s.menuLayout}>
-                                            <div css={s.menuListBox}>
-                                                <Routes>
-                                                    <Route path="/" element={<CategoryView />}/>
-                                                    <Route path="/newproduct" element={<NewProductView />}/>
-                                                    <Route path="/popularityproduct" element={<PopularityProduct />}/>
-                                                    <Route path="/review" element={<Review />}/>
-                                                </Routes>
-                                            </div>
+                            ) :
+                            (
+                                <body>
+                                    <div css={s.menuLayout}>
+                                        <div css={s.menuListBox}>
+                                            <Routes>
+                                                <Route path="/category" element={<CategoryView />}/>
+                                                <Route path="/newproduct" element={<NewProductView />}/>
+                                                <Route path="/popularityproduct" element={<PopularityProduct />}/>
+                                                <Route path="/review" element={<Review />}/>
+                                            </Routes>
                                         </div>
-                                    </body>
+                                    </div>
+                                </body>
                             )
                         }
         </div>

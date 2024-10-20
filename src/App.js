@@ -6,6 +6,7 @@ import { reset } from "./style/global";
 import SigninPage from "./pages/SigninPage/SigninPage";
 import ShoppingBasket from "./pages/ShoppingBasket/ShoppingBasket";
 import MainLayout from "./components/MainLayout/MainLayout";
+import MainMenu from "./components/MainMenu/MainMenu";
 import AdminSignin from "./pages/Admin/AdminSignin/AdminSignin";
 import AdminMainPage from "./pages/Admin/AdminMainPage/AdminMainPage";
 import TestExam from "./pages/Test/TestExam";
@@ -91,7 +92,8 @@ function App() {
         <>
         <MainLayout>
           <Routes>
-            <Route path="/*" element={<MainPage />} />
+            <Route path="/" element={<MainPage />} />
+            <Route path="/user/*" element={<MainMenu />} />
             <Route path="/product/:productId/*" element={<ProductPage />} />
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />

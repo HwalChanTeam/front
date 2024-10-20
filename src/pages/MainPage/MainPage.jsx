@@ -6,6 +6,9 @@ function MainPage() {
     return (
         <div css={s.layout}>
             <MainMenu />
+            <div>
+                
+            </div>
         </div>
     );
 }
