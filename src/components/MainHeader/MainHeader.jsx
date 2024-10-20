@@ -7,7 +7,7 @@ import MainSearch from "../MainSearch/MainSearch";
 import { instance } from "../../apis/util/instance";
 import logo from "../../assets/images/logo.png";
 import { RiLoginBoxLine } from "react-icons/ri";
-import { BsBasket3 } from "react-icons/bs";
+import { LuUser } from "react-icons/lu";
 import { SlBasket } from "react-icons/sl";
 import { MdOutlineLocalShipping } from "react-icons/md";
 
@@ -30,7 +30,7 @@ function MainHeader(props) {
         <div css={s.buttonLayout}>
           <Link to={"/user/signin"}><RiLoginBoxLine /></Link>
           <Link to={"/basket"}><SlBasket /></Link>
-          <Link to={"/order"}><BsBasket3 /></Link>
+          <Link to={"/mypage"}><LuUser /></Link>
         </div>
       </div>
     </div>
