@@ -4,12 +4,11 @@ import MainMenu from '../../components/MainMenu/MainMenu';
 import { FiShoppingCart } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { Link, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
-import MainFooter from "../../components/MainFooter/MainFooter";
 import InformationView from "../../components/Product/InformationView/InformationView";
 import BuyReview from "../../components/Product/BuyReview/BuyReview";
 import InquiryView from "../../components/Product/InquiryView/InquiryView";
 import DeliveryView from "../../components/Product/Delivery/DeliveryView";
-import { basketAddProductApi, buyProductApi } from "../../apis/productApi";
+import { basketAddProductApi, buyProductApi, productLikeApi } from "../../apis/productApi";
 import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
 
 
@@ -106,7 +105,7 @@ function ProductPage() {
         origin: "",
         price: 0,
         category: ""
-     });
+    });
 
 
 
@@ -139,7 +138,7 @@ function ProductPage() {
             navigate("/user/signin");
         }
             return;
-          }
+            }
             const response = await basketAddProductApi(productId);
         };
 
@@ -150,13 +149,28 @@ function ProductPage() {
             navigate("/user/signin");
         }
             return;
-          }
-          const response = await buyProductApi(productId);
-    }
+            }
+            const response = await buyProductApi(productId);
+        };
+    
+    // 찜 버튼
+    const handleWishListButton = async () => {
+        if (!token) {
+            if(window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
+            navigate("/user/signin");
+            }
+            return;
+        } else {
+            const response = await productLikeApi(productId);
+            alert("찜에 추가되었습니다.");
+        }
+    };
+    
 
-    const calculateTotalPrice = (product) => {
-        return product.price * productItems.buyItem;
-      };
+
+        const calculateTotalPrice = (product) => {
+            return product.price * productItems.buyItem;
+        };
 
     return (
         <div css={s.layout}>
@@ -194,8 +208,8 @@ function ProductPage() {
                         <p>
                             총 {calculateTotalPrice(product).toLocaleString()} 원
                             <span>
-                                <button>구매하기</button>
-                                <IoMdHeartEmpty size="40"/>
+                                <button onClick={handleBuyButton} >구매하기</button>
+                                <IoMdHeartEmpty onClick={handleWishListButton} size="40" style={{cursor:"pointer"}} />
                                 <FiShoppingCart onClick={basketAddProductButton} size="40"  style={{cursor:"pointer"}}/>
                             </span>
                         </p>

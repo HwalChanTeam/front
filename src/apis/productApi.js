@@ -23,14 +23,25 @@ export const getProductLikeApi = async (userId, id) => {
     return response;
 };
 
-export const deleteProductDisLikeApi = async (userId, id) => {
+export const productLikeApi = async (productId) => {
     let response = null;
     try {
-        response = await instance.get("/product/dislike", { userId, id });
+        response = await instance.post("/product/like", {productId});
     } catch (e) {
-
+        console.error(e);
+        response = e.response
     }
 }
+
+export const deleteProductDisLikeApi = async (productId) => {
+    let response = null;
+    try {
+        response = await instance.delete("/product/dislike", { productId });
+    } catch (e) {
+        console.error(e);
+        response = e.response
+    }
+};
 
 export const basketAddProductApi = async (productId) => {
     let response = null;
