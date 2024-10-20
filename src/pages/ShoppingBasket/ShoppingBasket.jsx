@@ -6,14 +6,16 @@ import MainSearch from "../../components/MainSearch/MainSearch";
 import MainFooter from "../../components/MainFooter/MainFooter";
 import { atom, useRecoilState } from "recoil";
 import { selectedItemsAtom } from "../../apis/util/atom";
+import { useMutation, useQuery } from "react-query";
+import { deleteProductApi, getCartProductsApi } from "../../apis/productApi";
 
 // 로그인 안하고 들어가면 로그인 페이지로 돌리기
 // 구매하기 버튼 누르면 상품 구매 페이지로 넘기기
 //
 
-const tempItemList = [
+const tempProductList = [
   {
-    id: 1,
+    productId: 1,
     title: "엄마의 손맛 김치찌개",
     description: "상품설명 이것은 상품설명입니다.",
     image:
@@ -22,7 +24,7 @@ const tempItemList = [
     quantity: 1,
   },
   {
-    id: 2,
+    productId: 2,
     title: "우리엄마의 완자고기",
     description: "상품설명 이것은 상품설명입니다.",
     image:
@@ -31,7 +33,7 @@ const tempItemList = [
     quantity: 3,
   },
   {
-    id: 3,
+    productId: 3,
     title: "삼겹살",
     description: "상품설명 이것은 상품설명입니다.",
     image:
@@ -44,129 +46,161 @@ const tempItemList = [
 function ShoppingBasket(props) {
   const navigate = useNavigate();
 
-  const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsAtom); // atom 사용
+  const [selectedProducts, setSelectedProducts] = useRecoilState(selectedItemsAtom); // atom 사용
+  const [productList, setProductList] = useState([]); // 상품 목록 상태 추가
 
-  const [productList, setProductList] = useState(
-    tempItemList.map((tempItemList) => ({ ...tempItemList, checked: false }))
-  );
+  // 전체 체크박스 기본 속성 - false
+  const [isAllchecked, setIsAllchecked] = useState(false);
 
+  // 장바구니 상품 가져오기
+  const { data, isLoading, refetch } = useQuery("cartProducts", getCartProductsApi, {
+    onSuccess: (data) => setProductList(data), // 데이터 가져오면 productList에 설정
+  });
+
+  // 삭제 요청을 위한 mutation
+  const mutation = useMutation(deleteProductApi, {
+    onSuccess: () => {
+      refetch(); // 삭제 후 장바구니를 다시 불러오기
+    }
+  });
+
+  // 전체 체크박스 체인지 함수
+  const handleAllCkeckBoxOnChange = () => {
+    const checkState = !isAllchecked;
+    setIsAllchecked(checkState);
+    setProductList(productList.map((product) => ({ ...product, checked: checkState })));
+  };
+
+  // 개별 체크박스 체인지 함수
+  const handleCheckBoxOnChange = (productId) => {
+    const updateProductList = productList.map((product) =>
+      product.productId === productId ? { ...product, checked: !product.checked } : product
+    );
+    setProductList(updateProductList);
+
+    // 모든 개별 체크박스가 선택된 경우 전체 체크박스도 체크
+    const allChecked = updateProductList.every((product) => product.checked);
+    setIsAllchecked(allChecked);
+  };
+
+  // 수량 변경 함수
   const handleQuantityChange = (index, number) => {
-    const updatedItems = productList.map((item, i) =>
+    const updatedProducts = productList.map((product, i) =>
       i === index
-        ? { ...item, quantity: Math.max(1, item.quantity + number) }
-        : item
+        ? { ...product, quantity: Math.max(1, product.quantity + number) }
+        : product
     );
-    setProductList(updatedItems);
+    setProductList(updatedProducts);
   };
 
-  const haneldDeleteButtonOnClick = (id) => {
-    const deleteItems = productList.filter((item) => item.id !== id);
-    setProductList(deleteItems);
+  // 삭제 버튼 클릭 함수
+  const handleDeleteButtonOnClick = (productId) => {
+    mutation.mutate(productId);
   };
 
-  const handleSubmitButtonOnClick = (id) => {
-    // id를 가져옴 ->
-    const updateItems = productList.map((item) =>
-      item.id === id ? { ...item } : item
-    );
-    setProductList(updateItems);
-    //api연결
+  // 상품갯수 * 가격 함수
+  const calculateTotalPrice = (product) => {
+    return product.price * product.quantity;
   };
 
+
+  // // 완료 버튼 클릭(현재 미사용)
+  // const handleSubmitButtonOnClick = (productId) => {
+  //   const updatedProducts = productList.map((product) =>
+  //     product.productId === productId ? { ...product } : product
+  //   );
+  //   setProductList(updatedProducts);
+  //   // api 연결
+  // };
+
+  // 구매 버튼 클릭 시 작동
   const handleBuyButtonOnClick = () => {
-    const selectedItems = productList.filter((item) => item.checked);
-    const selectedIds = selectedItems.map((item) => item.id);
+    const selectedProducts = productList.filter((product) => product.checked);
+    const selectedProductIds = selectedProducts.map((product) => product.productId);
 
-    if (selectedIds.length > 0) {
-      setSelectedItems(selectedIds);
+    if (selectedProductIds.length > 0) {
+      setSelectedProducts(selectedProductIds);
       navigate(`/order`);
     } else {
       alert("주문할 상품을 선택해 주세요.");
     }
   };
 
-  const handleCheckBoxOnChange = (id) => {
-    setProductList((productList) =>
-      productList.map((item) =>
-        item.id === id ? { ...item, checked: !item.checked } : item
-      )
-    );
-  };
-
-  const calculateTotalPrice = (item) => {
-    return item.price * item.quantity;
-  };
+  if (isLoading) return <div>Loading...</div>;
 
   return (
-      <div css={s.cartContainer}>
-        {/* 장바구니 목록 섹션 */}
-        <div css={s.cartListSection}>
-          <div css={s.basketHeader}>
-            <h2 css={s.title}>장바구니</h2>
-          </div>
-          <div css={s.basketBox}>
-            <table css={s.productTable}>
-              <thead css={s.thead}>
-                <tr>
-                  <td>
-                    <input type="checkbox" />
-                  </td>
-                  <th>상품</th>
-                  <th>상품명</th>
-                  <th>수량</th>
-                  <th>금액</th>
-                  <th>할인</th>
-                  <th>합계금액</th>
-                  <th>삭제</th>
-                </tr>
-              </thead>
-              <tbody>
-                {productList.map((item, index) => (
-                  <tr key={item.id}>
-                    <td>
-                    <input
-                    type="checkbox"
-                    onChange={() => handleCheckBoxOnChange(item.id)}
-                    checked={item.checked}
+    <div css={s.cartContainer}>
+      {/* 장바구니 목록 섹션 */}
+      <div css={s.cartListSection}>
+        <div css={s.basketHeader}>
+          <h2 css={s.title}>장바구니</h2>
+        </div>
+        <div css={s.basketBox}>
+          <table css={s.productTable}>
+            <thead css={s.thead}>
+              <tr>
+                <td>
+                  <input type="checkbox"
+                    onChange={handleAllCkeckBoxOnChange}
+                    checked={isAllchecked}
                   />
-                    </td>
-                    <td>
-                      <div css={s.img}>
-                        <img src={item.image} />
-                      </div>
-                    </td>
-                    <td>
-                      <div css={s.productName}>{item.title}</div>
-                      <tr>{item.description}</tr>
-                    </td>
-                    <td>
-                      <button onClick={() => handleQuantityChange(index, -1)}>
-                        -
-                      </button>
-                      {item.quantity}
-                      <button onClick={() => handleQuantityChange(index, +1)}>
-                        +
-                      </button>
-                    </td>
-                    <td>{item.price.toLocaleString()} 원</td>
-                    <td>-</td>
-                    <td> {calculateTotalPrice(item).toLocaleString()} 원</td>
-                    <td>
-                      <button onClick={() => haneldDeleteButtonOnClick(item.id)}>
-                        삭제
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div css={s.buttonBox}>
-            <button onClick={handleBuyButtonOnClick}>주문하기</button>
-            <button onClick={() => setProductList([])}>전체삭제</button>
-          </div>
+                </td>
+                <th>상품</th>
+                <th>상품명</th>
+                <th>수량</th>
+                <th>금액</th>
+                <th>할인</th>
+                <th>합계금액</th>
+                <th>삭제</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productList.map((product, index) => (
+                <tr key={product.productId}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      onChange={() => handleCheckBoxOnChange(product.productId)}
+                      checked={product.checked}
+                    />
+                  </td>
+                  <td>
+                    <div css={s.img}>
+                      <img src={product.image} />
+                    </div>
+                  </td>
+                  <td>
+                    <div css={s.productName}>{product.title}</div>
+                    <tr>{product.description}</tr>
+                  </td>
+                  <td>
+                    <button onClick={() => handleQuantityChange(index, -1)}>
+                      -
+                    </button>
+                    {product.quantity}
+                    <button onClick={() => handleQuantityChange(index, +1)}>
+                      +
+                    </button>
+                  </td>
+                  <td>{product.price.toLocaleString()} 원</td>
+                  <td>-</td>
+                  <td> {calculateTotalPrice(product).toLocaleString()} 원</td>
+                  <td>
+                    <button onClick={() => handleDeleteButtonOnClick(product.productId)}>
+                      삭제
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div css={s.buttonBox}>
+          <button onClick={handleBuyButtonOnClick}>주문하기</button>
+          <button onClick={() => setProductList([])}>전체삭제</button>
         </div>
       </div>
+    </div>
   );
 }
 
