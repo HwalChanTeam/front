@@ -21,7 +21,6 @@ export const tableLayout = css`
 
 export const subLayout = css`
     box-sizing: border-box;
-    margin-left: 74px;
     margin-bottom: 12px;
     width: 77px;
     display: flex;
@@ -76,9 +75,7 @@ export const productLayout = css`
         font-size: 20px;
         font-weight: 600;
         &:nth-last-of-type(1) {
-            font-weight: 600;
             font-style: italic;
-            font-size: 20px;
         }
     }
 `;

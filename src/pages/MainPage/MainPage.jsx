@@ -19,9 +19,15 @@ function MainPage() {
                     <p>이 달의 신상품</p>
                 </div>
                 <div css={s.newProductImgLayout}>
-                    <img src="" />
-                    <img src="" />
-                    <img src="" />
+                    <div>
+                        <img src="" />
+                    </div>
+                    <div>
+                        <img src="" />
+                    </div>
+                    <div>
+                        <img src="" />
+                    </div>
                 </div>
             </div>
             {/* 베스트 상품top4 */}
