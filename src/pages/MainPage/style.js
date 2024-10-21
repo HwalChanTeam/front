@@ -31,6 +31,8 @@ export const titleLayout = css`
     }
 `;
 
+// 신상품
+
 export const newProudctLayout = css`
     box-sizing: border-box;
     display: flex;
@@ -50,30 +52,205 @@ export const newProductTitle = css`
         color: #c2c2c2;
 
         &:nth-last-of-type(1) {
-            margin-bottom: 30px;
-            font-size: 32px;
+            margin-bottom: 20px;
+            font-size: 28px;
             font-weight: 600;
             color: #000000;
         }
     }
 `;
 
-export const newProductImgLayout = css`
+export const newProductContentLayout = css`
     box-sizing: border-box;
     display: flex;
-    flex-grow: 1;
     width: 1200px;
-    height: 500px;
-    
-    & img {
-        flex: 1;
-        margin-right: 15px;
-        height: 390px;
-        background-color: #dbdbdb;
 
+    & div {
         &:nth-last-of-type(1) {
-            margin: 0px;
+            & > img {
+                margin-right: 0px;
+            }
         }
     }
 `;
 
+
+export const imgLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    & img {
+        margin-right: 30px;
+        width: 250px;
+        height: 250px;
+        background-color: #dbdbdb;
+        cursor: pointer;
+    }
+
+    & div {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 250px;
+        height: 110px;
+        background-color: #797979;
+        & p {
+            margin: 0px;
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+
+            &:nth-last-of-type(1) {
+                font-size: 20px;
+                color: #000000;
+            }
+
+        }
+    }
+
+`;
+
+// best 상품
+
+export const bestProductLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 50px;
+    width: 1200px;
+`;
+
+export const bestProductTitle = css`
+    box-sizing: border-box;
+
+    & p {
+        
+        margin: 0px;
+        font-size: 20px;
+        color: #c2c2c2;
+
+        &:nth-last-of-type(1) {
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 600;
+            color: #000000;
+        }
+    }
+`;
+
+export const bestProductContentLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    width: 1200px;
+
+    & div {
+        &:nth-last-of-type(1) {
+            & > img {
+                margin-right: 0px;
+            }
+        }
+    }
+`;
+
+
+export const bestImgLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    & img {
+        margin-right: 20px;
+        width: 200px;
+        height: 200px;
+        background-color: #dbdbdb;
+        cursor: pointer;
+    }
+
+    & div {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+        & p {
+            margin: 0px;
+            font-size: 18px;
+            font-weight: 600;
+
+            &:nth-of-type(1) {
+                margin: 5px 0px;
+            }
+        }
+    }
+
+`;
+
+// MD 추천 상품
+
+export const MDProductLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 50px;
+    width: 1200px;
+`;
+
+export const MDProductTitle = css`
+    box-sizing: border-box;
+
+    & p {
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 600;
+    }
+`;
+
+export const MDProductContentLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    width: 1200px;
+
+    & div {
+        &:nth-last-of-type(1) {
+            & > img {
+                margin-right: 0px;
+            }
+        }
+    }
+`;
+
+
+export const MDProductImgLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    & img {
+        margin-right: 20px;
+        width: 200px;
+        height: 200px;
+        background-color: #dbdbdb;
+        cursor: pointer;
+    }
+
+    & div {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+        & p {
+            margin: 0px;
+            font-size: 18px;
+            font-weight: 600;
+
+            &:nth-of-type(1) {
+                margin: 5px 0px;
+            }
+        }
+    }
+
+`;
