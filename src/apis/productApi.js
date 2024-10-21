@@ -60,7 +60,7 @@ export const basketAddProductApi = async (productId) => {
 
 
 // 장바구니 상품 가져오기
-export const getCartProductsApi = async () => {
+export const getBasketProductsApi = async () => {
     const response = await axios.get("/api/basket"); // 적절한 API 경로로 수정
     return response.data; // 데이터 반환
 };

@@ -1,13 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from "react";
 import * as s from "./style";
-import { Link, useNavigate } from "react-router-dom";
-import MainSearch from "../../components/MainSearch/MainSearch";
-import MainFooter from "../../components/MainFooter/MainFooter";
-import { atom, useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import { selectedItemsAtom } from "../../apis/util/atom";
 import { useMutation, useQuery } from "react-query";
-import { deleteProductApi, getCartProductsApi } from "../../apis/productApi";
+import { deleteProductApi, getBasketProductsApi } from "../../apis/productApi";
+import { FaPlus, FaEquals } from "react-icons/fa";
 
 // 로그인 안하고 들어가면 로그인 페이지로 돌리기
 // 구매하기 버튼 누르면 상품 구매 페이지로 넘기기
@@ -46,35 +45,47 @@ const tempProductList = [
 function ShoppingBasket(props) {
   const navigate = useNavigate();
 
-  const [selectedProducts, setSelectedProducts] = useRecoilState(selectedItemsAtom); // atom 사용
+  const [selectedProducts, setSelectedProducts] =
+    useRecoilState(selectedItemsAtom); // atom 사용
   const [productList, setProductList] = useState([]); // 상품 목록 상태 추가
 
   // 전체 체크박스 기본 속성 - false
   const [isAllchecked, setIsAllchecked] = useState(false);
 
   // 장바구니 상품 가져오기
-  const { data, isLoading, refetch } = useQuery("cartProducts", getCartProductsApi, {
-    onSuccess: (data) => setProductList(data), // 데이터 가져오면 productList에 설정
-  });
+  const { data, isLoading, isError, refetch } = useQuery(
+    "basketProducts",
+    getBasketProductsApi,
+    {
+      onSuccess: (data) => setProductList(data),
+      refetchOnWindowFocus: false, // 창 포커스 시 재요청 하지 않음
+      retry: 0,
+      // 데이터 가져오면 productList에 설정
+    }
+  );
 
   // 삭제 요청을 위한 mutation
   const mutation = useMutation(deleteProductApi, {
     onSuccess: () => {
       refetch(); // 삭제 후 장바구니를 다시 불러오기
-    }
+    },
   });
 
   // 전체 체크박스 체인지 함수
   const handleAllCkeckBoxOnChange = () => {
     const checkState = !isAllchecked;
     setIsAllchecked(checkState);
-    setProductList(productList.map((product) => ({ ...product, checked: checkState })));
+    setProductList(
+      productList.map((product) => ({ ...product, checked: checkState }))
+    );
   };
 
   // 개별 체크박스 체인지 함수
   const handleCheckBoxOnChange = (productId) => {
     const updateProductList = productList.map((product) =>
-      product.productId === productId ? { ...product, checked: !product.checked } : product
+      product.productId === productId
+        ? { ...product, checked: !product.checked }
+        : product
     );
     setProductList(updateProductList);
 
@@ -103,7 +114,6 @@ function ShoppingBasket(props) {
     return product.price * product.quantity;
   };
 
-
   // // 완료 버튼 클릭(현재 미사용)
   // const handleSubmitButtonOnClick = (productId) => {
   //   const updatedProducts = productList.map((product) =>
@@ -113,10 +123,26 @@ function ShoppingBasket(props) {
   //   // api 연결
   // };
 
+  // 총 상품금액, 총합계 계산 함수
+  const calculateTotals = () => {
+    const totalProductAmount = productList.reduce((total, product) => {
+      return total + (product.checked ? calculateTotalPrice(product) : 0);
+    }, 0);
+    const deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+    const totalAmount = totalProductAmount + deliveryFee;
+
+    return {totalProductAmount, totalAmount, deliveryFee};
+  };
+
+  const {totalProductAmount, totalAmount, deliveryFee} = calculateTotals();
+
+
   // 구매 버튼 클릭 시 작동
   const handleBuyButtonOnClick = () => {
     const selectedProducts = productList.filter((product) => product.checked);
-    const selectedProductIds = selectedProducts.map((product) => product.productId);
+    const selectedProductIds = selectedProducts.map(
+      (product) => product.productId
+    );
 
     if (selectedProductIds.length > 0) {
       setSelectedProducts(selectedProductIds);
@@ -127,6 +153,7 @@ function ShoppingBasket(props) {
   };
 
   if (isLoading) return <div>Loading...</div>;
+  // if (isError) return <div>데이터를 가져오는데 실패했습니다.</div>
 
   return (
     <div css={s.cartContainer}>
@@ -140,7 +167,8 @@ function ShoppingBasket(props) {
             <thead css={s.thead}>
               <tr>
                 <td>
-                  <input type="checkbox"
+                  <input
+                    type="checkbox"
                     onChange={handleAllCkeckBoxOnChange}
                     checked={isAllchecked}
                   />
@@ -186,7 +214,11 @@ function ShoppingBasket(props) {
                   <td>-</td>
                   <td> {calculateTotalPrice(product).toLocaleString()} 원</td>
                   <td>
-                    <button onClick={() => handleDeleteButtonOnClick(product.productId)}>
+                    <button
+                      onClick={() =>
+                        handleDeleteButtonOnClick(product.productId)
+                      }
+                    >
                       삭제
                     </button>
                   </td>
@@ -194,6 +226,24 @@ function ShoppingBasket(props) {
               ))}
             </tbody>
           </table>
+        </div>
+        <div css={s.footerBox}>
+          <div css={s.priceBox}>
+            <div css={s.productAmount}>
+            <p>총 {productList.filter(product => product.checked).length} 개의 상품금액</p>
+            <p>{totalProductAmount.toLocaleString()}원</p>
+            </div>
+            <FaPlus />
+            <div css={s.deliveryFee}>
+              <p>배송비</p>
+              <p>{deliveryFee.toLocaleString()}원</p>
+            </div>
+            <FaEquals />
+            <div css={s.totalAmount}>
+            <p>합계</p>
+            <p>{totalAmount.toLocaleString()}원</p>
+            </div>
+          </div>
         </div>
         <div css={s.buttonBox}>
           <button onClick={handleBuyButtonOnClick}>주문하기</button>

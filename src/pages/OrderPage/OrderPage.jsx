@@ -8,7 +8,7 @@ import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
 
 function OrderPage(props) {
-    const selectedProductIds = useRecoilState(selectedItemsAtom); // atom 사용
+    const [selectedProductIds] = useRecoilState(selectedItemsAtom); // atom 사용
     const token = localStorage.getItem("accessToken");
     const location = useLocation();
     const [product, setProduct] = useState([]);
