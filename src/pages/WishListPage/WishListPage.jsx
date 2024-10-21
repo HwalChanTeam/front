@@ -40,7 +40,7 @@ function WishListPage(props) {
 
     const [ productLikeList, setProductLikeList ] = useState({
         userId: 0,
-        productId: 0,
+        productId,
         productLikeId: 0,
         img: "",
         title: "",
@@ -81,34 +81,30 @@ function WishListPage(props) {
     }
 
 
-    return (
-        <div css={s.wishListContainer}>
+   return (
+    <div css={s.wishListContainer}>
         {/* 찜 목록 섹션 */}
         <div css={s.wishListSection}>
             <div css={s.wishListHeader}>
                 <h2>찜 목록</h2>
             </div>
-            { productLikeList.length === 0 ? (
+            {productLikeList.length === 0 ? (
                 <p css={s.emptyCartMessage}>찜목록이 비었습니다.</p>
-            )
-            :
-            <table css={s.tableLayout}>
-                <tbody css={s.menuLayout}>
-                {
-                    productLikeList.map((item) => (
-                        <tr key={item.productId}>
-                            <td>
-                                <div css={s.menuList}>
+            ) : (
+                <table css={s.tableLayout}>
+                    <tbody css={s.menuLayout}>
+                        {productLikeList.map((item) => (
+                            <tr key={item.productId}>
+                                <td>
+                                    <div css={s.menuList}>
                                         <div css={s.imgLayout}>
-                                            <Link 
-                                                key={item.productId}
-                                                to="">
+                                            <Link key={item.productId} to="">
                                                 <img src={item.img} />
                                             </Link>
                                         </div>
                                         <div css={s.contentLayout}>
                                             <div css={s.productLayout}>
-                                                <h2>{item.name}</h2>
+                                                <h2>{item.title}</h2> {/* 'name'을 'title'로 수정 */}
                                                 <h2>{item.price}</h2>
                                             </div>
                                             <div css={s.icons}>
@@ -116,18 +112,17 @@ function WishListPage(props) {
                                                 <button onClick={() => hadleDisLikeOnClick(item.productId)} ><IoIosHeart size="26"/></button>
                                             </div>
                                         </div>
-                                </div>
-                            </td>
-                        </tr>
-                    ))
-                }
-                </tbody>
-            </table>
-
-        }
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     </div>
-    );
+);
+
 }
 
 export default WishListPage;
