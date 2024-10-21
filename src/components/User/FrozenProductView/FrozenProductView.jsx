@@ -43,8 +43,7 @@ function FrozenProductView(props) {
         productId: 0,
         img: "",
         title: "",
-        price: "",
-
+        price: ""
     });
 
     const productPath = (productId) => `/product/${productId}`;
@@ -53,7 +52,6 @@ function FrozenProductView(props) {
         <div css={s.layout}>
             <div css={s.contentLayout}>
                 <table css={s.tableLayout}>
-
                     <tbody css={s.menuLayout}>
                         {   
                             products.map((product) => (
@@ -76,7 +74,6 @@ function FrozenProductView(props) {
                                 </tr>
                             ))
                         }
-                        
                     </tbody>
                 </table>
             </div>

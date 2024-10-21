@@ -1,9 +1,9 @@
 import React from 'react';
 import { Patch } from 'react-axios';
 import { Route, Routes } from 'react-router-dom';
-import WishListPage from '../WishListPage/WishListPage';
 import UserInfo from '../../components/MyPageList/UserInfo/UserInfo';
 import BuyInfo from '../../components/MyPageList/BuyInfo/BuyInfo';
+import WishList from '../../components/MyPageList/WishList/WishList';
 
 
 // const menus = [
@@ -28,7 +28,7 @@ function MyPage(props) {
             <div>
             <Routes>
             <Route path="user/mypage/userinfo" element={<UserInfo />} />
-            <Route path="uesr/mypage/wishlist" element={<WishListPage />} />
+            <Route path="uesr/mypage/wishlist" element={<WishList />} />
             <Route path="uesr/mypage/buyinfo" element={<BuyInfo />} />
           </Routes>
             </div>

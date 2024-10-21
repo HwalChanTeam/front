@@ -12,6 +12,7 @@ function MainPage() {
                 <p>쿡 배송</p>
                 <p>빠르게 배송해드립니다!</p>
             </div>
+            
             {/* 이달의 상품 */}
             <div css={s.newProudctLayout} > 
                 <div css={s.newProductTitle}>
@@ -52,6 +53,7 @@ function MainPage() {
                     </div>
                 </div>
             </div>
+
             {/* 베스트 상품top5 */}
             <div css={s.bestProductLayout} > 
                 <div css={s.bestProductTitle}>

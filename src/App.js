@@ -16,7 +16,6 @@ import { instance } from "./apis/util/instance";
 import { useEffect, useState } from "react";
 import OrderPage from "./pages/OrderPage/OrderPage";
 import MainFooter from "./components/MainFooter/MainFooter";
-import WishListPage from "./pages/WishListPage/WishListPage";
 import MyPage from "./pages/MyPage/MyPage";
 
 function App() {
@@ -98,7 +97,6 @@ function App() {
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />
             <Route path="/basket" element={<ShoppingBasket />} />
-            <Route path="/product" element={<WishListPage />} />
             <Route path="/order/*" element={<OrderPage />} />
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/test" element={<TestExam />} />
