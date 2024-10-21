@@ -52,7 +52,8 @@ export const numberLayout = css`
     & > h1 {
         margin: 0px;
         margin-top: 5px;
-        font-size: 48px;
+        width: 200px;
+        font-size: 42px;
         font-weight: 800;
     } 
 `;

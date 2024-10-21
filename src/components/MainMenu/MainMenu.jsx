@@ -1,7 +1,7 @@
 
 /** @jsxImportSource @emotion/react */
-import { useEffect, useState } from 'react';
 import *as s from './style';
+import { useEffect, useState } from 'react';
 import CategoryView from '../User/CategoryView/CategoryView';
 import NewProductView from '../User/NewProductView/NewProductView';
 import PopularityProduct from '../User/PopularityProductView/PopularityProduct';
@@ -10,6 +10,8 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import MainFooter from '../MainFooter/MainFooter';
 import MainSearch from '../MainSearch/MainSearch';
 import { instance } from '../../apis/util/instance';
+import FrozenProductView from '../User/FrozenProductView/FrozenProductView';
+import RefrigeratedView from '../User/RefrigeratedView/RefrigeratedView';
 
 const selectMainMenus = [
     {
@@ -32,15 +34,31 @@ const selectMainMenus = [
         name: "상품 후기",
         path: "/user/review"
     },
-]
+];
+
+const subCategories = [
+    {
+        id: 1,
+        name: "냉동",
+        path: "/user/category/frozen"
+    },
+    {
+        id: 2,
+        name: "냉장",
+        path: "/user/category/refrigerated"
+    },
+
+];
 
 function MainMenu(props) {
     const location = useLocation();
     const pathname = location.pathname;
 
     const [productList, setProductList] = useState([]);
+
     const [mainSearch, setMainSearch] = useState("");
 
+    const [ dropDownOpen, setDropDownOpen ] = useState(false);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -68,6 +86,14 @@ function MainMenu(props) {
         setMainSearch(name);
     };
 
+    const handleCategoryOnClick = () => {
+        setDropDownOpen(prev => !prev);
+    };
+
+    const handleSubPageOnClick = (path) => {
+        setDropDownOpen(false);
+    }
+
     return (
         <div css={s.container}>
             <header css={s.headerLayout}>
@@ -75,12 +101,34 @@ function MainMenu(props) {
                     <div css={s.buttonLayout}>
                         {
                             selectMainMenus.map((menu) => (
-                                <Link
-                                    key={menu.id}
-                                    to={menu.path}
-                                    css={s.selectedMenu(pathname === menu.path)}>
-                                        <span>{menu.name}</span>
-                                </Link>
+                                <div key={menu.id} >
+                                    { menu.name === "카테고리" ? (
+                                        <div css={s.categoryButton}>
+                                            <button onClick={handleCategoryOnClick} >
+                                                <span css={s.selectedMenu(pathname === "user/category")} >{menu.name}</span>
+                                            </button>
+                                            {dropDownOpen && (
+                                                <ul css={s.categorySubLayout}>
+                                                    {subCategories.map((sub) => (
+                                                        <li key={sub.id}>
+                                                            <Link to={sub.path}
+                                                                onClick={() => handleSubPageOnClick(sub.path)} >
+                                                                {sub.name}
+                                                            </Link>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <Link
+                                            to={menu.path}
+                                            css={s.selectedMenu(pathname === menu.path)}>
+                                                <span>{menu.name}</span>
+                                        </Link>
+
+                                    )}
+                                </div>
                             ))
                         }
                     </div>
@@ -97,6 +145,8 @@ function MainMenu(props) {
                                         <div css={s.menuListBox}>
                                             <Routes>
                                                 <Route path="/category" element={<CategoryView />}/>
+                                                <Route path="/category/frozen" element={<FrozenProductView />}/>
+                                                <Route path="/category/refrigerated" element={<RefrigeratedView />}/>
                                                 <Route path="/newproduct" element={<NewProductView />}/>
                                                 <Route path="/popularityproduct" element={<PopularityProduct />}/>
                                                 <Route path="/review" element={<Review />}/>
