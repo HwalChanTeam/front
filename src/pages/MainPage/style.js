@@ -12,7 +12,7 @@ export const titleLayout = css`
     justify-content: center;
     align-items: center;
     margin-top: 30px;
-    width: 1536px;
+    width: 1903px;
     height: 200px;
     background-color: #f5f5f5;
 

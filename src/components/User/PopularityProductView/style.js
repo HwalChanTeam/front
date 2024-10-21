@@ -21,7 +21,6 @@ export const tableLayout = css`
 
 export const subLayout = css`
     box-sizing: border-box;
-    margin-left: 95px;
     margin-bottom: 12px;
     width: 128px;
     display: flex;
@@ -38,17 +37,21 @@ export const subLayout = css`
 
 export const menuLayout = css`
     box-sizing: border-box;
-    width: 100%;
-    margin: 0px 10px;
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
+
+    & td {
+        padding: 0px;
+    }
 `;
 
 export const numberLayout = css`
     box-sizing: border-box;
 
     & > h1 {
-        margin: 5px 0px 0px 85px;
+        margin: 0px;
+        margin-top: 5px;
         font-size: 48px;
         font-weight: 800;
     } 
@@ -56,30 +59,34 @@ export const numberLayout = css`
 
 export const menuList = css`
     box-sizing: border-box;
-    width: 245px;
+    width: 272px;
     padding: 0px;
 `;
 
 export const imgLayout = css`
     box-sizing: border-box;
-    margin-left: 85px;
-    width: 160px;
-    height: 160px;
+    width: 200px;
+    height: 200px;
     background-color: #dbdbdb;
+    cursor: pointer;
+
+    & img {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+    }
 `;
 
 
 
 export const productLayout = css`
-    margin-left: 85px;
     & h2 {
+        width: 200px;
         margin: 5px 0px;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 600;
         &:nth-last-of-type(1) {
-            font-weight: 750;
             font-style: italic;
-            color: #5DB755;
         }
     }
 `;
