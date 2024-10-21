@@ -5,10 +5,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { IoIosHeart } from "react-icons/io";
 import { SlBasket } from "react-icons/sl";
 import { useMutation, useQuery } from 'react-query';
-import { instance } from '../../apis/util/instance';
-import { getProductLikeApi } from '../../apis/productApi';
-import { title } from '../ShoppingBasket/style';
-import { price } from '../ProductPage/style';
+import { getProductLikeApi } from '../../../apis/productApi';
+import { instance } from '../../../apis/util/instance';
 
 const itemProductList = [
     {
@@ -32,7 +30,7 @@ const itemProductList = [
 
 ];
 
-function WishListPage(props) {
+function WishList(props) {
 
     const navigate = useNavigate();
     const params = useParams();
@@ -125,4 +123,4 @@ function WishListPage(props) {
 
 }
 
-export default WishListPage;
+export default WishList;
