@@ -39,8 +39,62 @@ export const buttonLayout = css`
 
 `;
 
+export const categoryButton = css`
+    position: relative;
+
+    & button {
+        background-color: transparent;
+        border: none;
+        padding: 0px;
+
+        & span {
+            margin-right: 60px;
+            font-size: 16px;
+            color: #5B5B5B;
+        }
+    }
+`;
+
+export const categorySubLayout = css`
+    box-sizing: border-box;
+    margin: 0px;
+    margin-top: 5px;
+    padding: 5px;
+    width: 80px;
+    height: 70px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    background-color: #ffffff;
+    border: 1px solid #dbdbdb;
+
+    & li {
+        width: 70px;
+        list-style: none;
+        padding-bottom: 5px;
+
+        & a{
+            margin: 0px;
+            width: 100px;
+            font-size: 16px;
+            color: #5B5B5B;
+
+            &:hover {
+                font-weight: 600;
+            }
+        }
+    }
+`;
+
 export const selectedMenu = (isSelected) => css`
     border-top: ${isSelected ? "2px solid #964747" : "transparent"};
+
+    &:hover {
+        color: #964747;
+        font-weight: 600;
+    }
+    
 `; 
 
 export const menuLayout = css`

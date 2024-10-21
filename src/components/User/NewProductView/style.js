@@ -40,6 +40,7 @@ export const menuLayout = css`
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
+    margin-top: 120px;
     width: 100%;
 
     & td {
