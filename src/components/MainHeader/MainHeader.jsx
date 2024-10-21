@@ -18,6 +18,16 @@ function MainHeader(props) {
     window.location.reload(); // 페이지를 새로 고침하여 상태를 초기화
   };
 
+  const handleMyPageOnClick = () => {
+    if(!token) {
+      if(window.confirm("로그인이 필요한 서비스 입니다.\n로그인 하시겠습니까?")) {
+        navigate("/login")
+      }
+      return;
+    }
+    navigate("/mypage")
+  }
+
   return (
     <div css={s.background}>
       <div css={s.headerLayout}>
@@ -36,9 +46,9 @@ function MainHeader(props) {
         </div>
         :
         <div css={s.buttonLayout}>
-        <Link onClick={handleLogout}><RiLogoutBoxRLine /></Link>
+        <a onClick={handleLogout}><RiLogoutBoxRLine /></a>
         <Link to={"/basket"}><SlBasket /></Link>
-        <Link to={"/mypage"}><LuUser /></Link>
+        <a onClick={handleMyPageOnClick}><LuUser /></a>
       </div>
           }
       </div>
