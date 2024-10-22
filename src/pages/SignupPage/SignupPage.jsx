@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import * as s from "./style";
 import { useNavigate } from "react-router-dom";
 import { instance } from "../../apis/util/instance";
-import { sendEmailApi } from "../../apis/sendEmailApi";
 import logo from "../../assets/images/logo.png";
 import { SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
+import { sendEmailApi } from "../../apis/emailApi";
 
 function SignupPage(props) {
   const navigate = useNavigate();
