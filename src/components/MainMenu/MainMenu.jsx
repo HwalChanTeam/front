@@ -10,8 +10,12 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import MainFooter from '../MainFooter/MainFooter';
 import MainSearch from '../MainSearch/MainSearch';
 import { instance } from '../../apis/util/instance';
-import FrozenProductView from '../User/FrozenProductView/FrozenProductView';
-import RefrigeratedView from '../User/RefrigeratedView/RefrigeratedView';
+import FrozenProductView from '../Category/FrozenProductView/FrozenProductView';
+import RefrigeratedView from '../Category/RefrigeratedView/RefrigeratedView';
+import Soup from '../Category/Soup/Soup';
+import Anju from '../Category/Anju/Anju';
+import Mealkit from '../Category/Mealkit/Mealkit';
+import SimplyCook from '../Category/SimplyCook/SimplyCook';
 
 const selectMainMenus = [
     {
@@ -39,15 +43,37 @@ const selectMainMenus = [
 const subCategories = [
     {
         id: 1,
+        name: "국.탕.찌개",
+        path: "/user/category/soup"
+    },
+    {
+        id: 2,
+        name: "안주",
+        path: "/user/category/anju"
+    },
+    {
+        id: 3,
+        name: "밀키트",
+        path: "/user/category/mealkit"
+    },
+    {
+        id: 4,
+        name: "간편식",
+        path: "/user/category/simplycook"
+    },
+];
+
+const mealkitSubCategories = [
+    {
+        id: 1,
         name: "냉동",
-        path: "/user/category/frozen"
+        path: "/user/category/mealkit/frozen"
     },
     {
         id: 2,
         name: "냉장",
-        path: "/user/category/refrigerated"
+        path: "/user/category/mealkit/refrigerated"
     },
-
 ];
 
 function MainMenu(props) {
@@ -59,6 +85,8 @@ function MainMenu(props) {
     const [mainSearch, setMainSearch] = useState("");
 
     const [ dropDownOpen, setDropDownOpen ] = useState(false);
+
+    const [ mealkitDropDownOpen, setMealkitDropDownOpen ] = useState(false);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -90,9 +118,23 @@ function MainMenu(props) {
         setDropDownOpen(prev => !prev);
     };
 
-    const handleSubPageOnClick = (path) => {
+    const handleSubMouseEnter = (subCategory) => {
+        setDropDownOpen(subCategory);
+    };
+
+    const handleMouseLeave = () => {
         setDropDownOpen(false);
-    }
+    };
+
+    const handleMealkitOnClick = (e) => {
+        setDropDownOpen(prev => !prev);
+    };
+
+    
+    const handleSubMealkitPageOnClick = (path) => {
+        setMealkitDropDownOpen(false);
+    };
+
 
     return (
         <div css={s.container}>
@@ -105,16 +147,31 @@ function MainMenu(props) {
                                     { menu.name === "카테고리" ? (
                                         <div css={s.categoryButton}>
                                             <button onClick={handleCategoryOnClick} >
-                                                <span css={s.selectedMenu(pathname === "user/category")} >{menu.name}</span>
+                                                <span >{menu.name}</span>
                                             </button>
-                                            {dropDownOpen && (
+                                            {  dropDownOpen && (
                                                 <ul css={s.categorySubLayout}>
                                                     {subCategories.map((sub) => (
                                                         <li key={sub.id}>
                                                             <Link to={sub.path}
-                                                                onClick={() => handleSubPageOnClick(sub.path)} >
+                                                                onMouseEnter={() => handleSubMouseEnter(sub.path)} 
+                                                                onMouseLeave={handleMouseLeave}>
                                                                 {sub.name}
                                                             </Link>
+                                                            {
+                                                                sub.name === "밀키트" && mealkitDropDownOpen && (
+                                                                    <ul css={s.categoryMealkitSubLayout}>
+                                                                        {mealkitSubCategories.map((mealkitSub) => (
+                                                                            <li key={mealkitSub.id}>
+                                                                                <Link to={mealkitSub.path}
+                                                                                    onClick={() => handleSubMealkitPageOnClick(mealkitSub.path)} >
+                                                                                    {mealkitSub.name}
+                                                                                </Link>
+                                                                            </li>
+                                                                        ))}
+                                                                    </ul>
+                                                                )
+                                                            }
                                                         </li>
                                                     ))}
                                                 </ul>
@@ -145,8 +202,12 @@ function MainMenu(props) {
                                         <div css={s.menuListBox}>
                                             <Routes>
                                                 <Route path="/category" element={<CategoryView />}/>
-                                                <Route path="/category/frozen" element={<FrozenProductView />}/>
-                                                <Route path="/category/refrigerated" element={<RefrigeratedView />}/>
+                                                <Route path="/soup" element={<Soup />}/>
+                                                <Route path="/anju" element={<Anju />}/>
+                                                <Route path="/mealkit" element={<Mealkit />}/>
+                                                <Route path="/simplycook" element={<SimplyCook />}/>
+                                                <Route path="/mealkit/frozen" element={<FrozenProductView />}/>
+                                                <Route path="/mealkit/refrigerated" element={<RefrigeratedView />}/>
                                                 <Route path="/newproduct" element={<NewProductView />}/>
                                                 <Route path="/popularityproduct" element={<PopularityProduct />}/>
                                                 <Route path="/review" element={<Review />}/>

@@ -52,7 +52,7 @@ export const numberLayout = css`
     align-items: center;
     justify-content: center;
     position: absolute;
-    z-index: 1000;
+    z-index: 1;
     width: 30px;
     height: 30px;
     background-color: #f4f4f4f4;
