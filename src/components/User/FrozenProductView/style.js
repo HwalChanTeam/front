@@ -9,7 +9,7 @@ export const layout = css`
 
 export const contentLayout = css`
     box-sizing: border-box;
-    margin-top: 120px;
+    margin-top: 54px;
     width: 100%;
     & table {
         width: 100%;

@@ -19,28 +19,11 @@ export const tableLayout = css`
     width: 100%;
 `;
 
-export const subLayout = css`
-    box-sizing: border-box;
-    margin-left: 74px;
-    margin-bottom: 12px;
-    width: 77px;
-    display: flex;
-    flex-direction: column;
-    border-bottom: 3px solid #AA1414;
-
-    & h2 {
-        margin: 10px 0px 3px;
-        padding-left: 5px;
-        font-size: 18px;
-    }
-
-`;
-
 export const menuLayout = css`
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
-    margin-top: 120px;
+    margin-top: 54px;
     width: 100%;
 
     & td {
