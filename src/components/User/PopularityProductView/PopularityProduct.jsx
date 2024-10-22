@@ -1,64 +1,65 @@
 /** @jsxImportSource @emotion/react */
 import { Link } from 'react-router-dom';
 import *as s from './style';
+import { useState } from 'react';
 
 const products = [
     {
-        id: 1,
+        productId: 1,
         img: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
         name: "부대찌개",
         price: "11,000",
     },
     {
-        id: 2,
+        productId: 2,
         img: "",
         name: "bbbb",
         price: "11,000"
     },
     {
-        id: 3,
+        productId: 3,
         img: "",
         name: "cccc",
         price: "11,000"
     },
     {
-        id: 4,
+        productId: 4,
         img: "",
         name: "dddd",
         price: "11,000"
     },
     {
-        id: 5,
+        productId: 5,
         img: "",
         name: "ffff",
         price: "11,000"
     },
     {
-        id: 6,
+        productId: 6,
         img: "",
         name: "ffff",
         price: "11,000"
     },
     {
-        id: 7,
+        productId: 7,
         img: "",
         name: "ffff",
         price: "11,000"
     },
     {
-        id: 8,
+        productId: 8,
         img: "",
         name: "ffff",
         price: "11,000"
     },
     {
-        id: 9,
+        productId: 9,
         img: "",
         name: "ffff",
         price: "11,000"
     },
     {
-        id: 10,
+        productId: 10,
         img: "",
         name: "ffff",
         price: "11,000"
@@ -79,17 +80,17 @@ function PopularityProduct(props) {
 
                     <tbody css={s.menuLayout}>
                     {   
-                        products.map((product) => (
+                        products.map((product, index) => (
                             <tr>
                                 <td>
                                     <div css={s.numberLayout}>
-                                        <h1>01</h1>
+                                        <h1>{index + 1}</h1>
                                     </div>
                                     <div css={s.menuList}>
                                             <div css={s.imgLayout}>
                                                 <Link 
-                                                    key={product.id}
-                                                    to={productPath(product.id)}>
+                                                    key={product.productId}
+                                                    to={productPath(product.productId)}>
                                                         <img src={product.img} />
                                                 </Link>
                                             </div>
