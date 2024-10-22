@@ -6,6 +6,7 @@ export const mainLayout = css`
   justify-content: center;
   align-items: center;
   width: 1300px;
+  height: 800px;
 `;
 
 export const logo = css`
@@ -111,6 +112,7 @@ export const inputEmail = css`
         height: 50px;
         border: 1px solid #000000;
     }
+
     & button {
     margin-bottom: 10px;
     width: 100%;
@@ -120,6 +122,25 @@ export const inputEmail = css`
     border-radius: 4px;
     color: #964747;
     font-weight: 600;
+  }
+`;
+
+export const emailCkeck = css`
+  display: flex;
+  width: 100%;
+
+  & input {
+    border-right: none; /* 오른쪽 보더 없애기 */
+    border: 1px solid #964747; /* 나머지 보더 설정 */
+    border-radius: 4px 0 0 4px; /* 왼쪽만 둥글게 */
+    margin-bottom: 0;
+  }
+
+  & button {
+     width: 100px; /* 버튼 너비 조정 */
+    border-radius: 0 4px 4px 0; /* 오른쪽만 둥글게 */
+    margin-left: -10px; /* 버튼과 입력란 사이의 경계 보더 문제 해결 */
+    margin-bottom: 0;
   }
 `;
 
@@ -145,7 +166,6 @@ export const joinOkButton = css`
 export const oauth2Buttons = css`
   display: flex;
   width: 100%;
-  margin-bottom: 15px;
 
   & > button {
     box-sizing: border-box;
