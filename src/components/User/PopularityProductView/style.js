@@ -91,7 +91,7 @@ export const productLayout = css`
     & h2 {
         width: 200px;
         margin: 5px 0px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 600;
         &:nth-last-of-type(1) {
             font-style: italic;

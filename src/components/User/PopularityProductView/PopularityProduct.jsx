@@ -2,6 +2,8 @@
 import { Link } from 'react-router-dom';
 import *as s from './style';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
+import { getPopularityProudctApi } from '../../../apis/productApi';
 
 const products = [
     {
@@ -68,7 +70,25 @@ const products = [
 
 function PopularityProduct(props) {
 
+    // 해당 상품 클릭시 해당하는 상품페이지로 넘어가는
     const productPath = (productId) => `/product/${productId}`;
+
+    const [ bestProductList, setBestProductList ] = useState([{
+        productId: 0,
+        title: "",
+        price: 0,
+        thumbnaillmg: ""
+    }]);
+
+    const { data, isLoading } = useQuery(
+        "bestProducts",
+        getPopularityProudctApi,
+        {
+            onSuccess: (data) => setBestProductList(data),
+            refetchOnWindowFocus: false,
+            retry: 0
+        }
+    );
 
     return (
         <div css={s.layout}>

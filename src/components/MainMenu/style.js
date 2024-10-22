@@ -90,20 +90,20 @@ export const categorySubLayout = css`
 export const categoryMealkitSubLayout = css`
     box-sizing: border-box;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     margin: 0px;
-    margin-top: 5px;
     padding: 5px;
     width: 90px;
     height: 125px;
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: -1px;
+    left: 100%;
     z-index: 1000;
-    background-color: #ffffff;
+    background-color: #e3e3e3;
     border: 1px solid #dbdbdb;
 
     & li {
-        width: 70px;
         list-style: none;
         padding-bottom: 5px;
 
