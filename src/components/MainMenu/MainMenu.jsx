@@ -88,6 +88,8 @@ function MainMenu(props) {
 
     const [ mealkitDropDownOpen, setMealkitDropDownOpen ] = useState(false);
 
+    const [ activeMealkitSubCategory, setActiveMealkitSubCategory ] = useState(null);
+
     useEffect(() => {
         const fetchProduct = async () => {
         if (mainSearch) {
@@ -118,21 +120,19 @@ function MainMenu(props) {
         setDropDownOpen(prev => !prev);
     };
 
-    const handleSubMouseEnter = (subCategory) => {
-        setDropDownOpen(subCategory);
-    };
-
-    const handleMouseLeave = () => {
+    // 해당 목록 클릭 시 drop close
+    const handleSubCloseOnClick = () => {
         setDropDownOpen(false);
     };
 
-    const handleMealkitOnClick = (e) => {
-        setDropDownOpen(prev => !prev);
+    // 마우스 갖다 될시 sub 목록이 뜨는
+    const handleSubMouseEnter = (subCategory) => {
+        setActiveMealkitSubCategory(subCategory);
     };
 
-    
-    const handleSubMealkitPageOnClick = (path) => {
-        setMealkitDropDownOpen(false);
+    // 마우스 안 갖다 될시 안뜨는
+    const handleCategoryMouseLeave = () => {
+        setDropDownOpen(false);
     };
 
 
@@ -145,26 +145,26 @@ function MainMenu(props) {
                             selectMainMenus.map((menu) => (
                                 <div key={menu.id} >
                                     { menu.name === "카테고리" ? (
-                                        <div css={s.categoryButton}>
+                                        <div css={s.categoryButton} >
                                             <button onClick={handleCategoryOnClick} >
                                                 <span >{menu.name}</span>
                                             </button>
                                             {  dropDownOpen && (
-                                                <ul css={s.categorySubLayout}>
+                                                <ul css={s.categorySubLayout}
+                                                    onMouseLeave={handleCategoryMouseLeave}>
                                                     {subCategories.map((sub) => (
-                                                        <li key={sub.id}>
-                                                            <Link to={sub.path}
-                                                                onMouseEnter={() => handleSubMouseEnter(sub.path)} 
-                                                                onMouseLeave={handleMouseLeave}>
+                                                        <li key={sub.id} 
+                                                            onMouseEnter={() => handleSubMouseEnter(sub.path)}>
+                                                            <Link to={sub.path} onClick={handleSubCloseOnClick}>
                                                                 {sub.name}
                                                             </Link>
                                                             {
-                                                                sub.name === "밀키트" && mealkitDropDownOpen && (
-                                                                    <ul css={s.categoryMealkitSubLayout}>
+                                                                sub.name === "밀키트" && activeMealkitSubCategory === sub.path && (
+                                                                    <ul css={s.categoryMealkitSubLayout} 
+                                                                        onMouseLeave={handleCategoryMouseLeave}>
                                                                         {mealkitSubCategories.map((mealkitSub) => (
                                                                             <li key={mealkitSub.id}>
-                                                                                <Link to={mealkitSub.path}
-                                                                                    onClick={() => handleSubMealkitPageOnClick(mealkitSub.path)} >
+                                                                                <Link to={mealkitSub.path} onClick={handleSubCloseOnClick}>
                                                                                     {mealkitSub.name}
                                                                                 </Link>
                                                                             </li>
@@ -205,9 +205,9 @@ function MainMenu(props) {
                                                 <Route path="/soup" element={<Soup />}/>
                                                 <Route path="/anju" element={<Anju />}/>
                                                 <Route path="/mealkit" element={<Mealkit />}/>
-                                                <Route path="/simplycook" element={<SimplyCook />}/>
                                                 <Route path="/mealkit/frozen" element={<FrozenProductView />}/>
                                                 <Route path="/mealkit/refrigerated" element={<RefrigeratedView />}/>
+                                                <Route path="/simplycook" element={<SimplyCook />}/>
                                                 <Route path="/newproduct" element={<NewProductView />}/>
                                                 <Route path="/popularityproduct" element={<PopularityProduct />}/>
                                                 <Route path="/review" element={<Review />}/>

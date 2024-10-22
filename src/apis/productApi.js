@@ -12,13 +12,37 @@ export const updateProductImgApi = async (img) => {
     return response;
 };
 
-export const getProductLikeApi = async (userId, id) => {
+// 신상품 get 요청 api
+export const getNewProductApi = async (productId) => { 
     let response = null;
     try {
-        response = await instance.get("/user/product");
+        response = await instance.get("/user/public/new", {productId});
+    } catch (e) {
+        console.error(e);
+        response = e.response;
+        
+    }
+};
+
+//인기상품 get 요청 api
+export const getPopularityProudctApi = async (productId) => {
+    let response = null;
+    try {
+        response = await instance.get("/user/public/popularity", {productId});
     } catch (e) {
         console.error(e);
         response = e.response
+    }
+}
+
+// 찜 api
+export const getProductLikeApi = async (productId) => {
+    let response = null;
+    try {
+        response = await instance.get("/user/product", {productId});
+    } catch (e) {
+        console.error(e);
+        response = e.response;
     }
     return response;
 };
@@ -29,7 +53,7 @@ export const productLikeApi = async (productId) => {
         response = await instance.post("/user/product/like", {productId});
     } catch (e) {
         console.error(e);
-        response = e.response
+        response = e.response;
     }
 }
 
@@ -39,7 +63,7 @@ export const deleteProductDisLikeApi = async (productId) => {
         response = await instance.delete("/user/product/dislike", { productId });
     } catch (e) {
         console.error(e);
-        response = e.response
+        response = e.response;
     }
 };
 
