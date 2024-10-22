@@ -4,100 +4,119 @@ import MainMenu from '../../components/MainMenu/MainMenu';
 import { FiShoppingCart } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { Link, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
-import MainFooter from "../../components/MainFooter/MainFooter";
 import InformationView from "../../components/Product/InformationView/InformationView";
 import BuyReview from "../../components/Product/BuyReview/BuyReview";
 import InquiryView from "../../components/Product/InquiryView/InquiryView";
 import DeliveryView from "../../components/Product/Delivery/DeliveryView";
+import { basketAddProductApi, buyProductApi, productLikeApi } from "../../apis/productApi";
+import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
+
 
 const selectProductMenus = [
     {
         selectedId: 1,
-        name: "상세정보",
-        path: "/product/:id"
+        title: "상세정보",
+        path: "/product/:productId"
 
     },
     {
         selectedId: 2,
-        name: "구매후기",
-        path: "/product/:id/review"
+        title: "구매후기",
+        path: "/product/:productId/review"
 
     },
     {
         selectedId: 3,
-        name: "상품문의",
-        path: "/product/:id/inquiry"
+        title: "상품문의",
+        path: "/product/:productId/inquiry"
 
     },
     {
         selectedId: 4,
-        name: "배송",
-        path: "/product/:id/delivery"
+        title: "배송",
+        path: "/product/:productId/delivery"
 
     },
 ];
 
 const products = [
     {
-        id: 1,
+        productId: 1,
         img: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-        name: "부대찌개",
-        price: "11,000",
-        contury: "대한민국",
+        title: "부대찌개",
+        description: "aaaa",
+        price: 11000,
+        origin: "대한민국",
         deliver: "일반배송",
         deliverPrice: "3,000"
     },
+  
     {
-        id: 2,
+        productId: 2,
         img: "",
-        name: "bbbb",
-        price: "11,000",
-        contury: "대한민국",
+        title: "bbbb",
+        description: "aaaa",
+        price: 11000,
+        origin: "대한민국",
         deliver: "일반배송",
         deliverPrice: "3,000"
 
     },
     {
-        id: 3,
+        productId: 3,
         img: "",
-        name: "cccc",
-        price: "11,000",
-        contury: "대한민국",
+        title: "cccc",
+        description: "aaaa",
+        price: 11000,
+        origin: "대한민국",
         deliver: "일반배송",
         deliverPrice: "3,000"
 
     },
     {
-        id: 4,
+        productId: 4,
         img: "",
-        name: "dddd",
-        price: "11,000",
-        contury: "대한민국",
-        deliver: "일반배송",
-        deliverPrice: "3,000"
+        title: "dddd",
+        description: "aaaa",
+        price: 11000,
+        origin: "대한민국",
         
     },
 
 ];
 
 function ProductPage() {
-
-    const { id } = useParams();
+    const token = localStorage.getItem("accessToken");
+    const { productId } = useParams();
 
     const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
 
-    const [ product, setProduct ] = useState("");
+
+
+    // const [ product, setProduct ] = useState("");
+
+    const [ product, setProduct ] = useState({
+        productId: 0,
+        img: "",
+        title: "",
+        description: "",
+        origin: "",
+        price: 0,
+        category: ""
+    });
+
+
 
     useEffect(() => {
-        const selectedProduct = products.find(p => p.id === Number(id));
+        const selectedProduct = products.find(p => p.productId === Number(productId));
         if(selectedProduct) {
             setProduct(selectedProduct);
         } else {
             console.error("오류");
         }
-    }, [ id, products, navigate ]);
+    }, [ productId, products, navigate ]);
 
 
 
@@ -112,12 +131,46 @@ function ProductPage() {
         }));
     }
 
+    // 장바구니 버튼
+    const basketAddProductButton = async () => {
+        if (!token) {
+            if(window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
+            navigate("/user/signin");
+        }
+            return;
+            }
+            const response = await basketAddProductApi(productId);
+        };
+
     // 구매하기 버튼
-    const handlebuyOnClick = () => {
-        if(window.confirm("장바구니에 추가하시겠습니까?")) {
-            navigate("/basket");
-        } 
+    const handleBuyButton = async () => {
+        if (!token) {
+            if(window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
+            navigate("/user/signin");
+        }
+            return;
+            }
+            const response = await buyProductApi(productId);
+        };
+    
+    // 찜 버튼
+    const handleWishListButton = async () => {
+        if (!token) {
+            if(window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
+            navigate("/user/signin");
+            }
+            return;
+        } else {
+            const response = await productLikeApi(productId);
+            alert("찜에 추가되었습니다.");
+        }
     };
+    
+
+
+        const calculateTotalPrice = (product) => {
+            return product.price * productItems.buyItem;
+        };
 
     return (
         <div css={s.layout}>
@@ -128,20 +181,19 @@ function ProductPage() {
                 </div>
                 <div css={s.productContent}>
                     <div css={s.titleLayout}>
-                        <h2>{product.name}</h2>
-                        <p>부대찌개 설명</p>
+                        <h2>{product.title}</h2>
+                        <p>{product.description}</p>
                     </div>
                     <div css={s.price}>
-                        <p>{product.price} 원</p>
+                        <p>{product.price.toLocaleString()} 원</p>
                     </div>
                     <div css={s.contentBox}>
                         <div css={s.contury}>
-                            <p>원산지: {product.contury}</p>
-                            <p>배송구분: {product.deliver}</p>
-                            <p>배송비: {product.deliverPrice} 원</p>
+                            <p>원산지: {product.origin}</p>
+                            <p>배송비: 3,000 원</p>
                         </div>
-                        <div css={s.productNameBox}>
-                            <p>상품명: {product.name}</p>
+                        <div css={s.producttitleBox}>
+                            <p>상품명: {product.title}</p>
                             <p>
                                 구매수량: 
                                     <span>
@@ -154,10 +206,11 @@ function ProductPage() {
                     </div>
                     <div css={s.buyProduct}>
                         <p>
-                            총 상품 금액: 14,000원
+                            총 {calculateTotalPrice(product).toLocaleString()} 원
                             <span>
-                                <button>구매하기</button>
-                                <FiShoppingCart onClick={handlebuyOnClick} size="40"  style={{cursor:"pointer"}}/>
+                                <button onClick={handleBuyButton} >구매하기</button>
+                                <IoMdHeartEmpty onClick={handleWishListButton} size="40" style={{cursor:"pointer"}} />
+                                <FiShoppingCart onClick={basketAddProductButton} size="40"  style={{cursor:"pointer"}}/>
                             </span>
                         </p>
                     </div>
@@ -170,9 +223,9 @@ function ProductPage() {
                         selectProductMenus.map((menu) => (
                             <Link 
                                 key={menu.selectedId}
-                                to={menu.path.replace(':id', id)} // :id를 id로 대체 
-                                css={s.selectProductMenu(pathname === menu.path.replace(':id', id))}>
-                                <span>{menu.name}</span>
+                                to={menu.path.replace(':productId', productId)} // :id를 id로 대체 
+                                css={s.selectProductMenu(pathname === menu.path.replace(':productId', productId))}>
+                                <span>{menu.title}</span>
                             </Link>
                         ))
                     }

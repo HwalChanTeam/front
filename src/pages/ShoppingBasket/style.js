@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import { css } from "@emotion/react";
 
 export const cartContainer = css`
   display: flex;
@@ -9,28 +9,21 @@ export const cartContainer = css`
   box-sizing: border-box;
 `;
 
+export const cartListSection = css`
+  margin-top: 30px;
+  width: 1200px;
+`;
+
 export const basketHeader = css`
   display: flex;
   justify-content: space-around;
+  width: 100%;
   & > h2 {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    margin-left: 10%;
   }
-`;
-
-
-export const cartListSection = css`
-  margin-top: 30px;
-
-  input[type="checkbox"] {
-  width: 25px; 
-  height: 25px;
-  margin-bottom: 50px;
-  margin-right: 8px;
-}
 `;
 
 export const title = css`
@@ -40,131 +33,163 @@ export const title = css`
   font-weight: bold;
 `;
 
-export const emptyCartMessage = css`
-  text-align: center;
-  color: #888;
+export const basketBox = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const productTable = css`
+  border-collapse: collapse; /* 테이블 경계 중복 제거 */
+  width: 1100px; /* 테이블 전체 너비를 100%로 설정 */
+  margin-bottom: 20px; /* 줄 사이 간격을 위해 추가 */
+
+  & button {
+    font-weight: 500;
+    color: #964747;
+    background-color: transparent;
+    border: 1px solid #964747;
+    &:hover {
+      background-color: #eaeaea;
+    }
+    &:active {
+      background-color: #dbdbdb;
+    }
+    &:nth-of-type(1) {
+      margin-right: 5px;
+    }
+    &:nth-last-of-type(1) {
+      margin-left: 5px;
+    }
+  }
+
+  th,
+  td {
+    text-align: center; /* 헤더와 내용 모두 가운데 정렬 */
+    border-bottom: 1px solid #dcdcdc; /* 각 행 밑에 구분선 추가 */
+    padding-top: 10px;
+    padding-bottom: 10px;
+    &:nth-last-of-type(1) {
+    }
+  }
+
+  & > tr {
+    & td {
+      border: 1px solid #000000; /* 각 셀에 테두리 추가 */
+      padding: 16px; /* 셀 안쪽 여백을 늘려서 줄 간격 조정 */
+    }
+
+    & td:nth-of-type(1) {
+      border: 1px solid #000000;
+    }
+    & td:nth-of-type(2) {
+      width: 130px;
+    }
+    & td:nth-of-type(3) {
+      width: 250px;
+    }
+    & td:nth-of-type(4) {
+      width: 100px;
+    }
+    & td:nth-of-type(5) {
+      width: 100px;
+    }
+    & td:nth-of-type(6) {
+      width: 100px;
+    }
+    input[type="checkbox"] {
+      /* width: 20px; 
+  height: 20px; */
+    }
+  }
+`;
+
+export const thead = css`
+  text-align: center; /* 카테고리명을 가운데 정렬 */
+  background-color: #f2f2f2; /* 헤더 배경색 추가 (선택 사항) */
+  width: 1100px; /* 헤더의 너비를 전체로 설정 */
+  & th {
+    padding: 10px 20px 10px 0;
+  }
+`;
+
+export const img = css`
+  & img {
+    width: 100px;
+    height: 100px;
+  }
+`;
+
+export const productName = css`
   font-size: 18px;
-`;
-
-export const cartItem = css`
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #ddd;
-  width: 1300px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background-color: #f9f9f9;
-`;
-
-export const itemImage = css`
-display: flex;
-  img {
-    width: 170px;
-    height: 170px;
-    border-radius: 5px;
-    padding-bottom: 35px;
-  }
-`;
-
-export const itemDetails = css`
-  box-sizing: border-box;
-  flex-wrap: wrap;
-  flex-grow: 1;
-  margin-left: 20px;
-
-  & p {
-    margin-bottom: 0;
-  }
-`;
-
-/* 상품명, 상품설명, 수량 버튼을 감싸는 컨테이너 */
-export const nameDescriptionContainer = css`
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  border: 1px solid #ccc;
-  padding: 10px;
-  height: 100px;
-  border-radius: 5px;
-  background-color: #fff;
-`;
-
-/* 수량 조절 버튼 */
-export const quantityControl = css`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-export const quantityButton = css`
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: #ffffff;
-  border: 1px solid #964747;
-  color: #964747;
-  font-size: 12px;
   font-weight: 600;
 `;
 
-export const quantityValue = css`
-  font-size: 16px;
-  font-weight: bold;
-`;
-
-export const itemName = css`
-  margin-top: 10px;
-  font-size: 18px;
-`;
-
-export const itemDescription = css`
-  box-sizing: border-box;
-  margin: 10px 0;
-  color: #555;
-  font-size: 14px;
-  width: 500px;
-  overflow: hidden; /* 추가 */
-  text-overflow: ellipsis;
-  white-space: normal;
-`;
-
-export const itemActions = css`
+export const footerBox = css`
   display: flex;
-  justify-content: right;
-  & button:nth-of-type(1) {
-    margin-right: 10px;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px;
+`;
+
+export const priceBox = css`
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  border: 2px solid #dbdbdb;
+  width: 600px;
+  height: 90px;
+  padding: 20px;
+  & svg {
+    color: #964747;
+    padding-top: 15px;
   }
 `;
 
-export const confirmButton = css`
-  padding: 5px 10px;
-  cursor: pointer;
-  background-color: #ffffff;
-  border: 1px solid #964747;
-  color: #964747;
+export const productAmount = css`
+  display: flex;
+  flex-direction: column;
+  & p {
+    margin: 0;
+  }
 `;
 
-export const deleteButton = css`
-  padding: 5px 10px;
-  cursor: pointer;
-  background-color: #ffffff;
-  border: 1px solid #964747;
-  color: #964747;
+export const deliveryFee = css`
+  display: flex;
+  flex-direction: column;
+  & p {
+    margin: 0;
+  }
 `;
 
-export const orderButton = css`
-  width: 100px;
-  height: 40px;
-  background-color: #ffffff;
-  border: 1px solid #964747;
-  color: #964747;
-  cursor: pointer;
-  font-size: 16px;
+export const totalAmount = css`
+  display: flex;
+  flex-direction: column;
+  & p {
+    margin: 0;
+  }
 `;
 
-export const bottonBox = css`
+export const buttonBox = css`
   display: flex;
   justify-content: center;
+  & button {
+    background-color: transparent;
+    border: 1px solid #964747;
+    font-size: 16px;
+    font-weight: 500;
+    color: #964747;
+    width: 200px;
+    height: 40px;
+    margin-right: 40px;
+    &:nth-last-of-type(1) {
+      margin-right: 0;
+    }
+    &:hover {
+      background-color: #eaeaea;
+    }
+    &:active {
+      background-color: #dbdbdb;
+    }
+  }
 `;

@@ -5,31 +5,32 @@ export const container = css`
     display: flex;
     flex-direction: column;
     margin-top: 40px;
-    width: 100%;
+    width: 1200px;
     height: 100%;
 `;
 
 export const headerLayout = css`
     box-sizing: border-box;
     width: 100%;
-    border-bottom: 2px solid #000000;
 `;
 
 export const layout = css`
     box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
 `;
 
 export const buttonLayout = css`
     box-sizing: border-box;
-    width: 100%;
     display: flex;
-    justify-content: center;
+    padding-left: 4px;
+    width: 100%;
 
     & a {
         box-sizing: border-box;
         margin-right: 60px;
-        margin-bottom: 5px;
         text-decoration: none;
         font-size: 16px;
         color: #5B5B5B;
@@ -38,8 +39,62 @@ export const buttonLayout = css`
 
 `;
 
+export const categoryButton = css`
+    position: relative;
+
+    & button {
+        background-color: transparent;
+        border: none;
+        padding: 0px;
+
+        & span {
+            margin-right: 60px;
+            font-size: 16px;
+            color: #5B5B5B;
+        }
+    }
+`;
+
+export const categorySubLayout = css`
+    box-sizing: border-box;
+    margin: 0px;
+    margin-top: 5px;
+    padding: 5px;
+    width: 80px;
+    height: 70px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    background-color: #ffffff;
+    border: 1px solid #dbdbdb;
+
+    & li {
+        width: 70px;
+        list-style: none;
+        padding-bottom: 5px;
+
+        & a{
+            margin: 0px;
+            width: 100px;
+            font-size: 16px;
+            color: #5B5B5B;
+
+            &:hover {
+                font-weight: 600;
+            }
+        }
+    }
+`;
+
 export const selectedMenu = (isSelected) => css`
     border-top: ${isSelected ? "2px solid #964747" : "transparent"};
+
+    &:hover {
+        color: #964747;
+        font-weight: 600;
+    }
+    
 `; 
 
 export const menuLayout = css`
@@ -47,16 +102,13 @@ export const menuLayout = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 1300px;
+    width: 1200px;
     height: 100%;
 `;
 
 export const menuListBox = css`
     box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-    padding: 0px 50px 0px 50px;
+    margin-top: 20px;
     width: 100%;
     height: 100%;
 `;

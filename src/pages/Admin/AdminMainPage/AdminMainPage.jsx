@@ -8,7 +8,9 @@ import ProductEdit from "../../../components/Admin/ProductEdit/ProductEdit";
 import UserView from "../../../components/Admin/UserView/UserView";
 import Management from "../../../components/Admin/Management/Management";
 import StaffManagement from "../../../components/Admin/StaffManagement/StaffManagement";
+import CategoryEdit from "../../../components/Admin/CategoryEdit/CategoryEdit.jsx";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
+import logo from "../../../assets/images/logo.png";
 
 import { IoBagAddOutline } from "react-icons/io5";
 import { RiProductHuntLine } from "react-icons/ri";
@@ -16,6 +18,7 @@ import { PiUsersFourLight } from "react-icons/pi";
 import { LuUser } from "react-icons/lu";
 import { IoBusinessOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
+import { BiSolidCategory } from "react-icons/bi";
 
 const menus = [
   {
@@ -32,18 +35,24 @@ const menus = [
   },
   {
     id: 3,
+    name: "항목 관리",
+    path: "/admin/main/category",
+    icon: <BiSolidCategory />,
+  },
+  {
+    id: 4,
     name: "경영 관리",
     path: "/admin/main/business",
     icon: <IoBusinessOutline />,
   },
   {
-    id: 4,
+    id: 5,
     name: "직원 관리",
     path: "/admin/main/staff",
     icon: <PiUsersFourLight />,
   },
   {
-    id: 5,
+    id: 6,
     name: "유저 관리",
     path: "/admin/main/user",
     icon: <LuUser />,
@@ -60,8 +69,11 @@ function AdminMainPage(props) {
         <div css={s.menuBox}>
           {/* 메뉴 선택 페이지 */}
 
-          <Link to={"/admin"} css={s.logo}>
-            LOGO
+          <Link to={"/admin/main"} css={s.logo}>
+            <h1>
+              <img src={logo} />
+              Cuisson
+            </h1>
           </Link>
           {menus.map((menu) => (
             <Link
@@ -84,6 +96,7 @@ function AdminMainPage(props) {
             <Route path="/" element={<DefaultComponent />} />
             <Route path="/product/register" element={<ProductRegister />} />
             <Route path="/product" element={<ProductEdit />} />
+            <Route path="/category" element={<CategoryEdit />} />
             <Route path="/staff" element={<StaffManagement />} />
             <Route path="/business" element={<Management />} />
             <Route path="/user" element={<UserView />} />

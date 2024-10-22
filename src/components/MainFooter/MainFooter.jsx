@@ -2,7 +2,7 @@
 import * as s from "./style";
 
 function MainFooter(props) {
-  return (
+    return (
     <div css={s.layout}>
         <div css={s.footLayout}>
             <div css={s.mainBox}>
@@ -31,7 +31,7 @@ function MainFooter(props) {
             </div>
         </div>
     </div>
-  );
+    );
 }
 
 export default MainFooter;

@@ -2,46 +2,31 @@ import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 import { Link, useNavigate } from "react-router-dom";
-import { BsList } from "react-icons/bs";
-import MainSearch from "../MainSearch/MainSearch";
-import { instance } from "../../apis/util/instance";
 import logo from "../../assets/images/logo.png";
-import { RiLoginBoxLine } from "react-icons/ri";
-import { BsBasket3 } from "react-icons/bs";
+import { RiLoginBoxLine, RiLogoutBoxRLine } from "react-icons/ri";
+import { LuUser } from "react-icons/lu";
 import { SlBasket } from "react-icons/sl";
-import { MdOutlineLocalShipping } from "react-icons/md";
 
 
 function MainHeader(props) {
-  const navigate = useNavigate();
-  const [productList, setProductList] = useState([]);
-  const [mainSearch, setMainSearch] = useState("");
+  const token = localStorage.getItem("accessToken");
+  const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
 
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      if (mainSearch) {
-        try {
-          const response = await instance.get(
-            `/admin/product/search?title=${mainSearch}`
-          );
-          setProductList(response.data);
-        } catch (error) {
-          console.error("상품을 가져오는 데 실패했습니다:", error);
-        }
-      } // else {
-      //   //   검색어가 없을 때 전체 조회 로직
-      //   const response = await instance.get(`/admin/product/search`);
-      //   setProduct(response.data);
-      // }
-    };
-
-    fetchProduct();
-  }, [mainSearch]);
-
-  const handleMainSearch = (name) => {
-    setMainSearch(name);
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken"); // 로컬 스토리지에서 토큰 삭제
+    navigate("/");
+    window.location.reload(); // 페이지를 새로 고침하여 상태를 초기화
   };
+
+  const handleMyPageOnClick = () => {
+    if(!token) {
+      if(window.confirm("로그인이 필요한 서비스 입니다.\n로그인 하시겠습니까?")) {
+        navigate("/login")
+      }
+      return;
+    }
+    navigate("/mypage")
+  }
 
   return (
     <div css={s.background}>
@@ -52,15 +37,20 @@ function MainHeader(props) {
             Cuisson
           </h1>
         </Link>
-        {/* 로그인이 되어 있지 않으면 아래꺼 랜더링 */}
-        <div>
-          <MainSearch onSearch={handleMainSearch} />
-        </div>
-        <div css={s.buttonLayout}>
+        {
+          !token ?
+          <div css={s.buttonLayout}>
           <Link to={"/user/signin"}><RiLoginBoxLine /></Link>
           <Link to={"/basket"}><SlBasket /></Link>
-          <Link to={"/order"}><BsBasket3 /></Link>
+          <Link to={"/mypage"}><LuUser /></Link>
         </div>
+        :
+        <div css={s.buttonLayout}>
+        <a onClick={handleLogout}><RiLogoutBoxRLine /></a>
+        <Link to={"/basket"}><SlBasket /></Link>
+        <a onClick={handleMyPageOnClick}><LuUser /></a>
+      </div>
+          }
       </div>
     </div>
   );

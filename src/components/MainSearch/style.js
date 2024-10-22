@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 
 export const layout = css`
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   width: 100%;
 `;
@@ -11,11 +11,11 @@ export const searchSection = css`
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  width: 500px;
+  width: 400px;
   height: 40px;
   border: none;
   border-bottom: 1px solid #964747;
-  padding-right: 20px;
+  padding-right: 10px;
   background-color: transparent;
   cursor: pointer;
 

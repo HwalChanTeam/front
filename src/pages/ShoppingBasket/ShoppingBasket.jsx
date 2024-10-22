@@ -1,20 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from "react";
 import * as s from "./style";
-import { Link, useNavigate } from "react-router-dom";
-import MainSearch from "../../components/MainSearch/MainSearch";
-import MainFooter from "../../components/MainFooter/MainFooter";
-import { atom, useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import { selectedItemsAtom } from "../../apis/util/atom";
+import { useMutation, useQuery } from "react-query";
+import { deleteProductApi, getBasketProductsApi } from "../../apis/productApi";
+import { FaPlus, FaEquals } from "react-icons/fa";
 
 // 로그인 안하고 들어가면 로그인 페이지로 돌리기
 // 구매하기 버튼 누르면 상품 구매 페이지로 넘기기
 //
 
-const tempItemList = [
+const tempProductList = [
   {
-    id: 1,
-    name: "상품명1",
+    productId: 1,
+    title: "엄마의 손맛 김치찌개",
     description: "상품설명 이것은 상품설명입니다.",
     image:
       "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
@@ -22,17 +23,17 @@ const tempItemList = [
     quantity: 1,
   },
   {
-    id: 2,
-    name: "상품명2",
+    productId: 2,
+    title: "우리엄마의 완자고기",
     description: "상품설명 이것은 상품설명입니다.",
     image:
       "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
     price: 10000,
-    quantity: 1,
+    quantity: 3,
   },
   {
-    id: 3,
-    name: "상품명3",
+    productId: 3,
+    title: "삼겹살",
     description: "상품설명 이것은 상품설명입니다.",
     image:
       "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
@@ -44,137 +45,212 @@ const tempItemList = [
 function ShoppingBasket(props) {
   const navigate = useNavigate();
 
-  const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsAtom); // atom 사용
+  const [selectedProducts, setSelectedProducts] =
+    useRecoilState(selectedItemsAtom); // atom 사용
+  const [productList, setProductList] = useState([]); // 상품 목록 상태 추가
 
-  const [productList, setProductList] = useState(
-    tempItemList.map((tempItemList) => ({ ...tempItemList, checked: false }))
+  // 전체 체크박스 기본 속성 - false
+  const [isAllchecked, setIsAllchecked] = useState(false);
+
+  // 장바구니 상품 가져오기
+  const { data, isLoading, isError, refetch } = useQuery(
+    "basketProducts",
+    getBasketProductsApi,
+    {
+      onSuccess: (data) => setProductList(data),
+      refetchOnWindowFocus: false, // 창 포커스 시 재요청 하지 않음
+      retry: 0,
+      // 데이터 가져오면 productList에 설정
+    }
   );
 
+  // 삭제 요청을 위한 mutation
+  const mutation = useMutation(deleteProductApi, {
+    onSuccess: () => {
+      refetch(); // 삭제 후 장바구니를 다시 불러오기
+    },
+  });
+
+  // 전체 체크박스 체인지 함수
+  const handleAllCkeckBoxOnChange = () => {
+    const checkState = !isAllchecked;
+    setIsAllchecked(checkState);
+    setProductList(
+      productList.map((product) => ({ ...product, checked: checkState }))
+    );
+  };
+
+  // 개별 체크박스 체인지 함수
+  const handleCheckBoxOnChange = (productId) => {
+    const updateProductList = productList.map((product) =>
+      product.productId === productId
+        ? { ...product, checked: !product.checked }
+        : product
+    );
+    setProductList(updateProductList);
+
+    // 모든 개별 체크박스가 선택된 경우 전체 체크박스도 체크
+    const allChecked = updateProductList.every((product) => product.checked);
+    setIsAllchecked(allChecked);
+  };
+
+  // 수량 변경 함수
   const handleQuantityChange = (index, number) => {
-    const updatedItems = productList.map((item, i) =>
+    const updatedProducts = productList.map((product, i) =>
       i === index
-        ? { ...item, quantity: Math.max(1, item.quantity + number) }
-        : item
+        ? { ...product, quantity: Math.max(1, product.quantity + number) }
+        : product
     );
-    setProductList(updatedItems);
+    setProductList(updatedProducts);
   };
 
-  const haneldDeleteButtonOnClick = (id) => {
-    const deleteItems = productList.filter(item => item.id !== id);
-    setProductList(deleteItems);
+  // 삭제 버튼 클릭 함수
+  const handleDeleteButtonOnClick = (productId) => {
+    mutation.mutate(productId);
   };
 
-  const handleSubmitButtonOnClick = (id) => {
-    // id를 가져옴 ->
-    const updateItems = productList.map(item =>
-      item.id === id ? {...item} : item
-    );
-    setProductList(updateItems);
-    //api연결
+  // 상품갯수 * 가격 함수
+  const calculateTotalPrice = (product) => {
+    return product.price * product.quantity;
   };
 
+  // // 완료 버튼 클릭(현재 미사용)
+  // const handleSubmitButtonOnClick = (productId) => {
+  //   const updatedProducts = productList.map((product) =>
+  //     product.productId === productId ? { ...product } : product
+  //   );
+  //   setProductList(updatedProducts);
+  //   // api 연결
+  // };
+
+  // 총 상품금액, 총합계 계산 함수
+  const calculateTotals = () => {
+    const totalProductAmount = productList.reduce((total, product) => {
+      return total + (product.checked ? calculateTotalPrice(product) : 0);
+    }, 0);
+    const deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+    const totalAmount = totalProductAmount + deliveryFee;
+
+    return {totalProductAmount, totalAmount, deliveryFee};
+  };
+
+  const {totalProductAmount, totalAmount, deliveryFee} = calculateTotals();
+
+
+  // 구매 버튼 클릭 시 작동
   const handleBuyButtonOnClick = () => {
-    const selectedItems = productList.filter(item => item.checked);
-    const selectedIds = selectedItems.map(item => item.id);
-  
-    if (selectedIds.length > 0) {
-      setSelectedItems(selectedIds);
+    const selectedProducts = productList.filter((product) => product.checked);
+    const selectedProductIds = selectedProducts.map(
+      (product) => product.productId
+    );
+
+    if (selectedProductIds.length > 0) {
+      setSelectedProducts(selectedProductIds);
       navigate(`/order`);
     } else {
       alert("주문할 상품을 선택해 주세요.");
     }
   };
 
-  const handleCheckBoxOnChange = (id) => {
-    setProductList((productList) =>
-      productList.map((product) =>
-        product.id === id ? { ...product, checked: !product.checked } : product
-      )
-    );
-  };
-
-  const calculateTotalPrice = (item) => {
-    return item.price * item.quantity;
-  };
+  if (isLoading) return <div>Loading...</div>;
+  // if (isError) return <div>데이터를 가져오는데 실패했습니다.</div>
 
   return (
-      <div css={s.cartContainer}>
-        {/* 장바구니 목록 섹션 */}
-        <div css={s.cartListSection}>
-          <div css={s.basketHeader}>
-            <h2 css={s.title}>장바구니 목록</h2>
-            <div css={s.bottonBox}>
-              <button onClick={handleBuyButtonOnClick} css={s.orderButton}>
-                주문하기
-              </button>
-            </div>
-          </div>
-          {productList.length === 0 ? (
-            <p css={s.emptyCartMessage}>장바구니가 비었습니다.</p>
-          ) : (
-            productList.map((item, index) => (
-              <div key={index} css={s.cartItem}>
-                <input
-                  type="checkbox"
-                  onChange={() => handleCheckBoxOnChange(item.id)}
-                  checked={item.checked}
-                  id={item.id}
-                />
-                <div css={s.itemImage}>
-                  <img src={item.image} alt="상품 이미지" />
-                </div>
-                <div css={s.itemDetails}>
-                  {/* 상품명, 상품설명, 수량 버튼을 하나의 div로 묶음 */}
-                  <div css={s.nameDescriptionContainer}>
-                    <h3 css={s.itemName}>{item.name}</h3>
-                    <p css={s.itemDescription}>{item.description}</p>
-                    {/* 수량 조절 버튼 */}
-                    <div css={s.quantityControl}>
-                      <button
-                        onClick={() => handleQuantityChange(index, -1)}
-                        css={s.quantityButton}
-                      >
-                        -
-                      </button>
-                      <span css={s.quantityValue}>{item.quantity}</span>
-                      <button
-                        onClick={() => handleQuantityChange(index, 1)}
-                        css={s.quantityButton}
-                      >
-                        +
-                      </button>
+    <div css={s.cartContainer}>
+      {/* 장바구니 목록 섹션 */}
+      <div css={s.cartListSection}>
+        <div css={s.basketHeader}>
+          <h2 css={s.title}>장바구니</h2>
+        </div>
+        <div css={s.basketBox}>
+          <table css={s.productTable}>
+            <thead css={s.thead}>
+              <tr>
+                <td>
+                  <input
+                    type="checkbox"
+                    onChange={handleAllCkeckBoxOnChange}
+                    checked={isAllchecked}
+                  />
+                </td>
+                <th>상품</th>
+                <th>상품명</th>
+                <th>수량</th>
+                <th>금액</th>
+                <th>할인</th>
+                <th>합계금액</th>
+                <th>삭제</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productList.map((product, index) => (
+                <tr key={product.productId}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      onChange={() => handleCheckBoxOnChange(product.productId)}
+                      checked={product.checked}
+                    />
+                  </td>
+                  <td>
+                    <div css={s.img}>
+                      <img src={product.image} />
                     </div>
-                  </div>
-                  {/* 총 금액 표시 */}
-                  <p>
-                    총 금액: {calculateTotalPrice(item).toLocaleString()} 원
-                  </p>
-                  <div css={s.itemActions}>
-                    <button
-                      css={s.confirmButton}
-                      onClick={() => handleSubmitButtonOnClick(item.id)}
-                    >
-                      확인
+                  </td>
+                  <td>
+                    <div css={s.productName}>{product.title}</div>
+                    <tr>{product.description}</tr>
+                  </td>
+                  <td>
+                    <button onClick={() => handleQuantityChange(index, -1)}>
+                      -
                     </button>
+                    {product.quantity}
+                    <button onClick={() => handleQuantityChange(index, +1)}>
+                      +
+                    </button>
+                  </td>
+                  <td>{product.price.toLocaleString()} 원</td>
+                  <td>-</td>
+                  <td> {calculateTotalPrice(product).toLocaleString()} 원</td>
+                  <td>
                     <button
-                      css={s.deleteButton}
-                      onClick={() => haneldDeleteButtonOnClick(item.id)}
+                      onClick={() =>
+                        handleDeleteButtonOnClick(product.productId)
+                      }
                     >
                       삭제
                     </button>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-          {/* 주문하기 버튼 */}
-          <div css={s.bottonBox}>
-            <button onClick={handleBuyButtonOnClick} css={s.orderButton}>
-              주문하기
-            </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div css={s.footerBox}>
+          <div css={s.priceBox}>
+            <div css={s.productAmount}>
+            <p>총 {productList.filter(product => product.checked).length} 개의 상품금액</p>
+            <p>{totalProductAmount.toLocaleString()}원</p>
+            </div>
+            <FaPlus />
+            <div css={s.deliveryFee}>
+              <p>배송비</p>
+              <p>{deliveryFee.toLocaleString()}원</p>
+            </div>
+            <FaEquals />
+            <div css={s.totalAmount}>
+            <p>합계</p>
+            <p>{totalAmount.toLocaleString()}원</p>
+            </div>
           </div>
         </div>
+        <div css={s.buttonBox}>
+          <button onClick={handleBuyButtonOnClick}>주문하기</button>
+          <button onClick={() => setProductList([])}>전체삭제</button>
+        </div>
       </div>
+    </div>
   );
 }
 

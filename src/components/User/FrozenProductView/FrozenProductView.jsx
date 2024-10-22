@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { Link, useNavigate } from 'react-router-dom';
-import *as s from './style';
 import { useState } from 'react';
-import MainMenu from '../../MainMenu/MainMenu';
+import *as s from './style';
+import { Link, useNavigate } from 'react-router-dom';
 
 const products = [
     {
@@ -29,27 +28,30 @@ const products = [
         name: "dddd",
         price: "11,000"
     },
+    {
+        id: 5,
+        img: "",
+        name: "ffff",
+        price: "11,000"
+    },
 ];
 
-function CategoryView() {
-
+function FrozenProductView(props) {
     const navigate = useNavigate();
 
     const [ productList, setProductList ] = useState({
         productId: 0,
         img: "",
         title: "",
-        price: "",
-
+        price: ""
     });
-    
+
     const productPath = (productId) => `/product/${productId}`;
 
     return (
         <div css={s.layout}>
             <div css={s.contentLayout}>
                 <table css={s.tableLayout}>
-
                     <tbody css={s.menuLayout}>
                         {   
                             products.map((product) => (
@@ -60,7 +62,7 @@ function CategoryView() {
                                                     <Link 
                                                         key={product.id}
                                                         to={productPath(product.id)}>
-                                                        <img src={product.img} />
+                                                            <img src={product.img} />
                                                     </Link>
                                                 </div>
                                                 <div css={s.productLayout}>
@@ -72,7 +74,6 @@ function CategoryView() {
                                 </tr>
                             ))
                         }
-                        
                     </tbody>
                 </table>
             </div>
@@ -80,4 +81,4 @@ function CategoryView() {
     );
 }
 
-export default CategoryView;
+export default FrozenProductView;
