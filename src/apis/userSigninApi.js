@@ -13,7 +13,7 @@ export const userSigninApi = async(user) => {
         ]
     } 
     try {
-        const response = await instance.post("/user/signin", user);
+        const response = await instance.post("/user/public/signin", user);
         userSiginData = {
             isSuccess: true,
             token: response.data,
