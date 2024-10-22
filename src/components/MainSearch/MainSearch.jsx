@@ -2,6 +2,7 @@ import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 import { IoSearchSharp } from "react-icons/io5";
+
 function MainSearch({ onSearch }) {
   const [mainSearchProduct, setMainSearchProduct] = useState({
     title: "",
@@ -20,6 +21,14 @@ function MainSearch({ onSearch }) {
     });
   };
 
+  const handleMainSearchOnKeyDown = (e) => {
+    if(e.key === "Enter") {
+      setMainSearchProduct({
+        title: "",
+      });
+    }
+  }
+
   return (
     <div css={s.layout}>
       <div css={s.searchSection}>
@@ -29,6 +38,7 @@ function MainSearch({ onSearch }) {
           name="title"
           css={s.searchInput}
           onChange={handleMainSearchOnChange}
+          onKeyDown={handleMainSearchOnKeyDown}
           value={mainSearchProduct.title}
         />
         <IoSearchSharp onClick={handleMainSearchOnClick} size="30" />

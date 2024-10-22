@@ -40,6 +40,7 @@ function FrozenProductView(props) {
     const navigate = useNavigate();
 
     const [ productList, setProductList ] = useState({
+        semiCategoryId: 1,
         productId: 0,
         img: "",
         title: "",
