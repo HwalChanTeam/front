@@ -67,8 +67,9 @@ export const getBasketProductsApi = async () => {
 };
 
 // 상품 삭제 API
-export const deleteProductApi = async (productId) => {
-    await axios.delete(`/user/cart/${productId}`); // 적절한 API 경로로 수정
+export const deleteProductApi = async (cartId, productId) => {
+    await axios.delete(`/api/cart/${cartId}/product/${productId}`); // 적절한 API 경로로 수정
+
 };
 
 export const buyProductApi = async (productIds) => {

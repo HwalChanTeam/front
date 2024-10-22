@@ -49,7 +49,9 @@ const menus = [
     icon: <LuUser />,
   },
 ];
-
+{
+  /* admin12 Admin1q2w3e4r!!- */
+}
 function AdminMainPage(props) {
   const location = useLocation();
   const pathname = location.pathname;

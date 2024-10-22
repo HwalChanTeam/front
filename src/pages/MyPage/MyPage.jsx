@@ -1,39 +1,68 @@
-import React from 'react';
-import { Patch } from 'react-axios';
-import { Route, Routes } from 'react-router-dom';
-import UserInfo from '../../components/MyPageList/UserInfo/UserInfo';
-import BuyInfo from '../../components/MyPageList/BuyInfo/BuyInfo';
-import WishList from '../../components/MyPageList/WishList/WishList';
+import React from "react";
+import { Patch } from "react-axios";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
+import UserInfo from "../../components/MyPageList/UserInfo/UserInfo";
+import BuyInfo from "../../components/MyPageList/BuyInfo/BuyInfo";
+import WishList from "../../components/MyPageList/WishList/WishList";
+import { RiFileUserLine } from "react-icons/ri";
+import { FcLike } from "react-icons/fc";
+import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
+/** @jsxImportSource @emotion/react */
+import * as s from "./style";
 
-
-// const menus = [
-//     {
-//         id: 1,
-//         Patch: "/user/mypage/userinfo",
-//     },
-//     {
-//         id: 2,
-//         Patch: "/user/mypage/wishlist",
-//     },
-//     {
-//         id: 3,
-//         Patch: "/user/mypage/buylist",
-//     },
-// ]
+const menus = [
+  {
+    id: 1,
+    name: "정보 조회",
+    path: "/mypage/userinfo",
+    icon: <RiFileUserLine />,
+  },
+  {
+    id: 2,
+    name: "찜목록",
+    path: "/mypage/wishlist",
+    icon: <FcLike />,
+  },
+  {
+    id: 3,
+    name: "구매기록",
+    path: "/mypage/buyinfo",
+    icon: <HiOutlineClipboardDocumentList />,
+  },
+];
 
 function MyPage(props) {
-    return (
-        <div>
-            <h2>마이페이지</h2>
-            <div>
-            <Routes>
-            <Route path="user/mypage/userinfo" element={<UserInfo />} />
-            <Route path="uesr/mypage/wishlist" element={<WishList />} />
-            <Route path="uesr/mypage/buyinfo" element={<BuyInfo />} />
-          </Routes>
-            </div>
-        </div>
-    );
+  const location = useLocation();
+  const {pathname} = location;
+
+  return (
+    <div css={s.mainContainer}>
+      <h2>마이페이지</h2>
+      <div css={s.userInfoBox}>
+        <p>ㅁㅁㅁ님 반갑습니다.</p>
+        <p>ㅁㅁㅁ@ㅁㅁㅁ.com</p>
+      </div>
+        <div css={s.menuBox}>
+          {/* 메뉴 선택 버튼 */}
+          {menus.map((menu) => (
+            <Link
+              key={menu.id}
+              to={menu.path}
+              css={s.selectedMenu(pathname === menu.path)}
+            >
+              {menu.icon} <span>{menu.name}</span>
+            </Link>
+          ))}
+      </div>
+      <div css={s.contentsBox}>
+        <Routes>
+          <Route path="/userinfo" element={<UserInfo />} />
+          <Route path="/wishlist" element={<WishList />} />
+          <Route path="/buyinfo" element={<BuyInfo />} />
+        </Routes>
+      </div>
+    </div>
+  );
 }
 
 export default MyPage;
