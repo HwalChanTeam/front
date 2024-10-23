@@ -6,6 +6,7 @@ import { useState } from "react";
 import { buyProductApi, orderGetApi } from "../../apis/productApi";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
+import { getUserApi } from "../../apis/userApi";
 
 function OrderPage(props) {
   const [selectedProductIds] = useRecoilState(selectedItemsAtom); // atom 사용
@@ -22,11 +23,28 @@ function OrderPage(props) {
   });
 
   // 상품 정보 불러오기
-  const { data: products, isLoading, isError } = useQuery(
+  const {
+    data: products,
+    isLoading: isProductsLoading,
+    isError: isProductsError,
+  } = useQuery(
     ["selectedProducts", selectedProductIds],
     () => buyProductApi(selectedProductIds),
     {
       enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
+    }
+  );
+
+  // 유저 정보 불러오기
+  const {
+    data: userInfoData,
+    isLoading: isUserInfoLoading,
+    isError: isUserInfoError,
+  } = useQuery(
+    "userInfo",
+    getUserApi, // 유저 정보 가져오는 API 호출
+    {
+      onSuccess: (data) => serUserInfo(data), // 성공 시 userInfo 상태 업데이트
     }
   );
 
@@ -37,18 +55,19 @@ function OrderPage(props) {
     );
   }
 
-  // 로딩 상태
-  if (isLoading) {
+  // 로딩 상태 처리
+  if (isProductsLoading || isUserInfoLoading) {
     return <div>로딩 중...</div>;
   }
 
-  // 에러 발생 시
-  if (isError) {
-    return <div>상품 정보를 불러오는 중 에러가 발생했습니다.</div>;
+  // 에러 발생 시 처리
+  if (isProductsError || isUserInfoError) {
+    return <div>데이터를 불러오는 중 에러가 발생했습니다.</div>;
   }
 
   const handleInputChange = (e) => {
     serUserInfo((user) => ({
+      ...user,
       [e.target.name]: e.target.value,
     }));
   };
@@ -86,6 +105,7 @@ function OrderPage(props) {
               onChange={handleInputChange}
               type="text"
               name="name"
+              defaultValue={userInfo.name}
               placeholder="이름을 입력해 주세요"
             />
           </div>
@@ -95,6 +115,7 @@ function OrderPage(props) {
               onChange={handleInputChange}
               type="text"
               name="email"
+              defaultValue={userInfo.email}
               placeholder="이메일 주소를 입력해 주세요"
             />
           </div>
@@ -104,6 +125,7 @@ function OrderPage(props) {
               onChange={handleInputChange}
               type="text"
               name="phone"
+              defaultValue={userInfo.phone}
               placeholder="연락처를 입력해 주세요"
             />
           </div>
@@ -116,6 +138,7 @@ function OrderPage(props) {
               onChange={handleInputChange}
               type="text"
               name="address"
+              defaultValue={userInfo.address}
               placeholder="배송지 입력해 주세요"
             />
           </div>
@@ -125,6 +148,7 @@ function OrderPage(props) {
               onChange={handleInputChange}
               type="text"
               name="message"
+              defaultValue={userInfo.message}
               placeholder="배송 메시지를 입력해 주세요"
             />
           </div>

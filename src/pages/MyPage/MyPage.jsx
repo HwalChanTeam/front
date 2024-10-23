@@ -6,9 +6,10 @@ import BuyInfo from "../../components/MyPageList/BuyInfo/BuyInfo";
 import WishList from "../../components/MyPageList/WishList/WishList";
 import { RiFileUserLine } from "react-icons/ri";
 import { FcLike } from "react-icons/fc";
-import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
+import { HiOutlineClipboardDocumentList, HiOutlinePencilSquare } from "react-icons/hi2";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
+import ReviewInfo from "../../components/MyPageList/ReviewInfo/ReviewInfo";
 
 const menus = [
   {
@@ -29,6 +30,12 @@ const menus = [
     path: "/mypage/buyinfo",
     icon: <HiOutlineClipboardDocumentList />,
   },
+  {
+    id: 4,
+    name: "구매후기",
+    path: "/mypage/reviewinfo",
+    icon: <HiOutlinePencilSquare />,
+  },
 ];
 
 function MyPage(props) {
@@ -41,6 +48,7 @@ function MyPage(props) {
       <div css={s.userInfoBox}>
         <p>ㅁㅁㅁ님 반갑습니다.</p>
         <p>ㅁㅁㅁ@ㅁㅁㅁ.com</p>
+        <p>적립금 : ㅁㅁㅁ원</p>
       </div>
         <div css={s.menuBox}>
           {/* 메뉴 선택 버튼 */}
@@ -59,6 +67,7 @@ function MyPage(props) {
           <Route path="/userinfo" element={<UserInfo />} />
           <Route path="/wishlist" element={<WishList />} />
           <Route path="/buyinfo" element={<BuyInfo />} />
+          <Route path="/reviewinfo" element={<ReviewInfo />} />
         </Routes>
       </div>
     </div>
