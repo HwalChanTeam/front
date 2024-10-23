@@ -12,42 +12,14 @@ import { FaPlus, FaEquals } from "react-icons/fa";
 // 구매하기 버튼 누르면 상품 구매 페이지로 넘기기
 //
 
-const tempProductList = [
-  {
-    productId: 1,
-    title: "엄마의 손맛 김치찌개",
-    description: "상품설명 이것은 상품설명입니다.",
-    image:
-      "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-    price: 10000,
-    quantity: 1,
-  },
-  {
-    productId: 2,
-    title: "우리엄마의 완자고기",
-    description: "상품설명 이것은 상품설명입니다.",
-    image:
-      "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-    price: 10000,
-    quantity: 3,
-  },
-  {
-    productId: 3,
-    title: "삼겹살",
-    description: "상품설명 이것은 상품설명입니다.",
-    image:
-      "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-    price: 10000,
-    quantity: 1,
-  },
-];
 
 function ShoppingBasket(props) {
   const navigate = useNavigate();
 
   const [selectedProducts, setSelectedProducts] =
     useRecoilState(selectedItemsAtom); // atom 사용
-  const [productList, setProductList] = useState([]); // 상품 목록 상태 추가
+
+  const [productList, setProductList] = useState([]); // 상품 목록 상태 추가455
 
   // 전체 체크박스 기본 속성 - false
   const [isAllchecked, setIsAllchecked] = useState(false);
@@ -105,23 +77,14 @@ function ShoppingBasket(props) {
   };
 
   // 삭제 버튼 클릭 함수
-  const handleDeleteButtonOnClick = (productId) => {
-    mutation.mutate(productId);
+  const handleDeleteButtonOnClick = (product) => {
+    mutation.mutate({cartId : product.cartId, productId : product.productId});
   };
 
   // 상품갯수 * 가격 함수
   const calculateTotalPrice = (product) => {
     return product.price * product.quantity;
   };
-
-  // // 완료 버튼 클릭(현재 미사용)
-  // const handleSubmitButtonOnClick = (productId) => {
-  //   const updatedProducts = productList.map((product) =>
-  //     product.productId === productId ? { ...product } : product
-  //   );
-  //   setProductList(updatedProducts);
-  //   // api 연결
-  // };
 
   // 총 상품금액, 총합계 계산 함수
   const calculateTotals = () => {
@@ -141,7 +104,10 @@ function ShoppingBasket(props) {
   const handleBuyButtonOnClick = () => {
     const selectedProducts = productList.filter((product) => product.checked);
     const selectedProductIds = selectedProducts.map(
-      (product) => product.productId
+      (product) => ({
+        productId : product.productId,
+        quantity : product.quantity,
+      })
     );
 
     if (selectedProductIds.length > 0) {
@@ -215,9 +181,7 @@ function ShoppingBasket(props) {
                   <td> {calculateTotalPrice(product).toLocaleString()} 원</td>
                   <td>
                     <button
-                      onClick={() =>
-                        handleDeleteButtonOnClick(product.productId)
-                      }
+                        onClick={() => handleDeleteButtonOnClick(product)}
                     >
                       삭제
                     </button>

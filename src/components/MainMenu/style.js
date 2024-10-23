@@ -60,8 +60,8 @@ export const categorySubLayout = css`
     margin: 0px;
     margin-top: 5px;
     padding: 5px;
-    width: 80px;
-    height: 70px;
+    width: 90px;
+    height: 125px;
     position: absolute;
     top: 100%;
     left: 0;
@@ -71,6 +71,39 @@ export const categorySubLayout = css`
 
     & li {
         width: 70px;
+        list-style: none;
+        padding-bottom: 5px;
+
+        & a{
+            margin: 0px;
+            width: 100px;
+            font-size: 16px;
+            color: #5B5B5B;
+
+            &:hover {
+                font-weight: 600;
+            }
+        }
+    }
+`;
+
+export const categoryMealkitSubLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0px;
+    padding: 5px;
+    width: 90px;
+    height: 125px;
+    position: absolute;
+    top: -1px;
+    left: 100%;
+    z-index: 1000;
+    background-color: #e3e3e3;
+    border: 1px solid #dbdbdb;
+
+    & li {
         list-style: none;
         padding-bottom: 5px;
 

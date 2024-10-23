@@ -48,13 +48,19 @@ export const menuLayout = css`
 
 export const numberLayout = css`
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    background-color: #f4f4f4f4;
 
     & > h1 {
         margin: 0px;
-        margin-top: 5px;
-        width: 200px;
-        font-size: 42px;
-        font-weight: 800;
+        font-size: 18px;
+        font-weight: 600;
     } 
 `;
 
@@ -66,6 +72,7 @@ export const menuList = css`
 
 export const imgLayout = css`
     box-sizing: border-box;
+    position: relative;
     width: 200px;
     height: 200px;
     background-color: #dbdbdb;
@@ -84,7 +91,7 @@ export const productLayout = css`
     & h2 {
         width: 200px;
         margin: 5px 0px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 600;
         &:nth-last-of-type(1) {
             font-style: italic;

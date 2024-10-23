@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from "react";
 import * as s from "./style";
-import { adminSigninApi } from "../../../apis/signupApi";
 import { instance } from "../../../apis/util/instance";
+import { adminSigninApi } from "../../../apis/adminSigninApi";
 
 function AdminSignin(props) {
     const [admin, setAdmin] = useState({

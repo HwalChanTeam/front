@@ -12,13 +12,37 @@ export const updateProductImgApi = async (img) => {
     return response;
 };
 
-export const getProductLikeApi = async (userId, id) => {
+// 신상품 get 요청 api
+export const getNewProductApi = async (productId) => { 
     let response = null;
     try {
-        response = await instance.get("/product", { userId, id });
+        response = await instance.get("/user/public/new", {productId});
+    } catch (e) {
+        console.error(e);
+        response = e.response;
+        
+    }
+};
+
+//인기상품 get 요청 api
+export const getPopularityProudctApi = async (productId) => {
+    let response = null;
+    try {
+        response = await instance.get("/user/public/popularity", {productId});
     } catch (e) {
         console.error(e);
         response = e.response
+    }
+}
+
+// 찜 api
+export const getProductLikeApi = async (productId) => {
+    let response = null;
+    try {
+        response = await instance.get("/user/product", {productId});
+    } catch (e) {
+        console.error(e);
+        response = e.response;
     }
     return response;
 };
@@ -26,27 +50,28 @@ export const getProductLikeApi = async (userId, id) => {
 export const productLikeApi = async (productId) => {
     let response = null;
     try {
-        response = await instance.post("/product/like", {productId});
+        response = await instance.post("/user/product/like", {productId});
     } catch (e) {
         console.error(e);
-        response = e.response
+        response = e.response;
     }
 }
 
 export const deleteProductDisLikeApi = async (productId) => {
     let response = null;
     try {
-        response = await instance.delete("/product/dislike", { productId });
+        response = await instance.delete("/user/product/dislike", { productId });
     } catch (e) {
         console.error(e);
-        response = e.response
+        response = e.response;
     }
 };
 
+// 확인
 export const basketAddProductApi = async (productId) => {
     let response = null;
     try {
-        response = await instance.post("/user/img", { productId });
+        response = await instance.post("/user/cart", { productId });
         if (response.status === 200) {
             alert('장바구니에 상품이 추가되었습니다!');
         }
@@ -58,16 +83,17 @@ export const basketAddProductApi = async (productId) => {
     return response;
 }
 
-
+// 확인
 // 장바구니 상품 가져오기
 export const getBasketProductsApi = async () => {
-    const response = await axios.get("/api/basket"); // 적절한 API 경로로 수정
+    const response = await axios.get("/user/cart"); // 적절한 API 경로로 수정
     return response.data; // 데이터 반환
 };
 
 // 상품 삭제 API
-export const deleteProductApi = async (productId) => {
-    await axios.delete(`/api/basket/${productId}`); // 적절한 API 경로로 수정
+export const deleteProductApi = async (cartId, productId) => {
+    await axios.delete(`/api/cart/${cartId}/product/${productId}`); // 적절한 API 경로로 수정
+
 };
 
 export const buyProductApi = async (productIds) => {

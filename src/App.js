@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import OrderPage from "./pages/OrderPage/OrderPage";
 import MainFooter from "./components/MainFooter/MainFooter";
 import MyPage from "./pages/MyPage/MyPage";
+import TestExam2 from "./pages/Test/TestExam2";
 
 function App() {
   const token = localStorage.getItem("accessToken");
@@ -98,8 +99,9 @@ function App() {
             <Route path="/user/signin" element={<SigninPage />} />
             <Route path="/basket" element={<ShoppingBasket />} />
             <Route path="/order/*" element={<OrderPage />} />
-            <Route path="/mypage" element={<MyPage />} />
+            <Route path="/mypage/*" element={<MyPage />} />
             <Route path="/test" element={<TestExam />} />
+            <Route path="/test2" element={<TestExam2 />} />
           </Routes>
         <MainFooter />
         </MainLayout>

@@ -3,15 +3,16 @@ import { useEffect, useState } from "react";
 import * as s from "./style";
 import { useNavigate } from "react-router-dom";
 import { instance } from "../../apis/util/instance";
-import { sendEmailApi } from "../../apis/sendEmailApi";
 import logo from "../../assets/images/logo.png";
 import { SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
+import { sendEmailApi } from "../../apis/emailApi";
 
 function SignupPage(props) {
   const navigate = useNavigate();
 
   const [certification, setCertification] = useState(0);
+
   const [user, setUser] = useState({
     username: "",
     password: "",
@@ -25,6 +26,7 @@ function SignupPage(props) {
     toEmail: "",
     subject: "",
     content: "",
+    checkEmail: "",
   });
 
   const handleInputOnchange = (e) => {
@@ -45,7 +47,24 @@ function SignupPage(props) {
     }));
   };
 
-  const emailCkectButtonOnClick = async () => {
+  const emailSendButtonOnClick = async () => {
+    console.log(sendEmail);
+    const emailData = await sendEmailApi(sendEmail);
+    if (certification == 1) {
+      alert("이미 인증 요청이 되었습니다.");
+      return;
+    }
+    setCertification(1);
+  };
+
+  const emailCheckOnChange = (e) => {
+    setUser((user) => ({
+      ...user,
+
+    }))
+  }
+
+  const emailCkeckButtonOnClick = async () => {
     console.log(sendEmail);
     const emailData = await sendEmailApi(sendEmail);
     if (certification == 1) {
@@ -113,17 +132,22 @@ function SignupPage(props) {
             placeholder="이메일을 입력해 주세요"
             onChange={handleEmailInputOnchange}
           />
-          <button onClick={emailCkectButtonOnClick}>인증요청</button>
+          <button onClick={emailSendButtonOnClick}>인증요청</button>
 
           {/* 인증번호 요청 누르면 인증번호 칸 활성화되게(추가) */}
           {certification === 0 ? (
             <></>
           ) : (
+            <div css={s.emailCkeck}>
             <input
               type="text"
               neme="emailCheck"
               placeholder="인증번호를 입력해 주세요"
+              onChange={emailCheckOnChange}
+              value={user.checkEmail}
             />
+            <button onClick={() => handleEmailInputOnchange(sendEmail.checkEmail)}>확인</button>
+            </div>
           )}
         </div>
       <div css={s.joinOkButton}>
