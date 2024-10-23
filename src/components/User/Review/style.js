@@ -16,13 +16,13 @@ export const contentLayout = css`
 `;
 
 export const tableLayout = css`
-    width: 100%;
+    width: 1200px;
 `;
 
 export const subLayout = css`
     box-sizing: border-box;
     margin-bottom: 12px;
-    width: 147px;
+    width: 85px;
     display: flex;
     flex-direction: column;
     border-bottom: 3px solid #AA1414;
@@ -36,43 +36,89 @@ export const subLayout = css`
 
 `;
 
-export const menuLayout = css`
+export const ReviewLayout = css`
     box-sizing: border-box;
     display: flex;
-    flex-wrap: wrap;
-    width: 100%;    
-`;
+    flex-direction: column;
+    width: 1200px;    
 
-export const menuList = css`
-    box-sizing: border-box;
-    width: 272px;
-    padding: 0px;
-`;
-
-export const imgLayout = css`
-    box-sizing: border-box;
-    width: 200px;
-    height: 200px;
-    background-color: #dbdbdb;
-    cursor: pointer;
-
-    & img {
-        box-sizing: border-box;
-        width: 100%;
-        height: 100%;
+    & tr {
+        margin-bottom: 15px;
     }
 `;
 
+export const ReviewList = css`
+    box-sizing: border-box;
+    display: flex;
+    width: 1200px;
+    height: 151px;
+    padding: 0px;
+    border: 1px solid #dbdbdb;
+`;
 
+export const productImgLayout = css`
+    box-sizing: border-box;
+    border: none;
+    background-color: #dbdbdb;
+    cursor: pointer;
+    
+    & img {
+        box-sizing: border-box;
+        width: 150px;
+        height: 150px;
+    }
+`;
 
-export const productLayout = css`
+export const productReviewLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 1049px;
+    height: 150px;
+`;
+
+export const userLayout = css`
+    box-sizing: border-box;
+    display: flex;
+    padding-top: 5px;
+    padding-left: 10px;
+    align-items: center;
+    height: 30px;
+
     & h2 {
-        width: 200px;
-        margin: 5px 0px;
-        font-size: 20px;
+        margin: 0px;
+        padding-left: 5px;
+        font-size: 12px;
         font-weight: 600;
-        &:nth-last-of-type(1) {
-            font-style: italic;
-        }
+    }
+`;
+
+export const reviewContent = css`
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    padding: 0px 10px;
+    width: 1049px;
+    height: 85px;
+    border-top: 1px solid #dbdbdb;
+    overflow-wrap: break-word;
+
+    & p {
+        margin: 0px;
+        width: 1029px;
+        font-size: 12px;
+    }
+`;
+
+export const createData = css`
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-end;
+
+    & p {
+        margin: 0px;
+        padding-right: 10px;
+        padding-bottom: 5px;
     }
 `;

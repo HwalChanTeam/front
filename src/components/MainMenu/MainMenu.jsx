@@ -86,8 +86,6 @@ function MainMenu(props) {
 
     const [ dropDownOpen, setDropDownOpen ] = useState(false);
 
-    const [ mealkitDropDownOpen, setMealkitDropDownOpen ] = useState(false);
-
     const [ activeMealkitSubCategory, setActiveMealkitSubCategory ] = useState(null);
 
     useEffect(() => {
@@ -201,12 +199,12 @@ function MainMenu(props) {
                                     <div css={s.menuLayout}>
                                         <div css={s.menuListBox}>
                                             <Routes>
-                                                <Route path="/category" element={<CategoryView />}/>
+                                                <Route path="/category/*" element={<></>}/>
                                                 <Route path="/soup" element={<Soup />}/>
                                                 <Route path="/anju" element={<Anju />}/>
-                                                <Route path="/mealkit" element={<Mealkit />}/>
-                                                <Route path="/mealkit/frozen" element={<FrozenProductView />}/>
-                                                <Route path="/mealkit/refrigerated" element={<RefrigeratedView />}/>
+                                                <Route path="/mealkit/*" element={<Mealkit />}/>
+                                                <Route path="/frozen" element={<FrozenProductView />}/>
+                                                <Route path="/refrigerated" element={<RefrigeratedView />}/>
                                                 <Route path="/simplycook" element={<SimplyCook />}/>
                                                 <Route path="/newproduct" element={<NewProductView />}/>
                                                 <Route path="/popularityproduct" element={<PopularityProduct />}/>
