@@ -13,10 +13,10 @@ export const updateProductImgApi = async (img) => {
 };
 
 // 신상품 get 요청 api
-export const getNewProductApi = async (productId) => { 
+export const getNewProductApi = async () => { 
     let response = null;
     try {
-        response = await instance.get("/user/public/new", {productId});
+        response = await instance.get("/user/public/new");
     } catch (e) {
         console.error(e);
         response = e.response;
@@ -25,10 +25,10 @@ export const getNewProductApi = async (productId) => {
 };
 
 //인기상품 get 요청 api
-export const getPopularityProudctApi = async (productId) => {
+export const getPopularityProudctApi = async () => {
     let response = null;
     try {
-        response = await instance.get("/user/public/popularity", {productId});
+        response = await instance.get("/user/public/popularity");
     } catch (e) {
         console.error(e);
         response = e.response

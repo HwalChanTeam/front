@@ -95,12 +95,12 @@ export const categoryMealkitSubLayout = css`
     margin: 0px;
     padding: 5px;
     width: 90px;
-    height: 125px;
+    height: 92px;
     position: absolute;
     top: -1px;
     left: 100%;
     z-index: 1000;
-    background-color: #e3e3e3;
+    background-color: #fafafa;
     border: 1px solid #dbdbdb;
 
     & li {
@@ -108,8 +108,10 @@ export const categoryMealkitSubLayout = css`
         padding-bottom: 5px;
 
         & a{
+            display: flex;
+            justify-content: center;
             margin: 0px;
-            width: 100px;
+            width: 100%;
             font-size: 16px;
             color: #5B5B5B;
 
