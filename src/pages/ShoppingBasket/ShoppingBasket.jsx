@@ -31,7 +31,7 @@ function ShoppingBasket(props) {
     {
       onSuccess: (data) => setProductList(data),
       refetchOnWindowFocus: false, // 창 포커스 시 재요청 하지 않음
-      retry: 0,
+      retry: 1,
       // 데이터 가져오면 productList에 설정
     }
   );
