@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Soup(props) {
+function ReviewInfo(props) {
     return (
         <div>
-            aaaaa
+            
         </div>
     );
 }
 
-export default Soup;
+export default ReviewInfo;

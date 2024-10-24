@@ -92,7 +92,7 @@ function App() {
         <>
         <MainLayout>
           <Routes>
-            <Route path="/" element={<MainPage />} />
+            <Route path="/*" element={<MainPage />} />
             <Route path="/user/*" element={<MainMenu />} />
             <Route path="/product/:productId/*" element={<ProductPage />} />
             <Route path="/user/signup" element={<SignupPage />} />
