@@ -3,31 +3,7 @@ import React, { useState } from "react";
 import * as s from "./style";
 import { IoSearchSharp } from "react-icons/io5";
 
-function MainSearch({ onSearch }) {
-  const [mainSearchProduct, setMainSearchProduct] = useState({
-    title: "",
-  });
-
-  const handleMainSearchOnChange = (e) => {
-    setMainSearchProduct((mainSearchProduct) => ({
-      ...mainSearchProduct,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleMainSearchOnClick = () => {
-    setMainSearchProduct({
-      title: "",
-    });
-  };
-
-  const handleMainSearchOnKeyDown = (e) => {
-    if(e.key === "Enter") {
-      setMainSearchProduct({
-        title: "",
-      });
-    }
-  }
+function MainSearch() {
 
   return (
     <div css={s.layout}>
@@ -35,13 +11,9 @@ function MainSearch({ onSearch }) {
         <input
           type="text"
           placeholder="검색어를 입력하세요"
-          name="title"
           css={s.searchInput}
-          onChange={handleMainSearchOnChange}
-          onKeyDown={handleMainSearchOnKeyDown}
-          value={mainSearchProduct.title}
         />
-        <IoSearchSharp onClick={handleMainSearchOnClick} size="30" />
+        <IoSearchSharp size="30" />
       </div>
     </div>
   );
