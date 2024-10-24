@@ -4,21 +4,20 @@ import *as s from './style';
 import { useState } from 'react';
 import MainMenu from '../../MainMenu/MainMenu';
 
+function CategoryView(props) {
+
     return (
         <div css={s.layout}>
             <div css={s.contentLayout}>
                 <table css={s.tableLayout}>
-
                     <tbody css={s.menuLayout}>
-
-                                        </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                        <td>
+                            <tr></tr>
+                        </td>
+                    </tbody >
+                </table >
             </div>
-        </div>
+        </div >
     );
 }
 
