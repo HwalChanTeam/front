@@ -88,23 +88,6 @@ export const logo = css`
   & > a {
     text-decoration: none;
   }
-  & h1 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    /* padding-left: 40px; */
-    height: 80px;
-    overflow: hidden;
-    font-family: "Dancing Script", cursive;
-    font-size: 30px;
-    color: #964747;
-
-    & > img {
-      width: 80px;
-      height: 80px;
-    }
-  }
 `;
 
 export const contentBox = css`

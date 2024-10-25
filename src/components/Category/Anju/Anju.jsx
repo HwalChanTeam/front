@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Snacks(props) {
+function Anju(props) {
     return (
         <div>
             
@@ -8,4 +8,4 @@ function Snacks(props) {
     );
 }
 
-export default Snacks;
+export default Anju;

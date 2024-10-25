@@ -7,6 +7,21 @@ import { SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 
 function SigninPage(props) {
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState({
+    username: "",
+    password: "",
+  });
+
+  const userInputOnChange = (e) => {
+    setUser((user) => ({
+      ...user,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleLoginSubmitOnClick = () => {};
 
   return (
     <div css={s.mainLayout}>
@@ -21,11 +36,15 @@ function SigninPage(props) {
           <input
             type="text"
             name="username"
+            onChange={userInputOnChange}
+            value={user.username}
             placeholder="아이디를 입력해 주세요"
           />
           <input
             type="text"
             name="password"
+            onChange={userInputOnChange}
+            value={user.password}
             placeholder="비밀번호를 입력해 주세요"
           />
         </div>

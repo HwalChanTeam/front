@@ -39,6 +39,8 @@ const menus = [
 ];
 
 function MyPage(props) {
+  const location = useLocation();
+  const {pathname} = location;
 
   return (
     <div css={s.mainContainer}>
@@ -50,11 +52,15 @@ function MyPage(props) {
       </div>
         <div css={s.menuBox}>
           {/* 메뉴 선택 버튼 */}
-         
+          {menus.map((menu) => (
             <Link
+              key={menu.id}
+              to={menu.path}
+              css={s.selectedMenu(pathname === menu.path)}
             >
-              <span></span>
+              {menu.icon} <span>{menu.name}</span>
             </Link>
+          ))}
       </div>
       <div css={s.contentsBox}>
         <Routes>
