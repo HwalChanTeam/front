@@ -1,7 +1,10 @@
+import { FaBars } from "react-icons/fa";
+
 export const menus = [
     {
         id: 1,
         name: "카테고리",
+        icon: <FaBars />,
         subMenus: [
             {
                 id: 1,

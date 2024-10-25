@@ -33,7 +33,7 @@ const itemProductList = [
 function WishList(props) {
 
     const navigate = useNavigate();
-    const params = useParams();
+    const params = useParams(); // url 수정 하기 ~~~~
     const productId = params.productId;
 
     const [ productLikeList, setProductLikeList ] = useState({
@@ -48,7 +48,7 @@ function WishList(props) {
     const productWishList = useQuery(
         ["productLikeQuery"],
         async () => {
-            return getProductLikeApi();
+            // return getProductLikeApi();
         },
         {
             refetchOnWindowFocus: false,
