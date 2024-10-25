@@ -151,7 +151,7 @@ function ProductPage() {
       }
       return;
     }
-    await instance.post("/user/cart", productId);
+    return await instance.post("/user/cart", productId);
   };
 
   // 구매하기 버튼
@@ -162,7 +162,7 @@ function ProductPage() {
       }
       return;
     }
-    await await instance.post("/user/buy", productId);
+    return await instance.post("/user/buy", productId);
   };
 
   // 찜 버튼
@@ -173,7 +173,7 @@ function ProductPage() {
       }
       return;
     } else {
-      const response = await productLikeApi(productId);
+      await productLikeApi(productId);
       alert("찜에 추가되었습니다.");
     }
   };

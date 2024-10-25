@@ -27,7 +27,9 @@ function ShoppingBasket(props) {
   // 장바구니 상품 가져오기
   const { data, isLoading, isError, refetch } = useQuery(
     "basketProducts",
-    async () => await instance.get("/user/cart"),
+    async () => {
+      return await instance.get("/user/cart");
+    },
     {
       onSuccess: (data) => setProductList(data),
       refetchOnWindowFocus: false, // 창 포커스 시 재요청 하지 않음
@@ -38,8 +40,9 @@ function ShoppingBasket(props) {
 
   // 삭제 요청을 위한 mutation
   const mutation = useMutation(
-    async (cartId, productId) =>
-      await instance.delete(`/api/cart/${cartId}/product/${productId}`),
+    async (cartId, productId) => {
+      return await instance.delete(`/api/cart/${cartId}/product/${productId}`);
+    },
     {
       onSuccess: () => {
         refetch(); // 삭제 후 장바구니를 다시 불러오기

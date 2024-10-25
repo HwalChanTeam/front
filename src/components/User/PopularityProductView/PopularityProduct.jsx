@@ -79,8 +79,9 @@ function PopularityProduct(props) {
     // 전체 불러오는 쿼리
     const getBestProduct = useQuery(
         ["bestProducts"],
-        async () => 
-        await instance.get("/user/public/best"),
+        async () => {
+            return await instance.get("/user/public/best");
+        },
         {
             onSuccess: (response) => 
                 setBestProductList(response.data),

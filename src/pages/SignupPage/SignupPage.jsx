@@ -65,14 +65,15 @@ function SignupPage(props) {
     }));
   };
 
+  // 이메일 인증 체크 버튼
+  const handleCheckEmailButtonOnClick = () => {
+    
+  }
+
   // 회원가입 완료 버튼
   const handleSubmitButtonOnClick = () => {
     // 백엔드로 요청 들어가야함(post요청)
   };
-
-  const handleCheckEmailButtonOnClick = () => {
-    
-  }
 
   return (
     <div css={s.mainLayout}>

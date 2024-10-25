@@ -10,7 +10,9 @@ function MainPage() {
 
     const newProduct = useQuery(
         ["newProducts"],
-        async () => await instance.get("/user/public/new"),
+        async () => {
+            return await instance.get("/user/public/new");
+        },
         {
             refetchOnWindowFocus: false,
             retry:0
