@@ -86,7 +86,7 @@ function App() {
       {location.pathname.startsWith("/admin") ? (
         <Routes>
           <Route path="/admin" element={<AdminSignin />} />
-          <Route path="/admin/main/*" element={token ? <AdminMainPage/> : <AdminSignin/>} />
+          <Route path="/admin/main/*" element={<AdminMainPage/>} />
         </Routes>
       ) : (
         <>
