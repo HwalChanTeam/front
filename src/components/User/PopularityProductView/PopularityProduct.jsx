@@ -4,6 +4,7 @@ import *as s from './style';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getPopularityProudctApi } from '../../../apis/productApi';
+import { instance } from '../../../apis/util/instance';
 
 const products = [
     {
@@ -71,20 +72,18 @@ const products = [
 function PopularityProduct(props) {
 
     // 해당 상품 클릭시 해당하는 상품페이지로 넘어가는
-    const productPath = (productId) => `/product/${productId}`;
+    const productPath = (productId) => `/product/${productId}`; // 경로 수정 필요
 
-    const [ bestProductList, setBestProductList ] = useState([{
-        productId: 0,
-        title: "",
-        price: 0,
-        thumbnaillmg: ""
-    }]);
+    const [ bestProductList, setBestProductList ] = useState([]);
 
-    const { data, isLoading } = useQuery(
-        "bestProducts",
-        getPopularityProudctApi,
+    // 전체 불러오는 쿼리
+    const getBestProduct = useQuery(
+        ["bestProducts"],
+        async () => 
+        await instance.get("/user/public/best"),
         {
-            onSuccess: (data) => setBestProductList(data),
+            onSuccess: (response) => 
+                setBestProductList(response.data),
             refetchOnWindowFocus: false,
             retry: 0
         }
@@ -93,15 +92,14 @@ function PopularityProduct(props) {
     return (
         <div css={s.layout}>
             <div css={s.contentLayout}>
+            <div css={s.subLayout}>
+                <h2>BEST(TOP10)</h2>
+            </div>
                 <table css={s.tableLayout}>
-                    <div css={s.subLayout}>
-                        <h2>BEST(TOP10)</h2>
-                    </div>
-
                     <tbody css={s.menuLayout}>
                     {   
                         products.map((product, index) => (
-                            <tr>
+                            <tr key={product.productId}>
                                 <td>
                                     <div css={s.numberLayout}>
                                         <h1>{index + 1}</h1>
@@ -109,7 +107,6 @@ function PopularityProduct(props) {
                                     <div css={s.menuList}>
                                             <div css={s.imgLayout}>
                                                 <Link 
-                                                    key={product.productId}
                                                     to={productPath(product.productId)}>
                                                         <img src={product.img} />
                                                 </Link>

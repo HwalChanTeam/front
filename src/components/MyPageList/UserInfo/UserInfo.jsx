@@ -2,8 +2,8 @@
 import { useState } from "react";
 import * as s from "./style";
 import { useMutation, useQuery } from "react-query";
-import { getUserApi, updateUserApi } from "../../../apis/userApi";
 import DaumPost from "../../PostSearch/PstSearch";
+import { instance } from "../../../apis/util/instance";
 
 function UserInfo(props) {
   const [userInfo, setUserInfo] = useState({
@@ -18,7 +18,7 @@ function UserInfo(props) {
   // 유저 정보 불러오기
   const { data, isError, isLoading, refetch } = useQuery(
     "userInfos",
-    getUserApi,
+    async () => await instance.get("/user/info"), // 유저 정보 가져오는 API 호출,
     {
       onSuccess: (data) => setUserInfo(data),
       refetchOnWindowFocus: false, // 창 포커스 시 재요청 하지 않음
@@ -35,7 +35,9 @@ function UserInfo(props) {
   };
 
   // 삭제 요청 API
-  const mutation = useMutation(updateUserApi, {
+  const mutation = useMutation(
+    async() => await instance.put("/user/info"),
+    {
     onSuccess: () => {
       refetch();
     },
