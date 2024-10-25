@@ -74,7 +74,7 @@ export const newProductContentLayout = css`
 `;
 
 
-export const imgLayout = css`
+export const newProductLayout = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
