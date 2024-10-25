@@ -1,24 +1,9 @@
 import { css } from "@emotion/react";
 
-export const container = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    margin-top: 40px;
-    width: 1200px;
-    height: 100%;
-`;
-
-export const headerLayout = css`
-    box-sizing: border-box;
-    width: 100%;
-`;
-
 export const layout = css`
-    box-sizing: border-box;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    padding: 20px 0px;
     width: 100%;
 `;
 
@@ -26,13 +11,13 @@ export const menusLayout = css`
     box-sizing: border-box;
     display: flex;
     padding-left: 4px;
-    width: 100%;
+    flex-grow: 1;
 
-    & a {
+    & > a {
         box-sizing: border-box;
         margin-right: 60px;
         text-decoration: none;
-        font-size: 16px;
+        font-size: 20px;
         color: #5B5B5B;
     }
     
@@ -42,12 +27,12 @@ export const menusLayout = css`
 export const categoryButton = css`
     position: relative;
 
-    & button {
+    & li {
         background-color: transparent;
         border: none;
         padding: 0px;
 
-        & span {
+        & > span {
             margin-right: 60px;
             font-size: 16px;
             color: #5B5B5B;
@@ -56,74 +41,80 @@ export const categoryButton = css`
 `;
 
 export const categorySubLayout = css`
+    list-style-type: none;
     box-sizing: border-box;
     margin: 0px;
-    margin-top: 5px;
-    padding: 5px;
-    width: 90px;
-    height: 125px;
+    padding: 20px 0px;
     position: absolute;
-    top: 100%;
+    top: 29px;
     left: 0;
-    z-index: 1000;
+    width: max-content;
+    z-index: 99;
     background-color: #ffffff;
     border: 1px solid #dbdbdb;
 
-    & li {
-        width: 70px;
-        list-style: none;
+    & a {
         padding-bottom: 5px;
+        text-decoration: none;
 
-        & a{
+        & li {
+            box-sizing: border-box;
             margin: 0px;
-            width: 100px;
-            font-size: 16px;
+            padding: 5px 25px;
+            font-size: 20px;
+            width: 100%;
             color: #5B5B5B;
 
             &:hover {
-                font-weight: 600;
+                color: #964747;
             }
         }
+
+        
     }
 `;
 
-export const categoryMealkitSubLayout = css`
+export const categorySubSideLayout = css`
+    list-style-type: none;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin: 0px;
-    padding: 5px;
-    width: 90px;
-    height: 92px;
+    padding: 20px 50px 20px 20px;
     position: absolute;
-    top: -1px;
-    left: 100%;
-    z-index: 1000;
-    background-color: #fafafa;
+    top: 0;
+    right: 0;
+    transform: translateX(100%);
+    width: max-content;
+    height: 100%;
+    z-index: 99;
+    background-color: #fdfdfd;
     border: 1px solid #dbdbdb;
 
-    & li {
-        list-style: none;
+    & a {
         padding-bottom: 5px;
+        text-decoration: none;
 
-        & a{
-            display: flex;
-            justify-content: center;
+        & li {
             margin: 0px;
-            width: 100%;
-            font-size: 16px;
+            padding: 5px 0px;
+            font-size: 20px;
             color: #5B5B5B;
 
             &:hover {
-                font-weight: 600;
+                color: #964747;
             }
         }
+
+        
     }
 `;
 
 export const selectedMenu = (isSelected) => css`
+    position: relative;
     border-top: ${isSelected ? "2px solid #964747" : "transparent"};
+
+    & > span:nth-of-type(1) {
+        margin-right: 5px;
+    }
 
     &:hover {
         color: #964747;

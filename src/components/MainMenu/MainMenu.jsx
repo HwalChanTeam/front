@@ -12,51 +12,74 @@ function MainMenu(props) {
     const location = useLocation();
     const pathname = location.pathname;
 
-    const [onCursor, setOnCursor] = useState(true);
+    const [onMouseMenuId, setOnMouseMenuId] = useState(0);
+    const [onMouseSubMenuId, setOnMouseSubMenuId] = useState(0);
 
-    const handleOnMouseEnter = () => {
-        setOnCursor(false);
-        console.log("올렸다" + onCursor);
+    const handleOnMouseEnter = (type, id) => {
+        if(type === "main") {
+            setOnMouseMenuId(id);
+        }else if(type === "sub") {
+            setOnMouseSubMenuId(id);
+        }
     }
-    const handleOnMouseLeave = () => {
-        setOnCursor(true);
-        console.log("내렸다" + onCursor);
+    const handleOnMouseLeave = (type, id) => {
+        if(type === "main") {
+            setOnMouseMenuId(0);
+        }else if(type === "sub") {
+            setOnMouseSubMenuId(0);
+        }
     }
 
     return (
-        <div css={s.container}>
-            <header css={s.headerLayout}>
-                <div css={s.layout}>
-                    <div css={s.menusLayout}>
-                        {
-                            menus.map(menu =>
-                                <Link
-                                    to={menu?.path}
-                                    css={s.selectedMenu(pathname === menu?.path)}
-                                    onMouseEnter={handleOnMouseEnter}
-                                    onMouseLeave={handleOnMouseLeave}
-                                    >
-                                    <span>{menu.name}</span>
-                                    {
-                                        // !menu?.subMenus.length &&
-                                        onCursor !== false &&(
-                                            <ul css={s.categorySubLayout}>
-                                                {menu.subMenus.map(subMenu => (
+        <header css={s.layout}>
+            <div css={s.menusLayout}>
+                {
+                    menus.map(menu =>
+                        <div css={s.selectedMenu(pathname === menu?.path)}>
+                            <Link
+                                to={menu?.path}
+                                onMouseEnter={() => handleOnMouseEnter("main", menu.id)}
+                                onMouseLeave={() => handleOnMouseLeave("main", menu.id)}
+                            >
+                                <span>{menu?.icon}</span>
+                                <span>{menu.name}</span>
+                            </Link>
+                            {
+                                (onMouseMenuId === menu.id && !!menu?.subMenus.length) &&
+                                    <ul css={s.categorySubLayout}>
+                                        {menu.subMenus.map(subMenu => (
+                                            <div>
+                                                <Link 
+                                                    to={subMenu.path}
+                                                    onMouseEnter={() => handleOnMouseEnter("sub", subMenu.id)}
+                                                    onMouseLeave={() => handleOnMouseLeave("sub", subMenu.id)}
+                                                >
                                                     <li>
                                                         {subMenu.name}
                                                     </li>
-                                                ))}
-                                            </ul>
-                                        )
-                                    }
-                                </Link>)
-                        }
-                    </div>
-                    <MainSearch onSearch={null} />
-                </div>
-            </header>
+                                                </Link>
+                                                {
+                                                    (onMouseSubMenuId === subMenu.id && !!subMenu?.subSideMenus.length) &&
+                                                    <ul css={s.categorySubSideLayout}>
+                                                        {subMenu.subSideMenus.map(subSideMenu => (
+                                                            <Link to={subSideMenu.path}>
+                                                                <li>
+                                                                    {subSideMenu.name}
+                                                                </li>
+                                                            </Link>
+                                                        ))}
+                                                    </ul>
+                                                }
+                                            </div>
+                                        ))}
+                                    </ul>
+                                }
+                        </div>)
 
-        </div>
+                }
+            </div>
+            <MainSearch onSearch={null} />
+        </header>
     );
 }
 

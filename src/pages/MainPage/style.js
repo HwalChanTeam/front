@@ -11,7 +11,6 @@ export const titleLayout = css`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
     width: 1903px;
     height: 200px;
     background-color: #f5f5f5;
