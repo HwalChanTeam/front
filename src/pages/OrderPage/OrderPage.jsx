@@ -28,7 +28,9 @@ function OrderPage(props) {
     isError: isProductsError,
   } = useQuery(
     ["selectedProducts", selectedProductIds],
-    async () => await instance.post("/user/buy", selectedProductIds),
+    async () => {
+      return await instance.post("/user/buy", selectedProductIds);
+    },
     {
       enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
     }
@@ -41,7 +43,9 @@ function OrderPage(props) {
     isError: isUserInfoError,
   } = useQuery(
     "userInfo",
-    async () => await instance.get("/user/info"), // 유저 정보 가져오는 API 호출
+    async () => {
+      return await instance.get("/user/info"); // 유저 정보 가져오는 API 호출
+    },
     {
       onSuccess: (data) => serUserInfo(data), // 성공 시 userInfo 상태 업데이트
     }
