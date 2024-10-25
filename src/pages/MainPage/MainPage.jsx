@@ -1,7 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import *as s from './style';
 import MainMenu from '../../components/MainMenu/MainMenu';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
+import { instance } from '../../apis/util/instance';
 function MainPage() {
+
+    const [ newProductList, setNewProductList ] = useState([]);
+
+    const newProduct = useQuery(
+        ["newProducts"],
+        async () => await instance.get("/user/public/new"),
+        {
+            refetchOnWindowFocus: false,
+            retry:0
+        }
+    );
 
     return (
         <>
@@ -19,35 +33,15 @@ function MainPage() {
                     <p>NEW PRODUCT</p>
                     <p>이 달의 신상품</p>
                 </div>
-                <div>
 
-                </div>
                 <div css={s.newProductContentLayout}>
-                    <div css={s.imgLayout}>
+                    <div css={s.newProductLayout}>
+                        {
+
+                        }
                         <img src="https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg" />
                         <div>
                             <p>부대찌개</p>
-                            <p>11,000 원</p>
-                        </div>
-                    </div>
-                    <div css={s.imgLayout}>
-                        <img src="" />
-                        <div>
-                            <p>fffff</p>
-                            <p>11,000 원</p>
-                        </div>
-                    </div>
-                    <div css={s.imgLayout}>
-                        <img src="" />
-                        <div>
-                            <p>gggg</p>
-                            <p>11,000 원</p>
-                        </div>
-                    </div>
-                    <div css={s.imgLayout}>
-                        <img src="" />
-                        <div>
-                            <p>gggg</p>
                             <p>11,000 원</p>
                         </div>
                     </div>
