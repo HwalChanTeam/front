@@ -22,7 +22,7 @@ export const layout = css`
     width: 100%;
 `;
 
-export const buttonLayout = css`
+export const menusLayout = css`
     box-sizing: border-box;
     display: flex;
     padding-left: 4px;
