@@ -64,7 +64,7 @@ function WishList(props) {
         }
     )
 
-    // "/product?category=1&/productId"
+    // "/product?category=1&/productId=12"
 
    return (
     <div css={s.wishListContainer}>
