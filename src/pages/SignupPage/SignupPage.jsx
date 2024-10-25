@@ -43,13 +43,13 @@ function SignupPage(props) {
     }));
     setSendEmail((email) => ({
       ...email,
-      toEmail: user.email,
+      [e.target.name]: e.target.value,
     }));
   };
 
+  // 이메일 전송 버튼
   const emailSendButtonOnClick = async () => {
-    console.log(sendEmail);
-    const emailData = await sendEmailApi(sendEmail);
+      await instance.post("/user/public/email/send", sendEmail);
     if (certification == 1) {
       alert("이미 인증 요청이 되었습니다.");
       return;
@@ -57,26 +57,22 @@ function SignupPage(props) {
     setCertification(1);
   };
 
+  // 이메일 인증번호 입력
   const emailCheckOnChange = (e) => {
-    setUser((user) => ({
-      ...user,
-
-    }))
-  }
-
-  const emailCkeckButtonOnClick = async () => {
-    console.log(sendEmail);
-    const emailData = await sendEmailApi(sendEmail);
-    if (certification == 1) {
-      alert("이미 인증 요청이 되었습니다.");
-      return;
-    }
-    setCertification(1);
+    setSendEmail((checkEmail) => ({
+      ...checkEmail,
+      [e.target.name] : e.target.value
+    }));
   };
 
+  // 회원가입 완료 버튼
   const handleSubmitButtonOnClick = () => {
     // 백엔드로 요청 들어가야함(post요청)
   };
+
+  const handleCheckEmailButtonOnClick = () => {
+    
+  }
 
   return (
     <div css={s.mainLayout}>
@@ -127,33 +123,39 @@ function SignupPage(props) {
         <div css={s.inputEmail}>
           <input
             type="text"
-            name="email"
-            value={user.email}
+            name="toEmail"
+            value={sendEmail.toEmail}
             placeholder="이메일을 입력해 주세요"
             onChange={handleEmailInputOnchange}
           />
-          <button onClick={emailSendButtonOnClick}>인증요청</button>
+          <button onClick={emailSendButtonOnClick}>
+            인증요청
+          </button>
 
           {/* 인증번호 요청 누르면 인증번호 칸 활성화되게(추가) */}
           {certification === 0 ? (
             <></>
           ) : (
             <div css={s.emailCkeck}>
-            <input
-              type="text"
-              neme="emailCheck"
-              placeholder="인증번호를 입력해 주세요"
-              onChange={emailCheckOnChange}
-              value={user.checkEmail}
-            />
-            <button onClick={() => handleEmailInputOnchange(sendEmail.checkEmail)}>확인</button>
+              <input
+                type="text"
+                name="checkEmail"
+                placeholder="인증번호를 입력해 주세요"
+                onChange={emailCheckOnChange}
+                value={sendEmail.checkEmail}
+              />
+              <button
+                onClick={handleCheckEmailButtonOnClick}
+              >
+                확인
+              </button>
             </div>
           )}
         </div>
-      <div css={s.joinOkButton}>
-        <button onClick={handleSubmitButtonOnClick}>회원가입 하기</button>
-      </div>
-      <div css={s.oauth2Buttons}>
+        <div css={s.joinOkButton}>
+          <button onClick={handleSubmitButtonOnClick}>회원가입 하기</button>
+        </div>
+        <div css={s.oauth2Buttons}>
           <button>
             <SiNaver />
             네이버 로그인

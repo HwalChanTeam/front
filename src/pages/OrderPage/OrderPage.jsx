@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { selectedItemsAtom, userIdAtom } from "../../apis/util/atom";
+import { useRecoilState } from "recoil";
+import { selectedItemsAtom } from "../../apis/util/atom";
 import { useState } from "react";
-import { buyProductApi, orderGetApi } from "../../apis/productApi";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
-import { getUserApi } from "../../apis/userApi";
+import { instance } from "../../apis/util/instance";
 
 function OrderPage(props) {
   const [selectedProductIds] = useRecoilState(selectedItemsAtom); // atom 사용
@@ -29,7 +28,7 @@ function OrderPage(props) {
     isError: isProductsError,
   } = useQuery(
     ["selectedProducts", selectedProductIds],
-    () => buyProductApi(selectedProductIds),
+    async () => await instance.post("/user/buy", selectedProductIds),
     {
       enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
     }
@@ -42,7 +41,7 @@ function OrderPage(props) {
     isError: isUserInfoError,
   } = useQuery(
     "userInfo",
-    getUserApi, // 유저 정보 가져오는 API 호출
+    async () => await instance.get("/user/info"), // 유저 정보 가져오는 API 호출
     {
       onSuccess: (data) => serUserInfo(data), // 성공 시 userInfo 상태 업데이트
     }
@@ -65,6 +64,7 @@ function OrderPage(props) {
     return <div>데이터를 불러오는 중 에러가 발생했습니다.</div>;
   }
 
+  // 유저 정보 변경 시 사용
   const handleInputChange = (e) => {
     serUserInfo((user) => ({
       ...user,
@@ -75,7 +75,7 @@ function OrderPage(props) {
   const addressSaveButtonOnClick = () => {};
 
   const buyButtonOnClick = async () => {
-    const responce = await buyProductApi(product.productId);
+    await instance.post("/user/buy", selectedProductIds )
   };
 
   // 총 상품 금액 계산
