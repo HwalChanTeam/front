@@ -10,35 +10,35 @@ export const layout = css`
 export const menusLayout = css`
     box-sizing: border-box;
     display: flex;
-    padding-left: 4px;
     flex-grow: 1;
-
-    & > a {
-        box-sizing: border-box;
-        margin-right: 60px;
-        text-decoration: none;
-        font-size: 20px;
-        color: #5B5B5B;
-    }
-    
-
+    padding-left: 4px;
 `;
 
-export const categoryButton = css`
+export const selectedMenu = (isSelected) => css`
     position: relative;
+    display: flex;
 
-    & li {
-        background-color: transparent;
-        border: none;
-        padding: 0px;
-
-        & > span {
-            margin-right: 60px;
-            font-size: 16px;
-            color: #5B5B5B;
+    
+    & a {
+        text-decoration: none;
+        margin-right: 25px;
+        
+        & span {
+            border-top: ${isSelected ? "2px solid #964747" : "transparent"};
+            font-size: 18px;
+            
+            &:nth-of-type(1) {
+                margin-right: 5px;
+            }
         }
     }
-`;
+
+    &:hover {
+        color: #964747;
+        font-weight: 600;
+    }
+    
+`; 
 
 export const categorySubLayout = css`
     list-style-type: none;
@@ -108,20 +108,7 @@ export const categorySubSideLayout = css`
     }
 `;
 
-export const selectedMenu = (isSelected) => css`
-    position: relative;
-    border-top: ${isSelected ? "2px solid #964747" : "transparent"};
 
-    & > span:nth-of-type(1) {
-        margin-right: 5px;
-    }
-
-    &:hover {
-        color: #964747;
-        font-weight: 600;
-    }
-    
-`; 
 
 export const menuLayout = css`
     box-sizing: border-box;

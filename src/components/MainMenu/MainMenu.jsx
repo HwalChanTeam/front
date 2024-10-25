@@ -15,20 +15,23 @@ function MainMenu(props) {
     const [onMouseMenuId, setOnMouseMenuId] = useState(0);
     const [onMouseSubMenuId, setOnMouseSubMenuId] = useState(0);
 
+    // 목록 hover o
     const handleOnMouseEnter = (type, id) => {
         if(type === "main") {
             setOnMouseMenuId(id);
         }else if(type === "sub") {
             setOnMouseSubMenuId(id);
         }
-    }
+    };
+
+    // 목록에 hover x 
     const handleOnMouseLeave = (type, id) => {
         if(type === "main") {
             setOnMouseMenuId(0);
         }else if(type === "sub") {
             setOnMouseSubMenuId(0);
         }
-    }
+    };
 
     return (
         <header css={s.layout}>
@@ -59,6 +62,7 @@ function MainMenu(props) {
                                                     </li>
                                                 </Link>
                                                 {
+                                                    // 서브 목록이 옆으로 뜨는 (밀키트)
                                                     (onMouseSubMenuId === subMenu.id && !!subMenu?.subSideMenus.length) &&
                                                     <ul css={s.categorySubSideLayout}>
                                                         {subMenu.subSideMenus.map(subSideMenu => (
