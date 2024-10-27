@@ -41,7 +41,7 @@ function WishList(props) {
     const productWishList = useQuery(
         ["productLikeQuery"],
         async () => {
-            await instance.get("/user/product")
+            return await instance.get("/user/product")
         },
         {
             refetchOnWindowFocus: false,
@@ -55,7 +55,7 @@ function WishList(props) {
     // 찜 삭제 기능
     const disProductWishListMutation = useMutation(
         async () => {
-            await instance.delete(`/user/product/dislike/${productLikeList.productId}`)
+            return await instance.delete(`/user/product/dislike/${productLikeList.productId}`)
         },
         {
             onSuccess: response => {
@@ -63,6 +63,21 @@ function WishList(props) {
             }
         }
     )
+
+    // 장바구니 추가 기능
+    const productToBaskect = useMutation(
+        async (id)=> {
+            return await instance.post(`/user.cart/${id}`)
+        }
+    )
+
+    // 장바구니 이동 기능 추가
+    const handleProductToBaskect = (id) => {
+        productToBaskect.mutate(id);
+        if(window.confirm("장바구니에 추가하였습니다.\n장바구니로 이동하시겠습니까?")) {
+            navigate("/user/basket")
+        }
+    }
 
     // "/product?category=1&/productId=12"
 
@@ -73,12 +88,12 @@ function WishList(props) {
             <div css={s.wishListHeader}>
                 <h2>찜 목록</h2>
             </div>
-            {productLikeList.length === 0 ? (
+            {itemProductList.length === 0 ? (
                 <p css={s.emptyCartMessage}>찜목록이 비었습니다.</p>
             ) : (
                 <table css={s.tableLayout}>
                     <tbody css={s.menuLayout}>
-                        {productLikeList.map((product) => (
+                        {itemProductList.map((product) => (
                             <tr key={product.productId}>
                                 <td>
                                     <div css={s.menuList}>
@@ -93,7 +108,7 @@ function WishList(props) {
                                                 <h2>{product.price}</h2>
                                             </div>
                                             <div css={s.icons}>
-                                                <Link to="/basket"><SlBasket size="24" /></Link>
+                                                <button onClick={() => handleProductToBaskect(product.productId)} ><SlBasket size="24"/></button>
                                                 <button onClick={() => disProductWishListMutation.mutate(product.productId)} ><IoIosHeart size="26"/></button>
                                             </div>
                                         </div>

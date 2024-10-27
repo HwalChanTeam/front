@@ -8,7 +8,7 @@ export const containerStyle = css`
 
 export const productStyle = css`
     display: flex;
-    align-products: center;
+    align-items: center;
     justify-content: space-between;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -22,9 +22,10 @@ export const productStyle = css`
 `;
 
 export const imageStyle = css`
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
+    width: 100px;
+    height: 100px;
+    /* object-fit: cover;  // 필요하면 추가*/ 
+    border: 1px solid #dbdbdb;
     margin-right: 10px;
     border-radius: 4px;
 `;
@@ -34,7 +35,7 @@ export const buttonStyle = css`
     border: none;
     cursor: pointer;
     margin-left: 10px;
-    font-size: 1.2em;
+    font-size: 18px;
     color: #555;
     &:hover {
         color: #000;
@@ -50,16 +51,16 @@ export const textStyle = css`
 `;
 
 export const titleStyle = css`
-    font-size: 1.2em;
+    font-size: 18px;
     font-weight: bold;
 `;
 
 export const descriptionStyle = css`
-    font-size: 0.9em;
+    font-size: 16px;
     color: #666;
 `;
 
 export const priceStyle = css`
-    font-size: 1em;
+    font-size: 16px;
     color: #333;
 `;
