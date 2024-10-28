@@ -16,7 +16,7 @@ function OrderPage(props) {
   const [userInfo, serUserInfo] = useState({
     name: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     address: "",
     message: "",
   });

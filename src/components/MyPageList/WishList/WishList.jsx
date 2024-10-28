@@ -10,19 +10,19 @@ import { instance } from '../../../apis/util/instance';
 const itemProductList = [
     {
         productId: 1,
-        img: "",
+        image: "",
         title: "상품명1",
         price: 11000
     },
     {
         productId: 2,
-        img: "",
+        image: "",
         title: "상품명1",
         price: 11000
     },
     {
         productId: 3,
-        img: "",
+        image: "",
         title: "상품명1",
         price: 11000
     },
