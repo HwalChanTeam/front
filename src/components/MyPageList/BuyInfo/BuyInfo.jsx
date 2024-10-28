@@ -61,7 +61,7 @@ function BuyInfo(props) {
             <ul>
                 {userBuyInfo.map((product) => (
                     <li key={product.productId} css={s.productStyle}>
-                        <img src={product.image} alt={product.title} css={s.imageStyle} />
+                        <img src={product.thumbnailImg} alt={product.title} css={s.imageStyle} />
                         <div css={s.textStyle}>
                             <h2 css={s.titleStyle}>{product.title}</h2>
                             <p css={s.descriptionStyle}>{product.description}</p>

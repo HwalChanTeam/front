@@ -165,7 +165,7 @@ function OrderPage(props) {
                 <tr key={product.productId}>
                   <td>{product.title}</td>
                   <td>
-                    <img src={product.image} alt={product.title} />
+                    <img src={product.thumbnailImg} alt={product.title} />
                   </td>
                   <td>수량 {product.quantity}</td>
                   <td>상품금액 {product.price.toLocaleString()}원</td>

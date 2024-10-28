@@ -39,9 +39,9 @@ function NewProductView(props) {
                                                 <Link 
                                                     key={product.productId}
                                                     to={productPath(product.productId)}>
-                                                        <img src={product.thnumbnailImg} />
+                                                        <img src={product.thumbnailImg} />
                                                 </Link>
-                                            </div>
+                                             </div>
                                             <div css={s.productLayout}>
                                                 <h2>{product.title}</h2>
                                                 <h2>{product.price.toLocaleString()}원</h2>
