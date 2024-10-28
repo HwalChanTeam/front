@@ -52,7 +52,7 @@ export const menus = [
     {
         id: 3,
         name: "인기 상품",
-        path: "/user/popularityproduct",
+        path: "/user/best",
         subMenus: [],
     },
     {

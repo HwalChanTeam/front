@@ -6,6 +6,8 @@ import *as s from './style';
 import { Link } from 'react-router-dom';
 import { menus } from '../../constants/mainMenus';
 import { useState } from 'react';
+import SelectProductView from '../User/SelectProductView/SelectProductView';
+import Category from '../Category/Category';
 
 
 function MainMenu(props) {
@@ -33,57 +35,64 @@ function MainMenu(props) {
         }
     };
 
-    return (
-        <header css={s.layout}>
-            <div css={s.menusLayout}>
-                {
-                    menus.map(menu =>
-                        <div css={s.selectedMenu(pathname === menu?.path)}>
-                            <Link
-                                to={menu?.path}
-                                onMouseEnter={() => handleOnMouseEnter("main", menu.id)}
-                                onMouseLeave={() => handleOnMouseLeave("main", menu.id)}
-                            >
-                                <span>{menu?.icon}</span>
-                                <span>{menu.name}</span>
-                            </Link>
-                            {
-                                (onMouseMenuId === menu.id && !!menu?.subMenus.length) &&
-                                    <ul css={s.categorySubLayout}>
-                                        {menu.subMenus.map(subMenu => (
-                                            <div>
-                                                <Link 
-                                                    to={subMenu.path}
-                                                    onMouseEnter={() => handleOnMouseEnter("sub", subMenu.id)}
-                                                    onMouseLeave={() => handleOnMouseLeave("sub", subMenu.id)}
-                                                >
-                                                    <li>
-                                                        {subMenu.name}
-                                                    </li>
-                                                </Link>
-                                                {
-                                                    // 서브 목록이 옆으로 뜨는 (밀키트)
-                                                    (onMouseSubMenuId === subMenu.id && !!subMenu?.subSideMenus.length) &&
-                                                    <ul css={s.categorySubSideLayout}>
-                                                        {subMenu.subSideMenus.map(subSideMenu => (
-                                                            <Link to={subSideMenu.path}>
-                                                                <li>
-                                                                    {subSideMenu.name}
-                                                                </li>
-                                                            </Link>
-                                                        ))}
-                                                    </ul>
-                                                }
-                                            </div>
-                                        ))}
-                                    </ul>
-                                }
-                        </div>)
+    // sub 목록을 클릭 시 sub 창 x 
+    const handleSelectClick = () => {
+        setOnMouseMenuId(0);
+        setOnMouseSubMenuId(0);
+    }
 
-                }
-            </div>
-            <MainSearch onSearch={null} />
-        </header>
+    return (
+        <>
+            <header css={s.layout}>
+                <div css={s.menusLayout}>
+                    {
+                        menus.map(menu =>
+                            <div css={s.selectedMenu(pathname === menu?.path)} >
+                                <Link
+                                    to={menu?.path}
+                                    onMouseEnter={() => handleOnMouseEnter("main", menu.id)}
+                                >
+                                    <span>{menu?.icon}</span>
+                                    <span>{menu.name}</span>
+                                </Link>
+                                {
+                                    (onMouseMenuId === menu.id && !!menu?.subMenus.length) &&
+                                        <ul css={s.categorySubLayout} onMouseLeave={() => handleOnMouseLeave("main", menu.id)}>
+                                            {menu.subMenus.map(subMenu => (
+                                                <div>
+                                                    <Link 
+                                                        to={subMenu.path}
+                                                        onMouseEnter={() => handleOnMouseEnter("sub", subMenu.id)}
+                                                    >
+                                                        <li onClick={handleSelectClick}>
+                                                            {subMenu.name}
+                                                        </li>
+                                                    </Link>
+                                                    {
+                                                        // 서브 목록이 옆으로 뜨는 (밀키트)
+                                                        (onMouseSubMenuId === subMenu.id && !!subMenu?.subSideMenus.length) &&
+                                                        <ul css={s.categorySubSideLayout} onMouseLeave={() => handleOnMouseLeave("sub", subMenu.id)} >
+                                                            {subMenu.subSideMenus.map(subSideMenu => (
+                                                                <Link to={subSideMenu.path}>
+                                                                    <li onClick={handleSelectClick}>
+                                                                        {subSideMenu.name}
+                                                                    </li>
+                                                                </Link>
+                                                            ))}
+                                                        </ul>
+                                                    }
+                                                </div>
+                                            ))}
+                                        </ul>
+                                    }
+                            </div>)
+                    }
+                </div>
+                <MainSearch onSearch={null} />
+            </header>
+            <SelectProductView />
+            <Category />
+        </>
     );
 }
 
