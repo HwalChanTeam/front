@@ -5,44 +5,15 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { instance } from '../../apis/util/instance';
 import { useLocation, useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 function MainPage() {
 
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [newProductList, setNewProductList] = useState([
-        {
-            productId: 1,
-            image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-            title: "부대찌개",
-            price: 11000,
-        },
-        {
-            productId: 2,
-            image: "",
-            title: "bbbb",
-            price: 11000,
-        },
-        {
-            productId: 3,
-            image: "",
-            title: "cccc",
-            price: 11000,
-        },
-        {
-            productId: 4,
-            image: "",
-            title: "dddd",
-            price: 11000,
-        },
-        {
-            productId: 5,
-            image: "",
-            title: "dddd",
-            price: 11000,
-        },
-    ]);
+    const [newProductList, setNewProductList] = useState([]);
+
     const [bestProductList, setBestProductList] = useState([
         {
             productId: 1,
@@ -150,8 +121,8 @@ function MainPage() {
         }
     )
 
-    const imgOnClick = (id) => {
-        navigate(`/product/${id}`)
+    const imgOnClick = (productId) => {
+        navigate(`/product/${productId}`)
     }
 
     return (
@@ -177,17 +148,22 @@ function MainPage() {
                             <p>이 달의 신상품</p>
                         </div>
                         <div css={s.newProductContentLayout}>
-                            {newProductList.map((newProduct) => (
+                            {
+                            // slice를 사용해 신상품이 5개까지 뜨게 설정 
+                            newProductList.slice(0, 5).map((newProduct) => (
                                 <div css={s.newProductLayout}
                                     key={newProduct.productId}
                                 >
-                                    <img src={newProduct.image} onClick={() => imgOnClick(newProduct.productId)} />
+                                    <img src={newProduct.img} onClick={() => imgOnClick(newProduct.productId)} />
                                     <div>
                                         <p>{newProduct.title}</p>
                                         <p>{newProduct.price.toLocaleString()}원</p>
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                        <div css={s.newProductLink}>
+                            <Link to="/user/newproduct"> 신상품 전체 보기 </Link>
                         </div>
                     </div>
 
@@ -199,7 +175,7 @@ function MainPage() {
                         </div>
                         <div css={s.bestProductContentLayout}
                         >
-                            {bestProductList.map((bestProduct) => (
+                            {bestProductList.slice(0, 5).map((bestProduct) => (
                                 <div css={s.bestImgLayout}
                                     key={bestProduct.productId}
                                 >
@@ -211,6 +187,9 @@ function MainPage() {
                                 </div>
                             ))}
                         </div>
+                        <div css={s.bestProductLink}>
+                            <Link to="/user/best"> 인기상품 전체 보기 </Link>
+                        </div>
                     </div>
 
 
@@ -220,7 +199,7 @@ function MainPage() {
                             <p>MD 추천상품</p>
                         </div>
                         <div css={s.MDProductContentLayout}>
-                            {respectProductList.map((respectProduct) => (
+                            {respectProductList.slice(0, 5).map((respectProduct) => (
                             <div css={s.MDProductImgLayout}
                             key={respectProduct.productId}
                             >

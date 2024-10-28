@@ -73,16 +73,15 @@ export const newProductContentLayout = css`
     }
 `;
 
-
 export const newProductLayout = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
 
     & img {
-        margin-right: 30px;
-        width: 200px;
-        height: 200px;
+        margin-right: 20px;
+        width: 220px;
+        height: 220px;
         background-color: #dbdbdb;
         cursor: pointer;
     }
@@ -93,12 +92,13 @@ export const newProductLayout = css`
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 200px;
+        padding: 0px 30px;
+        width: 220px;
         height: 100px;
         background-color: #797979;
         & p {
             margin: 0px;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
             color: #ffffff;
 
@@ -110,6 +110,25 @@ export const newProductLayout = css`
         }
     }
 
+`;
+
+export const newProductLink = css`
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    width: 1180px;
+
+    & a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 300px;
+        height: 40px;
+        text-decoration: none;
+        color: #000000;
+        border: 1px solid #964747;
+    }
 `;
 
 // best 상품
@@ -185,6 +204,25 @@ export const bestImgLayout = css`
         }
     }
 
+`;
+
+export const bestProductLink = css`
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    width: 1120px;
+
+    & a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 300px;
+        height: 40px;
+        text-decoration: none;
+        color: #000000;
+        border: 1px solid #964747;
+    }
 `;
 
 // MD 추천 상품

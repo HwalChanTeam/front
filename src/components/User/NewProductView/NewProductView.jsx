@@ -4,57 +4,22 @@ import *as s from './style';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getNewProductApi } from '../../../apis/productApi';
-
-const products = [
-    {
-        id: 1,
-        img: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-        name: "부대찌개",
-        price: "11,000",
-    },
-    {
-        id: 2,
-        img: "",
-        name: "bbbb",
-        price: "11,000"
-    },
-    {
-        id: 3,
-        img: "",
-        name: "cccc",
-        price: "11,000"
-    },
-    {
-        id: 4,
-        img: "",
-        name: "dddd",
-        price: "11,000"
-    },
-    {
-        id: 5,
-        img: "",
-        name: "ffff",
-        price: "11,000"
-    },
-];
+import { instance } from '../../../apis/util/instance';
 
 function NewProductView(props) {
 
     // 해당 상품 클릭시 해당하는 상품페이지로 넘어가는
     const productPath = (productId) => `/product/${productId}`;
 
-    const [ newProductList, setNewProductList ] = useState([{
-        productId: 0,
-        title: "",
-        price: 0,
-        thumbnaillmg: ""
-    }]);
+    const [ newProductList, setNewProductList ] = useState([]);
 
-    const { data, isLoading } = useQuery(
+    const allNewProduct = useQuery(
         "newProducts",
-        getNewProductApi,
+        async () => {
+            return await instance.get("/user/public/new");
+        },
         {
-            onSuccess: (data) => setNewProductList(data),
+            onSuccess: (response) => setNewProductList(response.data),
             refetchOnWindowFocus: false,
             retry: 0
         }
@@ -66,20 +31,20 @@ function NewProductView(props) {
             <table css={s.tableLayout}>
                 <tbody css={s.menuLayout}>
                     {   
-                        products.map((product) => (
+                        newProductList.map((product) => (
                             <tr>
                                 <td>
                                     <div css={s.menuList}>
                                             <div css={s.imgLayout}>
                                                 <Link 
-                                                    key={product.id}
-                                                    to={productPath(product.id)}>
-                                                        <img src={product.img} />
+                                                    key={product.productId}
+                                                    to={productPath(product.productId)}>
+                                                        <img src={product.thnumbnailImg} />
                                                 </Link>
                                             </div>
                                             <div css={s.productLayout}>
-                                                <h2>{product.name}</h2>
-                                                <h2>{product.price}</h2>
+                                                <h2>{product.title}</h2>
+                                                <h2>{product.price.toLocaleString()}원</h2>
                                             </div>
                                     </div>
                                 </td>
