@@ -31,11 +31,10 @@ function OrderPage(props) {
     } = useQuery(
         ["selectedProducts"],
         async () => {
-            // console.log(selectedProductIds.map((item) => item.productId)) // productId
-            // console.log(selectedProductIds.map((item) => item.quantity)) // quantity
-            // console.log(productIds) // quantity
+            console.log(selectedProductIds.map((item) => item.productId)) // productId
+            console.log(selectedProductIds.map((item) => item.quantity)) // quantity
+            console.log(productIds) // quantity
             const queryString = productIds.map(id => `productIds=${encodeURIComponent(id)}`).join('&');
-            console.log(queryString)
             return await instance.get(`/user/cart/order?${queryString}`);
         },
         {
