@@ -39,7 +39,7 @@ function AdminSignin(props) {
         });
         window.confirm(signinData.successMessage);
         window.location.replace("/admin/main");
-    
+
     };
 
     return (

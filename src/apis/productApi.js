@@ -30,7 +30,7 @@ export const getPopularityProudctApi = async () => {
 export const getProductLikeApi = async (productId) => {
     let response = null;
     try {
-        response = await instance.get("/user/product", {productId});
+        response = await instance.get("/user/product", { productId });
     } catch (e) {
         console.error(e);
         response = e.response;
@@ -41,7 +41,7 @@ export const getProductLikeApi = async (productId) => {
 export const productLikeApi = async (productId) => {
     let response = null;
     try {
-        response = await instance.post("/user/product/like", {productId});
+        response = await instance.post("/user/product/like", { productId });
     } catch (e) {
         console.error(e);
         response = e.response;

@@ -51,7 +51,7 @@ function ShoppingBasket(props) {
         async (cartId, cartItemId) => {
             console.log(cartId.cartId);
             console.log(cartItemId);
-            return await instance.delete(`/user/cart/${cartId.cartId}`, {cartItemId});
+            return await instance.delete(`/user/cart/${cartId.cartId}`, { cartItemId });
         },
         {
             onSuccess: () => {
@@ -96,7 +96,7 @@ function ShoppingBasket(props) {
     // 삭제 버튼 클릭 함수
     const handleDeleteButtonOnClick = (product) => {
         console.log(product.cartId)
-        mutation.mutate({ cartId: product.cartId, cartItemId: product.cartId.productId});
+        mutation.mutate({ cartId: product.cartId, cartItemId: product.cartId.productId });
     };
 
     // 상품갯수 * 가격 함수
@@ -105,17 +105,17 @@ function ShoppingBasket(props) {
     };
 
     //   // 총 상품금액, 총합계 계산 함수
-      const calculateTotals = () => {
+    const calculateTotals = () => {
         const totalProductAmount = productList?.reduce((total, product) => {
-          return total + (product.checked ? calculateTotalPrice(product) : 0);
+            return total + (product.checked ? calculateTotalPrice(product) : 0);
         }, 0);
         const deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
         const totalAmount = totalProductAmount + deliveryFee;
 
         return { totalProductAmount, totalAmount, deliveryFee };
-      };
+    };
 
-      const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
+    const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
 
     // 구매 버튼 클릭 시 작동
     const handleBuyButtonOnClick = () => {

@@ -37,7 +37,7 @@ export const selectedMenu = (isSelected) => css`
         font-weight: 600;
     }
     
-`; 
+`;
 
 export const categorySubLayout = css`
     list-style-type: none;

@@ -3,7 +3,7 @@ import React from 'react';
 function ReviewInfo(props) {
     return (
         <div>
-            
+
         </div>
     );
 }

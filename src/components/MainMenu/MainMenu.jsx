@@ -19,18 +19,18 @@ function MainMenu(props) {
 
     // 목록 hover o
     const handleOnMouseEnter = (type, id) => {
-        if(type === "main") {
+        if (type === "main") {
             setOnMouseMenuId(id);
-        }else if(type === "sub") {
+        } else if (type === "sub") {
             setOnMouseSubMenuId(id);
         }
     };
 
     // 목록에 hover x 
     const handleOnMouseLeave = (type, id) => {
-        if(type === "main") {
+        if (type === "main") {
             setOnMouseMenuId(0);
-        }else if(type === "sub") {
+        } else if (type === "sub") {
             setOnMouseSubMenuId(0);
         }
     };
@@ -57,34 +57,34 @@ function MainMenu(props) {
                                 </Link>
                                 {
                                     (onMouseMenuId === menu.id && !!menu?.subMenus.length) &&
-                                        <ul css={s.categorySubLayout} onMouseLeave={() => handleOnMouseLeave("main", menu.id)}>
-                                            {menu.subMenus.map(subMenu => (
-                                                <div>
-                                                    <Link 
-                                                        to={subMenu.path}
-                                                        onMouseEnter={() => handleOnMouseEnter("sub", subMenu.id)}
-                                                    >
-                                                        <li onClick={handleSelectClick}>
-                                                            {subMenu.name}
-                                                        </li>
-                                                    </Link>
-                                                    {
-                                                        // 서브 목록이 옆으로 뜨는 (밀키트)
-                                                        (onMouseSubMenuId === subMenu.id && !!subMenu?.subSideMenus.length) &&
-                                                        <ul css={s.categorySubSideLayout} onMouseLeave={() => handleOnMouseLeave("sub", subMenu.id)} >
-                                                            {subMenu.subSideMenus.map(subSideMenu => (
-                                                                <Link to={subSideMenu.path}>
-                                                                    <li onClick={handleSelectClick}>
-                                                                        {subSideMenu.name}
-                                                                    </li>
-                                                                </Link>
-                                                            ))}
-                                                        </ul>
-                                                    }
-                                                </div>
-                                            ))}
-                                        </ul>
-                                    }
+                                    <ul css={s.categorySubLayout} onMouseLeave={() => handleOnMouseLeave("main", menu.id)}>
+                                        {menu.subMenus.map(subMenu => (
+                                            <div>
+                                                <Link
+                                                    to={subMenu.path}
+                                                    onMouseEnter={() => handleOnMouseEnter("sub", subMenu.id)}
+                                                >
+                                                    <li onClick={handleSelectClick}>
+                                                        {subMenu.name}
+                                                    </li>
+                                                </Link>
+                                                {
+                                                    // 서브 목록이 옆으로 뜨는 (밀키트)
+                                                    (onMouseSubMenuId === subMenu.id && !!subMenu?.subSideMenus.length) &&
+                                                    <ul css={s.categorySubSideLayout} onMouseLeave={() => handleOnMouseLeave("sub", subMenu.id)} >
+                                                        {subMenu.subSideMenus.map(subSideMenu => (
+                                                            <Link to={subSideMenu.path}>
+                                                                <li onClick={handleSelectClick}>
+                                                                    {subSideMenu.name}
+                                                                </li>
+                                                            </Link>
+                                                        ))}
+                                                    </ul>
+                                                }
+                                            </div>
+                                        ))}
+                                    </ul>
+                                }
                             </div>)
                     }
                 </div>
