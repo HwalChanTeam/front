@@ -7,28 +7,6 @@ import { SlBasket } from "react-icons/sl";
 import { useMutation, useQuery } from 'react-query';
 import { instance } from '../../../apis/util/instance';
 
-const itemProductList = [
-    {
-        productId: 1,
-        image: "",
-        title: "상품명1",
-        price: 11000
-    },
-    {
-        productId: 2,
-        image: "",
-        title: "상품명1",
-        price: 11000
-    },
-    {
-        productId: 3,
-        image: "",
-        title: "상품명1",
-        price: 11000
-    },
-
-];
-
 function WishList(props) {
 
     const navigate = useNavigate();
@@ -88,12 +66,12 @@ function WishList(props) {
             <div css={s.wishListHeader}>
                 <h2>찜 목록</h2>
             </div>
-            {itemProductList.length === 0 ? (
+            {productLikeList.length === 0 ? (
                 <p css={s.emptyCartMessage}>찜목록이 비었습니다.</p>
             ) : (
                 <table css={s.tableLayout}>
                     <tbody css={s.menuLayout}>
-                        {itemProductList.map((product) => (
+                        {productLikeList.map((product) => (
                             <tr key={product.productId}>
                                 <td>
                                     <div css={s.menuList}>
