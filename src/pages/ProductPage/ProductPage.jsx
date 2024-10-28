@@ -75,12 +75,12 @@ function ProductPage() {
   const getProduct = useQuery(
     ["getProduct", productId],
     async () => {
-        console.log(productId)
-        return await instance.get(`/user/public/product/${productId}`);
+      console.log(productId);
+      return await instance.get(`/user/public/product/${productId}`);
     },
     {
       onSuccess: (response) => {
-        setProduct(response.data);
+        setProduct(response.data.product);
         //   productId: response?.data.productId,
         //   contentsImg: response?.data.contentsImg,
         //   title: response?.data.title,
@@ -140,31 +140,42 @@ function ProductPage() {
 
   // 구매수량*가격 함수
   const calculateTotalPrice = (product) => {
-    return product?.product?.price * productItems.buyItem;
+    return product?.price * productItems.buyItem;
   };
+
+  // 총 상품금액, 총합계 계산 함수
+  const calculateTotals = () => {
+    const totalProductAmount = calculateTotalPrice(product);
+    const deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+    const totalAmount = totalProductAmount + deliveryFee;
+
+    return { totalProductAmount, totalAmount, deliveryFee };
+  };
+
+  const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
 
   return (
     <div css={s.layout}>
       <MainMenu />
       <div css={s.productLayout}>
         <div css={s.imgLayout}>
-          <img src={product?.product?.thumbnailImg} />
+          <img src={product?.thumbnailImg} />
         </div>
         <div css={s.productContent}>
           <div css={s.titleLayout}>
-            <h2>{product?.product?.title}</h2>
-            <p>{product?.product?.description}</p>
+            <h2>{product?.title}</h2>
+            <p>{product?.description}</p>
           </div>
           <div css={s.price}>
-            <p>{product?.product?.price.toLocaleString()} 원</p>
+            <p>{product?.price.toLocaleString()} 원</p>
           </div>
           <div css={s.contentBox}>
             <div css={s.contury}>
-              <p>원산지: {product?.product?.origin}</p>
-              <p>배송비: 3,000 원</p>
+              <p>원산지: {product?.origin}</p>
+              <p>{deliveryFee.toLocaleString()}원</p>
             </div>
             <div css={s.producttitleBox}>
-              <p>상품명: {product?.product?.title}</p>
+              <p>상품명: {product?.title}</p>
               <p>
                 구매수량:
                 <span>
@@ -177,7 +188,7 @@ function ProductPage() {
           </div>
           <div css={s.buyProduct}>
             <p>
-              총 {calculateTotalPrice(product).toLocaleString()} 원
+              총 {totalProductAmount.toLocaleString()} 원
               <span>
                 <button onClick={handleBuyButton}>구매하기</button>
                 <IoMdHeartEmpty
