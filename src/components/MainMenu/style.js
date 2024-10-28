@@ -17,7 +17,6 @@ export const menusLayout = css`
 export const selectedMenu = (isSelected) => css`
     position: relative;
     display: flex;
-
     
     & a {
         text-decoration: none;
