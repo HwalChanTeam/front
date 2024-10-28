@@ -79,13 +79,13 @@ function ProductPage() {
     {
       onSuccess: (response) => {
         setProduct(response.data);
-    //   productId: response?.data.productId,
-    //   contentsImg: response?.data.contentsImg,
-    //   title: response?.data.title,
-    //   description: response?.data.description,
-    //   origin: response?.data.origin,
-    //   price: response?.data.price,
-    //   category: response?.data.category
+        //   productId: response?.data.productId,
+        //   contentsImg: response?.data.contentsImg,
+        //   title: response?.data.title,
+        //   description: response?.data.description,
+        //   origin: response?.data.origin,
+        //   price: response?.data.price,
+        //   category: response?.data.category
       },
     }
   );

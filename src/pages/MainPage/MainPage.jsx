@@ -14,70 +14,8 @@ function MainPage() {
 
     const [newProductList, setNewProductList] = useState([]);
 
-    const [bestProductList, setBestProductList] = useState([
-        {
-            productId: 1,
-            image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-            title: "부대찌개",
-            price: 11000,
-        },
-        {
-            productId: 2,
-            image: "",
-            title: "bbbb",
-            price: 11000,
-        },
-        {
-            productId: 3,
-            image: "",
-            title: "cccc",
-            price: 11000,
-        },
-        {
-            productId: 4,
-            image: "",
-            title: "dddd",
-            price: 11000,
-        },
-        {
-            productId: 5,
-            image: "",
-            title: "ffff",
-            price: 11000,
-        },
-    ]);
-    const [respectProductList, setRespectProductList] = useState([
-        {
-            productId: 1,
-            image: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-            title: "부대찌개",
-            price: 11000,
-        },
-        {
-            productId: 2,
-            image: "",
-            title: "bbbb",
-            price: 11000
-        },
-        {
-            productId: 3,
-            image: "",
-            title: "cccc",
-            price: 11000,
-        },
-        {
-            productId: 4,
-            image: "",
-            title: "dddd",
-            price: 11000,
-        },
-        {
-            productId: 5,
-            image: "",
-            title: "ffff",
-            price: 11000,
-        },
-    ]);
+    const [bestProductList, setBestProductList] = useState([]);
+    const [respectProductList, setRespectProductList] = useState([]);
 
     // 신상품 가져오는 쿼리
     const newProduct = useQuery(
@@ -102,7 +40,7 @@ function MainPage() {
         {
             refetchOnWindowFocus: false,
             onSuccess: (response) => {
-                setNewProductList(response.data)
+                setBestProductList(response.data)
             }
         }
     )
@@ -116,7 +54,7 @@ function MainPage() {
         {
             refetchOnWindowFocus: false,
             onSuccess: (response) => {
-                setNewProductList(response.data)
+                setRespectProductList(response.data)
             }
         }
     )
