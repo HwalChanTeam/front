@@ -18,7 +18,7 @@ import OrderPage from "./pages/OrderPage/OrderPage";
 import MainFooter from "./components/MainFooter/MainFooter";
 import MyPage from "./pages/MyPage/MyPage";
 import TestExam2 from "./pages/Test/TestExam2";
-import PopularityProduct from "./components/User/PopularityProductView/PopularityProduct";
+import PopularityProduct from "./components/User/BestProductView/BestProduct";
 
 function App() {
   const token = localStorage.getItem("accessToken");

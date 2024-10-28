@@ -69,7 +69,7 @@ const products = [
     },
 ];
 
-function PopularityProduct(props) {
+function BestProduct(props) {
 
     // 해당 상품 클릭시 해당하는 상품페이지로 넘어가는
     const productPath = (productId) => `/product/${productId}`; // 경로 수정 필요
@@ -128,4 +128,4 @@ function PopularityProduct(props) {
     );
 }
 
-export default PopularityProduct;
+export default BestProduct;
