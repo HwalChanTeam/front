@@ -24,7 +24,7 @@ function App() {
   const token = localStorage.getItem("accessToken");
   const queryClient = new QueryClient();
   const location = useLocation();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [authRefresh, setAuthRefresh] = useState(true);
 
 
@@ -38,36 +38,36 @@ function App() {
     ["accessTokenValidQuery"],
     async () => {
       setAuthRefresh(false);
-      return await instance.get("/user/access", {
+      return await instance.get("/user/public/access", {
         params: {
           accessToken: localStorage.getItem("accessToken"),
-          retry: 0
         },
+        
       });
     },
-    // {
-    //   enabled: authRefresh,
-    //   retry: 0,
-    //   refetchOnWindowFocus: false,
-    //   onSuccess: (response) => {
-    //     const permitAllPaths = ["/user"];
-    //     for (let permitAllPath of permitAllPaths) {
-    //       if (location.pathname.startsWith(permitAllPath)) {
-    //         navigate("/");
-    //         break;
-    //       }
-    //     }
-    //   },
-    //   onError: (error) => {
-    //     const authPaths = ["/profile"];
-    //     for (let authPath of authPaths) {
-    //       if (location.pathname.startsWith(authPath)) {
-    //         navigate("/user/login");
-    //         break;
-    //       }
-    //     }
-    //   },
-    // }
+    {
+      enabled: authRefresh,
+      retry: 0,
+      refetchOnWindowFocus: false,
+      onSuccess: (response) => {
+        const permitAllPaths = ["/user"];
+        for (let permitAllPath of permitAllPaths) {
+          if (location.pathname.startsWith(permitAllPath)) {
+            navigate("/");
+            break;
+          }
+        }
+      },
+      onError: (error) => {
+        const authPaths = ["/profile"];
+        for (let authPath of authPaths) {
+          if (location.pathname.startsWith(authPath)) {
+            navigate("/user/login");
+            break;
+          }
+        }
+      },
+    }
   );
 
   // const userInfo = useQuery(
@@ -98,7 +98,7 @@ function App() {
             <Route path="/product/:productId/*" element={<ProductPage />} />
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />
-            <Route path="/basket" element={<ShoppingBasket />} />
+            <Route path="/user/cart" element={<ShoppingBasket />} />
             <Route path="/order/*" element={<OrderPage />} />
             <Route path="/mypage/*" element={<MyPage />} />
             <Route path="/test" element={<TestExam />} />

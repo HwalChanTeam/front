@@ -21,6 +21,7 @@ function BuyInfo(props) {
         },
         {
             onSuccess: (response) => {
+                console.log(response.data)
                 setUserBuyInfo(response.data);
             }
         }
@@ -57,7 +58,7 @@ function BuyInfo(props) {
 
     return (
         <div css={s.containerStyle}>
-            <h1>구매목록</h1>
+            <h1>구매기록</h1>
             <ul>
                 {userBuyInfo.map((product) => (
                     <li key={product.productId} css={s.productStyle}>
