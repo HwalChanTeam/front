@@ -52,8 +52,8 @@ function ProductPage() {
   const pathname = location.pathname;
 
   const [product, setProduct] = useState({
-    productId: 0,
-    contentsImg: "",
+    productId,
+    thumbnailImg: "",
     title: "",
     description: "",
     origin: "",
@@ -73,9 +73,11 @@ function ProductPage() {
 
   // 상품 조회
   const getProduct = useQuery(
-    ["getProduct"],
-    async () =>
-      await instance.get("/user/public/product/search", product.title),
+    ["getProduct", productId],
+    async () => {
+        console.log(productId)
+        return await instance.get(`/user/public/product/${productId}`);
+    },
     {
       onSuccess: (response) => {
         setProduct(response.data);
@@ -138,7 +140,7 @@ function ProductPage() {
 
   // 구매수량*가격 함수
   const calculateTotalPrice = (product) => {
-    return product.price * productItems.buyItem;
+    return product?.product?.price * productItems.buyItem;
   };
 
   return (
@@ -146,23 +148,23 @@ function ProductPage() {
       <MainMenu />
       <div css={s.productLayout}>
         <div css={s.imgLayout}>
-          <img src={product.img} />
+          <img src={product?.product?.thumbnailImg} />
         </div>
         <div css={s.productContent}>
           <div css={s.titleLayout}>
-            <h2>{product.title}</h2>
-            <p>{product.description}</p>
+            <h2>{product?.product?.title}</h2>
+            <p>{product?.product?.description}</p>
           </div>
           <div css={s.price}>
-            <p>{product.price.toLocaleString()} 원</p>
+            <p>{product?.product?.price.toLocaleString()} 원</p>
           </div>
           <div css={s.contentBox}>
             <div css={s.contury}>
-              <p>원산지: {product.origin}</p>
+              <p>원산지: {product?.product?.origin}</p>
               <p>배송비: 3,000 원</p>
             </div>
             <div css={s.producttitleBox}>
-              <p>상품명: {product.title}</p>
+              <p>상품명: {product?.product?.title}</p>
               <p>
                 구매수량:
                 <span>
