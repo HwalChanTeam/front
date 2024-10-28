@@ -7,6 +7,7 @@ import logo from "../../assets/images/logo.png";
 import { SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { sendEmailApi } from "../../apis/emailApi";
+import { useMutation } from "react-query";
 
 function SignupPage(props) {
   const navigate = useNavigate();
@@ -24,9 +25,7 @@ function SignupPage(props) {
 
   const [sendEmail, setSendEmail] = useState({
     toEmail: "",
-    subject: "",
-    content: "",
-    checkEmail: "",
+    checkNum: "",
   });
 
   const handleInputOnchange = (e) => {
@@ -49,6 +48,7 @@ function SignupPage(props) {
 
   // 이메일 전송 버튼
   const emailSendButtonOnClick = async () => {
+    console.log(user.email);
       await instance.post("/user/public/email/send", sendEmail);
     if (certification == 1) {
       alert("이미 인증 요청이 되었습니다.");
@@ -59,16 +59,45 @@ function SignupPage(props) {
 
   // 이메일 인증번호 입력
   const emailCheckOnChange = (e) => {
-    setSendEmail((checkEmail) => ({
-      ...checkEmail,
+    setSendEmail((checkNum) => ({
+      ...checkNum,
       [e.target.name] : e.target.value
     }));
   };
 
+  // 이메일 인증번호 체크 mutation
+  const checkEmailMutation = useMutation(
+    async () => {
+      return await instance.post("/user/public/email/auth", sendEmail.checkNum);
+    },
+    {
+      onSuccess: (response) => {
+        setUser.email(response.data);
+      },
+      onError: (response) => {
+        console.log(response.data);
+      },
+    }
+  )
+
   // 이메일 인증 체크 버튼
   const handleCheckEmailButtonOnClick = () => {
-    
+    console.log(sendEmail.checkNum);
+    checkEmailMutation.mutate();
   }
+
+  // 회원가입 post mutation
+  const signupMutation = useMutation(
+    async () => {
+      return await instance.post("/user/public/signup", user);
+    },
+    {
+      onSuccess: () => {
+        alert("회원가입을 축하합니다.");
+        navigate("/")
+      }
+    }
+  )
 
   // 회원가입 완료 버튼
   const handleSubmitButtonOnClick = () => {
@@ -93,14 +122,14 @@ function SignupPage(props) {
             placeholder="아이디를 입력해 주세요"
           />
           <input
-            type="text"
+            type="password"
             onChange={handleInputOnchange}
             name="password"
             value={user.password}
             placeholder="비밀번호를 입력해 주세요"
           />
           <input
-            type="text"
+            type="password"
             onChange={handleInputOnchange}
             name="checkPassword"
             value={user.checkPassword}
@@ -140,10 +169,10 @@ function SignupPage(props) {
             <div css={s.emailCkeck}>
               <input
                 type="text"
-                name="checkEmail"
+                name="checkNum"
                 placeholder="인증번호를 입력해 주세요"
                 onChange={emailCheckOnChange}
-                value={sendEmail.checkEmail}
+                value={sendEmail.checkNum}
               />
               <button
                 onClick={handleCheckEmailButtonOnClick}
