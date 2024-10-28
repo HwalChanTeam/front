@@ -5,7 +5,7 @@ export const layout = css`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    width: 1200px
 `;
 
 export const productLayout = css`

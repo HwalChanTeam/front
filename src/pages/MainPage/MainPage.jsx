@@ -38,7 +38,7 @@ function MainPage() {
         {
             productId: 5,
             image: "",
-            title: "ffff",
+            title: "dddd",
             price: 11000,
         },
     ]);

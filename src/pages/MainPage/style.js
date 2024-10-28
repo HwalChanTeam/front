@@ -81,8 +81,8 @@ export const newProductLayout = css`
 
     & img {
         margin-right: 30px;
-        width: 250px;
-        height: 250px;
+        width: 200px;
+        height: 200px;
         background-color: #dbdbdb;
         cursor: pointer;
     }
@@ -93,8 +93,8 @@ export const newProductLayout = css`
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 250px;
-        height: 110px;
+        width: 200px;
+        height: 100px;
         background-color: #797979;
         & p {
             margin: 0px;
