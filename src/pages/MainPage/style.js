@@ -97,10 +97,15 @@ export const newProductLayout = css`
         height: 100px;
         background-color: #797979;
         & p {
+            display: flex;
+            justify-content: center;
             margin: 0px;
+            width: 160px;
             font-size: 20px;
             font-weight: 600;
             color: #ffffff;
+            white-space: nowrap;
+            text-overflow: ellipsis;
 
             &:nth-last-of-type(1) {
                 font-size: 20px;
@@ -195,8 +200,12 @@ export const bestImgLayout = css`
         width: 200px;
         & p {
             margin: 0px;
+            width: 200px;
             font-size: 18px;
             font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
 
             &:nth-of-type(1) {
                 margin: 5px 0px;
