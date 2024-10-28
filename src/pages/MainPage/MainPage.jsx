@@ -92,7 +92,7 @@ function MainPage() {
                                 <div css={s.newProductLayout}
                                     key={newProduct.productId}
                                 >
-                                    <img src={newProduct.img} onClick={() => imgOnClick(newProduct.productId)} />
+                                    <img src={newProduct.thumbnailImg} onClick={() => imgOnClick(newProduct.productId)} />
                                     <div>
                                         <p>{newProduct.title}</p>
                                         <p>{newProduct.price.toLocaleString()}원</p>
@@ -117,7 +117,7 @@ function MainPage() {
                                 <div css={s.bestImgLayout}
                                     key={bestProduct.productId}
                                 >
-                                    <img src={bestProduct.image} onClick={() => imgOnClick(bestProduct.productId)} />
+                                    <img src={bestProduct.thumbnailImg} onClick={() => imgOnClick(bestProduct.productId)} />
                                     <div>
                                         <p>{bestProduct.title}</p>
                                         <p>{bestProduct.price.toLocaleString()}원</p>
@@ -141,7 +141,7 @@ function MainPage() {
                             <div css={s.MDProductImgLayout}
                             key={respectProduct.productId}
                             >
-                                <img src={respectProduct.image} />
+                                <img src={respectProduct.thumbnailImg} />
                                 <div>
                                     <p>{respectProduct.title}</p>
                                     <p>{respectProduct.price.toLocaleString()}원</p>

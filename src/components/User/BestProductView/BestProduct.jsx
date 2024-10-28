@@ -3,71 +3,7 @@ import { Link } from 'react-router-dom';
 import *as s from './style';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { getPopularityProudctApi } from '../../../apis/productApi';
 import { instance } from '../../../apis/util/instance';
-
-const products = [
-    {
-        productId: 1,
-        img: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-        name: "부대찌개",
-        price: "11,000",
-    },
-    {
-        productId: 2,
-        img: "",
-        name: "bbbb",
-        price: "11,000"
-    },
-    {
-        productId: 3,
-        img: "",
-        name: "cccc",
-        price: "11,000"
-    },
-    {
-        productId: 4,
-        img: "",
-        name: "dddd",
-        price: "11,000"
-    },
-    {
-        productId: 5,
-        img: "",
-        name: "ffff",
-        price: "11,000"
-    },
-    {
-        productId: 6,
-        img: "",
-        name: "ffff",
-        price: "11,000"
-    },
-    {
-        productId: 7,
-        img: "",
-        name: "ffff",
-        price: "11,000"
-    },
-    {
-        productId: 8,
-        img: "",
-        name: "ffff",
-        price: "11,000"
-    },
-    {
-        productId: 9,
-        img: "",
-        name: "ffff",
-        price: "11,000"
-    },
-    {
-        productId: 10,
-        img: "",
-        name: "ffff",
-        price: "11,000"
-    },
-];
 
 function BestProduct(props) {
 
@@ -99,7 +35,7 @@ function BestProduct(props) {
                 <table css={s.tableLayout}>
                     <tbody css={s.menuLayout}>
                     {   
-                        products.map((product, index) => (
+                        bestProductList.slice(0,20).map((product, index) => (
                             <tr key={product.productId}>
                                 <td>
                                     <div css={s.numberLayout}>
@@ -109,11 +45,11 @@ function BestProduct(props) {
                                             <div css={s.imgLayout}>
                                                 <Link 
                                                     to={productPath(product.productId)}>
-                                                        <img src={product.img} />
+                                                        <img src={product.thumbnailImg} />
                                                 </Link>
                                             </div>
                                             <div css={s.productLayout}>
-                                                <h2>{product.name}</h2>
+                                                <h2>{product.title}</h2>
                                                 <h2>{product.price}</h2>
                                             </div>
                                     </div>

@@ -77,7 +77,7 @@ function WishList(props) {
                                     <div css={s.menuList}>
                                         <div css={s.imgLayout}>
                                             <Link key={product.productId} to="/product/:productId">
-                                                <img src={product.img} />
+                                                <img src={product.thumbnailImg} />
                                             </Link>
                                         </div>
                                         <div css={s.contentLayout}>

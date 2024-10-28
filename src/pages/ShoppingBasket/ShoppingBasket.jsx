@@ -165,7 +165,7 @@ function ShoppingBasket(props) {
                                     </td>
                                     <td>
                                         <div css={s.img}>
-                                            <img src={product.image} />
+                                            <img src={product.thumbnailImg} />
                                         </div>
                                     </td>
                                     <td>
