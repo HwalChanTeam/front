@@ -43,48 +43,6 @@ const selectProductMenus = [
   },
 ];
 
-const products = [
-  {
-    productId: 1,
-    img: "https://semie.cooking/image/contents/recipe/ee/hy/xdlvlsdq/131722691qqag.jpg",
-    title: "부대찌개",
-    description: "aaaa",
-    price: 11000,
-    origin: "대한민국",
-    deliver: "일반배송",
-    deliverPrice: "3,000",
-  },
-
-  {
-    productId: 2,
-    img: "",
-    title: "bbbb",
-    description: "aaaa",
-    price: 11000,
-    origin: "대한민국",
-    deliver: "일반배송",
-    deliverPrice: "3,000",
-  },
-  {
-    productId: 3,
-    img: "",
-    title: "cccc",
-    description: "aaaa",
-    price: 11000,
-    origin: "대한민국",
-    deliver: "일반배송",
-    deliverPrice: "3,000",
-  },
-  {
-    productId: 4,
-    img: "",
-    title: "dddd",
-    description: "aaaa",
-    price: 11000,
-    origin: "대한민국",
-  },
-];
-
 function ProductPage() {
   const token = localStorage.getItem("accessToken");
   const { productId } = useParams();
