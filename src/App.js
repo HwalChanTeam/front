@@ -98,7 +98,7 @@ function App() {
             <Route path="/product/:productId/*" element={<ProductPage />} />
             <Route path="/user/signup" element={<SignupPage />} />
             <Route path="/user/signin" element={<SigninPage />} />
-            <Route path="/user/cart" element={<ShoppingBasket />} />
+            <Route path="/cart" element={<ShoppingBasket />} />
             <Route path="/order/*" element={<OrderPage />} />
             <Route path="/mypage/*" element={<MyPage />} />
             <Route path="/test" element={<TestExam />} />

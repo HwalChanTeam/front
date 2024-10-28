@@ -111,7 +111,7 @@ function ProductPage() {
       }
       return;
     }
-    return await instance.post("/user/cart", productId);
+    return await instance.post("/cart", productId);
   };
 
   // 구매하기 버튼

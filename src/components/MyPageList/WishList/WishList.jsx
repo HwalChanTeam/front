@@ -45,7 +45,7 @@ function WishList(props) {
     // 장바구니 추가 기능
     const productToBaskect = useMutation(
         async (id)=> {
-            return await instance.post(`/user.cart/${id}`)
+            return await instance.post(`/cart/${id}`)
         }
     )
 
@@ -53,7 +53,7 @@ function WishList(props) {
     const handleProductToBaskect = (id) => {
         productToBaskect.mutate(id);
         if(window.confirm("장바구니에 추가하였습니다.\n장바구니로 이동하시겠습니까?")) {
-            navigate("/user/cart")
+            navigate("/cart")
         }
     }
 
