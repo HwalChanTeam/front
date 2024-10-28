@@ -17,61 +17,62 @@ function MainPage() {
   const [respectProductList, setRespectProductList] = useState([]);
 
   //   // 신상품 가져오는 쿼리
-  //   const newProduct = useQuery(
-  //     ["newProducts"],
-  //     async () => {
-  //       return await instance.get("/user/public/new");
-  //     },
-  //     {
-  //       refetchOnWindowFocus: false,
-  //       onSuccess: (response) => {
-  //         setNewProductList(response.data);
-  //       },
-  //     }
-  //   );
+    const newProduct = useQuery(
+      ["newProducts"],
+      async () => {
+        return await instance.get("/user/public/new");
+      },
+      {
+        refetchOnWindowFocus: false,
+        retry: 0,
+        onSuccess: (response) => {
+          setNewProductList(response.data);
+        },
+      }
+    );
 
-  // 인기상품 가져오는 쿼리 ===== 변수명 바뀔 수도 있음(popularity)
+  // 인기상품 가져오는 쿼리
   const bestProduct = useQuery(
     ["bestProduct"],
     async () => {
-      const response = await instance.get("/user/public/best");
-      console.log(response);
-      return response;
+      return await instance.get("/user/public/best");
     },
     {
       refetchOnWindowFocus: false,
+      retry: 0,
       onSuccess: (response) => {
         setBestProductList(response.data);
       },
     }
   );
 
-  //   // MD추천 상품 ???
-  //   const respectProduct = useQuery(
-  //     ["respectProduct"],
-  //     async () => {
-  //       return await instance.get("/user/public/???");
-  //     },
-  //     {
-  //       refetchOnWindowFocus: false,
-  //       onSuccess: (response) => {
-  //         setRespectProductList(response.data);
-  //       },
-  //     }
-  //   );
+    // MD추천 상품 ???
+    const respectProduct = useQuery(
+      ["respectProduct"],
+      async () => {
+        return await instance.get("/user/public/???");
+      },
+      {
+        refetchOnWindowFocus: false,
+        retry: 0,
+        onSuccess: (response) => {
+          setRespectProductList(response.data);
+        },
+      }
+    );
 
   const newImgOnClick = (productId) => {
-    // navigate(`/product/${productId}`);
+    navigate(`/product/${productId}`);
   };
 
   const bestImgOnClick = (productId) => {
-    // bestProduct(productId);
-    // navigate(`/product/${productId}`);
+    bestProduct(productId);
+    navigate(`/product/${productId}`);
   };
 
   const respectImgOnClick = (productId) => {
-    // newProduct(productId);
-    // navigate(`/product/${productId}`);
+    newProduct(productId);
+    navigate(`/product/${productId}`);
   };
 
   return (

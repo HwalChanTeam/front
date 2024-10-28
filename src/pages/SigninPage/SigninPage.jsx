@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import { SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
+import { useMutation, useQuery } from "react-query";
+import { instance } from "../../apis/util/instance";
 
 function SigninPage(props) {
   const navigate = useNavigate();
@@ -21,7 +23,37 @@ function SigninPage(props) {
     }));
   };
 
-  const handleLoginSubmitOnClick = () => {};
+  // 로그인 mutation
+  const signinUser = useMutation(
+    async (user) => {
+      return await instance.post("user/public/signin", user);
+    },
+    {
+      // 로그인 에러 - 에러메시지 불러옴
+      onError: (response) => {
+        console.log(response.response.data);
+        alert(response.response.data); // 데이터 확인 필요
+      },
+      onSuccess: (response) => {
+        console.log(response.data)
+        localStorage.setItem(
+          "accessToken",
+          "Bearer " + response.data.accessToken
+        ); // 로그인 성공하면 accessToken 집어넣음
+
+        instance.interceptors.request.use((config) => {
+          // 요청때 config 설정 사용해라
+          config.headers["Authorization"] = localStorage.getItem("accessToken"); // 처음에 로그인이 안되어있으면 null값 들어가 있음
+          return config;
+        });
+        navigate("/");
+      },
+    }
+  );
+
+  const handleLoginSubmitOnClick = () => {
+    signinUser.mutate(user);
+  };
 
   return (
     <div css={s.mainLayout}>
@@ -49,7 +81,7 @@ function SigninPage(props) {
           />
         </div>
         <div css={s.joinOkButton}>
-          <button>로그인 하기</button>
+          <button onClick={handleLoginSubmitOnClick}>로그인 하기</button>
         </div>
         <div css={s.oauth2Buttons}>
           <button>

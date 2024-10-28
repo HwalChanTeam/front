@@ -25,7 +25,7 @@ function WishList(props) {
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: (response) => {
-                setProductLikeList(response.data);
+                setProductLikeList(response.data); // 데이터 어떻게 들어오는지 확인!!!!!! response.data.product?? 수졍해야함
             }
         }
     );
@@ -53,7 +53,7 @@ function WishList(props) {
     const handleProductToBaskect = (id) => {
         productToBaskect.mutate(id);
         if(window.confirm("장바구니에 추가하였습니다.\n장바구니로 이동하시겠습니까?")) {
-            navigate("/user/basket")
+            navigate("/user/cart")
         }
     }
 

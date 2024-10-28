@@ -16,10 +16,10 @@ function Review(props) {
             return await instance.get("/user/review");
         },
         {
+            retry: 0,
             onSuccess: (response) => {
                 console.log(response)
             },
-            retry: 0
         }
     )
 

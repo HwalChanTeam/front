@@ -41,13 +41,13 @@ function MainHeader(props) {
                     !token ?
                         <div css={s.buttonLayout}>
                             <Link to={"/user/signin"}><RiLoginBoxLine /></Link>
-                            <Link to={"/basket"}><SlBasket /></Link>
+                            <Link to={"/user/cart"}><SlBasket /></Link>
                             <Link to={"/mypage"}><LuUser /></Link>
                         </div>
                         :
                         <div css={s.buttonLayout}>
                             <a onClick={handleLogout}><RiLogoutBoxRLine /></a>
-                            <Link to={"/basket"}><SlBasket /></Link>
+                            <Link to={"/user/cart"}><SlBasket /></Link>
                             <a onClick={handleMyPageOnClick}><LuUser /></a>
                         </div>
                 }
