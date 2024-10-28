@@ -1,6 +1,6 @@
 import { instance } from "./util/instance"
 
-export const userSigninApi = async(user) => {
+export const userSigninApi = async (user) => {
     let userSiginData = {
         isSuccess: false,
         token: null,
@@ -11,7 +11,7 @@ export const userSigninApi = async(user) => {
                 defaultMessage: ""
             }
         ]
-    } 
+    }
     try {
         const response = await instance.post("/user/public/signin", user);
         userSiginData = {
@@ -21,16 +21,16 @@ export const userSigninApi = async(user) => {
         }
     } catch (error) {
         const response = error.response;
-        userSiginData ={
+        userSiginData = {
             isSuccess: false
         };
 
-        if(response.status === 403) {
+        if (response.status === 403) {
             userSiginData['errorStatus'] = 'loginError';
             userSiginData['error'] = response.data;
         };
 
-        if(typeof(response.data) === 'string') {
+        if (typeof (response.data) === 'string') {
             userSiginData['errorStatus'] = 'loginError';
             userSiginData['error'] = response.data;
         }

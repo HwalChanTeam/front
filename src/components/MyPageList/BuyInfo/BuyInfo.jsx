@@ -14,7 +14,7 @@ function BuyInfo(props) {
     const [userBuyInfo, setUserBuyInfo] = useState([]);
 
     //구매목록 조회 기능
-    const {data, isError, isLoading, refetch} = useQuery(
+    const { data, isError, isLoading, refetch } = useQuery(
         ["getUserBuyInfo"],
         async () => {
             return await instance.get("/user/info");
@@ -48,7 +48,7 @@ function BuyInfo(props) {
 
     // 상품페이지로 이동
     const handleRepurchase = (productId) => {
-        if(window.confirm("상품 페이지로 이동합니다.")) {
+        if (window.confirm("상품 페이지로 이동합니다.")) {
             navigate(`/product/${productId}`);
         }
     };

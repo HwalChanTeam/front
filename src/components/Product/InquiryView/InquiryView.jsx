@@ -5,7 +5,7 @@ function InquiryView(props) {
     const { id } = useParams();
     return (
         <div>
-            
+
         </div>
     );
 }

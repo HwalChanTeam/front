@@ -4,7 +4,7 @@ export const updateUserApi = async () => {
     let response = null;
     try {
         response = await instance.put("/user/info");
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         response = e.response
     }
