@@ -7,10 +7,10 @@ import { instance } from "../../../apis/util/instance";
 
 function UserInfo(props) {
     const [userInfo, setUserInfo] = useState({
-        userName: "", // 수정 불가
+        username: "", // 수정 불가
         name: "", // 수정 불가
         email: "", // 수정 가능
-        phone: "", // 수정 가능
+        phoneNumber: "", // 수정 가능
         address: "", // 지역 주소
         detailAddress: "", // 상세 주소
     });
@@ -72,12 +72,12 @@ function UserInfo(props) {
                 <div css={s.userInfo}>
                     <h2>사용자 정보</h2>
                     <div css={s.inputBox}>
-                        <label htmlFor="userName">아이디 : </label>
+                        <label htmlFor="username">아이디 : </label>
                         <input
                             type="text"
-                            name="userName"
+                            name="username"
                             readOnly
-                            value={userInfo.userName} // defaultValue → value로 변경
+                            value={userInfo.username} // defaultValue → value로 변경
                         />
                     </div>
                     <div css={s.inputBox}>
@@ -100,12 +100,12 @@ function UserInfo(props) {
                         />
                     </div>
                     <div css={s.inputBox}>
-                        <label htmlFor="phone">휴대폰 번호 : </label>
+                        <label htmlFor="phoneNumber">휴대폰 번호 : </label>
                         <input
                             onChange={handleUserInfoOnChange}
                             type="text"
-                            name="phone"
-                            value={userInfo.phone} // defaultValue → value로 변경
+                            name="phoneNumber"
+                            value={userInfo.phoneNumber} // defaultValue → value로 변경
                             placeholder="휴대폰 번호를 입력해 주세요"
                         />
                     </div>
