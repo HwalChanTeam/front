@@ -41,6 +41,7 @@ function App() {
       return await instance.get("/user/access", {
         params: {
           accessToken: localStorage.getItem("accessToken"),
+          retry: 0
         },
       });
     },

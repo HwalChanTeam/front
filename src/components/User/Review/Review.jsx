@@ -1,7 +1,28 @@
 /** @jsxImportSource @emotion/react */
+import { useQuery } from 'react-query';
 import *as s from './style';
+import { instance } from '../../../apis/util/instance';
+import { useState } from 'react';
 
 function Review(props) {
+
+    const [reviews, setReviews] = useState([]);
+
+
+    const getReviewAll = useQuery(
+        ["getReviewAll"],
+        async () => {
+            console.log("요청날아감")
+            return await instance.get("/user/review");
+        },
+        {
+            onSuccess: (response) => {
+                console.log(response)
+            },
+            retry: 0
+        }
+    )
+
     return (
         <div css={s.layout}>
             <div css={s.contentLayout}>
