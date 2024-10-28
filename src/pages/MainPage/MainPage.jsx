@@ -59,7 +59,17 @@ function MainPage() {
         }
     )
 
-    const imgOnClick = (productId) => {
+    const newImgOnClick = (productId) => {
+        navigate(`/product/${productId}`)
+    }
+
+    const bestImgOnClick = (productId) => {
+        bestProduct(productId);
+        navigate(`/product/${productId}`)
+    }
+
+    const respectImgOnClick = (productId) => {
+        newProduct(productId);
         navigate(`/product/${productId}`)
     }
 
@@ -92,7 +102,7 @@ function MainPage() {
                                 <div css={s.newProductLayout}
                                     key={newProduct.productId}
                                 >
-                                    <img src={newProduct.img} onClick={() => imgOnClick(newProduct.productId)} />
+                                    <img src={newProduct.img} onClick={() => newImgOnClick(newProduct.productId)} />
                                     <div>
                                         <p>{newProduct.title}</p>
                                         <p>{newProduct.price.toLocaleString()}원</p>
@@ -117,7 +127,7 @@ function MainPage() {
                                 <div css={s.bestImgLayout}
                                     key={bestProduct.productId}
                                 >
-                                    <img src={bestProduct.image} onClick={() => imgOnClick(bestProduct.productId)} />
+                                    <img src={bestProduct.image} onClick={() => bestImgOnClick(bestProduct.productId)} />
                                     <div>
                                         <p>{bestProduct.title}</p>
                                         <p>{bestProduct.price.toLocaleString()}원</p>
