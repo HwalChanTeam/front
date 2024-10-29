@@ -90,7 +90,7 @@ function WishList(props) {
                                                 </div>
                                                 <div css={s.icons}>
                                                     <button onClick={() => handleProductToBaskect(product.productId)} ><SlBasket size="24" /></button>
-                                                    <button onClick={() => disProductWishListMutation.mutate(product.productId)} ><IoIosHeart size="26" /></button>
+                                                    <button onClick={() => disProductWishListMutation.mutate(product.productId)} ><IoIosHeart size="25" /></button>
                                                 </div>
                                             </div>
                                         </div>

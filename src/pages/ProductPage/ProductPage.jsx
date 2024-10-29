@@ -61,33 +61,17 @@ function ProductPage() {
         category: "",
     });
 
-    // // 이미지????
-    // useEffect(() => {
-    //     const selectedProduct = products.find(product => product.productId === Number(productId));
-    //     if(selectedProduct) {
-    //         setProduct(selectedProduct);
-    //     } else {
-    //         console.error("오류");
-    //     }
-    // }, [ productId, products, navigate ]);
-
     // 상품 조회
     const getProduct = useQuery(
         ["getProduct", productId],
         async () => {
-            console.log(productId);
-            return await instance.get(`/user/public/product/${productId}`);
+            return await instance.get("/user/public/product/detail", {
+                params: { productId : productId }
+            });
         },
         {
             onSuccess: (response) => {
                 setProduct(response.data.product);
-                //   productId: response?.data.productId,
-                //   contentsImg: response?.data.contentsImg,
-                //   title: response?.data.title,
-                //   description: response?.data.description,
-                //   origin: response?.data.origin,
-                //   price: response?.data.price,
-                //   category: response?.data.category
             },
         }
     );
