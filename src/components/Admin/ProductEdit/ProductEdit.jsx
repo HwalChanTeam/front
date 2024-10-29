@@ -4,6 +4,7 @@ import MainSearch from "../../MainSearch/MainSearch";
 import * as s from "./style";
 import AdminSearch from "../AdminSearch/AdminSearch";
 import { instance } from "../../../apis/util/instance";
+import { useQuery } from "react-query";
 
 // 이름
 // 카테고리
@@ -93,9 +94,16 @@ const tempProductList = [
 
 function ProductEdit(props) {
 
-    const [productList, setProductList] = useState(
-        tempProductList.map((tempProduct) => ({ ...tempProduct, checked: false }))
-    );
+    // const [productList, setProductList] = useState(
+    //     tempProductList.map((tempProduct) => ({ ...tempProduct, checked: false }))
+    // );
+
+    const [productList, setProductList] = useState([]);
+
+    const [searchParams, setSearchParams] = useState({
+        page: 1,
+        limit: 10,
+    });
 
     const handleCheckBoxOnChange = (id) => {
         setProductList((productList) =>
@@ -104,6 +112,24 @@ function ProductEdit(props) {
             )
         );
     };
+
+    // 상품 불러오는 쿼리
+    const getProductQuery = useQuery(
+        ["getProductQuery"],
+        async () => {
+            console.log(searchParams)
+            return await instance.get("/admin/product", searchParams);
+        },
+        {
+            onSuccess : (response) => {
+                console.log(response)
+                setProductList(response)
+            },
+            onError : (response) => {
+                console.error(response)
+            }
+        }
+    )
 
     const hadleModifyButtonOnClick = async () => {
         try {
