@@ -16,10 +16,12 @@ function NewProductView(props) {
     const allNewProduct = useQuery(
         "newProducts",
         async () => {
-            return await instance.get(`/user/public/new`);
+            return await instance.get("/user/public/new");
         },
         {
-            onSuccess: (response) => setNewProductList(response.data),
+            onSuccess: (response) => {
+                setNewProductList(response.data)
+            },
             refetchOnWindowFocus: false,
             retry: 0
         }

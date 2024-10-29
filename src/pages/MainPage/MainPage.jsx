@@ -16,7 +16,7 @@ function MainPage() {
     const [bestProductList, setBestProductList] = useState([]);
     const [respectProductList, setRespectProductList] = useState([]);
 
-    //   // 신상품 가져오는 쿼리
+    // 신상품 가져오는 쿼리
     const newProduct = useQuery(
         ["newProducts"],
         async () => {
@@ -66,7 +66,6 @@ function MainPage() {
     };
 
     const bestImgOnClick = (productId) => {
-        bestProduct(productId);
         navigate(`/product/${productId}`);
     };
 

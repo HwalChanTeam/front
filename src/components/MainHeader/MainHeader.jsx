@@ -21,10 +21,10 @@ function MainHeader(props) {
     const handleMyPageOnClick = () => {
         if (!token) {
             if (window.confirm("로그인이 필요한 서비스 입니다.\n로그인 하시겠습니까?")) {
-                navigate("/login")
-            }
-            return;
-        }
+                navigate("/user/signin")
+                }
+                return;
+                }
         navigate("/mypage")
     }
 
@@ -42,13 +42,13 @@ function MainHeader(props) {
                         <div css={s.buttonLayout}>
                             <Link to={"/user/signin"}><RiLoginBoxLine /></Link>
                             <Link to={"/cart"}><SlBasket /></Link>
-                            <Link to={"/mypage"}><LuUser /></Link>
+                            <a onClick={handleMyPageOnClick}><LuUser /></a>
                         </div>
                         :
                         <div css={s.buttonLayout}>
                             <a onClick={handleLogout}><RiLogoutBoxRLine /></a>
                             <Link to={"/cart"}><SlBasket /></Link>
-                            <a onClick={handleMyPageOnClick}><LuUser /></a>
+                            <Link to={"/mypage"}><LuUser /></Link>
                         </div>
                 }
             </div>

@@ -21,96 +21,95 @@ import TestExam2 from "./pages/Test/TestExam2";
 import PopularityProduct from "./components/User/BestProductView/BestProduct";
 
 function App() {
-  const token = localStorage.getItem("accessToken");
-  const queryClient = new QueryClient();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [authRefresh, setAuthRefresh] = useState(true);
+    const token = localStorage.getItem("accessToken");
+    const queryClient = new QueryClient();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [authRefresh, setAuthRefresh] = useState(true);
 
 
-  useEffect(() => {
-    if (!authRefresh) {
-      setAuthRefresh(true);
-    }
-  }, [location.pathname]);
+    useEffect(() => {
+        if (!authRefresh) {
+            setAuthRefresh(true);
+        }
+    }, [location.pathname]);
 
-  const accessTokenValid = useQuery(
-    ["accessTokenValidQuery"],
-    async () => {
-      setAuthRefresh(false);
-      return await instance.get("/user/public/access", {
-        params: {
-          accessToken: localStorage.getItem("accessToken"),
+    const accessTokenValid = useQuery(
+        ["accessTokenValidQuery"],
+        async () => {
+            setAuthRefresh(false);
+            return await instance.get("/user/public/access", {
+                params: {
+                    accessToken: localStorage.getItem("accessToken"),
+                },
+            });
         },
-        
-      });
-    },
-    {
-      enabled: authRefresh,
-      retry: 0,
-      refetchOnWindowFocus: false,
-      onSuccess: (response) => {
-        const permitAllPaths = ["/user"];
-        for (let permitAllPath of permitAllPaths) {
-          if (location.pathname.startsWith(permitAllPath)) {
-            navigate("/");
-            break;
-          }
+        {
+            enabled: authRefresh,
+            retry: 0,
+            refetchOnWindowFocus: false,
+            onSuccess: (response) => {
+                const permitAllPaths = ["/user"];
+                for (let permitAllPath of permitAllPaths) {
+                    if (location.pathname.startsWith(permitAllPath)) {
+                        // navigate("/");
+                        break;
+                    }
+                }
+            },
+            onError: (error) => {
+                const authPaths = ["/profile"];
+                for (let authPath of authPaths) {
+                    if (location.pathname.startsWith(authPath)) {
+                        navigate("/user/signin");
+                        break;
+                    }
+                }
+            },
         }
-      },
-      onError: (error) => {
-        const authPaths = ["/profile"];
-        for (let authPath of authPaths) {
-          if (location.pathname.startsWith(authPath)) {
-            navigate("/user/login");
-            break;
-          }
-        }
-      },
-    }
-  );
+    );
 
-  // const userInfo = useQuery(
-  //   ["userInfoQuery"],
-  //   async () => {
-  //     return await instance.get("");
-  //   },
-  //   {
-  //     enabled: accessTokenValid.isSuccess && accessTokenValid.data?.data,
-  //     refetchOnWindowFocus: false,
-  //   }
-  // );
+    // const userInfo = useQuery(
+    //   ["userInfoQuery"],
+    //   async () => {
+    //     return await instance.get("");
+    //   },
+    //   {
+    //     enabled: accessTokenValid.isSuccess && accessTokenValid.data?.data,
+    //     refetchOnWindowFocus: false,
+    //   }
+    // );
 
 
-  return (
-    <>
-      <Global styles={reset} />
-      {location.pathname.startsWith("/admin") ? (
-        <Routes>
-          <Route path="/admin" element={<AdminSignin />} />
-          <Route path="/admin/main/*" element={<AdminMainPage/>} />
-        </Routes>
-      ) : (
+    return (
         <>
-        <MainLayout>
-          <Routes>
-            <Route path="/*" element={<MainPage />} />
-            <Route path="/product/:productId/*" element={<ProductPage />} />
-            <Route path="/user/signup" element={<SignupPage />} />
-            <Route path="/user/signin" element={<SigninPage />} />
-            <Route path="/cart" element={<ShoppingBasket />} />
-            <Route path="/order/*" element={<OrderPage />} />
-            <Route path="/mypage/*" element={<MyPage />} />
-            <Route path="/test" element={<TestExam />} />
-            <Route path="/test2" element={<TestExam2 />} />
-            <Route path="/test3" element={<PopularityProduct />} />
-          </Routes>
-        <MainFooter />
-        </MainLayout>
+            <Global styles={reset} />
+            {location.pathname.startsWith("/admin") ? (
+                <Routes>
+                    <Route path="/admin" element={<AdminSignin />} />
+                    <Route path="/admin/main/*" element={<AdminMainPage />} />
+                </Routes>
+            ) : (
+                <>
+                    <MainLayout>
+                        <Routes>
+                            <Route path="/*" element={<MainPage />} />
+                            <Route path="/product/:productId/*" element={<ProductPage />} />
+                            <Route path="/user/signup" element={<SignupPage />} />
+                            <Route path="/user/signin" element={<SigninPage />} />
+                            <Route path="/cart" element={<ShoppingBasket />} />
+                            <Route path="/order/*" element={<OrderPage />} />
+                            <Route path="/mypage/*" element={<MyPage />} />
+                            <Route path="/test" element={<TestExam />} />
+                            <Route path="/test2" element={<TestExam2 />} />
+                            <Route path="/test3" element={<PopularityProduct />} />
+                        </Routes>
+                        <MainFooter />
+                    </MainLayout>
+                </>
+            )}
         </>
-      )}
-    </>
-  );
+    );
 }
 
 export default App;
