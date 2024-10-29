@@ -2,11 +2,10 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import MainPage from "./pages/MainPage/MainPage";
 import SignupPage from "./pages/SignupPage/SignupPage";
 import { Global } from "@emotion/react";
-import { reset } from "./style/global";
+import { UserReset, adminReset } from "./style/global";
 import SigninPage from "./pages/SigninPage/SigninPage";
 import ShoppingBasket from "./pages/ShoppingBasket/ShoppingBasket";
 import MainLayout from "./components/MainLayout/MainLayout";
-import MainMenu from "./components/MainMenu/MainMenu";
 import AdminSignin from "./pages/Admin/AdminSignin/AdminSignin";
 import AdminMainPage from "./pages/Admin/AdminMainPage/AdminMainPage";
 import TestExam from "./pages/Test/TestExam";
@@ -83,15 +82,18 @@ function App() {
 
     return (
         <>
-            <Global styles={reset} />
             {location.pathname.startsWith("/admin") ? (
-                <Routes>
-                    <Route path="/admin" element={<AdminSignin />} />
-                    <Route path="/admin/main/*" element={<AdminMainPage />} />
-                </Routes>
+                <>
+                    <Global styles={adminReset} />
+                    <Routes>
+                        <Route path="/admin" element={<AdminSignin />} />
+                        <Route path="/admin/main/*" element={<AdminMainPage />} />
+                    </Routes>
+                </>
             ) : (
                 <>
                     <MainLayout>
+                        <Global styles={UserReset} />
                         <Routes>
                             <Route path="/*" element={<MainPage />} />
                             <Route path="/product/:productId/*" element={<ProductPage />} />
