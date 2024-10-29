@@ -25,7 +25,10 @@ function WishList(props) {
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: (response) => {
-                setProductLikeList(response.data); // 데이터 어떻게 들어오는지 확인!!!!!! response.data.product?? 수졍해야함
+                console.log(response.data.body.map((item) => item.product.map((p) => p.productId))) // id
+                console.log(response.data.body.map((item) => item.product.map((p) => p.title))) // title
+                console.log(response.data.body)
+                setProductLikeList(response.data.body.map((item) => item.product[0])); // 데이터 어떻게 들어오는지 확인!!!!!! response.data.product?? 수졍해야함
             }
         }
     );
@@ -72,18 +75,18 @@ function WishList(props) {
                     <table css={s.tableLayout}>
                         <tbody css={s.menuLayout}>
                             {productLikeList.map((product) => (
-                                <tr key={product.productId}>
+                                <tr key={product?.productId}>
                                     <td>
                                         <div css={s.menuList}>
                                             <div css={s.imgLayout}>
                                                 <Link key={product.productId} to="/product/:productId">
-                                                    <img src={product.thumbnailImg} />
+                                                    <img src={product?.thumbnailImg} />
                                                 </Link>
                                             </div>
                                             <div css={s.contentLayout}>
                                                 <div css={s.productLayout}>
-                                                    <h2>{product.title}</h2>
-                                                    <h2>{product.price}</h2>
+                                                    <h2>{product?.title}</h2>
+                                                    <h2>{product?.price.toLocaleString()}원</h2>
                                                 </div>
                                                 <div css={s.icons}>
                                                     <button onClick={() => handleProductToBaskect(product.productId)} ><SlBasket size="24" /></button>

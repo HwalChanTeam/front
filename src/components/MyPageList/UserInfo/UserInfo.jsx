@@ -19,10 +19,13 @@ function UserInfo(props) {
     const { data, isError, isLoading, refetch } = useQuery(
         ["userInfos"],
         async () => {
-            return await instance.get("/user/info");
+            return await instance.get("/user");
         },
         {
-            onSuccess: (data) => setUserInfo(data),
+            onSuccess: (response) => {
+                console.log()
+                setUserInfo(response)
+            },
             refetchOnWindowFocus: false,
             retry: 0,
         }
