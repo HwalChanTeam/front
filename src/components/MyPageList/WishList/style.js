@@ -86,12 +86,16 @@ export const contentLayout = css`
 
 export const productLayout = css`
     box-sizing: border-box;
-    width: 160px;
+    width: 110px;
 
     & h2 {
         margin: 5px 0px;
         font-size: 15px;
         font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
         &:nth-last-of-type(1) {
             font-weight: 750;
             font-style: italic;
@@ -103,10 +107,7 @@ export const productLayout = css`
 export const icons = css`
     box-sizing: border-box;
     display: flex;
-    & a {
-        margin-right: 5px;
-        height: 26px;
-    }
+    align-items: flex-end;
 
     & button {
       display: flex;
@@ -114,6 +115,17 @@ export const icons = css`
       padding: 0px;
       border: none;
       background-color: transparent;
+
+      &:nth-last-of-type(1) {
+        & svg {
+            margin-left: 3px;
+        }
+      }
+
+      & svg {
+        margin: 0px;
+        margin-bottom: 5px;
+      }
     }
 `;
 
