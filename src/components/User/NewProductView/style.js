@@ -59,6 +59,9 @@ export const productLayout = css`
         margin: 5px 0px;
         font-size: 18px;
         font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         &:nth-last-of-type(1) {
             font-style: italic;
         }

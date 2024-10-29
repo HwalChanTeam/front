@@ -41,6 +41,7 @@ function MainPage() {
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: (response) => {
+                console.log(response)
                 setBestProductList(response.data);
             },
         }
@@ -100,7 +101,7 @@ function MainPage() {
                                 {
                                     // slice를 사용해 신상품이 5개까지 뜨게 설정
                                     newProductList.slice(0, 5).map((newProduct) => (
-                                        <div css={s.newProductLayout} key={newProduct.productId}>
+                                        <div css={s.newProductLayout} key={newProduct?.data?.productId}>
                                             <img
                                                 src={newProduct.thumbnailImg}
                                                 onClick={() => newImgOnClick(newProduct.productId)}
