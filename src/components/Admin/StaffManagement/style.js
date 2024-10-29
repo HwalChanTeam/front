@@ -7,7 +7,7 @@ export const mainBox = css`
   & > h1 {
     display: flex;
     margin: 0px;
-    padding: 20px;
+    padding: 18.5px;
     justify-content: center;
     align-items: center;
     background-color: #3a3a3a;

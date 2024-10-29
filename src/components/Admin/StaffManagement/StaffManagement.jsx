@@ -227,7 +227,7 @@ function StaffManagement(props) {
 
     return (
         <div css={s.mainBox}>
-            <h1>상품 관리</h1>
+            <h1>직원 관리</h1>
             <div css={s.buttonLayout}>
                 <button>수정</button>
                 <button>삭제</button>
