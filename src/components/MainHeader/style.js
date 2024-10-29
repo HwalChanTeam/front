@@ -55,6 +55,7 @@ export const buttonLayout = css`
     height: 30px;
     font-weight: 600;
     color: #964747;
+    cursor: pointer;
     &:nth-last-of-type(1) {
       border: none;
     }

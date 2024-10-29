@@ -18,7 +18,7 @@ import DeliveryView from "../../components/Product/Delivery/DeliveryView";
 import { productLikeApi } from "../../apis/productApi";
 import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
 import { instance } from "../../apis/util/instance";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 const selectProductMenus = [
     {
@@ -62,7 +62,7 @@ function ProductPage() {
     });
 
     // 상품 조회
-    const getProduct = useQuery(
+    const {data, refetch} = useQuery(
         ["getProduct", productId],
         async () => {
             return await instance.get("/user/public/product/detail", {
@@ -109,8 +109,21 @@ function ProductPage() {
         return await instance.post("/user/buy", productId);
     };
 
+    // 찜버튼 mutation
+    const productLikeMutation = useMutation(
+        async() => {
+            return await instance.post(`/user/product/like/${productId}`);
+        },
+        {
+            onSuccess: () => {
+                refetch();
+            }
+        }
+    )
+
     // 찜 버튼
     const handleWishListButton = async () => {
+        
         if (!token) {
             if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
                 navigate("/user/signin");

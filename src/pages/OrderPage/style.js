@@ -20,7 +20,7 @@ export const mainBox = css`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 700px;
+  width: 900px;
   height: 100%;
 `;
 
@@ -39,7 +39,7 @@ export const inputBox = css`
   width: 100%;
   margin-top: 20px;
   padding: 10px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   border-bottom: 1px solid #dbdbdb;
   & input {
@@ -51,13 +51,13 @@ export const inputBox = css`
 `;
 
 export const adressInputBox = css`
-    box-sizing: border-box;
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 10px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   border-bottom: 1px solid #dbdbdb;
   & input {
@@ -76,10 +76,10 @@ export const adressButton = css`
     background-color: transparent;
     border: 1px solid #dbdbdb;
     &:hover {
-      background-color: #eaeaea
+      background-color: #eaeaea;
     }
     &:active {
-      background-color: #cfcfcf
+      background-color: #cfcfcf;
     }
   }
 `;
@@ -89,53 +89,20 @@ export const productInfo = css`
 `;
 
 export const productTable = css`
-  box-sizing: border-box;
-  display: flex;
-  width: 100%;
-  height: 100px;
-  padding: 10px 5px;
   border: 1px solid #dbdbdb;
-  font-size: 16px;
-  font-weight: 500;
-  & > tr {
-    display: flex;
-    & td:nth-of-type(1) {
-      display: flex;
-      align-items: center;
-      margin-right: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  & td {
+    font-size: 14px;
+    height: 60px;
+    border: 1px solid #dbdbdb;
+    &:nth-of-type(2) {
+      text-align: center;
     }
-    & td:nth-of-type(2) {
-      margin-right: 20px;
-      & img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-    & td:nth-of-type(3) {
-      display: flex;
-      align-items: center;
-      margin-right: 20px;
-    }
-    & td:nth-of-type(4) {
-      display: flex;
-      align-items: center;
-      margin-right: 20px;
-      width: 70px;
-      word-break: break-word;
-    }
-    & td:nth-of-type(5) {
-      display: flex;
-      align-items: center;
-      margin-right: 20px;
-      width: 70px;
-      word-break: break-word;
-    }
-    & td:nth-of-type(6) {
-      display: flex;
-      align-items: center;
-      margin-right: 20px;
-      width: 70px;
-      word-break: break-word;
+    img {
+      width: 80px;
+      height: 80px;
+      padding: 0;
     }
   }
 `;
@@ -145,16 +112,16 @@ export const payInfo = css`
   & button {
     width: 200px;
     height: 40px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     background-color: transparent;
     margin-right: 50px;
     border: 1px solid #dbdbdb;
     &:hover {
-      background-color: #eaeaea
+      background-color: #eaeaea;
     }
     &:active {
-      background-color: #dbdbdb
+      background-color: #dbdbdb;
     }
     & button:nth-of-type(2) {
       margin-right: 0;
@@ -169,7 +136,7 @@ export const rightBox = css`
 `;
 
 export const payInfoMain = css`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   & > div {
     border-bottom: 1px solid #dbdbdb;
@@ -194,10 +161,10 @@ export const submitButton = css`
     cursor: pointer;
     color: #964747;
     &:hover {
-      background-color: #eaeaea
+      background-color: #eaeaea;
     }
     &:active {
-      background-color: #dbdbdb
+      background-color: #dbdbdb;
     }
   }
 `;

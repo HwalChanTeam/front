@@ -23,8 +23,8 @@ function UserInfo(props) {
         },
         {
             onSuccess: (response) => {
-                console.log()
-                setUserInfo(response)
+                console.log(response.data)
+                setUserInfo(response.data)
             },
             refetchOnWindowFocus: false,
             retry: 0,
@@ -42,7 +42,7 @@ function UserInfo(props) {
     // 수정 함수
     const mutation = useMutation(
         async () => {
-            return await instance.put("/user/info");
+            return await instance.put("/user");
         },
         {
             onSuccess: () => {
