@@ -33,18 +33,21 @@ function ShoppingBasket(props) {
         },
         {
             onSuccess: (response) => {
-                console.log(response?.data?.cartList[0].cartItem.map((item) => item.cartId));
-                console.log(response?.data?.cartList[0].cartItem.map((item) => item.cartItemId));
-                console.log(response?.data?.cartList[0].cartItem.map((item) => item.product.title));
+                // console.log(response?.data?.cartList.map((item) => item.cartId));
+                // console.log(response?.data?.cartList.map((item) => item.cartItemId));
+                // console.log(response?.data?.cartList.map((item) => item.product.title));
                 // console.log(response?.data?.cartList[0].cartItem.map((item) => item.product.title.map((p) => p.title)));
-                setProductList(response?.data?.cartList[0]?.cartItem);
-                console.log(response?.data?.cartList[0]?.cartItem);
+                setProductList(response?.data?.cartList);
             },
             refetchOnWindowFocus: false, // 창 포커스 시 재요청 하지 않음
             retry: 0,
             // 데이터 가져오면 productList에 설정
         }
     );
+
+    console.log(data?.data?.cartList?.map((item) => item.price))
+    console.log(data?.data?.cartList)
+    console.log(data)
 
     // 삭제 요청을 위한 mutation
     const mutation = useMutation(
@@ -121,7 +124,7 @@ function ShoppingBasket(props) {
     const handleBuyButtonOnClick = () => {
         const selectedProducts = productList.filter((product) => product.checked);
         const selectedProductIds = selectedProducts.map((product) => ({
-            productId: product.productId,
+            cartItemId: product.cartItemId,
             quantity: product.quantity,
         }));
         console.log(selectedProductIds)

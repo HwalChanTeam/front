@@ -24,7 +24,7 @@ const tempProducts = [
 
 function OrderPage(props) {
   const [selectedProductIds] = useRecoilState(selectedItemsAtom); // atom 사용
-  const productIds = selectedProductIds.map((item) => item.productId);
+  console.log(selectedProductIds);
   const quantities = selectedProductIds.map((item) => item.quantity);
 
   const token = localStorage.getItem("accessToken");
@@ -40,60 +40,58 @@ function OrderPage(props) {
   });
 
   // 상품 정보 불러오기
-  // const {
-  //     data: products,
-  //     isLoading: isProductsLoading,
-  //     isError: isProductsError,
-  // } = useQuery(
-  //     ["selectedProducts"],
-  //     async () => {
-  //         // console.log(selectedProductIds.map((item) => item.productId)) // productId
-  //         // console.log(selectedProductIds.map((item) => item.quantity)) // quantity
-  //         // console.log(productIds) // quantity
-  //         const queryString = productIds.map(id => `productIds=${encodeURIComponent(id)}`).join('&');
-  //         console.log(queryString)
-  //         return await instance.get(`/user/cart/order?${queryString}`);
-
-  //     },
-  //     {
-  //         onSuccess : (response) => {
-  //             console.log(response)
-  //             setProductList(response.data)
-  //     },
-  //         enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
-  //         retry: 0
-  //     }
-  // );
-
   const {
-    data: products,
-    isLoading: isProductsLoading,
-    isError: isProductsError,
+      data: products,
+      isLoading: isProductsLoading,
+      isError: isProductsError,
   } = useQuery(
-    ["selectedProducts"],
-    async () => {
-      // console.log(selectedProductIds.map((item) => item.productId)) // productId
-      // console.log(selectedProductIds.map((item) => item.quantity)) // quantity
-      // console.log(productIds) // quantity
-      const queryString = productIds
-        .map((id) => `productIds=${encodeURIComponent(id)}`)
-        .join("&");
-      console.log(queryString);
-      return await instance.get(`/user/cart/order?${queryString}`);
-    },
-    {
-      onSuccess: (response) => {
-        console.log(response);
-        const updatedProducts = response.data.map((product, index) => ({
-          ...product,
-          quantity: quantities[index], // 수량 추가
-        }));
-        setProductList(updatedProducts);
+      ["selectedProducts"],
+      async () => {
+          // console.log(selectedProductIds.map((item) => item.productId)) // productId
+          // console.log(selectedProductIds.map((item) => item.quantity)) // quantity
+          // console.log(productIds) // quantity
+        //   const queryString = productIds.map(id => `productIds=${encodeURIComponent(id)}`).join('&');
+        //   console.log(queryString)
+        console.log(selectedProductIds)
+          return await instance.get(`/user/cart/order`, selectedProductIds);
       },
-      enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
-      retry: 0,
-    }
+      {
+          onSuccess : (response) => {
+              console.log(response)
+              setProductList(response.data)
+      },
+          enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
+          retry: 0
+      }
   );
+
+//   const {
+//     data: products,
+//     isLoading: isProductsLoading,
+//     isError: isProductsError,
+//   } = useQuery(
+//     ["selectedProducts"],
+//     async () => {
+//       // console.log(selectedProductIds.map((item) => item.productId)) // productId
+//       // console.log(selectedProductIds.map((item) => item.quantity)) // quantity
+//       // console.log(productIds) // quantity
+//       const queryString = productIds
+//         .map((id) => `productIds=${encodeURIComponent(id)}`)
+//         .join("&");
+//       return await instance.get(`/user/cart/order?${queryString}`);
+//     },
+//     {
+//       onSuccess: (response) => {
+//         const updatedProducts = response.data.map((product, index) => ({
+//           ...product,
+//           quantity: quantities[index], // 수량 추가
+//         }));
+//         setProductList(updatedProducts);
+//       },
+//       enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
+//       retry: 0,
+//     }
+//   );
 
   // 유저 정보 불러오기
   const {

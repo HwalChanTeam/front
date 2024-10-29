@@ -11,7 +11,6 @@ function WishList(props) {
 
     const navigate = useNavigate();
     const params = useParams(); // url 수정 하기 ~~~~
-    const productId = params.productId;
 
     const [productLikeList, setProductLikeList] = useState([]);
 
@@ -34,21 +33,37 @@ function WishList(props) {
     );
 
     // 찜 삭제 기능
-    const disProductWishListMutation = useMutation(
-        async () => {
-            return await instance.delete(`/user/product/dislike/${productLikeList.productId}`)
+    const disLikeProductWishListMutation = useMutation(
+        async (productId) => {
+            return await instance.delete(`/user/product/dislike/${productId}`)
         },
         {
-            onSuccess: response => {
+            onSuccess: () => {
+                console.log("성공!!!")
                 productWishList.refetch();
-            }
+            },
         }
     )
 
+    const handleDisLikeProductOnClick = async (id) => {
+        disLikeProductWishListMutation.mutate(id);
+    }
+
     // 장바구니 추가 기능
     const productToBaskect = useMutation(
-        async (id) => {
-            return await instance.post(`/cart/${id}`)
+        async (productId) => {
+            console.log(productId)
+            const payload = {productId}
+            console.log(payload)
+            return await instance.post("/user/cart/", payload);
+        },
+        {
+            onError: (error) => {
+                console.error("오류!!!" + error)
+            },
+            onSuccess: () => {
+                console.log("성공")
+            }
         }
     )
 
@@ -90,7 +105,7 @@ function WishList(props) {
                                                 </div>
                                                 <div css={s.icons}>
                                                     <button onClick={() => handleProductToBaskect(product.productId)} ><SlBasket size="24" /></button>
-                                                    <button onClick={() => disProductWishListMutation.mutate(product.productId)} ><IoIosHeart size="25" /></button>
+                                                    <button onClick={() => handleDisLikeProductOnClick(product.productId)} ><IoIosHeart size="25" /></button>
                                                 </div>
                                             </div>
                                         </div>
