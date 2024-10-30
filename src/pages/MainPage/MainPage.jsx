@@ -114,7 +114,7 @@ function MainPage() {
                                     ))
                                 }
                             </div>
-                            <div css={s.newProductLink}>
+                            <div css={s.ProductLink}>
                                 <Link to="/user/newproduct"> 신상품 전체 보기 </Link>
                             </div>
                         </div>
@@ -133,13 +133,14 @@ function MainPage() {
                                             onClick={() => bestImgOnClick(bestProduct.productId)}
                                         />
                                         <div>
+                                            <p>{bestProduct.description}</p>
                                             <p>{bestProduct.title}</p>
                                             <p>{bestProduct.price.toLocaleString()}원</p>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                            <div css={s.bestProductLink}>
+                            <div css={s.ProductLink}>
                                 <Link to="/user/best"> 인기상품 전체 보기 </Link>
                             </div>
                         </div>
