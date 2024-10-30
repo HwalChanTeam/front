@@ -117,7 +117,7 @@ export const newProductLayout = css`
 
 `;
 
-export const newProductLink = css`
+export const ProductLink = css`
     box-sizing: border-box;
     display: flex;
     justify-content: center;
@@ -168,7 +168,8 @@ export const bestProductTitle = css`
 export const bestProductContentLayout = css`
     box-sizing: border-box;
     display: flex;
-    width: 1200px;
+    justify-content: space-between;
+    width: 1180px;
 
     & div {
         &:nth-last-of-type(1) {
@@ -186,7 +187,6 @@ export const bestImgLayout = css`
     flex-direction: column;
 
     & img {
-        margin-right: 20px;
         width: 200px;
         height: 200px;
         background-color: #dbdbdb;
@@ -208,30 +208,16 @@ export const bestImgLayout = css`
             text-overflow: ellipsis;
 
             &:nth-of-type(1) {
+                color: #c2c2c2;
+                font-size: 16px;
+            }
+
+            &:nth-of-type(2) {
                 margin: 5px 0px;
             }
         }
     }
 
-`;
-
-export const bestProductLink = css`
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-    width: 1120px;
-
-    & a {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 300px;
-        height: 40px;
-        text-decoration: none;
-        color: #000000;
-        border: 1px solid #964747;
-    }
 `;
 
 // MD 추천 상품
