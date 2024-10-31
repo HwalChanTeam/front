@@ -1,23 +1,14 @@
 import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
-import { FaSearch } from "react-icons/fa";
-import { instance } from "../../../apis/util/instance";
-import ProductView from "../ProductView/ProductView";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-function AdminSearch({ onSearch }) {
+function AdminSearch() {
+    const navigate = useNavigate();
+
     const [searchProduct, setSearchProduct] = useState({
         title: "",
     });
-    //   const [searchProduct, setSearchProduct] = useState({
-    //     category: "",
-    //     title: "",
-    //     price: "",
-    //     origin: "",
-    //     salesCount: "",
-    //     stock: "",
-    //     createdDate: ""
-    //   });
 
     const handleSearchOnChange = (e) => {
         setSearchProduct((searchProduct) => ({
@@ -26,20 +17,12 @@ function AdminSearch({ onSearch }) {
         }));
     };
 
-    //   const handleSubmitButtonOnClick = async () => {
-    //     const response = instance.get(
-    //       "/admin/product/search",
-    //       searchProduct.title
-    //     );
-    //   };
-
-    const handleSubmitButtonOnClick = (e) => {
-        e.preventDefault();
-        onSearch(searchProduct.title); // 검색어 전달
-        console.log(searchProduct.title)
+    const handleSubmitButtonOnClick = () => {
+        navigate(`/admin/main/product?keyword=${searchProduct.title}`);
+        setSearchProduct({
+            title: ""
+        });
     };
-
-
 
     return (
         <div css={s.layout}>
