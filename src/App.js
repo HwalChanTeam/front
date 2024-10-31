@@ -18,6 +18,8 @@ import MainFooter from "./components/MainFooter/MainFooter";
 import MyPage from "./pages/MyPage/MyPage";
 import TestExam2 from "./pages/Test/TestExam2";
 import PopularityProduct from "./components/User/BestProductView/BestProduct";
+import Category from "./components/Category/Category";
+import MainHeader from "./components/MainHeader/MainHeader";
 
 function App() {
     const token = localStorage.getItem("accessToken");
@@ -90,15 +92,17 @@ function App() {
                         <Route path="/admin/main/*" element={<AdminMainPage />} />
                     </Routes>
                 </>
-            ) : (
+            ) : ( 
                 <>
-                    <MainLayout>
+                    {/* <MainLayout> */}
+                        <MainHeader />
                         <Global styles={UserReset} />
                         <Routes>
                             <Route path="/*" element={<MainPage />} />
                             <Route path="/product/:productId/*" element={<ProductPage />} />
                             <Route path="/user/signup" element={<SignupPage />} />
                             <Route path="/user/signin" element={<SigninPage />} />
+                            <Route path="/user/category/:categoryId"  element={<Category />} />
                             <Route path="/cart" element={<ShoppingBasket />} />
                             <Route path="/order/*" element={<OrderPage />} />
                             <Route path="/mypage/*" element={<MyPage />} />
@@ -107,7 +111,7 @@ function App() {
                             <Route path="/test3" element={<PopularityProduct />} />
                         </Routes>
                         <MainFooter />
-                    </MainLayout>
+                    {/* </MainLayout> */}
                 </>
             )}
         </>
