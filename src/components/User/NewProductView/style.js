@@ -12,60 +12,59 @@ export const contentLayout = css`
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-
-    & table {
-        width: 1200px;
-        table-layout: fixed;
-    }
 `;
 
 
 export const menuLayout = css`
     box-sizing: border-box;
-    margin-top: 54px;
+    width: 1200px;
+    table-layout: fixed;
+    & td {
+        padding: 0px;
 
-    & tr {
-        & td {
-            padding: 0px;
-            width: 200px;
-            &:nth-of-type(5n) > div {
-                margin-right: 0px;
-            }
+        &:nth-of-type(5n) > div {
+            margin-right: 0px;
         }
-
-    } 
+    }
 
 `;
 
 export const menuList = css`
     box-sizing: border-box;
-    margin-right: 47.28px;
-    padding: 0px;
+    margin-top: 50px;
+    margin-right: 50px;
     width: 200px;
+    padding: 0px;
 `;
 
 export const imgLayout = css`
     box-sizing: border-box;
-    cursor: pointer;
     width: 200px;
+    cursor: pointer;
 
-    & a {
+    & img {
         box-sizing: border-box;
         width: 200px;
         height: 200px;
-        & img {
-            box-sizing: border-box;
-            width: 200px;
-            height: 200px;
-        }
     }
 `;
 
 
 
 export const productLayout = css`
-    & h2 {
+    width: 200px;
+    & p {
+        margin: 0px;
+        margin-top: 10px;
         width: 200px;
+        font-size: 14px;
+        color: #c2c2c2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    & h2 {
         margin: 5px 0px;
         font-size: 18px;
         font-weight: 600;
@@ -73,6 +72,7 @@ export const productLayout = css`
         overflow: hidden;
         text-overflow: ellipsis;
         &:nth-last-of-type(1) {
+            margin-top: 30px;
             font-style: italic;
         }
     }

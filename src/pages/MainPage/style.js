@@ -82,31 +82,33 @@ export const newProductLayout = css`
     & img {
         width: 220px;
         height: 220px;
-        background-color: #dbdbdb;
         cursor: pointer;
     }
 
     & div {
-        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         width: 220px;
-        height: 100px;
+        height: 110px;
         background-color: #797979;
+
         & p {
+            box-sizing: border-box;
             margin: 0px;
+            padding: 0px 15px;
             width: 220px;
             font-size: 20px;
             font-weight: 600;
             color: #ffffff;
+            text-align: center;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             
             &:nth-last-of-type(1) {
-                margin-top: 5px;
+                margin-top: 10px;
                 font-size: 18px;
                 color: #000000;
             }
@@ -120,7 +122,7 @@ export const ProductLink = css`
     box-sizing: border-box;
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    margin-top: 50px;
     width: 1180px;
 
     & a {

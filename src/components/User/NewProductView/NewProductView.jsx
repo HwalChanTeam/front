@@ -68,36 +68,33 @@ function NewProductView(props) {
     return (
         <div css={s.layout}>
             <div css={s.contentLayout}>
-                <table  >
-                    <tbody css={s.menuLayout}>
-                        {   
-                            newProductList.map((product) => (
-                                <tr>
-                                    {
-                                        product.map((pro) => (
-                                            <td>
-                                                <div css={s.menuList}>
-                                                        <div css={s.imgLayout}>
-                                                            <Link 
-                                                                key={pro.productId}
-                                                                to={productPath(pro.productId)}>
-                                                                    <img src={pro.thumbnailImg} />
-                                                            </Link>
-                                                        </div>
-                                                        <div css={s.productLayout}>
-                                                            <h2>{pro.title}</h2>
-                                                            <h2>{pro.price.toLocaleString()}원</h2>
-                                                        </div>
+                {   
+                    newProductList.map((product) => (
+                        <tr css={s.menuLayout}>
+                            {
+                                product.map((pro) => (
+                                    <td>
+                                        <div css={s.menuList}>
+                                                <div css={s.imgLayout}>
+                                                    <Link 
+                                                        key={pro.productId}
+                                                        to={productPath(pro.productId)}>
+                                                            <img src={pro.thumbnailImg} />
+                                                    </Link>
                                                 </div>
-                                            </td>
-                                        ))
+                                                <div css={s.productLayout}>
+                                                    <p>{pro.description}</p>
+                                                    <h2>{pro.title}</h2>
+                                                    <h2>{pro.price.toLocaleString()}원</h2>
+                                                </div>
+                                        </div>
+                                    </td>
+                                ))
 
-                                    }
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
+                            }
+                        </tr>
+                    ))
+                    }
             </div>
         </div>
     );
