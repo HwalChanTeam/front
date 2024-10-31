@@ -22,35 +22,37 @@ function MainHeader(props) {
         if (!token) {
             if (window.confirm("로그인이 필요한 서비스 입니다.\n로그인 하시겠습니까?")) {
                 navigate("/user/signin")
-                }
-                return;
-                }
+            }
+            return;
+        }
         navigate("/mypage")
     }
 
     return (
-        <div css={s.background}>
-            <div css={s.headerLayout}>
-                <Link to={"/"}>
-                    <h1>
-                        <img src={logo} />
-                        Cuisson
-                    </h1>
-                </Link>
-                {
-                    !token ?
-                        <div css={s.buttonLayout}>
-                            <Link to={"/user/signin"}><RiLoginBoxLine /></Link>
-                            <Link to={"/cart"}><SlBasket /></Link>
-                            <a onClick={handleMyPageOnClick}><LuUser /></a>
-                        </div>
-                        :
-                        <div css={s.buttonLayout}>
-                            <a onClick={handleLogout}><RiLogoutBoxRLine /></a>
-                            <Link to={"/cart"}><SlBasket /></Link>
-                            <Link to={"/mypage"}><LuUser /></Link>
-                        </div>
-                }
+        <div css={s.layout}>
+            <div css={s.background}>
+                <div css={s.headerLayout}>
+                    <Link to={"/"}>
+                        <h1>
+                            <img src={logo} />
+                            Cuisson
+                        </h1>
+                    </Link>
+                    {
+                        !token ?
+                            <div css={s.buttonLayout}>
+                                <Link to={"/user/signin"}><RiLoginBoxLine /></Link>
+                                <Link to={"/cart"}><SlBasket /></Link>
+                                <a onClick={handleMyPageOnClick}><LuUser /></a>
+                            </div>
+                            :
+                            <div css={s.buttonLayout}>
+                                <a onClick={handleLogout}><RiLogoutBoxRLine /></a>
+                                <Link to={"/cart"}><SlBasket /></Link>
+                                <Link to={"/mypage"}><LuUser /></Link>
+                            </div>
+                    }
+                </div>
             </div>
         </div>
     );
