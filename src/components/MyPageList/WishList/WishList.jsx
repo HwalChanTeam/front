@@ -23,6 +23,7 @@ function WishList(props) {
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: (response) => {
+                console.log(response.data.body.map((item) => item.product))
                 setProductLikeList(response.data.body.map((item) => item.product[0])); // 데이터 어떻게 들어오는지 확인!!!!!! response.data.product?? 수졍해야함
             }
         }
@@ -46,10 +47,16 @@ function WishList(props) {
 
     // 장바구니 추가 기능
     const productToBaskect = useMutation(
-        async (productId) => {
-            console.log("아래꼐 전송되는거!!!!!!")
-            console.log(productId)
-            return await instance.post("/user/cart/", productId);
+        async (product) => {
+            console.log("아래가 데이터!!!!!")
+            console.log(product)
+            const CartProduct = {
+                productId : product.productId,
+                price : product.price,
+                quantity : product.quantity 
+            }
+            console.log(CartProduct)
+            return await instance.post("/user/cart/", CartProduct);
         },
         {
             onError: (error) => {
@@ -62,8 +69,8 @@ function WishList(props) {
     )
 
     // 장바구니 이동 기능 추가
-    const handleProductToBaskect = (id) => {
-        productToBaskect.mutate(id);
+    const handleProductToBaskect = (product) => {
+        productToBaskect.mutate(product);
         if (window.confirm("장바구니에 추가하였습니다.\n장바구니로 이동하시겠습니까?")) {
             navigate("/cart")
         }
@@ -98,7 +105,7 @@ function WishList(props) {
                                                     <h2>{product?.price.toLocaleString()}원</h2>
                                                 </div>
                                                 <div css={s.icons}>
-                                                    <button onClick={() => handleProductToBaskect(product.productId)} ><SlBasket size="24" /></button>
+                                                    <button onClick={() => handleProductToBaskect(product)} ><SlBasket size="24" /></button>
                                                     <button onClick={() => handleDisLikeProductOnClick(product.productId)} ><IoIosHeart size="25" /></button>
                                                 </div>
                                             </div>
