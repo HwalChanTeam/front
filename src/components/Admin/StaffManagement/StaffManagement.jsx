@@ -1,236 +1,63 @@
 /** @jsxImportSource @emotion/react */
+import { useMutation, useQuery } from "react-query";
 import { instance } from "../../../apis/util/instance";
-import AdminSearch from "../AdminSearch/AdminSearch";
+import Modal from "../../Modal/Modal";
 import * as s from "./style";
 import { useState } from "react";
 
-
-// Modal 컴포넌트 추가
-const Modal = ({ isOpen, onClose }) => {
-    if (!isOpen) return null;
-
-    return (
-        <div
-            css={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-        >
-            <div
-                css={{
-                    backgroundColor: "white",
-                    padding: "20px",
-                    borderRadius: "5px",
-                    width: "300px",
-                }}
-            >
-                <h2>매니저 등록</h2>
-                <input type="text" />
-                <button onClick={onClose}>닫기</button>
-            </div>
-        </div>
-    );
-};
-
-const tempStaffList = [
-    {
-        id: 1,
-        username: "aaa",
-        name: "직원명1",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 2,
-        username: "bbb",
-        name: "직원명2",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-0000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-0000-0000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-00",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-    {
-        id: 3,
-        username: "ccc",
-        name: "직원명3",
-        email: "aaa@aaa.com",
-        phone: "010-0000",
-        role: "매니저",
-        createDate: "2024-10-11",
-    },
-];
-
 function StaffManagement(props) {
-    const [staffList, setStaffList] = useState(
-        tempStaffList.map((tempStaff) => ({ ...tempStaff, checked: false }))
-    );
+    // 모달 띄우는 상태 추가
+    const [openModal, setOpenModal] = useState(false);
+    const [checkedIds, setCheckedIds] = useState([]);
+    const [staffs, setStaffs] = useState([]);
 
-    const handleCheckBoxOnChange = (id) => {
-        setStaffList((staffList) =>
-            staffList.map((staff) =>
-                staff.id === id ? { ...staff, checked: !staff.checked } : staff
-            )
-        );
+    const closeModal = () => {
+        setOpenModal(false); // 모달 닫기
     };
 
-    // // 모달 띄우는 상태 추가
-    // const [openModal, setOpenModal] = useState(false);
+    const staffQuery = useQuery(
+        ["useQuery"],
+        async () => {
+            const response = await instance.get("admin/user?role=2");
+            console.log(response?.data?.user);
+            setStaffs(response?.data?.user);
+        }
+    );
 
-    // // 메니저 등록 버튼 누르면 모달 상태 변경 - 모달 띄워짐
-    // const handleSubmitButtonOnClick = () => {
-    //   setOpenModal(true);
-    // };
-    // //  모달창은 상품 등록에꺼 불러와서 하기
-    // const hadleModifyOnClick = async () => {
-    //   setOpenModal(true);
-    // };
+    const deleteMutation = useMutation(
+        async () => {
+            console.log(checkedIds);
+            await instance.delete("/admin/user", { data: { checkedIds } });
+        },
+        {
+            retry: 0,
+            refetchOnWindowFocus: false,
+            onSuccess: (response) => {
+                alert("삭제가 완료되었습니다.");
+                staffQuery.refetch();
+            }
+        }
+    );
+    
 
-    // const handleDeleteOnClick = async (id) => {
-    //   console.log(id);
-    //   try {
-    //     const response = await instance.delete(`/admin/delete/${id}`);
-    //     // 성공적으로 삭제된 후, 상태에서 해당 직원 제거
-    //     setStaffList((prevList) => prevList.filter((staff) => staff.id !== id));
-    //     console.log(`User ${id} deleted:`, response.data);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // };
-
-
+    const handleCheckBoxOnChange = (staffId) => {
+        console.log(staffId);
+        setCheckedIds((ids) => {
+            if (ids.includes(staffId)) {
+                return ids.filter(id => id !== staffId);
+            } else {
+                return [...ids, staffId];
+            }
+        });
+    };
 
     return (
         <div css={s.mainBox}>
             <h1>직원 관리</h1>
             <div css={s.buttonLayout}>
-                <button>수정</button>
-                <button>삭제</button>
+                <button onClick={() => setOpenModal(true)}>등록</button>
+                <Modal isOpen={openModal} onClose={closeModal} />
+                <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
             </div>
             <div css={s.container}>
                 <table css={s.theadLayout}>
@@ -247,23 +74,26 @@ function StaffManagement(props) {
                 </table>
                 <table css={s.tableLayout}>
                     {/* <tbody css={s.tbodyLayout}> */}
-                    {staffList.map((staff) => (
-                        <tr key={staff.id}>
+                    {staffs.map((staff) => (
+                        <tr key={staff.userId}>
                             <td css={s.productItem}>
                                 <input
                                     type="checkbox"
-                                    onChange={() => handleCheckBoxOnChange(staff.id)}
-                                    checked={staff.checked}
-                                    id={staff.id}
+                                    onChange={() => handleCheckBoxOnChange(staff.userId)}
+                                    checked={checkedIds.includes(staff.userId)}
                                 />
                             </td>
-                            <td css={s.productItem}>{staff.id}</td>
-                            <td css={s.productItem}>{staff.role}</td>
+                            <td css={s.productItem}>{staff.userId}</td>
+                            {
+                                staff.userRoles.map((role) => (
+                                    <td css={s.productItem} key={role.role.roleId}>{role.role.name}</td>
+                                ))
+                            }
                             <td css={s.productItem}>{staff.name}</td>
                             <td css={s.productItem}>{staff.username}</td>
                             <td css={s.productItem}>{staff.email}</td>
-                            <td css={s.productItem}>{staff.phone}</td>
-                            <td css={s.productItem}>{staff.createDate}</td>
+                            <td css={s.productItem}>{staff.phoneNumber}</td>
+                            <td css={s.productItem}>{staff.createdAt}</td>
                         </tr>
                     ))}
                     {/* </tbody> */}
