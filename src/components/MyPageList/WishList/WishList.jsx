@@ -10,7 +10,6 @@ import { instance } from '../../../apis/util/instance';
 function WishList(props) {
 
     const navigate = useNavigate();
-    const params = useParams(); // url 수정 하기 ~~~~
 
     const [productLikeList, setProductLikeList] = useState([]);
 
@@ -37,7 +36,6 @@ function WishList(props) {
         },
         {
             onSuccess: () => {
-                console.log("성공!!!")
                 productWishList.refetch();
             },
         }
