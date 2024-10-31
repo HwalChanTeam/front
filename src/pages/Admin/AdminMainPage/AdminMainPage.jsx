@@ -1,15 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from "react";
 import * as s from "./style";
 import DefaultComponent from "../../../components/Admin/DefaultComponent/DefaultComponent";
-import ProductView from "../../../components/Admin/ProductView/ProductView";
 import ProductRegister from "../../../components/Admin/ProductRegister/ProductRegister";
 import ProductEdit from "../../../components/Admin/ProductEdit/ProductEdit";
 import UserView from "../../../components/Admin/UserView/UserView";
 import Management from "../../../components/Admin/Management/Management";
 import StaffManagement from "../../../components/Admin/StaffManagement/StaffManagement";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
-
 import { IoBagAddOutline } from "react-icons/io5";
 import { RiProductHuntLine } from "react-icons/ri";
 import { PiUsersFourLight } from "react-icons/pi";

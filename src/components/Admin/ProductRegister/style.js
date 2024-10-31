@@ -68,7 +68,7 @@ export const inputBox = css`
     padding: 0px 10px;
     border: 1px solid #000000;
   }
-  & span {
+  & div {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
