@@ -1,28 +1,93 @@
+import { Route, Routes, useNavigate, useParams } from "react-router";
 /** @jsxImportSource @emotion/react */
-import { Route, Routes } from "react-router";
 import * as s from "./style";
-import FrozenProduct from "./Mealkit/FrozenProduct/FrozenProduct";
-import Mealkit from "./Mealkit/Mealkit";
-import Refrigerating from "./Mealkit/Refrigerating/Refrigerating";
-import SimplyCook from "./SimplyCook/SimplyCook";
-import Snacks from "./Snacks/Snacks";
-import Soup from "./Soup/Soup";
+import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useQuery } from "react-query";
+import { instance } from "../../apis/util/instance";
+import ReactPaginate from "react-paginate";
 
 function Category(props) {
-    // 
-    
+    const navigate = useNavigate();
+    const productPath = (productId) => `/product/${productId}`; // 해당 상품의 상품페이지로 이동할려고 만든 productId
+    const categoryId = useParams();
+    const [pageCount, setPageCount] = useState(1);
+    const [productList, setProductList] = useState();
+    const [search, setSearch] = useState({
+        page: pageCount,
+        title: "",
+        limit: 20,
+        categoryId: categoryId.categoryId,
+    })
+
+    // 냉장 조회 query
+    const category = useQuery(
+        ["category"],
+        async () => {
+            return await instance.get("/user/public/product/category", search); // 추후 수정 예정 
+        },
+        {
+            onSuccess: (response) => {
+                setProductList(response)
+                console.log(response);
+            },
+            refetchOnWindowFocus: false,
+            retry: 0
+        }
+
+    );
+
+    const handleOnPageChange = (e) => {
+        setPageCount(e.selected + 1)
+    }
+
     return (
-        <div>
-            <Routes>
-                <Route path="/user/category/1"  element={<Soup />} /> {/* 국.찌개.탕 */}
-                <Route path="/user/category/2"  element={<Snacks />} /> {/* 안주 */}
-                <Route path="/user/category/3"  element={<Mealkit />} /> {/* 밀키트 */}
-                <Route path="/user/category/31"  element={<FrozenProduct />} /> {/* 냉동 */}
-                <Route path="/user/category/32"  element={<Refrigerating />} /> {/* 냉장 */}
-                <Route path="/user/category/4"  element={<SimplyCook />} /> {/* 간편식 */}
-            </Routes>
+        <div css={s.layout}>
+            <div css={s.contentLayout}>
+                <table css={s.tableLayout}>
+                    <tbody css={s.menuLayout}>
+                        {/* {
+                            productList.map((product) => (
+                                <tr>
+                                    <td>
+                                        <div css={s.menuList}>
+                                            <div css={s.imgLayout}>
+                                                <Link
+                                                    key={product.id}
+                                                    to={productPath(product.productId)}>
+                                                    <img src={product.thumbnailImg} />
+                                                </Link>
+                                            </div>
+                                            <div css={s.productLayout}>
+                                                <h2>{product.title}</h2>
+                                                <h2>{product.price}</h2>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        } */}
+                    </tbody>
+                </table>
+            </div>
+            <div css={s.pageNumber}>
+                <ReactPaginate
+                    breakLabel="..."
+                    previousLabel={<><MdNavigateBefore /></>}
+                    nextLabel={<><MdNavigateNext /></>}
+                    pageCount={5}
+                    marginPagesDisplayed={3}
+                    pageRangeDisplayed={5}
+                    onPageChange={handleOnPageChange}
+                    // activeClassName='active' 
+                    // onPageChange={handlePageOnChange}
+                    // forcePage={parseInt(searchParams.get("page")) - 1}
+                />
+            </div>
         </div>
     );
+    
 }
 
 export default Category;

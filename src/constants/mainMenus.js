@@ -9,36 +9,36 @@ export const menus = [
             {
                 id: 1,
                 name: "국.탕.찌개",
-                path: "/user/category/1",
+                path: "/user/category/01",
                 subSideMenus: [],
             },
             {
                 id: 2,
                 name: "안주",
-                path: "/user/category/2",
+                path: "/user/category/02",
                 subSideMenus: [],
             },
             {
                 id: 3,
                 name: "밀키트",
-                path: "/user/category/3",
+                path: "/user/category/03",
                 subSideMenus: [
                     {
                         id: 1,
                         name: "냉동",
-                        path: "/user/category/31"
+                        path: "/user/category/0301"
                     },
                     {
                         id: 2,
                         name: "냉장",
-                        path: "/user/category/32"
+                        path: "/user/category/0302"
                     },
                 ]
             },
             {
                 id: 4,
                 name: "간편식",
-                path: "/user/category/4",
+                path: "/user/category/04",
                 subSideMenus: [],
             },
         ]

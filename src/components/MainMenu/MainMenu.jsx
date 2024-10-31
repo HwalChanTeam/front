@@ -91,7 +91,6 @@ function MainMenu(props) {
                 <MainSearch onSearch={null} />
             </header>
             <SelectProductView />
-            <Category />
         </>
     );
 }
