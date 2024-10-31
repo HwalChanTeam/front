@@ -107,6 +107,7 @@ function MainPage() {
                                                 onClick={() => newImgOnClick(newProduct.productId)}
                                             />
                                             <div>
+                                                <p>{newProduct.description}</p>
                                                 <p>{newProduct.title}</p>
                                                 <p>{newProduct.price.toLocaleString()}원</p>
                                             </div>

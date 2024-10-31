@@ -10,7 +10,6 @@ import { instance } from '../../../apis/util/instance';
 function WishList(props) {
 
     const navigate = useNavigate();
-    const params = useParams(); // url 수정 하기 ~~~~
 
     const [productLikeList, setProductLikeList] = useState([]);
 
@@ -24,9 +23,6 @@ function WishList(props) {
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: (response) => {
-                console.log(response.data.body.map((item) => item.product.map((p) => p.productId))) // id
-                console.log(response.data.body.map((item) => item.product.map((p) => p.title))) // title
-                console.log(response.data.body)
                 setProductLikeList(response.data.body.map((item) => item.product[0])); // 데이터 어떻게 들어오는지 확인!!!!!! response.data.product?? 수졍해야함
             }
         }
@@ -39,7 +35,6 @@ function WishList(props) {
         },
         {
             onSuccess: () => {
-                console.log("성공!!!")
                 productWishList.refetch();
             },
         }
@@ -52,10 +47,9 @@ function WishList(props) {
     // 장바구니 추가 기능
     const productToBaskect = useMutation(
         async (productId) => {
+            console.log("아래꼐 전송되는거!!!!!!")
             console.log(productId)
-            const payload = {productId}
-            console.log(payload)
-            return await instance.post("/user/cart/", payload);
+            return await instance.post("/user/cart/", productId);
         },
         {
             onError: (error) => {

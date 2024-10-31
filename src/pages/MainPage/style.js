@@ -77,9 +77,9 @@ export const newProductLayout = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    margin-right: 20px;
 
     & img {
-        margin-right: 20px;
         width: 220px;
         height: 220px;
         background-color: #dbdbdb;
@@ -92,23 +92,22 @@ export const newProductLayout = css`
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 0px 30px;
         width: 220px;
         height: 100px;
         background-color: #797979;
         & p {
-            display: flex;
-            justify-content: center;
             margin: 0px;
-            width: 160px;
+            width: 220px;
             font-size: 20px;
             font-weight: 600;
             color: #ffffff;
             white-space: nowrap;
+            overflow: hidden;
             text-overflow: ellipsis;
-
+            
             &:nth-last-of-type(1) {
-                font-size: 20px;
+                margin-top: 5px;
+                font-size: 18px;
                 color: #000000;
             }
 
@@ -168,7 +167,6 @@ export const bestProductTitle = css`
 export const bestProductContentLayout = css`
     box-sizing: border-box;
     display: flex;
-    justify-content: space-between;
     width: 1180px;
 
     & div {
@@ -185,10 +183,11 @@ export const bestImgLayout = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    margin-right: 20px;
 
     & img {
-        width: 200px;
-        height: 200px;
+        width: 220px;
+        height: 220px;
         background-color: #dbdbdb;
         cursor: pointer;
     }
@@ -200,7 +199,7 @@ export const bestImgLayout = css`
         width: 200px;
         & p {
             margin: 0px;
-            width: 200px;
+            width: 220px;
             font-size: 18px;
             font-weight: 600;
             white-space: nowrap;
@@ -213,7 +212,7 @@ export const bestImgLayout = css`
             }
 
             &:nth-of-type(2) {
-                margin: 5px 0px;
+                margin: 5px 0px 25px 0px;
             }
         }
     }
