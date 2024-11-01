@@ -173,17 +173,16 @@ export const contentsImgLayout = css`
 `;
 
 export const contentsImgBox = css`
+    display: flex;
     box-sizing: border-box;
-    margin-right: 15px;
-    width: 180px;
-    height: 180px;
     
     &:nth-of-type(4n) {
         margin-right: 0px;
     }
     
     & img {
-        width: 100%;
-        height: 100%;
+        width: 180px;
+        height: 180px;
+        margin-right: 10px;
     }
 `;
