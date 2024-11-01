@@ -63,7 +63,7 @@ function BestProduct(props) {
                                                 <div css={s.productLayout}>
                                                     <p>{pro.description}</p>
                                                     <h2>{pro.title}</h2>
-                                                    <h2>{pro.price}</h2>
+                                                    <h2>{pro.price.toLocaleString()}원</h2>
                                                 </div>
                                             </div>
                                         </td>
