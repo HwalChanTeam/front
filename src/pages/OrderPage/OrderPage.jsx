@@ -13,7 +13,8 @@ function OrderPage(props) {
   //상품 디테일 페이지에서 가져온 하나의 아이디
   const [selectedProduct] = useRecoilState(productOrderAtom); // atom 사용
   console.log(selectedProductIds);
-  console.log(selectedProduct);
+  console.log(selectedProductIds.map((item) => item.cartItemId));
+  selectedProductIds.forEach(item => console.log(item.cartItemId));
   const quantities = selectedProductIds.map((item) => item.quantity);
 
   const token = localStorage.getItem("accessToken");
@@ -27,8 +28,18 @@ function OrderPage(props) {
     address: "",
     message: "",
   });
+  
+  // 상품 페이지에서 가져온 경우(단건)
+  const productOrder = useQuery(
+    ["productOrder"],
+    async () => {
+      console.log(selectedProduct)
+      return await instance.get("/user/order", {params : {id : selectedProduct}});
+    },
+  )
+  console.log(selectedProductIds.quantity)
 
-  // 상품 정보 불러오기
+    //장바구니에서 가져온 경우(다건)
   const {
     data: products,
     isLoading: isProductsLoading,
@@ -36,18 +47,11 @@ function OrderPage(props) {
   } = useQuery(
     ["selectedProducts"],
     async () => {
-      const cartIds = selectedProductIds.map((item) => item.cartId);
-      const cartItemIds = selectedProductIds.map((item) => item.cartItemId);
+      const cartItemId =   selectedProductIds.forEach(item => (item.cartItemId));
+      console.log(cartItemId)
 
-      const params = {
-        cartList: selectedProductIds.map((item) => ({
-            cartId: item.cartId,
-            cartItemId: item.cartItemId,
-        })),
-    };
-
-      console.log(params)
-      return await instance.get("/user/cart/order", {params});
+      console.log(cartItemId)
+      return await instance.get("/user/cart/order", {params : {cartItemId : cartItemId}});
     },
     {
       onSuccess: (response) => {
@@ -60,35 +64,9 @@ function OrderPage(props) {
     }
   );
 
-  //   const {
-  //     data: products,
-  //     isLoading: isProductsLoading,
-  //     isError: isProductsError,
-  //   } = useQuery(
-  //     ["selectedProducts"],
-  //     async () => {
-  //       // console.log(selectedProductIds.map((item) => item.productId)) // productId
-  //       // console.log(selectedProductIds.map((item) => item.quantity)) // quantity
-  //       // console.log(productIds) // quantity
-  //       const queryString = productIds
-  //         .map((id) => `productIds=${encodeURIComponent(id)}`)
-  //         .join("&");
-  //       return await instance.get(`/user/cart/order?${queryString}`);
-  //     },
-  //     {
-  //       onSuccess: (response) => {
-  //         const updatedProducts = response.data.map((product, index) => ({
-  //           ...product,
-  //           quantity: quantities[index], // 수량 추가
-  //         }));
-  //         setProductList(updatedProducts);
-  //       },
-  //       enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
-  //       retry: 0,
-  //     }
-  //   );
+  
 
-  // 유저 정보 불러오기
+  // 유저 정보 불러오기 - 장바구니 조회할때 같이 오므로, 수정 예정
   const {
     data: userInfoData,
     isLoading: isUserInfoLoading,
@@ -108,12 +86,12 @@ function OrderPage(props) {
     }
   );
 
-  // // 선택된 상품이 없을 때
-  // if (selectedProductIds.length === 0) {
-  //     return (
-  //         <div>선택된 상품이 없습니다. 장바구니에서 상품을 선택해 주세요.</div>
-  //     );
-  // }
+  // 선택된 상품이 없을 때
+  if (selectedProductIds.length === 0) {
+      return (
+          <div>선택된 상품이 없습니다. 장바구니에서 상품을 선택해 주세요.</div>
+      );
+  }
 
   // 로딩 상태 처리
   if (isProductsLoading || isUserInfoLoading) {
@@ -217,22 +195,41 @@ function OrderPage(props) {
         <div css={s.productInfo}>
           <h2>주문상품 정보</h2>
           <table css={s.productTable}>
-            {productList.map((product) => (
-              <tr key={product.cartItemId}>
-                <td>{product.title}</td>
-                <td>
-                  <img src={product.thumbnailImg} />
-                </td>
-                <td>수량: {product.quantity}</td>
-                <td>상품금액: {product.price.toLocaleString()}원</td>
-                <td>할인금액: 0원</td>
-                <td>배송비: {deliveryFee.toLocaleString()}원</td>
-                <td>
-                  합계금액:{" "}
-                  {(product.price * product.quantity).toLocaleString()}원
-                </td>
-              </tr>
-            ))}
+            {
+              selectedProductIds >= 1
+              ?
+              productList.map((product) => (
+                <tr key={product.cartItemId}>
+                  <td>{product.title}</td>
+                  <td>
+                    <img src={product.thumbnailImg} />
+                  </td>
+                  <td>수량: {selectedProductIds?.map((item) => item.quantity)}</td>
+                  <td>상품금액: {product.price.toLocaleString()}원</td>
+                  <td>할인금액: 0원</td>
+                  <td>배송비: {deliveryFee.toLocaleString()}원</td>
+                  <td>
+                    합계금액:{" "}
+                    {(product.price * product.quantity).toLocaleString()}원
+                  </td>
+                </tr>
+              ))
+              :
+              <tr key={productOrder?.data?.data?.cartItemId}>
+                  <td>{productOrder?.data?.data?.title}</td>
+                  <td>
+                    <img src={productOrder?.data?.data?.thumbnailImg} />
+                  </td>
+                  <td>수량: {selectedProduct?.map((item) => item.quantity)}</td>
+                  <td>상품금액: {productOrder?.data?.data?.price.toLocaleString()}원</td>
+                  <td>할인금액: 0원</td>
+                  <td>배송비: {deliveryFee.toLocaleString()}원</td>
+                  <td>
+                    합계금액:{" "}
+                    {(productOrder?.data?.data?.price * productOrder?.data?.data?.quantity).toLocaleString()}원
+                  </td>
+                </tr>
+            }
           </table>
           <p>배송비 : {deliveryFee.toLocaleString()}원</p>
         </div>

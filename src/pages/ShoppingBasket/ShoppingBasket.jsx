@@ -158,6 +158,19 @@ function ShoppingBasket(props) {
         }
     };
 
+    const handleAllDeleteButtonOnClick = async () => {
+        const allProductId = 
+        {
+            cartId : productList.map((item) => item.cartId),
+            cartItemId : productList.map((item) => item.cartItemId)
+        }
+        if(window.confirm("모든 상품이 삭제됩니다. 삭제하시겠습니까?")) {
+            console.log(allProductId)
+            await instance.delete("user/cart", { data: { cartId: allProductId.cartId, cartItemId: allProductId.cartItemId } });
+            refetch();
+        }
+    }
+
     if (isLoading) return <div>Loading...</div>;
     // if (isError) return <div>데이터를 가져오는데 실패했습니다.</div>
 
@@ -255,7 +268,7 @@ function ShoppingBasket(props) {
                 </div>
                 <div css={s.buttonBox}>
                     <button onClick={handleBuyButtonOnClick}>주문하기</button>
-                    <button onClick={() => setProductList([])}>전체삭제</button>
+                    <button onClick={handleAllDeleteButtonOnClick}>전체삭제</button>
                 </div>
             </div>
         </div>

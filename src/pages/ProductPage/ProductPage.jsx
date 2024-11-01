@@ -249,10 +249,10 @@ function ProductPage() {
         </div>
         <div css={s.productInfor}>
           <Routes>
-            <Route path="/" element={<InformationView />} />
-            <Route path="/review" element={<BuyReview />} />
-            <Route path="/inquiry" element={<InquiryView />} />
-            <Route path="/delivery" element={<DeliveryView />} />
+            <Route path="/" element={<InformationView product={product} />} />
+            <Route path="/review" element={<BuyReview product={product} />} />
+            <Route path="/inquiry" element={<InquiryView product={product} />} />
+            <Route path="/delivery" element={<DeliveryView product={product} />} />
           </Routes>
         </div>
       </div>

@@ -8,11 +8,32 @@ export const mainContainer = css`
 
 `;
 
+export const userInfoContainer = css`
+  display: flex;
+  margin-right: 900px;
+  margin-bottom: 30px;
+`;
+
+export const imgBox = css`
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    box-shadow: 0px 0px 2px #00000088;
+    cursor: pointer;
+
+    & > img {
+        height: 100%;
+    }
+`;
+
 export const userInfoBox = css`
     display: flex;
     flex-direction: column;
-    justify-content: left;
     width: 100%;
+    margin-left: 10px;
     & > p {
         margin: 0;
     }

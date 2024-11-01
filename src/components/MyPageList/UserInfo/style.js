@@ -25,9 +25,16 @@ export const userInfo = css`
   padding: 10px;
   & p {
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
     margin-right: 10px;
+    padding-left: 260px;
     margin-bottom: 0;
+    & > {
+      input {
+        border: 1px solid #dbdbdb;
+        width: 100px;
+      }
+    }
     & button {
       background-color: transparent;
       border: 1px solid #dbdbdb;
