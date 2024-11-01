@@ -7,10 +7,15 @@ export const layout = css`
     width: 100%;
 `;
 
+export const mainMenuLayout = css`
+    box-sizing: border-box;
+    width: 1200px;
+`;
+
 export const contentLayout = css`
     box-sizing: border-box;
     margin-top: 54px;
-    width: 100%;
+    width: 1200px;
     & table {
         width: 100%;
     }
@@ -33,7 +38,7 @@ export const menuLayout = css`
 
 export const menuList = css`
     box-sizing: border-box;
-    width: 272px;
+    width: 235px;
     padding: 0px;
 `;
 
@@ -54,12 +59,27 @@ export const imgLayout = css`
 
 
 export const productLayout = css`
-    & h2 {
+    width: 200px;
+    & p {
+        margin: 0px;
+        margin-top: 10px;
         width: 200px;
+        font-size: 14px;
+        color: #c2c2c2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    & h2 {
         margin: 5px 0px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         &:nth-last-of-type(1) {
+            margin-top: 30px;
             font-style: italic;
         }
     }

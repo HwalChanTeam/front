@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { instance } from "../../apis/util/instance";
 import ReactPaginate from "react-paginate";
+import MainMenu from "../MainMenu/MainMenu";
 
 function Category(props) {
     const navigate = useNavigate();
@@ -23,14 +24,14 @@ function Category(props) {
 
     // 냉장 조회 query
     const category = useQuery(
-        ["category"],
+        ["category", search],
         async () => {
-            return await instance.get("/user/public/product/category", search); // 추후 수정 예정 
+            return await instance.get("/user/public/product/category", {params: search}); // 추후 수정 예정 
         },
         {
             onSuccess: (response) => {
-                setProductList(response)
-                console.log(response);
+                console.log(response.data.products);
+                setProductList(response.data.products);
             },
             refetchOnWindowFocus: false,
             retry: 0
@@ -43,23 +44,28 @@ function Category(props) {
     }
 
     return (
+
         <div css={s.layout}>
+            <div css={s.mainMenuLayout}>
+                <MainMenu />
+            </div>
             <div css={s.contentLayout}>
                 <table css={s.tableLayout}>
                     <tbody css={s.menuLayout}>
-                        {/* {
-                            productList.map((product) => (
+                        {
+                            productList?.map((product) => (
                                 <tr>
                                     <td>
                                         <div css={s.menuList}>
                                             <div css={s.imgLayout}>
                                                 <Link
-                                                    key={product.id}
+                                                    // key={product.id}
                                                     to={productPath(product.productId)}>
                                                     <img src={product.thumbnailImg} />
                                                 </Link>
                                             </div>
                                             <div css={s.productLayout}>
+                                                <p>{product.description}</p>
                                                 <h2>{product.title}</h2>
                                                 <h2>{product.price}</h2>
                                             </div>
@@ -67,7 +73,7 @@ function Category(props) {
                                     </td>
                                 </tr>
                             ))
-                        } */}
+                        }
                     </tbody>
                 </table>
             </div>
@@ -76,7 +82,7 @@ function Category(props) {
                     breakLabel="..."
                     previousLabel={<><MdNavigateBefore /></>}
                     nextLabel={<><MdNavigateNext /></>}
-                    pageCount={5}
+                    pageCount={pageCount}
                     marginPagesDisplayed={3}
                     pageRangeDisplayed={5}
                     onPageChange={handleOnPageChange}
