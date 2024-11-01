@@ -28,7 +28,7 @@ function ReviewInfo(props) {
             <div css={s.contentLayout}>
                 <table css={s.tableLayout}>
                     <div css={s.subLayout}>
-                        <h2>전체 리뷰</h2>
+                        <h2>나의 리뷰</h2>
                     </div>
                     {reviews.map((review) => {
                     <tbody css={s.ReviewLayout}

@@ -95,7 +95,6 @@ function App() {
                 </>
             ) : ( 
                 <>
-                    {/* <MainLayout> */}
                         <MainHeader />
                         <MainMenu />
                         <Global styles={UserReset} />
@@ -113,7 +112,6 @@ function App() {
                             <Route path="/test3" element={<PopularityProduct />} />
                         </Routes>
                         <MainFooter />
-                    {/* </MainLayout> */}
                 </>
             )}
         </>
