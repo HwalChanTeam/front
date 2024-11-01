@@ -20,6 +20,7 @@ import TestExam2 from "./pages/Test/TestExam2";
 import PopularityProduct from "./components/User/BestProductView/BestProduct";
 import Category from "./components/Category/Category";
 import MainHeader from "./components/MainHeader/MainHeader";
+import MainMenu from "./components/MainMenu/MainMenu";
 
 function App() {
     const token = localStorage.getItem("accessToken");
@@ -96,6 +97,7 @@ function App() {
                 <>
                     {/* <MainLayout> */}
                         <MainHeader />
+                        <MainMenu />
                         <Global styles={UserReset} />
                         <Routes>
                             <Route path="/*" element={<MainPage />} />

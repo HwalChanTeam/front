@@ -30,6 +30,7 @@ function Category(props) {
         },
         {
             onSuccess: (response) => {
+                console.log(categoryId);
                 console.log(response.data.products);
                 setProductList(response.data.products);
             },
@@ -46,9 +47,6 @@ function Category(props) {
     return (
 
         <div css={s.layout}>
-            <div css={s.mainMenuLayout}>
-                <MainMenu />
-            </div>
             <div css={s.contentLayout}>
                 <table css={s.tableLayout}>
                     <tbody css={s.menuLayout}>

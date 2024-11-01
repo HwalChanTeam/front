@@ -77,9 +77,6 @@ function MainPage() {
 
     return (
         <>
-            <div css={s.layout}>
-                <MainMenu />
-            </div>
             {
                 // user로 시작한 페이지 일때 메인페이지 x
                 location.pathname.startsWith("/user") ? (
