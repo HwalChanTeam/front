@@ -8,7 +8,10 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { menus } from "../../../constants/mainMenus";
 
 function ProductRegister(props) {
+
     const [isUploading, setUploading] = useState(false);
+
+    const [ contentsUrl, setContentsUrl ] = useState([]);
 
     const [product, setProduct] = useState({
         title: "",
@@ -115,7 +118,6 @@ function ProductRegister(props) {
                     async () => {
                         try {
                             const url = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
-                            console.log(url);
                             urls.push(url);
 
                             if (type === "thumbnailImg" && urls.length === 1) {
@@ -129,12 +131,14 @@ function ProductRegister(props) {
                                     ...product,
                                     contentsImg:  [...new Set([...product.contentsImg, ...urls])]
                                 }));
+                                setContentsUrl((contentUrls) => [...new Set([...contentUrls, ...urls])])
                             }
+                            console.log(contentsUrl); 
 
                         } catch (e) {
                             console.error(e);
                         } finally {
-                            setUploading(false);
+                            setUploading(false); // false로 할 시 이미지가 자동으로 사라짐 
                         }
                     }
                 );
@@ -142,98 +146,134 @@ function ProductRegister(props) {
         };
     }, []);
 
+
+
     return (
 
-        <div css={s.mainBox}>
+        <div css={s.layout}>
             <h1>상품 등록</h1>
-            <div css={s.registerBox}>
-                <div css={s.inputBox}>
-                    <div>
-                        <label for="category">카테고리</label>
-                        <select
-                            name="categoryId"
-                            value={product.categoryId}
-                            onChange={handleMainCategoryChange}
-                            css={s.selectBox}
-                        >
-                            {
-                                menus[0].subMenus.map(category => (
-                                    <option value={category.id}>{category.name}</option>
-                                ))
-                            }
-                        </select>
-                        <label for="semiCategory">서브 카테고리</label>
-                        <select
-                            name="semiCategoryId"
-                            value={product.semiCategoryId}
-                            onChange={handleSubCategoryChange}
-                            css={s.selectBox}
-                        >
-                            {
-                                menus[0].subMenus.find(menu => menu.id === product.categoryId)?.subSideMenus.map((subMenu) => (
-                                    <option key={subMenu.id} value={subMenu.id}>
-                                        {subMenu.name}
-                                    </option>
-                                ))
-                            }
-                        </select>
+            <div css={s.mainBox}>
+                <div css={s.registerBox}>
+                    <div css={s.inputBox}>
+                        <div>
+                            <label for="category">카테고리</label>
+                            <select
+                                name="categoryId"
+                                value={product.categoryId}
+                                onChange={handleMainCategoryChange}
+                                css={s.selectBox}
+                            >
+                                {
+                                    menus[0].subMenus.map(category => (
+                                        <option value={category.id}>{category.name}</option>
+                                    ))
+                                }
+                            </select>
+                            <label for="semiCategory">서브 카테고리</label>
+                            <select
+                                name="semiCategoryId"
+                                value={product.semiCategoryId}
+                                onChange={handleSubCategoryChange}
+                                css={s.selectBox}
+                            >
+                                {
+                                    menus[0].subMenus.find(menu => menu.id === product.categoryId)?.subSideMenus.map((subMenu) => (
+                                        <option key={subMenu.id} value={subMenu.id}>
+                                            {subMenu.name}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label for="title">상품명</label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={product.title}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="price">금액</label>
+                            <input
+                                type="number"
+                                name="price"
+                                value={product.price}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="origin">상품 설명</label>
+                            <input
+                                type="text"
+                                name="description"
+                                value={product.description}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="origin">원산지</label>
+                            <input
+                                type="text"
+                                name="origin"
+                                value={product.origin}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="stock">재고</label>
+                            <input
+                                type="number"
+                                name="stock"
+                                value={product.stock}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div >
+                            <label>상품 이미지</label>
+                            <button onClick={() => handleImageUpload("thumbnailImg")}>상품 이미지 등록</button>
+                        </div>
+                        <div>
+                            <label>상세 이미지</label>
+                            <button onClick={() => handleImageUpload("contentsImg")}>상세 이미지 등록</button>
+                        </div>
                     </div>
-                    <div>
-                        <label for="title">상품명</label>
-                        <input
-                            type="text"
-                            name="title"
-                            value={product.title}
-                            onChange={inputOnChange}
-                        />
-                    </div>
-                    <div>
-                        <label for="price">금액</label>
-                        <input
-                            type="number"
-                            name="price"
-                            value={product.price}
-                            onChange={inputOnChange}
-                        />
-                    </div>
-                    <div>
-                        <label for="origin">상품 설명</label>
-                        <input
-                            type="text"
-                            name="description"
-                            value={product.description}
-                            onChange={inputOnChange}
-                        />
-                    </div>
-                    <div>
-                        <label for="origin">원산지</label>
-                        <input
-                            type="text"
-                            name="origin"
-                            value={product.origin}
-                            onChange={inputOnChange}
-                        />
-                    </div>
-                    <div>
-                        <label for="stock">재고</label>
-                        <input
-                            type="number"
-                            name="stock"
-                            value={product.stock}
-                            onChange={inputOnChange}
-                        />
-                    </div>
-                    <div>
-                        <label>상품 이미지</label>
-                        <button onClick={() => handleImageUpload("thumbnailImg")}>상품 이미지 등록</button>
-                    </div>
-                    <div>
-                        <label>상세 이미지</label>
-                        <button onClick={() => handleImageUpload("contentsImg")}>상세 이미지 등록</button>
+                    <div css={s.buttonBox}>
+                        <button onClick={handleSubmitOnClick}>상품 등록</button>
                     </div>
                 </div>
-                <div css={s.buttonBox}>
-                    <button onClick={handleSubmitOnClick}>상품 등록</button>
+                <div css={s.rightBox}>
+                    {
+                        // 상품 이미지(thumbnailImg) 등록을 눌렀을 때 이미지가 옆으로 뜨도록 설정 
+                        isUploading && (
+                            <>
+                                <p>상품 이미지</p>
+                                <div css={s.thumbnailImgBox}>
+                                    <img src={product.thumbnailImg} />
+                                </div>
+                            </>
+                        )
+                    }
+                    {
+                        // 상세 이미지(contentsImg) 등록을 눌렀을 때 이미지가 옆으로 뜨도록 설정
+                        isUploading && ( 
+                            <>
+                                {
+                                    contentsUrl.map((content) => (
+                                        <div css={s.contentsImgLayout}>
+                                            <div css={s.contentsImgBox}>
+                                                <img src={content?.contentsImg} />
+                                                {
+                                                    console.log(content?.contentsImg)
+                                                }
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </>
+                        )
+                    }
                 </div>
             </div>
         </div>
