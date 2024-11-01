@@ -5,6 +5,8 @@ import AdminSearch from "../AdminSearch/AdminSearch";
 import { instance } from "../../../apis/util/instance";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
+import ReactPaginate from "react-paginate";
 
 function ProductEdit(props) {
 
@@ -12,38 +14,48 @@ function ProductEdit(props) {
     const [checkedIds, setCheckedIds] = useState([]);
     const [searchParam] = useSearchParams();
     const keyword = searchParam.get("keyword");
-
-    const [limit, setLimit] = useState({ // 페이지네이션 하기
-        page: 1,
-        limit: 20,
-    });
+    const [totalPageCount, setTotalPageCount] = useState(1);
+    const limit = 10;
+    const navigate = useNavigate();
 
     // 상품 불러오는 쿼리
     const productQuery = useQuery(
         ["productQuery"],
         async () => {
-            const response = await instance.get("/admin/product", { params: limit });
-            console.log(response?.data.products);
-            setProductList(response?.data.products);
+            const response = await instance.get(`/admin/product?page=${totalPageCount}&limit=${limit}`);
+            setProductList(response?.data?.products);
+            console.log(response?.data?.products);
         },
         {
             retry: 0,
             refetchOnWindowFocus: 0,
+            onSuccess: (response) => {
+                setTotalPageCount(
+                    response?.data?.count % limit === 0
+                        ? response?.data?.count / limit
+                        : Math.floor(response?.data?.count / limit) + 1)
+            }
         }
     );
 
     const searchProduct = useQuery(
         ["searchQuery", keyword],
         async () => {
-            const response = await instance.get(`/admin/product/search?page=1&title=${keyword}&limit=20`); // 페이지네이션 하기
-            setProductList(response?.data.products);
+            const response = await instance.get(`/admin/product/search?page=${totalPageCount}&title=${keyword}&limit=${limit}`); // 페이지네이션 하기
+            setProductList(response?.data?.products);
         },
         {
             refetchOnWindowFocus: false,
             retry: 0,
+            onSuccess: (response) => {
+                setTotalPageCount(
+                    response?.data?.count % limit === 0
+                        ? response?.data?.count / limit
+                        : Math.floor(response?.data?.count / limit) + 1)
+            }
         }
     );
-    
+
     const handleCheckBoxOnChange = (productId) => {
         console.log(productId);
         setCheckedIds((ids) => {
@@ -77,6 +89,10 @@ function ProductEdit(props) {
     //         console.error(error);
     //     }
     // };
+
+    const handleOnPageChange = (e) => {
+        navigate(`/admin/main/product?page=${e.selected + 1}`);
+    }
 
     return (
         <div css={s.mainBox}>
@@ -131,6 +147,17 @@ function ProductEdit(props) {
                     ))}
                     {/* </tbody> */}
                 </table>
+            </div>
+            <div css={s.pageNumber}>
+                <ReactPaginate
+                    breakLabel="..."
+                    previousLabel={<><MdNavigateBefore /></>}
+                    nextLabel={<><MdNavigateNext /></>}
+                    pageCount={5}
+                    marginPagesDisplayed={3}
+                    pageRangeDisplayed={5}
+                    onPageChange={handleOnPageChange}
+                />
             </div>
         </div>
     );
