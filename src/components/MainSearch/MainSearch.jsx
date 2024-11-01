@@ -53,7 +53,7 @@ function MainSearch({ onSearch }) {
             setMainSearchProduct({
                 title: "",
             });
-            navigate(`/product/`)
+            navigate(`/product/search?page=1&search=${mainSearchProduct}`)
         }
     }
 
