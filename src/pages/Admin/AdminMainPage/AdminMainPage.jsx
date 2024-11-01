@@ -29,18 +29,24 @@ const menus = [
     },
     {
         id: 3,
-        name: "경영 관리",
+        name: "매출 관리",
         path: "/admin/main/business",
         icon: <IoBusinessOutline />,
     },
     {
         id: 4,
+        name: "주문 관리",
+        path: "/admin/main/business",
+        icon: <IoBusinessOutline />,
+    },
+    {
+        id: 5,
         name: "직원 관리",
         path: "/admin/main/staff",
         icon: <PiUsersFourLight />,
     },
     {
-        id: 5,
+        id: 6,
         name: "유저 관리",
         path: "/admin/main/user",
         icon: <LuUser />,

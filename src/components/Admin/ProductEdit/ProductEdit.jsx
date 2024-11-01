@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import ReactPaginate from "react-paginate";
+import { count } from "firebase/firestore";
 
 function ProductEdit(props) {
 
@@ -15,7 +16,7 @@ function ProductEdit(props) {
     const [searchParam] = useSearchParams();
     const keyword = searchParam.get("keyword");
     const [totalPageCount, setTotalPageCount] = useState(1);
-    const limit = 10;
+    const limit = 20;
     const navigate = useNavigate();
 
     // 상품 불러오는 쿼리
@@ -41,7 +42,7 @@ function ProductEdit(props) {
     const searchProduct = useQuery(
         ["searchQuery", keyword],
         async () => {
-            const response = await instance.get(`/admin/product/search?page=${totalPageCount}&title=${keyword}&limit=${limit}`); // 페이지네이션 하기
+            const response = await instance.get(`/admin/product/search?page=${totalPageCount}&title=${keyword}&limit=${limit}`);
             setProductList(response?.data?.products);
         },
         {
@@ -91,7 +92,8 @@ function ProductEdit(props) {
     // };
 
     const handleOnPageChange = (e) => {
-        navigate(`/admin/main/product?page=${e.selected + 1}`);
+        setTotalPageCount(e.selected + 1);
+        
     }
 
     return (
@@ -153,7 +155,7 @@ function ProductEdit(props) {
                     breakLabel="..."
                     previousLabel={<><MdNavigateBefore /></>}
                     nextLabel={<><MdNavigateNext /></>}
-                    pageCount={5}
+                    pageCount={3}
                     marginPagesDisplayed={3}
                     pageRangeDisplayed={5}
                     onPageChange={handleOnPageChange}
