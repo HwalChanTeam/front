@@ -19,6 +19,8 @@ import { productLikeApi } from "../../apis/productApi";
 import { IoMdHeartEmpty, IoIosHeart } from "react-icons/io";
 import { instance } from "../../apis/util/instance";
 import { useMutation, useQuery } from "react-query";
+import { productOrderAtom } from "../../apis/util/atom";
+import { useRecoilState } from "recoil";
 
 const selectProductMenus = [
   {
@@ -50,6 +52,8 @@ function ProductPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
+  const [selectedProduct, setSelectedProduct] =
+  useRecoilState(productOrderAtom); // atom 사용
 
   const [product, setProduct] = useState({
     productId,
@@ -94,6 +98,11 @@ function ProductPage() {
       await instance.post("/user/cart", payload);
     },
     {
+      onSuccess : () => {
+        if(window.confirm("장바구니에 담았습니다\n장바구니로 이동하시겠습니까?")) {
+          navigate("/cart")
+        }
+      },
       onError: (error) => {
         console.error("오류!!!" + error);
       },
@@ -124,7 +133,8 @@ function ProductPage() {
       }
       return;
     }
-    return await instance.post("/user/buy", productId);
+    setSelectedProduct(productId)
+    navigate("/order")
   };
 
   // 찜버튼 mutation
@@ -155,6 +165,7 @@ function ProductPage() {
 
   // 구매수량*가격 함수
   const calculateTotalPrice = (product) => {
+    console.log(product)
     return product?.price * productItems.buyItem;
   };
 

@@ -33,10 +33,6 @@ function ShoppingBasket(props) {
         },
         {
             onSuccess: (response) => {
-                // console.log(response?.data?.cartList.map((item) => item.cartId));
-                // console.log(response?.data?.cartList.map((item) => item.cartItemId));
-                // console.log(response?.data?.cartList.map((item) => item.product.title));
-                // console.log(response?.data?.cartList[0].cartItem.map((item) => item.product.title.map((p) => p.title)));
                 setProductList(response?.data?.cartList);
             },
             refetchOnWindowFocus: false, // 창 포커스 시 재요청 하지 않음
@@ -45,20 +41,33 @@ function ShoppingBasket(props) {
         }
     );
 
-    console.log(data?.data?.cartList?.map((item) => item.price))
-    console.log(data?.data?.cartList)
-    console.log(data)
+        // 수정 요청을 위한 mutation
+        const editMutation = useMutation(
+            async (product) => {
+                const editData = {
+                    cartId: product.cartId,
+                    cartItemId: product.cartItemId,
+                    quantity: product.quantity
+                }
+                return await instance.put("/user/cart", editData);
+            },
+            {
+                onSuccess: () => {
+                    refetch(); // 삭제 후 장바구니를 다시 불러오기
+                },
+            }
+        );
 
     // 삭제 요청을 위한 mutation
     const deleteMutation = useMutation(
         async (product) => {
+            console.log("아래가 데이터!!!!!!!!!!!!!!!")
             const deleteProduct = {
                 cartId : product.cartId,
                 cartItemId : product.cartItemId
-            }
-            console.log("아래가 데이터!!!!!!!!!!!!!!!")
+                }
             console.log(deleteProduct)
-            return await instance.delete("/user/cart", deleteProduct);
+            return await instance.delete("/user/cart",{ data: { cartId: product.cartId, cartItemId: product.cartItemId } });
         },
         {
             onSuccess: () => {
@@ -100,6 +109,12 @@ function ShoppingBasket(props) {
         setProductList(updatedProducts);
     };
 
+        // 수정 버튼 클릭 함수
+        const handleEditButtonOnClick = (product) => {
+            editMutation.mutate(product);
+            alert("수정이 완료되었습니다.")
+        };
+
     // 삭제 버튼 클릭 함수
     const handleDeleteButtonOnClick = (product) => {
         deleteMutation.mutate(product);
@@ -127,9 +142,13 @@ function ShoppingBasket(props) {
     const handleBuyButtonOnClick = () => {
         const selectedProducts = productList.filter((product) => product.checked);
         const selectedProductIds = selectedProducts.map((product) => ({
+            cartId : product.cartId,
             cartItemId: product.cartItemId,
             quantity: product.quantity,
         }));
+        const params = {
+            products: selectedProductIds,
+        };
         console.log(selectedProductIds)
         if (selectedProductIds.length > 0) {
             setSelectedProducts(selectedProductIds);
@@ -166,7 +185,7 @@ function ShoppingBasket(props) {
                                 <th>금액</th>
                                 <th>할인</th>
                                 <th>합계금액</th>
-                                <th>삭제</th>
+                                <th>비고</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -201,6 +220,9 @@ function ShoppingBasket(props) {
                                     <td>-</td>
                                     <td> {calculateTotalPrice(product).toLocaleString()} 원</td>
                                     <td>
+                                    <button onClick={() => handleEditButtonOnClick(product)}>
+                                            수정
+                                        </button>
                                         <button onClick={() => handleDeleteButtonOnClick(product)}>
                                             삭제
                                         </button>
