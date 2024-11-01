@@ -69,8 +69,6 @@ export const productTable = css`
     border-bottom: 1px solid #dcdcdc; /* 각 행 밑에 구분선 추가 */
     padding-top: 10px;
     padding-bottom: 10px;
-    &:nth-last-of-type(1) {
-    }
   }
 
   & > tr {
@@ -108,9 +106,9 @@ export const thead = css`
   text-align: center; /* 카테고리명을 가운데 정렬 */
   background-color: #f2f2f2; /* 헤더 배경색 추가 (선택 사항) */
   width: 1100px; /* 헤더의 너비를 전체로 설정 */
-  & th {
-    padding: 10px 20px 10px 0;
-  }
+  /* & th {
+    padding: 10px 20px 10px 5px;
+  } */
 `;
 
 export const img = css`

@@ -3,7 +3,7 @@ import { Route, Routes, useNavigate, useParams } from "react-router";
 import * as s from "./style";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { instance } from "../../apis/util/instance";
 import ReactPaginate from "react-paginate";
@@ -11,35 +11,38 @@ import ReactPaginate from "react-paginate";
 function Category(props) {
     const navigate = useNavigate();
     const productPath = (productId) => `/product/${productId}`; // 해당 상품의 상품페이지로 이동할려고 만든 productId
-    const categoryId = useParams();
-    const [pageCount, setPageCount] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams(); // 주소:포트/페이지URL?key=value(쿼리스트링, 파람스)
+    // const categoryId = useParams();
     const [productList, setProductList] = useState();
-    const [search, setSearch] = useState({
-        page: pageCount,
-        title: "",
-        limit: 20,
-        categoryId: categoryId.categoryId,
-    })
-
+    const categoryId = searchParams.get("categoryId");
+    const [pageCount, setPageCount] = useState(1);
+    const limit = 20;
+    // const [search, setSearch] = useState({
+    //     page: pageCount,
+    //     title: "",
+    //     limit: 20,
+    //     categoryId: categoryId.categoryId,
+    // })
     // 냉장 조회 query
     const category = useQuery(
-        ["category"],
+
+        ["category", categoryId, pageCount],
         async () => {
-            return await instance.get("/user/public/product/category", search); // 추후 수정 예정 
+            return await instance.get(`/user/public/product/category?categoryId=${categoryId}&page=${pageCount}&limit=${limit}`); // 추후 수정 예정 
         },
         {
-            onSuccess: (response) => {
-                setProductList(response)
-                console.log(response);
-            },
-            refetchOnWindowFocus: false,
-            retry: 0
-        }
 
+            refetchOnWindowFocus: false,
+            retry: 0,
+            onSuccess: response => setPageCount(
+                response.data.count % limit === 0
+                    ? response.data.count / limit
+                    : Math.floor(response.data.count / limit) + 1)
+        }
     );
 
     const handleOnPageChange = (e) => {
-        setPageCount(e.selected + 1)
+        navigate(`/user/category?categoryId=${categoryId}&page=${e.selected + 1}&limit=${limit}`); 
     }
 
     return (
@@ -47,8 +50,10 @@ function Category(props) {
             <div css={s.contentLayout}>
                 <table css={s.tableLayout}>
                     <tbody css={s.menuLayout}>
-                        {/* {
-                            productList.map((product) => (
+
+                        {
+                            category?.data?.data?.products?.map((product) => (
+
                                 <tr>
                                     <td>
                                         <div css={s.menuList}>
@@ -67,7 +72,7 @@ function Category(props) {
                                     </td>
                                 </tr>
                             ))
-                        } */}
+                        } 
                     </tbody>
                 </table>
             </div>
@@ -80,14 +85,14 @@ function Category(props) {
                     marginPagesDisplayed={3}
                     pageRangeDisplayed={5}
                     onPageChange={handleOnPageChange}
-                    // activeClassName='active' 
-                    // onPageChange={handlePageOnChange}
-                    // forcePage={parseInt(searchParams.get("page")) - 1}
+                // activeClassName='active' 
+                // onPageChange={handlePageOnChange}
+                // forcePage={parseInt(searchParams.get("page")) - 1}
                 />
             </div>
         </div>
     );
-    
+
 }
 
 export default Category;

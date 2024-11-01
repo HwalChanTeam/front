@@ -53,7 +53,7 @@ function WishList(props) {
             const CartProduct = {
                 productId : product.productId,
                 price : product.price,
-                quantity : product.quantity 
+                quantity : 1 
             }
             console.log(CartProduct)
             return await instance.post("/user/cart/", CartProduct);
