@@ -4,7 +4,7 @@ export const layout = css`
     display: flex;
     align-items: center;
     padding: 20px 0px;
-    width: 100%;
+    width: 1200px;
 `;
 
 export const menusLayout = css`
