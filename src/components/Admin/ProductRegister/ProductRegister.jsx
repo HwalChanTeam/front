@@ -131,10 +131,7 @@ function ProductRegister(props) {
                                     ...product,
                                     contentsImg:  [...new Set([...product.contentsImg, ...urls])]
                                 }));
-                                setContentsUrl((contentUrls) => [...new Set([...contentUrls, ...urls])])
                             }
-                            console.log(contentsUrl); 
-
                         } catch (e) {
                             console.error(e);
                         } finally {
@@ -145,8 +142,6 @@ function ProductRegister(props) {
             });
         };
     }, []);
-
-
 
     return (
 
@@ -259,18 +254,14 @@ function ProductRegister(props) {
                         // 상세 이미지(contentsImg) 등록을 눌렀을 때 이미지가 옆으로 뜨도록 설정
                         isUploading && ( 
                             <>
-                                {
-                                    contentsUrl.map((content) => (
-                                        <div css={s.contentsImgLayout}>
-                                            <div css={s.contentsImgBox}>
-                                                <img src={content?.contentsImg} />
-                                                {
-                                                    console.log(content?.contentsImg)
-                                                }
-                                            </div>
-                                        </div>
-                                    ))
-                                }
+                                <div css={s.contentsImgLayout}>
+                                    <div css={s.contentsImgBox}>
+                                        <img src={product.contentsImg[0]} />
+                                        <img src={product.contentsImg[1]} />
+                                        <img src={product.contentsImg[2]} />
+                                        <img src={product.contentsImg[3]} />
+                                    </div>
+                                </div>
                             </>
                         )
                     }
