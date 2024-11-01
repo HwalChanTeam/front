@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { useQuery } from 'react-query';
 import *as s from './style';
+import { useQuery } from 'react-query';
 import { instance } from '../../../apis/util/instance';
 import { useState } from 'react';
 
@@ -19,6 +19,7 @@ function Review(props) {
             retry: 0,
             onSuccess: (response) => {
                 console.log(response)
+                setReviews(response.data)
             },
         }
     )
@@ -30,8 +31,10 @@ function Review(props) {
                     <div css={s.subLayout}>
                         <h2>전체 리뷰</h2>
                     </div>
-
-                    <tbody css={s.ReviewLayout}>
+                    {reviews.map((review) => {
+                    <tbody css={s.ReviewLayout}
+                        key={review.id}
+                    >
                         <tr>
                             <div css={s.ReviewList}>
                                 <div css={s.productImgLayout}>
@@ -51,6 +54,8 @@ function Review(props) {
                             </div>
                         </tr>
                     </tbody>
+                    })
+                    }
                 </table>
             </div>
         </div>
