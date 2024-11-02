@@ -39,6 +39,13 @@ export const signin = css`
         font-weight: 600;
         background-color: white;
         border: 1px solid #000000;
+        cursor: pointer;
+        &:hover {
+            background-color: #dbdbdb;
+        }
+        &:active {
+            background-color: #efefef;
+        }
     }
 `;
 

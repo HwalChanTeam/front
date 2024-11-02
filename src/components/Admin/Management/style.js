@@ -14,3 +14,17 @@ export const mainBox = css`
     color: #ffffff;
   }
 `;
+
+export const contentsBox = css`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+`;
+
+export const leftBox = css`
+  width: 900px;
+`;
+
+export const rightBox = css`
+  width: 900px;
+`;

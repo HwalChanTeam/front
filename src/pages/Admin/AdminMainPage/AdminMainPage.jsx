@@ -36,7 +36,7 @@ const menus = [
     {
         id: 4,
         name: "주문 관리",
-        path: "/admin/main/business",
+        path: "/admin/main/order",
         icon: <IoBusinessOutline />,
     },
     {
