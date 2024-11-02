@@ -49,7 +49,7 @@ function ShoppingBasket(props) {
                     cartItemId: product.cartItemId,
                     quantity: product.quantity
                 }
-                return await instance.put("/user/cart", editData);
+                return await instance.put(`/user/cart/${product.cartItemId}`, editData);
             },
             {
                 onSuccess: () => {
@@ -67,7 +67,7 @@ function ShoppingBasket(props) {
                 cartItemId : product.cartItemId
                 }
             console.log(deleteProduct)
-            return await instance.delete("/user/cart",{ data: { cartId: product.cartId, cartItemId: product.cartItemId } });
+            return await instance.delete(`/user/cart/${product.cartItemId}`,{ data: { cartId: product.cartId, cartItemId: product.cartItemId } });
         },
         {
             onSuccess: () => {
