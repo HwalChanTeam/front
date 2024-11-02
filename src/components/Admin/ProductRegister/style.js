@@ -154,13 +154,12 @@ export const rightBox = css`
 
 // thumbnailImg 등록 박스
 export const thumbnailImgBox = css`
-    box-sizing: border-box;
-    width: 230px;
-    height: 230px;
+    height: 245px;
+    border: none;
 
     & img {
-        width: 100%;
-        height: 100%;
+        width: 230px;
+        height: 230px;
     }
 `;
 
@@ -168,21 +167,21 @@ export const thumbnailImgBox = css`
 
 export const contentsImgLayout = css`
     box-sizing: border-box;
-    display: flex;
-    margin-top: 15px;
+    border: none;
 `;
 
 export const contentsImgBox = css`
     display: flex;
     box-sizing: border-box;
     
-    &:nth-of-type(4n) {
+    &:nth-last-of-type(1) {
         margin-right: 0px;
     }
     
     & img {
+        margin-right: 10px;
         width: 180px;
         height: 180px;
-        margin-right: 10px;
+    
     }
 `;
