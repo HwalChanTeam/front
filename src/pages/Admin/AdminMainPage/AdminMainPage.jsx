@@ -6,7 +6,7 @@ import ProductEdit from "../../../components/Admin/ProductEdit/ProductEdit";
 import UserView from "../../../components/Admin/UserView/UserView";
 import Management from "../../../components/Admin/Management/Management";
 import StaffManagement from "../../../components/Admin/StaffManagement/StaffManagement";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { IoBagAddOutline } from "react-icons/io5";
 import { RiProductHuntLine } from "react-icons/ri";
 import { PiUsersFourLight } from "react-icons/pi";
@@ -56,13 +56,19 @@ const menus = [
 function AdminMainPage(props) {
     const location = useLocation();
     const pathname = location.pathname;
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("accessToken"); // 로컬 스토리지에서 토큰 삭제
+        navigate("/admin");
+        window.location.reload(); // 페이지를 새로 고침하여 상태를 초기화
+    };
 
     return (
         <div css={s.layout}>
             <div css={s.mainBox}>
                 <div css={s.menuBox}>
                     {/* 메뉴 선택 페이지 */}
-
                     <Link to={"/admin"} css={s.logo}>
                         LOGO
                     </Link>
@@ -76,7 +82,7 @@ function AdminMainPage(props) {
                         </Link>
                     ))}
                     <div css={s.menuBotton}>
-                        <button css={s.logoutButton}>
+                        <button css={s.logoutButton} onClick={handleLogout}>
                             <IoLogOutOutline />
                             로그아웃
                         </button>

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from "react";
 import * as s from "./style";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import { SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
@@ -10,6 +10,8 @@ import { instance } from "../../apis/util/instance";
 
 function SigninPage(props) {
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
 
     const [user, setUser] = useState({
         username: "",
@@ -31,11 +33,9 @@ function SigninPage(props) {
         {
             // 로그인 에러 - 에러메시지 불러옴
             onError: (response) => {
-                console.log(response.response.data);
                 alert(response.response.data); // 데이터 확인 필요
             },
             onSuccess: (response) => {
-                console.log(response.data)
                 localStorage.setItem(
                     "accessToken",
                     "Bearer " + response.data.accessToken
@@ -46,7 +46,7 @@ function SigninPage(props) {
                     config.headers["Authorization"] = localStorage.getItem("accessToken"); // 처음에 로그인이 안되어있으면 null값 들어가 있음
                     return config;
                 });
-                navigate("/");
+                navigate(from, {replace : true});
             },
         }
     );
