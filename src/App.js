@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import MainPage from "./pages/MainPage/MainPage";
 import SignupPage from "./pages/SignupPage/SignupPage";
 import { Global } from "@emotion/react";
@@ -21,6 +21,9 @@ import PopularityProduct from "./components/User/BestProductView/BestProduct";
 import Category from "./components/Category/Category";
 import MainHeader from "./components/MainHeader/MainHeader";
 import MainMenu from "./components/MainMenu/MainMenu";
+import { AdminRoute, UserPrivateRoute } from "./Hooks/RouterHook";
+
+
 
 function App() {
     const token = localStorage.getItem("accessToken");
@@ -28,7 +31,6 @@ function App() {
     const location = useLocation();
     const navigate = useNavigate();
     const [authRefresh, setAuthRefresh] = useState(true);
-
 
     useEffect(() => {
         if (!authRefresh) {
@@ -90,28 +92,28 @@ function App() {
                     <Global styles={adminReset} />
                     <Routes>
                         <Route path="/admin" element={<AdminSignin />} />
-                        <Route path="/admin/main/*" element={<AdminMainPage />} />
+                        <Route path="/admin/main/*" element={<AdminRoute element={<AdminMainPage />} />} />
                     </Routes>
                 </>
-            ) : ( 
+            ) : (
                 <>
-                        <MainHeader />
-                        <MainMenu />
-                        <Global styles={UserReset} />
-                        <Routes>
-                            <Route path="/*" element={<MainPage />} />
-                            <Route path="/product/:productId/*" element={<ProductPage />} />
-                            <Route path="/user/signup" element={<SignupPage />} />
-                            <Route path="/user/signin" element={<SigninPage />} />
-                            <Route path="/user/public/product/category"  element={<Category />} />
-                            <Route path="/cart" element={<ShoppingBasket />} />
-                            <Route path="/order/*" element={<OrderPage />} />
-                            <Route path="/mypage/*" element={<MyPage />} />
-                            <Route path="/test" element={<TestExam />} />
-                            <Route path="/test2" element={<TestExam2 />} />
-                            <Route path="/test3" element={<PopularityProduct />} />
-                        </Routes>
-                        <MainFooter />
+                    <MainHeader />
+                    <MainMenu />
+                    <Global styles={UserReset} />
+                    <Routes>
+                        <Route path="/*" element={<MainPage />} />
+                        <Route path="/product/:productId/*" element={<ProductPage />} />
+                        <Route path="/user/signup" element={<SignupPage />} />
+                        <Route path="/user/signin" element={<SigninPage />} />
+                        <Route path="/user/public/product/category" element={<Category />} />
+                        <Route path="/cart" element={<UserPrivateRoute element={<ShoppingBasket />} />} />
+                        <Route path="/order/*" element={<UserPrivateRoute element={<OrderPage />} />} />
+                        <Route path="/mypage/*" element={<UserPrivateRoute element={<MyPage />} />} />
+                        <Route path="/test" element={<TestExam />} />
+                        <Route path="/test2" element={<TestExam2 />} />
+                        <Route path="/test3" element={<PopularityProduct />} />
+                    </Routes>
+                    <MainFooter />
                 </>
             )}
         </>

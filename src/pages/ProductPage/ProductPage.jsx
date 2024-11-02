@@ -182,7 +182,6 @@ function ProductPage() {
 
   return (
     <div css={s.layout}>
-      <MainMenu />
       <div css={s.productLayout}>
         <div css={s.imgLayout}>
           <img src={product?.thumbnailImg} />
