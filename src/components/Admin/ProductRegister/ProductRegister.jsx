@@ -245,7 +245,8 @@ function ProductRegister(props) {
                             <>
                                 <p>상품 이미지</p>
                                 <div css={s.thumbnailImgBox}>
-                                    <img src={product.thumbnailImg} />
+                                    {/* 이미지 등록 시 다른 이미지의 경계선이 보이지 않도록 설정 */}
+                                    {product.thumbnailImg && <img src={product.thumbnailImg} />}
                                 </div>
                             </>
                         )
@@ -256,11 +257,12 @@ function ProductRegister(props) {
                             <>
                                 <div css={s.contentsImgLayout}>
                                     <div css={s.contentsImgBox}>
-                                        <img src={product.contentsImg[0]} />
-                                        <img src={product.contentsImg[1]} />
-                                        <img src={product.contentsImg[2]} />
-                                        <img src={product.contentsImg[3]} />
-                                    </div>
+                                        {/* 이미지 등록 시 다른 이미지의 경계선이 보이지 않도록 설정 */}
+                                        { product.contentsImg[0] && <img src={product.contentsImg[0]} />} 
+                                        { product.contentsImg[1] && <img src={product.contentsImg[1]} /> }
+                                        { product.contentsImg[2] &&<img src={product.contentsImg[2]} /> }
+                                        { product.contentsImg[3] && <img src={product.contentsImg[3]} /> }
+                                    </div>  
                                 </div>
                             </>
                         )
