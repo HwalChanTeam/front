@@ -4,55 +4,46 @@ export const layout = css`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-`;
-
-export const mainMenuLayout = css`
-    box-sizing: border-box;
     width: 1200px;
 `;
 
 export const contentLayout = css`
     box-sizing: border-box;
-    margin-top: 54px;
-    width: 1200px;
-    & table {
-        width: 100%;
-    }
-`;
-
-export const tableLayout = css`
+    display: flex;
+    flex-wrap: wrap;
     width: 100%;
 `;
 
 export const menuLayout = css`
     box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-
+    width: 1200px;
+    table-layout: fixed;
     & td {
         padding: 0px;
+
+        &:nth-of-type(5n) > div {
+            margin-right: 0px;
+        }
     }
 `;
 
 export const menuList = css`
     box-sizing: border-box;
-    width: 235px;
+    margin-top: 50px;
+    margin-right: 50px;
+    width: 200px;
     padding: 0px;
 `;
 
 export const imgLayout = css`
     box-sizing: border-box;
     width: 200px;
-    height: 200px;
-    background-color: #dbdbdb;
     cursor: pointer;
 
     & img {
         box-sizing: border-box;
-        width: 100%;
-        height: 100%;
+        width: 200px;
+        height: 200px;
     }
 `;
 
