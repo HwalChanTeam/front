@@ -70,7 +70,7 @@ function ProductPage() {
         ["getProduct", productId],
         async () => {
         return await instance.get("/user/public/product/detail", {
-            params: { productId: productId },
+            params: { id: productId },
         });
         },
         {
@@ -133,7 +133,7 @@ function ProductPage() {
             }
             return;
         }
-        setSelectedProduct(productId)
+        setSelectedProduct({productId, quantity : productItems.buyItem})
         navigate("/order")
     };
 

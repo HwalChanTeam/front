@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { productOrderAtom, selectedItemsAtom } from "../../apis/util/atom";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -8,265 +8,295 @@ import { useQuery } from "react-query";
 import { instance } from "../../apis/util/instance";
 
 function OrderPage(props) {
-  //장바구니에서 가져온 여러개 아이디
-  const [selectedProductIds] = useRecoilState(selectedItemsAtom); // atom 사용
-  //상품 디테일 페이지에서 가져온 하나의 아이디
-  const [selectedProduct] = useRecoilState(productOrderAtom); // atom 사용
-  console.log(selectedProductIds);
-  console.log(selectedProductIds.map((item) => item.cartItemId));
-  selectedProductIds.forEach(item => console.log(item.cartItemId));
-  const quantities = selectedProductIds.map((item) => item.quantity);
 
-  const token = localStorage.getItem("accessToken");
-  const location = useLocation();
-  const [productList, setProductList] = useState([]);
+    //장바구니에서 가져온 여러개 아이디
+    const [selectedProductIds, setSelectedProductIds] = useRecoilState(selectedItemsAtom); // atom 사용
+    console.log(selectedProductIds)
 
-  const [userInfo, serUserInfo] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    address: "",
-    message: "",
-  });
-  
-  // 상품 페이지에서 가져온 경우(단건)
-  const productOrder = useQuery(
-    ["productOrder"],
-    async () => {
-      console.log(selectedProduct)
-      return await instance.get("/user/order", {params : {id : selectedProduct}});
-    },
-  )
-  console.log(selectedProductIds.quantity)
+    //상품 디테일 페이지에서 가져온 하나의 아이디
+    const [selectedProduct, setSelectedProduct] = useRecoilState(productOrderAtom); // atom 사용
+
+    //페이지 이동하면 아톰 삭제
+    const resetSelectedProductIds = useResetRecoilState(selectedItemsAtom);
+    const resetSelectedProduct = useResetRecoilState(productOrderAtom);
+
+    useEffect(() => {
+        return () => {
+            resetSelectedProductIds();
+            resetSelectedProduct();
+        };
+    }, [resetSelectedProductIds, resetSelectedProduct]);
+
+    const quantities = selectedProductIds.map((item) => item.quantity);
+
+    const token = localStorage.getItem("accessToken");
+    const location = useLocation();
+    const [productList, setProductList] = useState([]);
+
+    const [userInfo, serUserInfo] = useState({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
+        detailAddress: "",
+        message: "",
+    });
+
+    // 상품 페이지에서 가져온 경우(단건)
+    const productOrder = useQuery(
+        ["productOrder"],
+        async () => {
+            return await instance.get("/user/order", { params: { id: selectedProduct.productId } });
+        },
+        {
+            retry : 0,
+            refetchOnWindowFocus : false
+        }
+    )
+
+    console.log(productOrder)
 
     //장바구니에서 가져온 경우(다건)
-  const {
-    data: products,
-    isLoading: isProductsLoading,
-    isError: isProductsError,
-  } = useQuery(
-    ["selectedProducts"],
-    async () => {
-      const cartItemId =   selectedProductIds.forEach(item => (item.cartItemId));
-      console.log(cartItemId)
+    const {
+        data: products,
+        isLoading: isProductsLoading,
+        isError: isProductsError,
+    } = useQuery(
+        ["selectedProducts"],
+        async () => {
+            const cartItemId = selectedProductIds.map((item) => item.cartItemId);
 
-      console.log(cartItemId)
-      return await instance.get("/user/cart/order", {params : {cartItemId : cartItemId}});
-    },
-    {
-      onSuccess: (response) => {
-        console.log(response);
-        console.log(response.config);
-        setProductList(response?.config);
-      },
-      enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
-      retry: 0,
+            return await instance.get("/user/cart/order", { params: { id: cartItemId.join(",") } });
+        },
+        {
+            onSuccess: (response) => {
+                setProductList(response.data.cartItemList);
+            },
+            enabled: selectedProductIds.length > 0, // 상품 ID가 있을 때만 쿼리 실행
+            retry: 0,
+            refetchOnWindowFocus : false
+        }
+    );
+
+
+
+    // 유저 정보 불러오기 - 장바구니 조회할때 같이 오므로, 수정 예정
+    const {
+        data: userInfoData,
+        isLoading: isUserInfoLoading,
+        isError: isUserInfoError,
+    } = useQuery(
+        "userInfo",
+        async () => {
+            return await instance.get("/user"); // 유저 정보 가져오는 API 호출
+        },
+        {
+            onSuccess: (response) => {
+                console.log(response.data);
+                console.log(userInfoData);
+                serUserInfo(response.data); // 성공 시 userInfo 상태 업데이트
+            },
+            retry: 0,
+        }
+    );
+
+    // 로딩 상태 처리
+    if (isProductsLoading || isUserInfoLoading) {
+        return <div>로딩 중...</div>;
     }
-  );
 
-  
-
-  // 유저 정보 불러오기 - 장바구니 조회할때 같이 오므로, 수정 예정
-  const {
-    data: userInfoData,
-    isLoading: isUserInfoLoading,
-    isError: isUserInfoError,
-  } = useQuery(
-    "userInfo",
-    async () => {
-      return await instance.get("/user"); // 유저 정보 가져오는 API 호출
-    },
-    {
-      onSuccess: (response) => {
-        console.log(response.data);
-        console.log(userInfoData);
-        serUserInfo(response.data); // 성공 시 userInfo 상태 업데이트
-      },
-      retry: 0,
+    // 에러 발생 시 처리
+    if (isProductsError || isUserInfoError) {
+        return <div>데이터를 불러오는 중 에러가 발생했습니다.</div>;
     }
-  );
 
-  // 선택된 상품이 없을 때
-  if (selectedProductIds.length === 0) {
-      return (
-          <div>선택된 상품이 없습니다. 장바구니에서 상품을 선택해 주세요.</div>
-      );
-  }
+    // 유저 정보 변경 시 사용
+    const handleInputChange = (e) => {
+        serUserInfo((user) => ({
+            ...user,
+            [e.target.name]: e.target.value,
+        }));
+    };
 
-  // 로딩 상태 처리
-  if (isProductsLoading || isUserInfoLoading) {
-    return <div>로딩 중...</div>;
-  }
+    const addressSaveButtonOnClick = () => { };
 
-  // 에러 발생 시 처리
-  if (isProductsError || isUserInfoError) {
-    return <div>데이터를 불러오는 중 에러가 발생했습니다.</div>;
-  }
+    const buyButtonOnClick = async () => {
+        await instance.post("/user/buy", selectedProductIds);
+    };
 
-  // 유저 정보 변경 시 사용
-  const handleInputChange = (e) => {
-    serUserInfo((user) => ({
-      ...user,
-      [e.target.name]: e.target.value,
-    }));
-  };
+    const calculateTotalPrice = (product) => {
+        return product.product.price * product.quantity;
+    };
+    
+    const calculateTotals = () => {
+        let totalProductAmount = 0;
+        let deliveryFee = 0;
+        let totalAmount = 0;
+    
+        if (Array.isArray(productList) && productList.length > 0) {
+            totalProductAmount = productList.reduce((total, product) => {
+                return total + calculateTotalPrice(product);
+            }, 0);
+        } else if (productOrder?.data && selectedProduct) {
+            totalProductAmount = productOrder.data.data.price * selectedProduct.quantity;
+        }
+    
+        deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+        totalAmount = totalProductAmount + deliveryFee;
+    
+        return { totalProductAmount, totalAmount, deliveryFee };
+    };
+    
+    const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
 
-  const addressSaveButtonOnClick = () => {};
-
-  const buyButtonOnClick = async () => {
-    await instance.post("/user/buy", selectedProductIds);
-  };
-
-  // 총 상품 금액 계산
-  const calculateTotalProductAmount = () => {
-    return productList.reduce((total, product) => {
-      return total + product.price * product.quantity;
-    }, 0);
-  };
-
-  // 배송비 계산
-  const calculateDeliveryFee = (totalAmount) => {
-    return totalAmount >= 50000 ? 0 : 3000;
-  };
-
-  const totalProductAmount = calculateTotalProductAmount();
-  const deliveryFee = calculateDeliveryFee(totalProductAmount);
-  const totalAmount = totalProductAmount + deliveryFee;
-
-  return (
-    <div css={s.layout}>
-      <div css={s.mainBox}>
-        <div css={s.userInfo}>
-          <h2>주문자 정보</h2>
-          <div css={s.inputBox}>
-            <span>이름 : </span>
-            <input
-              onChange={handleInputChange}
-              type="text"
-              name="name"
-              defaultValue={userInfo.name}
-              placeholder="이름을 입력해 주세요"
-            />
-          </div>
-          <div css={s.inputBox}>
-            <label htmlFor="email">이메일 : </label>
-            <input
-              onChange={handleInputChange}
-              type="text"
-              name="email"
-              defaultValue={userInfo.email}
-              placeholder="이메일 주소를 입력해 주세요"
-            />
-          </div>
-          <div css={s.inputBox}>
-            <label htmlFor="phoneNumber">연락처 : </label>
-            <input
-              onChange={handleInputChange}
-              type="text"
-              name="phoneNumber"
-              defaultValue={userInfo.phoneNumber}
-              placeholder="연락처를 입력해 주세요"
-            />
-          </div>
-          <div css={s.adressButton}>
-            <button onClick={addressSaveButtonOnClick}>배송지 저장</button>
-          </div>
-          <div css={s.adressInputBox}>
-            <label htmlFor="address">배송지 : </label>
-            <input
-              onChange={handleInputChange}
-              type="text"
-              name="address"
-              defaultValue={userInfo.address}
-              placeholder="배송지 입력해 주세요"
-            />
-          </div>
-          <div css={s.inputBox}>
-            <label htmlFor="message">배송 메세지 : </label>
-            <input
-              onChange={handleInputChange}
-              type="text"
-              name="message"
-              defaultValue={userInfo.message}
-              placeholder="배송 메시지를 입력해 주세요"
-            />
-          </div>
+    return (
+        <div css={s.layout}>
+            <div css={s.mainBox}>
+                <div css={s.userInfo}>
+                    <h2>주문자 정보</h2>
+                    <div css={s.inputBox}>
+                        <span>이름 : </span>
+                        <input
+                            onChange={handleInputChange}
+                            type="text"
+                            name="name"
+                            defaultValue={userInfo.name}
+                            placeholder="이름을 입력해 주세요"
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label htmlFor="email">이메일 : </label>
+                        <input
+                            onChange={handleInputChange}
+                            type="text"
+                            name="email"
+                            defaultValue={userInfo.email}
+                            placeholder="이메일 주소를 입력해 주세요"
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label htmlFor="phoneNumber">연락처 : </label>
+                        <input
+                            onChange={handleInputChange}
+                            type="text"
+                            name="phoneNumber"
+                            defaultValue={userInfo.phoneNumber}
+                            placeholder="연락처를 입력해 주세요"
+                        />
+                    </div>
+                    <div css={s.adressButton}>
+                        <button onClick={addressSaveButtonOnClick}>배송지 저장</button>
+                    </div>
+                    <div css={s.adressInputBox}>
+                        <label htmlFor="address">배송지 : </label>
+                        <input
+                            onChange={handleInputChange}
+                            type="text"
+                            name="address"
+                            defaultValue={userInfo.address.address}
+                            placeholder="배송지 입력해 주세요"
+                        />
+                    </div>
+                    <div css={s.adressInputBox}>
+                        <label htmlFor="detailAddress">배송지 : </label>
+                        <input
+                            onChange={handleInputChange}
+                            type="text"
+                            name="detailAddress"
+                            defaultValue={userInfo.address.detailAddress}
+                            placeholder="배송지 입력해 주세요"
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label htmlFor="message">배송 메세지 : </label>
+                        <input
+                            onChange={handleInputChange}
+                            type="text"
+                            name="message"
+                            defaultValue={userInfo.message}
+                            placeholder="배송 메시지를 입력해 주세요"
+                        />
+                    </div>
+                </div>
+                <div css={s.productInfo}>
+                    <h2>주문상품 정보</h2>
+                    <table css={s.productTable}>
+                        {
+                            // 다건조회
+                            selectedProductIds.length > 0
+                                ? (
+                                    productList.map((product) => (
+                                        <tr key={product.cartItemId}>
+                                            <td>{product.title}</td>
+                                            <td>
+                                                <img src={product.product.thumbnailImg} />
+                                            </td>
+                                            <td>수량: {product.quantity}</td>
+                                            <td>상품금액: {product.product.price.toLocaleString()}원</td>
+                                            <td>할인금액: 0원</td>
+                                            <td>배송비: {deliveryFee.toLocaleString()}원</td>
+                                            <td>
+                                                합계금액:{" "}
+                                                {(product.product.price * product.quantity).toLocaleString()}원
+                                            </td>
+                                        </tr>
+                                    ))
+                                    // 단건조회
+                                ) : (
+                                    productOrder?.data && (
+                                        <tr>
+                                            <td>{productOrder?.data?.data.title}</td>
+                                            <td>
+                                                <img src={productOrder?.data?.data.thumbnailImg} />
+                                            </td>
+                                            <td>수량: {selectedProduct.quantity}</td>
+                                            <td>상품금액: {productOrder?.data?.data.price.toLocaleString()}원</td>
+                                            <td>할인금액: 0원</td>
+                                            <td>배송비: {deliveryFee.toLocaleString()}원</td>
+                                            <td>
+                                                합계금액:{" "}
+                                                {(productOrder?.data?.data.price * selectedProduct.quantity).toLocaleString()}원
+                                            </td>
+                                        </tr>
+                                    )
+                                )}
+                    </table>
+                    <p>배송비 : {deliveryFee.toLocaleString()}원</p>
+                </div>
+                <div css={s.payInfo}>
+                    <h2>결제수단 선택</h2>
+                    <button>신용카드</button>
+                    <button>무통장 입금</button>
+                </div>
+            </div>
+            <div css={s.rightBox}>
+                <div css={s.payInfoMain}>
+                    <div css={s.payinfo}>
+                        <h2>결제금액</h2>
+                    </div>
+                    <div css={s.payinfo}>
+                        <p>상품 금액 : </p>
+                        <p>{totalProductAmount.toLocaleString()}원</p>
+                    </div>
+                    <div css={s.payinfo}>
+                        <p>할인 금액 : </p>
+                        <p>0원</p>
+                    </div>
+                    <div css={s.payinfo}>
+                        <p>배송비 : </p>
+                        <p>{deliveryFee.toLocaleString()}원</p>
+                    </div>
+                    <div css={s.payinfo}>
+                        <p>총 결제 금액 : </p>
+                        <p>{totalAmount.toLocaleString()}원</p>
+                    </div>
+                </div>
+                <div css={s.submitButton}>
+                    <button onClick={buyButtonOnClick}>결제하기</button>
+                </div>
+            </div>
         </div>
-        <div css={s.productInfo}>
-          <h2>주문상품 정보</h2>
-          <table css={s.productTable}>
-            {
-              selectedProductIds >= 1
-              ?
-              productList.map((product) => (
-                <tr key={product.cartItemId}>
-                  <td>{product.title}</td>
-                  <td>
-                    <img src={product.thumbnailImg} />
-                  </td>
-                  <td>수량: {selectedProductIds?.map((item) => item.quantity)}</td>
-                  <td>상품금액: {product.price.toLocaleString()}원</td>
-                  <td>할인금액: 0원</td>
-                  <td>배송비: {deliveryFee.toLocaleString()}원</td>
-                  <td>
-                    합계금액:{" "}
-                    {(product.price * product.quantity).toLocaleString()}원
-                  </td>
-                </tr>
-              ))
-              :
-              <tr key={productOrder?.data?.data?.cartItemId}>
-                  <td>{productOrder?.data?.data?.title}</td>
-                  <td>
-                    <img src={productOrder?.data?.data?.thumbnailImg} />
-                  </td>
-                  <td>수량: {selectedProduct?.map((item) => item.quantity)}</td>
-                  <td>상품금액: {productOrder?.data?.data?.price.toLocaleString()}원</td>
-                  <td>할인금액: 0원</td>
-                  <td>배송비: {deliveryFee.toLocaleString()}원</td>
-                  <td>
-                    합계금액:{" "}
-                    {(productOrder?.data?.data?.price * productOrder?.data?.data?.quantity).toLocaleString()}원
-                  </td>
-                </tr>
-            }
-          </table>
-          <p>배송비 : {deliveryFee.toLocaleString()}원</p>
-        </div>
-        <div css={s.payInfo}>
-          <h2>결제수단 선택</h2>
-          <button>신용카드</button>
-          <button>무통장 입금</button>
-        </div>
-      </div>
-      <div css={s.rightBox}>
-        <div css={s.payInfoMain}>
-          <div css={s.payinfo}>
-            <h2>결제금액</h2>
-          </div>
-          <div css={s.payinfo}>
-            <p>상품 금액 : </p>
-            <p>{totalProductAmount.toLocaleString()}원</p>
-          </div>
-          <div css={s.payinfo}>
-            <p>할인 금액 : </p>
-            <p>0원</p>
-          </div>
-          <div css={s.payinfo}>
-            <p>배송비 : </p>
-            <p>{deliveryFee.toLocaleString()}원</p>
-          </div>
-          <div css={s.payinfo}>
-            <p>총 결제 금액 : </p>
-            <p>{totalAmount.toLocaleString()}원</p>
-          </div>
-        </div>
-        <div css={s.submitButton}>
-          <button onClick={buyButtonOnClick}>결제하기</button>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default OrderPage;
