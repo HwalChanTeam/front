@@ -29,17 +29,18 @@ function MainSearch({ onSearch }) {
         {
             retry: 0,
             refetchOnWindowFocus: false,
-            onSuccess: {
-                
+            onSuccess: (response) => {
+                console.log(response)
             }
         }
     );
 
     const handleMainSearchOnChange = (e) => {
-        setMainSearchProduct((mainSearchProduct) => ({
-            ...mainSearchProduct,
-            [e.target.name]: e.target.value,
-        }));
+        // setMainSearchProduct((mainSearch) => ({
+        //     ...mainSearch,
+        //     [e.target.name]: e.target.value,
+        // }));
+        setMainSearchProduct(e.target.value);
     };
 
     const handleMainSearchOnClick = () => {
@@ -53,9 +54,11 @@ function MainSearch({ onSearch }) {
             setMainSearchProduct({
                 title: "",
             });
-            navigate(`/product/search?page=1&search=${mainSearchProduct}`)
+            navigate(`/user/public/search?page=1&search=${mainSearchProduct}`)
         }
     }
+
+    console.log(mainSearchProduct);
 
     return (
         <div css={s.layout}>
