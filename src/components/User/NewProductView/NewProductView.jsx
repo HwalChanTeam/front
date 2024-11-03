@@ -5,13 +5,14 @@ import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { getNewProductApi } from '../../../apis/productApi';
 import { instance } from '../../../apis/util/instance';
+import ProductList from '../../ProductList/ProductList';
 
 function NewProductView(props) {
 
     // 해당 상품 클릭시 해당하는 상품페이지로 넘어가는
     const productPath = (productId) => `/product/${productId}`;
 
-    const [ newProductList, setNewProductList ] = useState([]);
+    const [newProductList, setNewProductList] = useState([]);
 
 
     const allNewProduct = useQuery(
@@ -27,11 +28,11 @@ function NewProductView(props) {
                 let result = []
                 // 배열을 5개씩으로 분류 하도록 하고 결과값이 소수가 나올경우 정수로 변환시켜주기 위해 floor 사용함  
                 // productList % 5를 했을 때 나머지가 0이면 그대로 몫울 1로 두고 아니면 그 몫에 1을 더해라 
-                let num =  Math.floor(newProducts % 5 === 0 ?  newProducts / 5 : (newProducts / 5) + 1)  // 나머지 존재, 2까지 반복 / num = 2
-                for(let i = 0; i < num; i++) {
+                let num = Math.floor(newProducts % 5 === 0 ? newProducts / 5 : (newProducts / 5) + 1)  // 나머지 존재, 2까지 반복 / num = 2
+                for (let i = 0; i < num; i++) {
                     let newProductArray = []
                     // 1. j < 2 - 1 === 0 
-                    for(let j = 0; j < (num - 1 === i ? (newProducts % 5 === 0 ? 5 : newProducts % 5) : 5); j++ ) {
+                    for (let j = 0; j < (num - 1 === i ? (newProducts % 5 === 0 ? 5 : newProducts % 5) : 5); j++) {
                         newProductArray[j] = responseData[j + (i * 5)]
                     }
                     result[i] = newProductArray
@@ -49,9 +50,9 @@ function NewProductView(props) {
     //     let newTextArray = []
     //     let texts = textArray.length
     //     let result = [] // newProductList / table
-        
+
     //     // Math.ceil(textArray.length/3) + 1
-        
+
     //     // textArray에서 전부 한번씩 추출해서
     //     // newTextArray 3개씩 나눠서 들어가야함
     //     let num =  Math.floor(texts % 3 === 0 ?  texts / 3 : (texts / 3) + 1) 
@@ -68,33 +69,7 @@ function NewProductView(props) {
     return (
         <div css={s.layout}>
             <div css={s.contentLayout}>
-                {   
-                    newProductList.map((product) => (
-                        <tr css={s.menuLayout}>
-                            {
-                                product.map((pro) => (
-                                    <td>
-                                        <div css={s.menuList}>
-                                                <div css={s.imgLayout}>
-                                                    <Link 
-                                                        key={pro.productId}
-                                                        to={productPath(pro.productId)}>
-                                                            <img src={pro.thumbnailImg} />
-                                                    </Link>
-                                                </div>
-                                                <div css={s.productLayout}>
-                                                    <p>{pro.description}</p>
-                                                    <h2>{pro.title}</h2>
-                                                    <h2>{pro.price.toLocaleString()}원</h2>
-                                                </div>
-                                        </div>
-                                    </td>
-                                ))
-
-                            }
-                        </tr>
-                    ))
-                    }
+                <ProductList productList={newProductList} productPath={productPath} />
             </div>
         </div>
     );

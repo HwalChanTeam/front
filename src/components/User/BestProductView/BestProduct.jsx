@@ -4,6 +4,7 @@ import *as s from './style';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { instance } from '../../../apis/util/instance';
+import ProductList from '../../ProductList/ProductList';
 
 function BestProduct(props) {
 
@@ -47,31 +48,7 @@ function BestProduct(props) {
     return (
         <div css={s.layout}>
             <div css={s.contentLayout}>
-                    {
-                        bestProductList.map((product) => (
-                            <tr key={product.productId} css={s.menuLayout}>
-                                {
-                                    product.map((pro) => (
-                                        <td>
-                                            <div css={s.menuList}>
-                                                <div css={s.imgLayout}>
-                                                    <Link
-                                                        to={productPath(pro.productId)}>
-                                                        <img src={pro.thumbnailImg} />
-                                                    </Link>
-                                                </div>
-                                                <div css={s.productLayout}>
-                                                    <p>{pro.description}</p>
-                                                    <h2>{pro.title}</h2>
-                                                    <h2>{pro.price.toLocaleString()}원</h2>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    ))
-                                }
-                            </tr>
-                        ))
-                    }
+                    <ProductList productList={bestProductList} productPath={productPath}/>
             </div>
         </div>
     );
