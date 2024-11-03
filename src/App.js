@@ -92,7 +92,7 @@ function App() {
                     <Global styles={adminReset} />
                     <Routes>
                         <Route path="/admin" element={<AdminSignin />} />
-                        <Route path="/admin/main/*" element={<AdminMainPage />} />
+                        <Route path="/admin/main/*" element={<AdminRoute element={<AdminMainPage />} />} />
                     </Routes>
                 </>
             ) : (
