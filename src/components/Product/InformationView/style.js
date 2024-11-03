@@ -9,5 +9,8 @@ export const layout = css`
 `;
 
 export const imgLayout = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     margin-top: 10px;
 `;

@@ -219,6 +219,8 @@ export const selectProductMenu = (isSelected) => css`
 `;  
 
 export const productInfor = css`
+    display: flex;
+    justify-content: center;
     box-sizing: border-box;
     width: 100%;
     height: 100%;

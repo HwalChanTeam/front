@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
 import { instance } from "../../apis/util/instance";
+import DaumPost from "../../components/PostSearch/PstSearch";
 
 function OrderPage(props) {
 
     //장바구니에서 가져온 여러개 아이디
     const [selectedProductIds, setSelectedProductIds] = useRecoilState(selectedItemsAtom); // atom 사용
-    console.log(selectedProductIds)
 
     //상품 디테일 페이지에서 가져온 하나의 아이디
     const [selectedProduct, setSelectedProduct] = useRecoilState(productOrderAtom); // atom 사용
@@ -33,7 +33,7 @@ function OrderPage(props) {
     const location = useLocation();
     const [productList, setProductList] = useState([]);
 
-    const [userInfo, serUserInfo] = useState({
+    const [userInfo, setUserInfo] = useState({
         name: "",
         email: "",
         phoneNumber: "",
@@ -53,8 +53,6 @@ function OrderPage(props) {
             refetchOnWindowFocus : false
         }
     )
-
-    console.log(productOrder)
 
     //장바구니에서 가져온 경우(다건)
     const {
@@ -92,13 +90,24 @@ function OrderPage(props) {
         },
         {
             onSuccess: (response) => {
-                console.log(response.data);
-                console.log(userInfoData);
-                serUserInfo(response.data); // 성공 시 userInfo 상태 업데이트
+                setUserInfo(response.data); // 성공 시 userInfo 상태 업데이트
             },
             retry: 0,
+            refetchOnWindowFocus: false
         }
     );
+
+        // 주소 선택 완료 시 호출될 함수
+        const handleAddressComplete = (address) => {
+            setUserInfo((user) => ({
+                ...user,
+                address: {
+                    address: address.address, // 지역 주소 업데이트
+                    detailAddress: address.detailAddress, // 나머지 주소 업데이트
+                    zipCode: address.zipCode,
+                },
+            }));
+        };
 
     // 로딩 상태 처리
     if (isProductsLoading || isUserInfoLoading) {
@@ -112,7 +121,7 @@ function OrderPage(props) {
 
     // 유저 정보 변경 시 사용
     const handleInputChange = (e) => {
-        serUserInfo((user) => ({
+        setUserInfo((user) => ({
             ...user,
             [e.target.name]: e.target.value,
         }));
@@ -184,11 +193,20 @@ function OrderPage(props) {
                             placeholder="연락처를 입력해 주세요"
                         />
                     </div>
-                    <div css={s.adressButton}>
-                        <button onClick={addressSaveButtonOnClick}>배송지 저장</button>
+                    <div css={s.addressInput}>
+                    <p css={s.adressButton}>
+                        <DaumPost onComplete={handleAddressComplete} />
+                        {/* <button onClick={addressSaveButtonOnClick}>배송지 저장</button> */}
+                    </p>
+                    <input
+                            type="text"
+                            name="zipCode"
+                            readOnly
+                            value={userInfo.address.zipCode}
+                        />
                     </div>
                     <div css={s.adressInputBox}>
-                        <label htmlFor="address">배송지 : </label>
+                        <label htmlFor="address">지역 주소 : </label>
                         <input
                             onChange={handleInputChange}
                             type="text"
@@ -198,7 +216,7 @@ function OrderPage(props) {
                         />
                     </div>
                     <div css={s.adressInputBox}>
-                        <label htmlFor="detailAddress">배송지 : </label>
+                        <label htmlFor="detailAddress">나머지 주소 : </label>
                         <input
                             onChange={handleInputChange}
                             type="text"
