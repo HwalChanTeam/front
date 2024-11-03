@@ -1,18 +1,25 @@
 
 /** @jsxImportSource @emotion/react */
-import { useLocation } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import MainSearch from '../MainSearch/MainSearch';
 import *as s from './style';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { menus } from '../../constants/mainMenus';
 import { useState } from 'react';
 import SelectProductView from '../User/SelectProductView/SelectProductView';
 import Category from '../Category/Category';
+import ReactPaginate from 'react-paginate';
+import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
+import UserSearch from '../MainSearch/UserSearch/UserSearch';
 
 
 function MainMenu(props) {
     const location = useLocation();
     const pathname = location.pathname;
+
+    // 검색 param을 UserSearch 컴포넌트로 넘기기 위함
+    const [searchParam] = useSearchParams();
+    const searchQuery = searchParam.get("search");
 
     const [onMouseMenuId, setOnMouseMenuId] = useState(0);
     const [onMouseSubMenuId, setOnMouseSubMenuId] = useState(0);
@@ -88,9 +95,10 @@ function MainMenu(props) {
                             </div>)
                     }
                 </div>
-                <MainSearch onSearch={null} />
+                <MainSearch />
             </header>
             <SelectProductView />
+            <UserSearch searchQuery={searchQuery} />
         </>
     );
 }
