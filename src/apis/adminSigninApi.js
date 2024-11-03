@@ -5,6 +5,7 @@ export const adminSigninApi = async (admin) => {
         isSuccess: false,
         token: null,
         successMessage: "",
+        role: null,
         fieldErrors: [
             {
                 field: "",
@@ -17,7 +18,8 @@ export const adminSigninApi = async (admin) => {
         signinData = {
             isSuccess: true,
             token: response.data,
-            successMessage: "로그인 성공!!"
+            successMessage: "로그인 성공!!",
+            role: response.data.role
         }
     } catch (error) {
         const response = error.response;

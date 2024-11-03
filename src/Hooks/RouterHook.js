@@ -10,8 +10,7 @@ const isAuthenticated = () => {
 // 관리자 권한을 확인하는 함수
 const isAdmin = () => {
   const role = localStorage.getItem('role');
-  console.log('Role:', role);
-  return role === 'admin';
+  return role === 'ROLE_ADMIN' || 'ROLE_MANAGER';
 };
 
 // PrivateRoute 컴포넌트
