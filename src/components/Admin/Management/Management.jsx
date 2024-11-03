@@ -43,13 +43,6 @@ function Management(props) {
     return (
         <div css={s.mainBox}>
             <h1>매출 관리</h1>
-            aaa
-            {/* 
-                1. 판매량 인기 순위 top 5
-                2. 판매량 추이
-                3. 수익금 추이
-                4. 
-                */}
             <div css={s.contentsBox}>
                 <div css={s.leftBox}>
                 <h3>매출량 TOP5</h3>

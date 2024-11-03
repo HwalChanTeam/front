@@ -73,7 +73,7 @@ function SigninPage(props) {
                         placeholder="아이디를 입력해 주세요"
                     />
                     <input
-                        type="text"
+                        type="password"
                         name="password"
                         onChange={userInputOnChange}
                         value={user.password}

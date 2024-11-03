@@ -75,7 +75,6 @@ function ProductPage() {
         },
         {
         onSuccess: (response) => {
-            console.log(response);
             setProduct(response.data?.product);
         },
         }
@@ -94,7 +93,6 @@ function ProductPage() {
 
     const basketAddProductMutation = useMutation(
         async (payload) => {
-            console.log(payload);
             await instance.post("/user/cart", payload);
         },
         {
@@ -140,7 +138,6 @@ function ProductPage() {
     // 찜버튼 mutation
     const productLikeMutation = useMutation(
         async () => {
-            console.log(product.productId);
             return await instance.post(`/user/product/like/${product.productId}`);
         },
         {
@@ -165,7 +162,6 @@ function ProductPage() {
 
     // 구매수량*가격 함수
     const calculateTotalPrice = (product) => {
-        console.log(product)
         return product?.price * productItems.buyItem;
     };
 

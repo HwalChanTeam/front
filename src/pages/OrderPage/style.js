@@ -68,11 +68,22 @@ export const adressInputBox = css`
   }
 `;
 
+export const addressInput = css`
+    & > input {
+        margin-left: 290px;
+        width: 100px;
+        border: 1px solid #dbdbdb;
+    }
+`;
+
 export const adressButton = css`
   display: flex;
-  justify-content: right;
-  margin-top: 10px;
+  flex-direction: column;
+  align-items: end;
+  margin: 0 0 0 290px;
   & button {
+    width: 80px;
+    margin-top: 5px;
     background-color: transparent;
     border: 1px solid #dbdbdb;
     &:hover {

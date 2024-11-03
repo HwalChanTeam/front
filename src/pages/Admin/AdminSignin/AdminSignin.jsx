@@ -31,7 +31,6 @@ function AdminSignin(props) {
             }
             return;
         }
-        console.log(signinData);
         localStorage.setItem("accessToken", "Bearer " + signinData.token.accessToken);
 
         // role 값을 localStorage에 저장
