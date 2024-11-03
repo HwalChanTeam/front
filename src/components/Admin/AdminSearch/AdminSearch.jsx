@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import * as s from "./style";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-function AdminSearch() {
+function AdminSearch({setPageCount}) {
     const navigate = useNavigate();
 
     const [searchProduct, setSearchProduct] = useState({
@@ -11,14 +11,14 @@ function AdminSearch() {
     });
 
     const handleSearchOnChange = (e) => {
-        setSearchProduct((searchProduct) => ({
-            ...searchProduct,
+        setSearchProduct({
             [e.target.name]: e.target.value,
-        }));
+        });
     };
 
     const handleSubmitButtonOnClick = () => {
-        navigate(`/admin/main/product?keyword=${searchProduct.title}`);
+        setPageCount(1);
+        navigate(`/admin/main/product?page=1&keyword=${searchProduct.title}&limit=20`);
         setSearchProduct({
             title: ""
         });

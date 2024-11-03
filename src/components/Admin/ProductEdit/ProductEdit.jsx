@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as s from "./style";
 import AdminSearch from "../AdminSearch/AdminSearch";
 import { instance } from "../../../apis/util/instance";
@@ -15,23 +15,25 @@ function ProductEdit(props) {
     const [checkedIds, setCheckedIds] = useState([]);
     const [searchParam] = useSearchParams();
     const keyword = searchParam.get("keyword");
-    const [totalPageCount, setTotalPageCount] = useState(1);
+    const [pageCount, setPageCount] = useState(1);
     const limit = 20;
     const navigate = useNavigate();
 
     // 상품 불러오는 쿼리
     const productQuery = useQuery(
-        ["productQuery"],
+        ["productQuery", pageCount],
         async () => {
-            const response = await instance.get(`/admin/product?page=${totalPageCount}&limit=${limit}`);
+            console.log("전체");
+            const response = await instance.get(`/admin/product?page=${pageCount}&limit=${limit}`);
             setProductList(response?.data?.products);
-            console.log(response?.data?.products);
+            console.log(response?.data);
         },
         {
+            enabled: !keyword,
             retry: 0,
             refetchOnWindowFocus: 0,
             onSuccess: (response) => {
-                setTotalPageCount(
+                setPageCount(
                     response?.data?.count % limit === 0
                         ? response?.data?.count / limit
                         : Math.floor(response?.data?.count / limit) + 1)
@@ -40,19 +42,21 @@ function ProductEdit(props) {
     );
 
     const searchProduct = useQuery(
-        ["searchQuery", keyword],
+        ["searchQuery", keyword, pageCount],
         async () => {
-            const response = await instance.get(`/admin/product/search?page=${totalPageCount}&title=${keyword}&limit=${limit}`);
+            console.log("검색");
+            const response = await instance.get(`/admin/product/search?page=${pageCount}&title=${keyword}&limit=${limit}`);
             setProductList(response?.data?.products);
         },
         {
+            enabled: !!keyword,
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: (response) => {
-                setTotalPageCount(
+                setPageCount(
                     response?.data?.count % limit === 0
                         ? response?.data?.count / limit
-                        : Math.floor(response?.data?.count / limit) + 1)
+                        : Math.floor(response?.data?.count / limit) + 1);
             }
         }
     );
@@ -92,14 +96,14 @@ function ProductEdit(props) {
     // };
 
     const handleOnPageChange = (e) => {
-        setTotalPageCount(e.selected + 1);
-        
+        setPageCount(e.selected + 1);
+        navigate(`/admin/main/product?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
     }
 
     return (
         <div css={s.mainBox}>
             <h1>상품 관리</h1>
-            <AdminSearch />
+            <AdminSearch setPageCount={setPageCount} />
             <div css={s.buttonLayout}>
                 <button>수정</button>
                 <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
