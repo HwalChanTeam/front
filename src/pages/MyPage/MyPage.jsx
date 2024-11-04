@@ -6,6 +6,7 @@ import BuyInfo from "../../components/MyPageList/BuyInfo/BuyInfo";
 import WishList from "../../components/MyPageList/WishList/WishList";
 import { RiFileUserLine } from "react-icons/ri";
 import { FcLike } from "react-icons/fc";
+import { GoTrash } from "react-icons/go";
 import {
   HiOutlineClipboardDocumentList,
   HiOutlinePencilSquare,
@@ -15,6 +16,7 @@ import * as s from "./style";
 import ReviewInfo from "../../components/MyPageList/ReviewInfo/ReviewInfo";
 import { useQuery } from "react-query";
 import { instance } from "../../apis/util/instance";
+import LeaveUser from "../../components/MyPageList/LeaveUser/LeaveUser";
 
 const menus = [
   {
@@ -41,6 +43,12 @@ const menus = [
     path: "/mypage/reviewinfo",
     icon: <HiOutlinePencilSquare />,
   },
+  {
+    id: 5,
+    name: "회원탈퇴",
+    path: "/mypage/leaveUser",
+    icon: <GoTrash />,
+  },
 ];
 
 function MyPage(props) {
@@ -57,7 +65,6 @@ function MyPage(props) {
     {
       onSuccess: (response) => {
         setUserInfo(response.data);
-        console.log(response.data)
       },
     }
   );
@@ -72,7 +79,7 @@ function MyPage(props) {
         <div css={s.userInfoBox}>
           <p>{userInfo?.username}님 반갑습니다.</p>
           <p>{userInfo?.email}</p>
-          <p>적립금 : ㅁㅁㅁ원</p>
+          <p>적립금 : {userInfo?.point.toLocaleString()}원</p>
         </div>
       </div>
       <div css={s.menuBox}>
@@ -93,6 +100,9 @@ function MyPage(props) {
           <Route path="/wishlist" element={<WishList />} />
           <Route path="/buyinfo" element={<BuyInfo />} />
           <Route path="/reviewinfo" element={<ReviewInfo />} />
+          <Route path="/leaveUser" element={<LeaveUser 
+          userInfo={getUserInfo}
+          />} />
         </Routes>
       </div>
     </div>

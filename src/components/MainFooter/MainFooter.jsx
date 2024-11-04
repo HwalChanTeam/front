@@ -21,7 +21,7 @@ function MainFooter(props) {
                     </div>
                     <div css={s.rightBox}>
                         <div css={s.companyBox}>
-                            <h3>주식회사 몽키매직</h3>
+                            <h3>주식회사 ㅁㅁㅁ</h3>
                             <span>소재지 : 부산광역시 부산진구 123-1234</span>
                             <span>사업자번호 : 12-1234-1234567</span>
                             <span>문주영 | 이메일 ㅁㅁㅁ@ㅁㅁㅁ.com</span>
