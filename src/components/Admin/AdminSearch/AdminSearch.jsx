@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-function AdminSearch({setPageCount}) {
+function AdminSearch({ setPageCount }) {
     const navigate = useNavigate();
+    const limit = 20;
 
     const [searchProduct, setSearchProduct] = useState({
         title: "",
@@ -18,7 +19,7 @@ function AdminSearch({setPageCount}) {
 
     const handleSubmitButtonOnClick = () => {
         setPageCount(1);
-        navigate(`/admin/main/product?page=1&keyword=${searchProduct.title}&limit=20`);
+        navigate(`/admin/main/product?page=1&keyword=${searchProduct.title}&limit=${limit}`);
         setSearchProduct({
             title: ""
         });
