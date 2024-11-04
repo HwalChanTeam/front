@@ -7,6 +7,50 @@ import { useNavigate } from 'react-router-dom';
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 
+const tempProducts = [
+    {
+        productId : 1,
+        thumbnailImg: null,
+        title: "aaaa",
+        description: "aaadasd",
+        price: 19000,
+        quantity: 5
+    },
+    {
+        productId : 2,
+        thumbnailImg: null,
+        title: "aaaa",
+        description: "aaadasd",
+        price: 19000,
+        quantity: 5
+    },
+    {
+        productId : 3,
+        thumbnailImg: null,
+        title: "aaaa",
+        description: "aaadasd",
+        price: 19000,
+        quantity: 5
+    },
+    {
+        productId : 4,
+        thumbnailImg: null,
+        title: "aaaa",
+        description: "aaadasd",
+        price: 19000,
+        quantity: 5
+    },
+    {
+        productId : 5,
+        thumbnailImg: null,
+        title: "aaaa",
+        description: "aaadasd",
+        price: 19000,
+        quantity: 5
+    },
+]
+
+
 function BuyInfo(props) {
 
     const navigate = useNavigate();
@@ -60,7 +104,7 @@ function BuyInfo(props) {
         <div css={s.containerStyle}>
             <h1>구매기록</h1>
             <ul>
-                {userBuyInfo.map((product) => (
+                {tempProducts.map((product) => (
                     <li key={product.productId} css={s.productStyle}>
                         <img src={product.thumbnailImg} alt={product.title} css={s.imageStyle} />
                         <div css={s.textStyle}>
