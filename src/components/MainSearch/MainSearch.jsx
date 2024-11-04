@@ -13,27 +13,23 @@ function MainSearch() {
 
     const navigate = useNavigate();
 
-    const [ searchParam, setSearchParam ] = useSearchParams(); // 검색 param 상태
-
-    const [pageCount, setPageCount] = useState(1); 
-
     // 검색 상태
-    const [mainSearchProduct, setMainSearchProduct] = useState(searchParam.get("search") ?? "");
+    const [keyword, setKeyword] = useState("");
 
     // 상품데이터 제한 수
     const limit = 20;
 
-    const handleMainSearchOnChange = (e) => {
-        setMainSearchProduct(e.target.value);
+    const handleKeywordOnChange = (e) => {
+        setKeyword(e.target.value);
     };
 
-    const handleMainSearchOnClick = () => {
-        navigate(`/user/search?page=1&search=${mainSearchProduct}`);
+    const handleMainSearchButtonOnClick = () => {
+        navigate(`/user/products/search?page=1&${limit}&keyword=${keyword}`);
     };
 
-    const handleMainSearchOnKeyDown = (e) => {
+    const handleKeywordOnKeyDown = (e) => {
         if (e.key === "Enter") {
-            navigate(`/user/search?page=1&search=${mainSearchProduct}`)
+            navigate(`/user/products/search?page=1&limit=${limit}&keyword=${keyword}`)
         }
     }
 
@@ -46,11 +42,11 @@ function MainSearch() {
                         placeholder="검색어를 입력하세요"
                         name="title"
                         css={s.searchInput}
-                        onChange={handleMainSearchOnChange}
-                        onKeyDown={handleMainSearchOnKeyDown}
-                        value={mainSearchProduct}
+                        onChange={handleKeywordOnChange}
+                        onKeyDown={handleKeywordOnKeyDown}
+                        value={keyword}
                     />
-                    <IoSearchSharp onClick={handleMainSearchOnClick} size="30" />
+                    <IoSearchSharp onClick={handleMainSearchButtonOnClick} size="30" />
                 </div>
             </div>
         </>

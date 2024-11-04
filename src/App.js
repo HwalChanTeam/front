@@ -22,6 +22,7 @@ import Category from "./components/Category/Category";
 import MainHeader from "./components/MainHeader/MainHeader";
 import MainMenu from "./components/MainMenu/MainMenu";
 import { AdminRoute, UserPrivateRoute } from "./Hooks/RouterHook";
+import ProductSearchPage from "./pages/ProductSearchPage/ProductSearchPage";
 
 
 
@@ -105,7 +106,8 @@ function App() {
                         <Route path="/product/:productId/*" element={<ProductPage />} />
                         <Route path="/user/signup" element={<SignupPage />} />
                         <Route path="/user/signin" element={<SigninPage />} />
-                        <Route path="/user/public/product/category" element={<Category />} />
+                        <Route path="/user/product/category" element={<Category />} />
+                        <Route path="/user/products/search" element={<ProductSearchPage />} />
                         <Route path="/cart" element={<UserPrivateRoute element={<ShoppingBasket />} />} />
                         <Route path="/order/*" element={<UserPrivateRoute element={<OrderPage />} />} />
                         <Route path="/mypage/*" element={<UserPrivateRoute element={<MyPage />} />} />
