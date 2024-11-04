@@ -57,6 +57,7 @@ function MyPage(props) {
     {
       onSuccess: (response) => {
         setUserInfo(response.data);
+        console.log(response.data)
       },
     }
   );
