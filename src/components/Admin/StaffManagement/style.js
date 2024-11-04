@@ -60,44 +60,52 @@ export const container = css`
 export const theadLayout = css`
   box-sizing: border-box;
   border-collapse: collapse;
+  padding: 0px;
   width: 100%;
+  height: 22px;
   position: sticky; /* 스티키 포지션 적용 */
   top: 0; /* 상단 고정 */
   background-color: #fff; /* 배경색 추가 */
-  z-index: 1; /* 다른 요소 위에 있도록 설정 */
+  /* z-index: 1; 다른 요소 위에 있도록 설정 */
+
 `;
 
 export const theadItems = css`
   box-sizing: border-box;
-  border-right: 1px solid #000000;
   padding: 0px;
-  width: 100px;
+  border-right: 1px solid #000000;
   cursor: default;
 
-  &:nth-of-type(1) {
+  &:nth-of-type(1) { 
     text-align: center;
-    width: 25px;
+    width: 40px;
   }
+
   &:nth-of-type(2) {
-    width: 50px;
+    width: 40px;
   }
+
   &:nth-of-type(3) {
-    width: 100px;
+    width: 130px;
   }
+
   &:nth-of-type(4) {
-    width: 70px;
-  }
-  &:nth-of-type(5) {
-    width: 70px;
-  }
-  &:nth-of-type(6) {
     width: 120px;
   }
-  &:nth-of-type(7) {
-    width: 70px;
+
+  &:nth-of-type(5) {
+    width: 140px;
   }
+
+  &:nth-of-type(6) {
+    width: 180px;
+  }
+  
+  &:nth-of-type(7) {
+    width: 160px;
+  }
+
   &:nth-of-type(8) {
-    width: 70px;
     border-right: none;
   }
 `;
@@ -107,46 +115,47 @@ export const tableLayout = css`
   border-collapse: collapse;
 `;
 
-export const tbodyLayout = css`
-  width: 100%;
-  border-collapse: collapse;
-`;
-
 export const productItem = css`
   box-sizing: border-box;
   border: 1px solid #000000;
+  border-left: none;
   padding: 0px;
-  width: 100px;
+  padding-left: 5px;
   cursor: default;
 
   &:nth-of-type(1) {
+    padding: 0px;
     text-align: center;
-    width: 25px;
-    border-left: none;
+    width: 40px;
   }
+
   &:nth-of-type(2) {
-    width: 50px;
+    width: 40px;
   }
+
   &:nth-of-type(3) {
-    width: 100px;
+    width: 130px;
   }
+
   &:nth-of-type(4) {
-    width: 70px;
-  }
-  &:nth-of-type(5) {
-    text-align: right;
-    width: 70px;
-  }
-  &:nth-of-type(6) {
     width: 120px;
-    text-align: right;
   }
+
+  &:nth-of-type(5) {
+    width: 140px;
+  }
+
+  &:nth-of-type(6) {
+    width: 180px;
+  }
+
   &:nth-of-type(7) {
-    width: 70px;
-    text-align: right;
+    width: 160px;
   }
+
   &:nth-of-type(8) {
-    width: 70px;
+    padding: 0px;
+    padding-right: 5px;
     text-align: right;
     border-right: none;
   }
