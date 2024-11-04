@@ -16,7 +16,7 @@ function ProductList({productList, productPath}) {
                                     <div css={s.menuList}>
                                         <div css={s.imgLayout}>
                                             <Link
-                                                key={pro.id}
+                                                key={pro.productId}
                                                 to={productPath(pro.productId)}>
                                                 <img src={pro.thumbnailImg} />
                                             </Link>

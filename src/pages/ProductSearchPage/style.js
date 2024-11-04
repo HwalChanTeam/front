@@ -83,7 +83,9 @@ export const listBox = css`
 export const pageNumber = css`
     & > ul {
         display: flex;
+        justify-content: center;
         list-style-type: none;
+        padding: 0px;
         & > li {
             margin: 0px 5px;
             & a {
