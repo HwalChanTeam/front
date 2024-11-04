@@ -11,8 +11,11 @@ function UserInfo(props) {
         name: "",
         email: "",
         phoneNumber: "",
-        address: "",
-        detailAddress: "",
+        address : {
+            address: "",
+            detailAddress: "",
+            zipCode: ""
+        },
         message: "",
     });
 
