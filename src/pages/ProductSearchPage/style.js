@@ -3,23 +3,28 @@ import { css } from "@emotion/react";
 export const layout = css`
     display: flex;
     flex-direction: column;
-    align-items: center;
     width: 1200px;
+
+    & h3 {
+        margin: 0px;
+        font-size: 16px;
+    }
 `;
 
 export const contentLayout = css`
     box-sizing: border-box;
-    width: 100%;
+    width: 1200px;
 `;
 
 export const menuLayout = css`
     box-sizing: border-box;
-    width: 1200px;
-    table-layout: fixed;
-    & td {
-        padding: 0px;
+    display: flex;
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
 
-        &:nth-of-type(5n) > div {
+    & li {
+        &:nth-of-type(5n) > div{
             margin-right: 0px;
         }
     }
@@ -27,7 +32,7 @@ export const menuLayout = css`
 
 export const menuList = css`
     box-sizing: border-box;
-    margin-top: 50px;
+    margin-top: 30px;
     margin-right: 50px;
     width: 200px;
     padding: 0px;

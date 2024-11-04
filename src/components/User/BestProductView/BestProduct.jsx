@@ -48,7 +48,7 @@ function BestProduct(props) {
     return (
         <div css={s.layout}>
             <div css={s.contentLayout}>
-                    <ProductList productList={bestProductList} productPath={productPath}/>
+                <ProductList productList={bestProductList} productPath={productPath}/>
             </div>
         </div>
     );

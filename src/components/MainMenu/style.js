@@ -17,6 +17,8 @@ export const menusLayout = css`
 export const selectedMenu = (isSelected) => css`
     position: relative;
     display: flex;
+    color: #5B5B5B;
+    text-decoration: none; // 방문 후에도 밑줄 등 스타일 유지
     
     & a {
         text-decoration: none;
@@ -25,6 +27,7 @@ export const selectedMenu = (isSelected) => css`
         & span {
             border-top: ${isSelected ? "2px solid #964747" : "transparent"};
             font-size: 18px;
+            color: #5B5B5B;
             
             &:nth-of-type(1) {
                 margin-right: 5px;

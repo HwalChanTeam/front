@@ -55,20 +55,24 @@ function ProductSearchPage(props) {
         }
     );
 
-    useEffect(() => {
-        console.log(productTrGroups)
-    }, [productTrGroups])
+    const productCount = productsQuery?.data?.data?.count;
+    console.log(productCount)
+
+    // useEffect(() => {
+    //     console.log(productTrGroups)
+    // }, [productTrGroups])
     
 
     return (
-        <div cssdiv={s.layout}>
-            <table css={s.contentLayout}>
+        <div css={s.layout}>
+            <h3>총 {productCount}개의 상품이 검색되었습니다.</h3>
+            <div css={s.contentLayout}>
                 {
                     productTrGroups?.map((productTrGroup) => (
-                        <tr css={s.menuLayout}>
+                        <ul css={s.menuLayout}>
                             {
                                 productTrGroup?.map((product) => (
-                                    <td>
+                                    <li>
                                         <div css={s.menuList}>
                                             <div css={s.imgLayout}>
                                                 <Link
@@ -80,16 +84,16 @@ function ProductSearchPage(props) {
                                             <div css={s.productLayout}>
                                                 <p>{product.description}</p>
                                                 <h2>{product.title}</h2>
-                                                <h2>{product.price}</h2>
+                                                <h2>{product.price.toLocaleString()}원</h2>
                                             </div>
                                         </div>
-                                    </td>
+                                    </li>
                                 ))
                             }
-                        </tr>
+                        </ul>
                     ))
                 }
-            </table>
+            </div>
             <div css={s.listBox}>
                 <div css={s.pageNumber}>
                     <ReactPaginate
