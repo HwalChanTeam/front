@@ -20,6 +20,7 @@ function ProductEdit(props) {
     const [checkedIds, setCheckedIds] = useState([]);
     const [searchParam] = useSearchParams();
     const keyword = searchParam.get("keyword");
+    const page = searchParam.get("page");
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
     const navigate = useNavigate();
@@ -66,8 +67,7 @@ function ProductEdit(props) {
     const searchProduct = useQuery(
         ["searchQuery", keyword, pageCount],
         async () => {
-            console.log("검색");
-            const response = await instance.get(`/admin/product/search?page=${pageCount}&title=${keyword}&limit=${limit}`);
+            const response = await instance.get(`/admin/product/search?page=${page}&keyword=${keyword}&limit=${limit}`);
             setProductList(response?.data?.products);
         },
         {
@@ -108,7 +108,9 @@ function ProductEdit(props) {
             refetchOnWindowFocus: false,
             onSuccess: (response) => {
                 alert("삭제가 완료되었습니다.");
+                setPageCount(page ? parseInt(page) : 1);
                 productQuery.refetch();
+                console.log("refetch됨");
             }
         }
     );
@@ -315,8 +317,9 @@ function ProductEdit(props) {
             thumbnailImg: "",
             contentsImg: []
         });
+        setPageCount(page ? parseInt(page) : 1);
         productQuery.refetch();
-        window.location.reload();
+        // window.location.reload();
     };
 
 
