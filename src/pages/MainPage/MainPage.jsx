@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 import MainMenu from "../../components/MainMenu/MainMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { instance } from "../../apis/util/instance";
 import { useLocation, useNavigate } from "react-router";

@@ -55,6 +55,11 @@ function ProductPage() {
     const [selectedProduct, setSelectedProduct] =
     useRecoilState(productOrderAtom); // atom 사용
 
+            // 페이지가 마운트될 때 스크롤을 맨 위로 이동
+            useEffect(() => {
+                window.scrollTo(0, 0);
+            }, []);
+
     const [product, setProduct] = useState({
         productId,
         thumbnailImg: "",
