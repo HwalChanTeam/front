@@ -10,6 +10,9 @@ const isAuthenticated = () => {
 // 관리자 권한을 확인하는 함수
 const isAdmin = () => {
   const role = localStorage.getItem('role');
+  if(role === 'ROLE_USER' || null) {
+    return;
+  }
   return role === 'ROLE_ADMIN' || 'ROLE_MANAGER';
 };
 
@@ -22,11 +25,7 @@ const UserPrivateRoute = ({ element }) => {
 // AdminRoute 컴포넌트
 const AdminRoute = ({ element }) => {
   const location = useLocation();
-  const authenticated = isAuthenticated();
-  const admin = isAdmin();
 
-  console.log('Authenticated:', authenticated);
-  console.log('Admin:', admin);
   return isAuthenticated() && isAdmin() ? element : <Navigate to="/admin" state={{ from: location }} />;
 };
 

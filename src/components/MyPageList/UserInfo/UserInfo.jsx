@@ -93,13 +93,15 @@ function UserInfo(props) {
                 zipCode: address.zipCode,
             },
         }));
-    };
+        };
 
     // 배송지 수정 -> 지금처럼 지역주소, 나머지 주소가 아닌, 배송지 목록 관리 버튼 -> 윈도우 창 뜸 -> 배송지 관리 가능
 
     if (isLoading) return <div>Loading...</div>;
     // if (isError) return <div>데이터를 가져오는데 실패했습니다.</div>
 
+
+    console.log(userInfo)
     return (
         <div css={s.layout}>
             <div css={s.mainBox}>
