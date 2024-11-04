@@ -21,7 +21,6 @@ function UserInfo(props) {
             zipCode: "",
         },
     });
-    console.log(userInfo);
 
     // 유저 정보 불러오기
     const { data, isError, isLoading, refetch } = useQuery(
@@ -31,7 +30,6 @@ function UserInfo(props) {
         },
         {
             onSuccess: (response) => {
-                console.log(response);
                 setUserInfo(response.data);
             },
             refetchOnWindowFocus: false,
@@ -50,7 +48,7 @@ function UserInfo(props) {
     // 수정 함수
     const userInfoEditmutation = useMutation(
         async (dto) => {
-            return await instance.put(`/user/${dto.username}`, dto);
+            return await instance.put(`/user/${dto.id}`, dto);
         },
         {
             onSuccess: () => {
@@ -62,6 +60,7 @@ function UserInfo(props) {
     // 완료 버튼
     const handleSubmitButtonOnClick = () => {
         const dto = {
+            id: userInfo.id,
             email: userInfo.email, // 이메일
             email: userInfo.phoneNumber, // 후대폰
             address: userInfo.address.address, // 지역 주소
