@@ -9,10 +9,10 @@ function ProductList({productList, productPath}) {
         <>
             {
                 productList?.map((product) => (
-                    <tr css={s.menuLayout}>
+                    <ul css={s.menuLayout}>
                         {
                             product.map((pro) => (
-                                <td>
+                                <li>
                                     <div css={s.menuList}>
                                         <div css={s.imgLayout}>
                                             <Link
@@ -27,10 +27,10 @@ function ProductList({productList, productPath}) {
                                             <h2>{pro.price.toLocaleString()}원</h2>
                                         </div>
                                     </div>
-                                </td>
+                                </li>
                             ))
                         }
-                    </tr>
+                    </ul>
                 ))
             }
         </>

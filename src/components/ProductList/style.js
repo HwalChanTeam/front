@@ -2,11 +2,17 @@ import { css } from "@emotion/react";
 
 export const menuLayout = css`
     box-sizing: border-box;
+    display: flex;
+    margin: 0px;
+    padding: 0px;
     width: 1200px;
-    table-layout: fixed;
-    & td {
-        padding: 0px;
+    list-style-type: none;
 
+    &:nth-of-type(1) {
+        margin-top: 24px;
+    }
+
+    & li {
         &:nth-of-type(5n) > div {
             margin-right: 0px;
         }
@@ -15,7 +21,7 @@ export const menuLayout = css`
 
 export const menuList = css`
     box-sizing: border-box;
-    margin-top: 50px;
+    margin-top: 30px;
     margin-right: 50px;
     width: 200px;
     padding: 0px;

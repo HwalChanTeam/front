@@ -29,7 +29,8 @@ function MainSearch() {
 
     const handleKeywordOnKeyDown = (e) => {
         if (e.key === "Enter") {
-            navigate(`/user/products/search?page=1&limit=${limit}&keyword=${keyword}`)
+            setKeyword("");
+            navigate(`/user/products/search?page=1&limit=${limit}&keyword=${keyword}`);
         }
     }
 
