@@ -64,7 +64,7 @@ export const theadLayout = css`
   position: sticky; /* 스티키 포지션 적용 */
   top: 0; /* 상단 고정 */
   background-color: #fff; /* 배경색 추가 */
-  z-index: 1; /* 다른 요소 위에 있도록 설정 */
+  // z-index: 1; //다른 요소 위에 있도록 설정
 `;
 
 export const theadItems = css`
@@ -176,3 +176,12 @@ export const pageNumber = css`
     }
 `;
 
+export const productEditInput = css`
+  display: flex;
+  align-items: center;
+  height: 35px;
+`;
+
+export const selectBox = css`
+    margin-left: 20px;
+`;

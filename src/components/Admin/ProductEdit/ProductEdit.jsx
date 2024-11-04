@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as s from "./style";
 import AdminSearch from "../AdminSearch/AdminSearch";
 import { instance } from "../../../apis/util/instance";
@@ -8,6 +8,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import ReactPaginate from "react-paginate";
 import { count } from "firebase/firestore";
+import Modal from "../../Modal/Modal";
+import { v4 as uuid } from 'uuid';
+import ReactModal from "react-modal";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { menus } from "../../../constants/mainMenus";
 
 function ProductEdit(props) {
 
@@ -18,6 +23,25 @@ function ProductEdit(props) {
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
     const navigate = useNavigate();
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    // 모달을 여는 함수
+    const openModal = () => setIsModalOpen(true);
+    // 모달을 닫는 함수
+    const closeModal = () => setIsModalOpen(false);
+
+    const [isUploading, setUploading] = useState(false);
+    const [product, setProduct] = useState({
+        title: "",
+        price: 0,
+        stock: 0,
+        categoryId: 0,
+        semiCategoryId: 0,
+        description: "",
+        origin: "대한민국",
+        thumbnailImg: "",
+        contentsImg: []
+    });
 
     // 상품 불러오는 쿼리
     const productQuery = useQuery(
@@ -100,12 +124,256 @@ function ProductEdit(props) {
         navigate(`/admin/main/product?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
     }
 
+    const handleImageUpload = useCallback((type) => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+
+        if (type === "contentsImg") {
+            input.setAttribute('multiple', 'multiple');
+        }
+
+        input.click();
+
+        input.onchange = async () => {
+            const files = Array.from(input.files);
+            const urls = [];
+
+            if (type === "contentsImg" && files.length > 4) {
+                alert(`최대 4장의 이미지만 업로드할 수 있습니다.`);
+                return;
+            }
+
+            const storage = getStorage();
+            setUploading(true);
+
+            files.forEach((file) => {
+                const storageRef = ref(storage, `admin/product/${uuid()}_${file.name}`);
+                const task = uploadBytesResumable(storageRef, file);
+
+                task.on(
+                    'state_changed',
+                    () => { }, // 업로드 중 상태 핸들링 (옵션)
+                    (e) => {
+                        console.error(e);
+                        setUploading(false);
+                    },
+                    async () => {
+                        try {
+                            const url = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
+                            urls.push(url);
+
+                            if (type === "thumbnailImg" && urls.length === 1) {
+                                setProduct((product) => ({
+                                    ...product,
+                                    thumbnailImg: urls[0]
+                                }));
+
+                            } else if (type === "contentsImg") {
+                                setProduct((product) => ({
+                                    ...product,
+                                    contentsImg: [...new Set([...product.contentsImg, ...urls])]
+                                }));
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        } finally {
+                            setUploading(false); // false로 할 시 이미지가 자동으로 사라짐 
+                        }
+                    }
+                );
+            });
+        };
+    }, []);
+
+    const handleinputOnChange = (e) => {
+        const { name, value } = e.target;
+
+        // 금액 입력일 때 숫자만 허용
+        if (name === "price" && isNaN(value)) {
+            return; // 숫자가 아닐 경우 아무 것도 하지 않음
+        }
+        if (name === "stock" && isNaN(value)) {
+            return; // 숫자가 아닐 경우 아무 것도 하지 않음
+        }
+        setProduct((product) => ({
+            ...product,
+            [e.target.name]: e.target.value,
+        }));
+    }
+
+    const handleEditOnClick = async () => {
+        try {
+            console.log(checkedIds);
+            const response = await instance.put(`/admin/product/${checkedIds}`, product);
+            console.log(response);
+            alert("상품 수정이 완료되었습니다.");
+        } catch (e) {
+            console.error(e);
+            // 중복되었을때 에러
+        }
+        setProduct({
+            title: "",
+            price: 0,
+            stock: 0,
+            categoryId: 0,
+            semiCategoryId: 0,
+            description: "",
+            origin: "대한민국",
+            thumbnailImg: "",
+            contentsImg: []
+        });
+    };
+
+    const handleMainCategoryChange = (e) => {
+        const selectedId = parseInt(e.target.value, 10);
+        setProduct((product) => ({
+            ...product,
+            categoryId: selectedId,
+            semiCategoryId: 0
+        }));
+    };
+
+    const handleSubCategoryChange = (e) => {
+        const selectedId = parseInt(e.target.value, 10);
+        setProduct((prevProduct) => ({
+            ...prevProduct,
+            semiCategoryId: selectedId
+        }));
+    };
+
     return (
         <div css={s.mainBox}>
             <h1>상품 관리</h1>
             <AdminSearch setPageCount={setPageCount} />
             <div css={s.buttonLayout}>
-                <button>수정</button>
+                <button onClick={openModal} disabled={checkedIds.length !== 1}>수정</button>
+                <ReactModal
+                    isOpen={isModalOpen}
+                    onRequestClose={() => setIsModalOpen(false)}
+                    style={{
+                        overlay: {
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        },
+                        content: {
+                            position: "static",
+                            backgroundColor: "white",
+                            padding: "20px",
+                            borderRadius: "5px",
+                            width: "400px",
+                            maxWidth: "90%",
+                            overflow: "auto",
+                            inset: "auto",
+                        },
+                    }}
+                >
+                    <div
+                        css={{
+                            backgroundColor: "white",
+                            padding: "20px",
+                            borderRadius: "5px",
+                            width: "300px",
+                        }}
+                    >
+                        <h2>상품 수정</h2>
+                        <div>
+                            <div css={s.productEditInput}>
+                                <label for="categoryId">카테고리</label>
+                                <select
+                                    name="categoryId"
+                                    value={product.categoryId}
+                                    onChange={handleMainCategoryChange}
+                                    css={s.selectBox}
+                                >
+                                    {
+                                        menus[0]?.subMenus.map(category => (
+                                            <option value={category.id}>{category.name}</option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                            <div css={s.productEditInput}>
+                                <label for="semiCategoryId">서브 카테고리</label>
+                                <select
+                                    name="semiCategoryId"
+                                    value={product.semiCategoryId}
+                                    onChange={handleSubCategoryChange}
+                                    css={s.selectBox}
+                                >
+                                    {
+                                        menus[0].subMenus.find(menu => menu.id === product.categoryId)?.subSideMenus.map((subMenu) => (
+                                            <option key={subMenu.id} value={subMenu.id}>
+                                                {subMenu.name}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                            <div css={s.productEditInput}>
+                                <label for="title">이름</label>
+                                <input
+                                    type="text"
+                                    name="title"
+                                    value={product.title}
+                                    onChange={handleinputOnChange}
+                                />
+                            </div>
+                            <div css={s.productEditInput}>
+                                <label for="price">가격</label>
+                                <input
+                                    type="number"
+                                    name="price"
+                                    value={product.price}
+                                    onChange={handleinputOnChange}
+                                />
+                            </div>
+                            <div css={s.productEditInput}>
+                                <label for="stock">재고</label>
+                                <input
+                                    type="number"
+                                    name="stock"
+                                    value={product.stock}
+                                    onChange={handleinputOnChange}
+                                />
+                            </div>
+                            <div css={s.productEditInput}>
+                                <label for="description">상품설명</label>
+                                <input
+                                    type="text"
+                                    name="description"
+                                    value={product.description}
+                                    onChange={handleinputOnChange}
+                                />
+                            </div>
+                            <div css={s.productEditInput}>
+                                <label for="origin">원산지</label>
+                                <input
+                                    type="text"
+                                    name="origin"
+                                    value={product.origin}
+                                    onChange={handleinputOnChange}
+                                />
+                            </div>
+                            <div >
+                                <label>상품 이미지</label>
+                                <button onClick={() => handleImageUpload("thumbnailImg")}>상품 이미지 등록</button>
+                            </div>
+                            <div>
+                                <label>상세 이미지</label>
+                                <button onClick={() => handleImageUpload("contentsImg")}>상세 이미지 등록</button>
+                            </div>
+                        </div>
+                        <button onClick={handleEditOnClick}>수정</button>
+                        <button onClick={() => setIsModalOpen(false)}>취소</button>
+                    </div>
+                </ReactModal>
                 <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
             </div>
             <div css={s.container}>
@@ -139,7 +407,7 @@ function ProductEdit(props) {
                                 ))
                             }
                             {
-                                product?.semiCategories?.map(category => (
+                                product?.semiCategories?.map(category => ( // 데이터가 없을때 빈 td
                                     <td css={s.productItem} key={category.semiCategoryId}>{category.name}</td>
                                 ))
                             }

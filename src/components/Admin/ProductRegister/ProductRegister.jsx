@@ -199,7 +199,7 @@ function ProductRegister(props) {
                             />
                         </div>
                         <div>
-                            <label for="origin">상품 설명</label>
+                            <label for="description">상품 설명</label>
                             <input
                                 type="text"
                                 name="description"
