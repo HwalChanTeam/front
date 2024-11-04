@@ -48,7 +48,7 @@ export const container = css`
   box-sizing: border-box;
   margin: 0px 20px;
   border: 1px solid #000000;
-  width: 1000px;
+  width: 1200px;
   height: 500px;
   overflow-y: scroll;
   -ms-overflow-style: none;
@@ -78,15 +78,15 @@ export const theadItems = css`
 
   &:nth-of-type(1) { 
     text-align: center;
-    width: 40px;
+    width: 50px;
   }
 
   &:nth-of-type(2) {
-    width: 40px;
+    width: 50px;
   }
 
   &:nth-of-type(3) {
-    width: 140px;
+    width: 160px;
   }
 
   &:nth-of-type(4) {
@@ -94,11 +94,11 @@ export const theadItems = css`
   }
 
   &:nth-of-type(5) {
-    width: 140px;
+    width: 200px;
   }
 
   &:nth-of-type(6) {
-    width: 220px;
+    width: 280px;
   }
   
   &:nth-of-type(7) {
@@ -126,15 +126,15 @@ export const productItem = css`
   &:nth-of-type(1) {
     padding: 0px;
     text-align: center;
-    width: 40px;
+    width: 50px;
   }
 
   &:nth-of-type(2) {
-    width: 40px;
+    width: 50px;
   }
 
   &:nth-of-type(3) {
-    width: 140px;
+    width: 160px;
   }
 
   &:nth-of-type(4) {
@@ -142,11 +142,11 @@ export const productItem = css`
   }
 
   &:nth-of-type(5) {
-    width: 140px;
+    width: 200px;
   }
 
   &:nth-of-type(6) {
-    width: 220px;
+    width: 280px;
   }
 
   &:nth-of-type(7) {
@@ -159,6 +159,36 @@ export const productItem = css`
     text-align: right;
     border-right: none;
   }
+`;
+
+// pageNumber 
+
+export const pageNumber = css`
+    & > ul {
+        display: flex;
+        justify-content: center;
+        list-style-type: none;
+        padding: 0px;
+        & > li {
+            margin: 0px 5px;
+            & a {
+                box-sizing: border-box;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0 0 3px;
+                border: 1px solid #dbdbdb;
+                border-radius: 50%;
+                width: 30px;
+                
+
+            }
+            
+        }
+        & li:nth-of-type(1) {
+            border: none;
+        }
+    }
 `;
 
 

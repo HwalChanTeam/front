@@ -4,12 +4,21 @@ import * as s from './style';
 import { useMutation, useQuery } from 'react-query';
 import { instance } from '../../../apis/util/instance';
 import Modal from '../../Modal/Modal';
+import ReactPaginate from 'react-paginate';
+import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
+import { useNavigate } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 function UserView(props) {
     // 모달 띄우는 상태 추가
     const [openModal, setOpenModal] = useState(false);
     const [checkedIds, setCheckedIds] = useState([]);
     const [users, setUsers] = useState([]);
+    const [searchParam] = useSearchParams();
+    const keyword = searchParam.get("keyword");
+    const [pageCount, setPageCount] = useState(1);
+    const limit = 20;
+    const navigate = useNavigate();
 
     const closeModal = () => {
         setOpenModal(false); // 모달 닫기
@@ -50,17 +59,14 @@ function UserView(props) {
         });
     };
 
+    const handleOnPageChange = (e) => {
+        setPageCount(e.selected + 1);
+        navigate(`/admin/main/user?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
+    }
+
     return (
         <div css={s.mainBox}>
             <h1>유저 관리</h1>
-            {/* 가져와야 할거
-                아이디
-                이름 등 개인정보
-                찜목록
-                장바구니 정보
-                구매목록
-                배송현황??(옵션)
-            */}
             <div css={s.buttonLayout}>
                 <button onClick={() => setOpenModal(true)}>등록</button>
                 <Modal isOpen={openModal} onClose={closeModal} />
@@ -99,6 +105,17 @@ function UserView(props) {
                     ))}
                     {/* </tbody> */}
                 </table>
+            </div>
+            <div css={s.pageNumber}>
+                <ReactPaginate
+                    breakLabel="..."
+                    previousLabel={<><MdNavigateBefore /></>}
+                    nextLabel={<><MdNavigateNext /></>}
+                    pageCount={3}
+                    marginPagesDisplayed={3}
+                    pageRangeDisplayed={5}
+                    onPageChange={handleOnPageChange}
+                />
             </div>
         </div>
     );

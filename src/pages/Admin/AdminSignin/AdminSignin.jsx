@@ -47,6 +47,37 @@ function AdminSignin(props) {
 
     };
 
+    const handleLoginOnkeyDown = async(e) => {
+        if(e.keyCode === 13) {
+            const signinData = await adminSigninApi(admin);
+            if (!signinData.isSuccess) {
+                // 로그인 실패하면?
+                if (signinData.errorStatus === "loginError") {
+                    let EmptyFieldErrors = {
+                        // 에러메시지 초기값
+                        username: <></>,
+                        password: <></>,
+                    };
+                    alert(signinData.error);
+                }
+                return;
+            }
+            console.log(signinData.role)
+            localStorage.setItem("accessToken", "Bearer " + signinData.token.accessToken);
+
+            // role 값을 localStorage에 저장
+            localStorage.setItem("role", signinData.role.name)
+            console.log(signinData.role)
+
+            instance.interceptors.request.use(config => {
+                config.headers["Authorization"] = localStorage.getItem("accessToken");
+                return config;
+            });
+            window.confirm(signinData.successMessage);
+            window.location.replace("/admin/main");
+        }
+    }
+
     return (
         <div css={s.container}>
             <div css={s.signin}>
@@ -64,6 +95,7 @@ function AdminSignin(props) {
                     type="password"
                     value={admin.password}
                     onChange={handleInputOnChange}
+                    onKeyDown={handleLoginOnkeyDown}
                     name="password"
                     placeholder="비밀번호"
                 />
