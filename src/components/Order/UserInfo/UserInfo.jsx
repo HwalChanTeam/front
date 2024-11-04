@@ -144,6 +144,9 @@ function UserInfo(props) {
                         placeholder="배송 메시지를 입력해 주세요"
                     />
                 </div>
+                <div>
+                    적립금 사용 화면
+                </div>
             </div >
         </>
     );

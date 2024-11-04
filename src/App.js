@@ -106,7 +106,7 @@ function App() {
                         <Route path="/product/:productId/*" element={<ProductPage />} />
                         <Route path="/user/signup" element={<SignupPage />} />
                         <Route path="/user/signin" element={<SigninPage />} />
-                        <Route path="/user/product/category" element={<Category />} />
+                        <Route path="/user/product/:categoryId" element={<Category />} />
                         <Route path="/user/products/search" element={<ProductSearchPage />} />
                         <Route path="/cart" element={<UserPrivateRoute element={<ShoppingBasket />} />} />
                         <Route path="/order/*" element={<UserPrivateRoute element={<OrderPage />} />} />

@@ -62,7 +62,7 @@ function UserInfo(props) {
         const dto = {
             id: userInfo.id,
             email: userInfo.email, // 이메일
-            email: userInfo.phoneNumber, // 후대폰
+            phoneNumber: userInfo.phoneNumber, // 후대폰
             address: userInfo.address.address, // 지역 주소
             detailAddress: userInfo.address.detailAddress, // 상세 주소
             zipCode: userInfo.address.zipCode, // 우편번호
@@ -70,15 +70,11 @@ function UserInfo(props) {
             changePassword: userInfo.changePassword, // 변경할 비밀번호
             checkPassword: userInfo.checkPassword, // 비밀번호 확인
         };
-        // 새 비밀번호와 비밀번호 확인이 입력된 경우에만 추가
-        if (userInfo.changePassword && userInfo.checkPassword) {
-            dto.changePassword = userInfo.changePassword;
-            dto.checkPassword = userInfo.checkPassword;
-        } else {
-            // null 값인 속성을 삭제
-            delete dto.changePassword;
-            delete dto.checkPassword;
-        }
+    // 새 비밀번호와 비밀번호 확인이 입력된 경우에만 추가
+    if (userInfo.changePassword && userInfo.checkPassword) {
+        dto.changePassword = userInfo.changePassword; // 변경할 비밀번호
+        dto.checkPassword = userInfo.checkPassword; // 비밀번호 확인
+    }
         userInfoEditmutation.mutate(dto);
     };
 
@@ -180,7 +176,7 @@ function UserInfo(props) {
                             type="text"
                             name="zipCode"
                             readOnly
-                            value={userInfo.address.zipCode}
+                            value={userInfo?.address?.zipCode}
                         />
                         <DaumPost onComplete={handleAddressComplete} />
                     </p>
@@ -190,7 +186,7 @@ function UserInfo(props) {
                             type="text"
                             name="address"
                             readOnly
-                            value={userInfo.address.address} // 지역 주소 반영
+                            value={userInfo?.address?.address} // 지역 주소 반영
                         />
                     </div>
                     <div css={s.inputBox}>
@@ -199,7 +195,7 @@ function UserInfo(props) {
                             type="text"
                             name="detailAddress"
                             onChange={handleUserInfoOnChange}
-                            value={userInfo.address.detailAddress} // 나머지 주소 반영
+                            value={userInfo?.address?.detailAddress} // 나머지 주소 반영
                         />
                     </div>
                 </div>

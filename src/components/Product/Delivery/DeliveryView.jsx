@@ -6,7 +6,7 @@ function DeliveryView(props) {
 
     return (
         <div>
-            
+            {/* 크롤ㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹ링 이미지 */}
         </div>
     );
 }

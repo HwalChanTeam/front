@@ -30,6 +30,11 @@ function Category(props) {
         ["category", categoryId, pageCount],
         async () => {
             return await instance.get(`/user/public/product/category?categoryId=${categoryId}&page=${pageCount}&limit=${limit}`); // 추후 수정 예정 
+            // return await instance.get("/user/public/product/category", {params: {
+            //     categoryId : categoryId,
+            //     page : pageCount,
+            //     limit : limit
+            // }});
         },
         {
             refetchOnWindowFocus: false,

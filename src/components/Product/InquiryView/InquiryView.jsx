@@ -5,7 +5,7 @@ function InquiryView(props) {
     const { id } = useParams();
     return (
         <div>
-
+            {/* 크롤ㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹ링 이미지 */}
         </div>
     );
 }

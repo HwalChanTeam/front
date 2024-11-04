@@ -28,6 +28,16 @@ function MainHeader(props) {
         navigate("/mypage")
     }
 
+    const handleCartButtonOnClick = () => {
+        if (!token) {
+            if (window.confirm("로그인이 필요한 서비스 입니다.\n로그인 하시겠습니까?")) {
+                navigate("/user/signin")
+            }
+            return;
+        }
+        navigate("/cart")
+    }
+
     return (
         <div css={s.layout}>
             <div css={s.background}>
@@ -42,7 +52,7 @@ function MainHeader(props) {
                         !token ?
                             <div css={s.buttonLayout}>
                                 <Link to={"/user/signin"}><RiLoginBoxLine /></Link>
-                                <Link to={"/cart"}><SlBasket /></Link>
+                                <a onClick={handleCartButtonOnClick}><SlBasket /></a>
                                 <a onClick={handleMyPageOnClick}><LuUser /></a>
                             </div>
                             :
