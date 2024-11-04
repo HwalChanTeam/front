@@ -15,7 +15,7 @@ function Category(props) {
     const [searchParams, setSearchParams] = useSearchParams(); // 주소:포트/페이지URL?key=value(쿼리스트링, 파람스)
     // const categoryId = useParams();
     const [productList, setProductList] = useState([]);
-    const id = searchParams.get("categoryId");
+    const categoryId = searchParams.get("categoryId");
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
     // const [search, setSearch] = useState({
@@ -27,9 +27,9 @@ function Category(props) {
 
     // 카테고리 조회 query
     const category = useQuery(
-        ["category", id, pageCount],
+        ["category", categoryId, pageCount],
         async () => {
-            return await instance.get(`/user/public/product/category?id=${id}&page=${pageCount}&limit=${limit}`); // 추후 수정 예정 
+            return await instance.get(`/user/public/product/category?categoryId=${categoryId}&page=${pageCount}&limit=${limit}`); // 추후 수정 예정 
         },
         {
             refetchOnWindowFocus: false,
@@ -63,7 +63,7 @@ function Category(props) {
     );
 
     const handleOnPageChange = (e) => {
-        navigate(`/user/category?categoryId=${id}&page=${e.selected + 1}&limit=${limit}`);
+        navigate(`/user/category?categoryId=${categoryId}&page=${e.selected + 1}&limit=${limit}`);
     }
 
     return (

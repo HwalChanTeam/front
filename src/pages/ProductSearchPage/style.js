@@ -9,8 +9,6 @@ export const layout = css`
 
 export const contentLayout = css`
     box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
     width: 100%;
 `;
 
