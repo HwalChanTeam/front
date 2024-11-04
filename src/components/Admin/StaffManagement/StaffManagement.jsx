@@ -4,12 +4,20 @@ import { instance } from "../../../apis/util/instance";
 import Modal from "../../Modal/Modal";
 import * as s from "./style";
 import { useState } from "react";
+import ReactPaginate from "react-paginate";
+import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function StaffManagement(props) {
     // 모달 띄우는 상태 추가
     const [openModal, setOpenModal] = useState(false);
     const [checkedIds, setCheckedIds] = useState([]);
     const [staffs, setStaffs] = useState([]);
+    const [searchParam] = useSearchParams();
+    const keyword = searchParam.get("keyword");
+    const [pageCount, setPageCount] = useState(1);
+    const limit = 20;
+    const navigate = useNavigate();
 
     const closeModal = () => {
         setOpenModal(false); // 모달 닫기
@@ -50,6 +58,11 @@ function StaffManagement(props) {
             }
         });
     };
+
+    const handleOnPageChange = (e) => {
+        setPageCount(e.selected + 1);
+        navigate(`/admin/main/staff?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
+    }
 
     return (
         <div css={s.mainBox}>
@@ -98,6 +111,17 @@ function StaffManagement(props) {
                     ))}
                     {/* </tbody> */}
                 </table>
+            </div>
+            <div css={s.pageNumber}>
+                <ReactPaginate
+                    breakLabel="..."
+                    previousLabel={<><MdNavigateBefore /></>}
+                    nextLabel={<><MdNavigateNext /></>}
+                    pageCount={3}
+                    marginPagesDisplayed={3}
+                    pageRangeDisplayed={5}
+                    onPageChange={handleOnPageChange}
+                />
             </div>
         </div>
     );
