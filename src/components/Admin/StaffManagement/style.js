@@ -86,7 +86,7 @@ export const theadItems = css`
   }
 
   &:nth-of-type(3) {
-    width: 130px;
+    width: 140px;
   }
 
   &:nth-of-type(4) {
@@ -98,7 +98,7 @@ export const theadItems = css`
   }
 
   &:nth-of-type(6) {
-    width: 180px;
+    width: 220px;
   }
   
   &:nth-of-type(7) {
@@ -134,7 +134,7 @@ export const productItem = css`
   }
 
   &:nth-of-type(3) {
-    width: 130px;
+    width: 140px;
   }
 
   &:nth-of-type(4) {
@@ -146,7 +146,7 @@ export const productItem = css`
   }
 
   &:nth-of-type(6) {
-    width: 180px;
+    width: 220px;
   }
 
   &:nth-of-type(7) {
