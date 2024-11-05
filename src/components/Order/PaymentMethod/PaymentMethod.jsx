@@ -6,26 +6,30 @@ import * as s from "./style";
 function PaymentMethod({ setPatMentState }) {
 
     // 클릭하였을 때 빨간 테두리 뜨게할려고 만든 상태
-    const [ redOutLine, setRedOutLine ] = useState(false);
+    // 신용카드
+    const [ cardRedOutLine, setCardRedOutLine ] = useState(false);
+    // 무통장
+    const [ bankAccountRedOutLine, setBankAccountRedOutLine ] = useState(false);
 
     const handleCardClick = () => {
         setPatMentState(2);
-        setRedOutLine(true);
+        setCardRedOutLine(true); // 카드의 상태가 true로 바뀌면서 테두리 o
+        setBankAccountRedOutLine(false); // 무통장의 상태가 false로 바뀌면서 테두리 x
     };
 
     const handleBankAccountClick = () => {
         setPatMentState(1);
-        setRedOutLine(true);
+        setCardRedOutLine(false); // 카드의 상태가 false로 바뀌면서 테두리 x
+        setBankAccountRedOutLine(true); // 무통장의 상태가 true로 바뀌면서 테두리 o
     };
-
-
-    console.log(redOutLine);
 
     return (
         <div css={s.payInfo}>
             <h2>결제수단 선택</h2>
-            <button css={s.selectClick(redOutLine)} onClick={handleCardClick}>신용카드</button>
-            <button onClick={handleBankAccountClick}>무통장 입금</button>
+            <button css={s.selectClick(cardRedOutLine)} 
+                onClick={handleCardClick}>신용카드</button>
+            <button css={s.selectClick(bankAccountRedOutLine)} 
+                onClick={handleBankAccountClick}>무통장 입금</button>
         </div>
     );
 }

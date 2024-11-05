@@ -127,7 +127,6 @@ export const payInfo = css`
     font-weight: 600;
     background-color: transparent;
     margin-right: 50px;
-    border: 1px solid #dbdbdb;
     &:hover {
       background-color: #eaeaea;
     }
@@ -160,7 +159,7 @@ export const payinfo = css`
 `;
 
 export const selectClick = (isSelected) => css`
-    border: ${isSelected ? "2px solid #964747" : "transparent"};
+    border: 1px solid ${isSelected ? "#964747" : "#dbdbdb"};
 `;
 
 export const submitButton = css`
