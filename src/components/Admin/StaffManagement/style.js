@@ -30,6 +30,7 @@ export const buttonLayout = css`
     color: #f5f5f5;
     font-size: 14px;
     font-weight: 600;
+    margin-right: 20px;
 
     &:hover {
       background-color: #686d76;
@@ -39,7 +40,7 @@ export const buttonLayout = css`
     }
 
     &:nth-last-of-type(1) {
-      margin-left: 20px;
+      margin-right: 0;
     }
   }
 `;

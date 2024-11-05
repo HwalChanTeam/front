@@ -7,10 +7,12 @@ import ReactPaginate from "react-paginate";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import StaffRegisterModal from "../../Modal/StaffRegisterModal";
+import StaffEditModal from "../../Modal/StaffEditModal";
 
 function StaffManagement(props) {
     // 모달 띄우는 상태 추가
-    const [openModal, setOpenModal] = useState(false);
+    const [openRegisterModal, setOpenRegisterModal] = useState(false);
+    const [openEditModal, setOpenEditModal] = useState(false);
     const [checkedIds, setCheckedIds] = useState([]);
     const [staffs, setStaffs] = useState([]);
     const [searchParam] = useSearchParams();
@@ -20,7 +22,8 @@ function StaffManagement(props) {
     const navigate = useNavigate();
 
     const closeModal = () => {
-        setOpenModal(false); // 모달 닫기
+        setOpenRegisterModal(false); // 모달 닫기
+        setOpenEditModal(false);
     };
 
     const staffQuery = useQuery(
@@ -35,11 +38,19 @@ function StaffManagement(props) {
             refetchOnWindowFocus: false
         }
     );
+    console.log(staffs)
+
+    const handleEditButtonOnClick = () => {
+        if(checkedIds.length === 1) {
+            setOpenEditModal(true);
+        } else {
+            alert("직원을 선택해 주세요")
+        }
+    }
 
     // 삭제를 위한 mutation
     const deleteMutation = useMutation(
         async () => {
-            console.log(checkedIds);
             await instance.delete(`/admin/user/${checkedIds}`, { data: { checkedIds } });
         },
         {
@@ -51,6 +62,16 @@ function StaffManagement(props) {
             }
         }
     );
+
+    const handleDeleteButtonOnClick = () => {
+        if(checkedIds.length === 0) {
+            alert("직원을 선택해 주세요")
+            return;
+        }
+        if(window.confirm("정말 삭제하시겠습니까?")) {
+            deleteMutation.mutate();
+        }
+    }
 
     // 체크박스 체크를 위한 함수
     const handleCheckBoxOnChange = (staffId) => {
@@ -73,9 +94,20 @@ function StaffManagement(props) {
         <div css={s.mainBox}>
             <h1>직원 관리</h1>
             <div css={s.buttonLayout}>
-                <button onClick={() => setOpenModal(true)}>등록</button>
-                <StaffRegisterModal isOpen={openModal} onClose={closeModal} refetch={staffQuery.refetch}/>
-                <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
+                <button onClick={() => setOpenRegisterModal(true)}>등록</button>
+                <StaffRegisterModal isOpen={openRegisterModal} onClose={closeModal} refetch={staffQuery.refetch}/>
+                {
+                    checkedIds.length >= 2
+                    ?
+                    <></>
+                    :
+                    <>
+                    <button onClick={handleEditButtonOnClick}>수정</button>
+                    <StaffEditModal isOpen={openEditModal} onClose={closeModal} staffQuery={staffs} checkId={checkedIds}/>
+                    </>
+                }
+
+                <button onClick={handleDeleteButtonOnClick}>삭제</button>
             </div>
             <div css={s.container}>
                 <table css={s.theadLayout}>
@@ -122,7 +154,7 @@ function StaffManagement(props) {
                     breakLabel="..."
                     previousLabel={<><MdNavigateBefore /></>}
                     nextLabel={<><MdNavigateNext /></>}
-                    pageCount={3}
+                    pageCount={1}
                     marginPagesDisplayed={3}
                     pageRangeDisplayed={5}
                     onPageChange={handleOnPageChange}

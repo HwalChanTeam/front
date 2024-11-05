@@ -61,6 +61,7 @@ function AdminMainPage(props) {
 
     const handleLogout = () => {
         localStorage.removeItem("accessToken"); // 로컬 스토리지에서 토큰 삭제
+        localStorage.removeItem("role");
         navigate("/admin");
         window.location.reload(); // 페이지를 새로 고침하여 상태를 초기화
     };
