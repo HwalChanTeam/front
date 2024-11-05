@@ -3,12 +3,21 @@ import { css } from "@emotion/react";
 export const layout = css`
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 20px 0px;
-    width: 1200px;
+    width: 100%;
     position: sticky;
     top: 100px;
     z-index: 100;
     background-color: white;
+`;
+
+export const box = css`
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    width: 1200px;
+
 `;
 
 export const menusLayout = css`
