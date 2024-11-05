@@ -55,6 +55,12 @@ function SigninPage(props) {
         signinUser.mutate(user);
     };
 
+    const handleLoginSubmitOnkeyDown = (e) => {
+        if(e.keyCode === 13) {
+            signinUser.mutate(user);
+        }
+    }
+
     return (
         <div css={s.mainLayout}>
             <h1 css={s.logo}>
@@ -76,6 +82,7 @@ function SigninPage(props) {
                         type="password"
                         name="password"
                         onChange={userInputOnChange}
+                        onKeyDown={handleLoginSubmitOnkeyDown}
                         value={user.password}
                         placeholder="비밀번호를 입력해 주세요"
                     />
