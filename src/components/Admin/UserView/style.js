@@ -159,8 +159,10 @@ export const pageNumber = css`
     & > ul {
         display: flex;
         justify-content: center;
-        list-style-type: none;
+        margin-left: 20px;
         padding: 0px;
+        width: 1200px;
+        list-style-type: none;
         & > li {
             margin: 0px 5px;
             & a {

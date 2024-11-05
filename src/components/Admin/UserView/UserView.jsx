@@ -106,17 +106,17 @@ function UserView(props) {
                     {/* </tbody> */}
                 </table>
             </div>
-            <div css={s.pageNumber}>
-                <ReactPaginate
-                    breakLabel="..."
-                    previousLabel={<><MdNavigateBefore /></>}
-                    nextLabel={<><MdNavigateNext /></>}
-                    pageCount={3}
-                    marginPagesDisplayed={3}
-                    pageRangeDisplayed={5}
-                    onPageChange={handleOnPageChange}
-                />
-            </div>
+                <div css={s.pageNumber}>
+                    <ReactPaginate
+                        breakLabel="..."
+                        previousLabel={<><MdNavigateBefore /></>}
+                        nextLabel={<><MdNavigateNext /></>}
+                        pageCount={3}
+                        marginPagesDisplayed={3}
+                        pageRangeDisplayed={5}
+                        onPageChange={handleOnPageChange}
+                    />
+                </div>
         </div>
     );
 }

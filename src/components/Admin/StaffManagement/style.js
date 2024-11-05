@@ -162,13 +162,18 @@ export const productItem = css`
 `;
 
 // pageNumber 
+export const numberBox = css`
+  width: 1200px;
+`;
 
 export const pageNumber = css`
     & > ul {
         display: flex;
         justify-content: center;
-        list-style-type: none;
+        margin-left: 20px;
         padding: 0px;
+        width: 1200px;
+        list-style-type: none;
         & > li {
             margin: 0px 5px;
             & a {
@@ -180,8 +185,6 @@ export const pageNumber = css`
                 border: 1px solid #dbdbdb;
                 border-radius: 50%;
                 width: 30px;
-                
-
             }
             
         }
