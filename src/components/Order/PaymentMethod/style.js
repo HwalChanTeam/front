@@ -159,6 +159,10 @@ export const payinfo = css`
   justify-content: space-between;
 `;
 
+export const selectClick = (isSelected) => css`
+    border: ${isSelected ? "2px solid #964747" : "transparent"};
+`;
+
 export const submitButton = css`
   display: flex;
   justify-content: center;
