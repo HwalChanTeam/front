@@ -9,8 +9,8 @@ function StaffRegisterModal({ isOpen, onClose, refetch }) {
         username: "",
         name: "",
         email: "",
-        password: "",
-        checkPassword: "",
+        // password: "",
+        // checkPassword: "",
         phoneNumber: ""
     })
 
@@ -35,8 +35,8 @@ function StaffRegisterModal({ isOpen, onClose, refetch }) {
                         username: "",
                         name: "",
                         email: "",
-                        password: "",
-                        checkPassword: "",
+                        // password: "",
+                        // checkPassword: "",
                         phoneNumber: ""
                     })
                     refetch();
@@ -94,8 +94,8 @@ function StaffRegisterModal({ isOpen, onClose, refetch }) {
                 <h2>매니저 등록</h2>
                 <input type="text" name="name" placeholder='이름' onChange={handleInputOnChange} value={userData.name}/>
                 <input type="text" name="username" placeholder='아이디' onChange={handleInputOnChange} value={userData.username}/>
-                <input type="text" name="password" placeholder='비밀번호' onChange={handleInputOnChange} value={userData.password}/>
-                <input type="text" name="checkPassword" placeholder='비밀번호 확인' onChange={handleInputOnChange} value={userData.checkPassword}/>
+                {/* <input type="text" name="password" placeholder='비밀번호' onChange={handleInputOnChange} value={userData.password}/>
+                <input type="text" name="checkPassword" placeholder='비밀번호 확인' onChange={handleInputOnChange} value={userData.checkPassword}/> */}
                 <input type="text" name="email" placeholder='이메일' onChange={handleInputOnChange} value={userData.email}/>
                 <input type="text" name="phoneNumber" placeholder='연락처' onChange={handleInputOnChange} value={userData.phoneNumber}/>
                 <input type="text" readOnly placeholder='ROLE_MANAGER' />
