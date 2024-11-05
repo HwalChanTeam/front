@@ -4,6 +4,8 @@ export const layout = css`
   box-sizing: border-box;
   width: 100%;
   height: 100px;
+  position: sticky;
+  top: 0;
 `;
 
 export const background = css`

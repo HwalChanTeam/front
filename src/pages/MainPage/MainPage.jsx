@@ -16,6 +16,11 @@ function MainPage() {
     const [bestProductList, setBestProductList] = useState([]);
     const [respectProductList, setRespectProductList] = useState([]);
 
+                // 페이지가 마운트될 때 스크롤을 맨 위로 이동
+                useEffect(() => {
+                    window.scrollTo(0, 0);
+                }, []);
+
     // 신상품 가져오는 쿼리
     const newProduct = useQuery(
         ["newProducts"],
@@ -72,7 +77,6 @@ function MainPage() {
     };
 
     const respectImgOnClick = (productId) => {
-        newProduct(productId);
         navigate(`/product/${productId}`);
     };
 

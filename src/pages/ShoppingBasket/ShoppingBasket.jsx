@@ -201,7 +201,7 @@ function ShoppingBasket(props) {
                                 <th>비고</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody css={s.tbody}>
                             {productList?.map((product, index) => (
                                 <tr key={product.productId}>
                                     <td>

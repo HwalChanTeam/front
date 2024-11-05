@@ -111,6 +111,15 @@ export const thead = css`
   } */
 `;
 
+export const tbody = css`
+  & td:nth-last-of-type(5) {
+    width: 100px;
+  }
+  & td:nth-last-of-type(2) {
+    width: 150px;
+  }
+`;
+
 export const img = css`
   & img {
     width: 100px;
