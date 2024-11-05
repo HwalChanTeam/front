@@ -21,13 +21,8 @@ function AdminSignin(props) {
         const signinData = await adminSigninApi(admin);
         if (!signinData.isSuccess) {
             // 로그인 실패하면?
-            if (signinData.errorStatus === "loginError") {
-                let EmptyFieldErrors = {
-                    // 에러메시지 초기값
-                    username: <></>,
-                    password: <></>,
-                };
-                alert(signinData.error);
+            if (signinData.errorStatus === "loginError" || "fieldError") {
+                alert("로그인 실패");
             }
             return;
         }
