@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import *as s from './style';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
@@ -15,6 +15,8 @@ function ProductOrder(props) {
 
     const [checkedIds, setCheckedIds] = useState([]);
     const [orders, setOrders] = useState([]);
+    // 주문 상태 
+    const [orderStatus, setOrderStatus] = useState(1); // 1: 배송준비중 1을 디볼트로 
     const [searchParam] = useSearchParams();
     const keyword = searchParam.get("keyword");
     const [pageCount, setPageCount] = useState(1);
@@ -25,6 +27,7 @@ function ProductOrder(props) {
         setOpenModal(false); // 모달 닫기
     };
 
+    // 주문 목록 조회
     const orderQuery = useQuery(
         ["useQuery"],
         async () => {
@@ -34,10 +37,15 @@ function ProductOrder(props) {
         }
     );
 
+    // 주문상태 - 고객의 행동에 따라 환불, 취소, 배송완료, 배송중으로 바꾸기 (배송중은 관리자가 바꾸게 하기)
+    useEffect(() => {
+
+    }, [])
+
     const deleteMutation = useMutation(
         async () => {
             console.log(checkedIds);
-            await instance.delete("/admin/order", { data: { checkedIds } });
+            await instance.delete("/admin/order/", { data: { checkedIds } });
         },
         {
             retry: 0,
@@ -66,16 +74,15 @@ function ProductOrder(props) {
         navigate(`/admin/main/order?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
     }
 
-
     return (
         <div css={s.mainBox}>
             <h1>주문 관리</h1>
             <AdminSearch />
-            {/* <div css={s.buttonLayout}> // 주문관리는 
-                <button onClick={() => setOpenModal(true)}>등록</button>
+            <div css={s.buttonLayout}>
+                <button onClick={() => setOpenModal(true)}>배송시작</button>
                 <Modal isOpen={openModal} onClose={closeModal} />
                 <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
-            </div> */}
+            </div>
             <div css={s.container}>
                 <table css={s.theadLayout}>
                     <tr>
@@ -109,7 +116,11 @@ function ProductOrder(props) {
                                 <td css={s.productItem}>{item.product.title}</td> {/* 상품이름 */}
                                 <td css={s.productItem}>{item.product.price.toLocaleString()}</td> {/* 상품가격 */}
                                 <td css={s.productItem}>{item.quantity}</td> {/* 상품수량 */}
-                                <td css={s.productItem}>{((item.product.price) * (item.quantity)).toLocaleString()}</td> {/* 총 상품 금액 */}
+                                <td css={s.productItem}> {/* 총 상품 금액(수량 * 가격) : 3만원 이상일시 배송비 포함 x */}
+                                    {((item.product.price) * (item.quantity) >= 30000
+                                        ? (item.product.price) * (item.quantity) 
+                                        : (item.product.price) * (item.quantity) + 3000).toLocaleString()} 
+                                </td> 
                                 <td css={s.productItem}>{order.orderStatus}</td>
                                 <td css={s.productItem}>{order.createdAt}</td>
                             </tr>
