@@ -9,29 +9,25 @@ export const layout = css`
 
 export const contentLayout = css`
     box-sizing: border-box;
-    width: 100%;
+    width: 850px;
     & table {
         width: 100%;
     }
 `;
 
 export const tableLayout = css`
-    width: 1200px;
+    width: 100%;
 `;
 
 export const subLayout = css`
     box-sizing: border-box;
     margin-bottom: 12px;
-    width: 85px;
     display: flex;
     flex-direction: column;
-    border-bottom: 3px solid #AA1414;
 
     & h2 {
         margin: 10px 0px 3px;
         padding-left: 5px;
-        width: 100%;
-        font-size: 18px;
     }
 
 `;

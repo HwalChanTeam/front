@@ -23,7 +23,6 @@ function WishList(props) {
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: (response) => {
-                console.log(response.data.body.map((item) => item.product))
                 setProductLikeList(response.data.body.map((item) => item.product[0])); // 데이터 어떻게 들어오는지 확인!!!!!! response.data.product?? 수졍해야함
             }
         }
@@ -48,14 +47,11 @@ function WishList(props) {
     // 장바구니 추가 기능
     const productToBaskect = useMutation(
         async (product) => {
-            console.log("아래가 데이터!!!!!")
-            console.log(product)
             const CartProduct = {
                 productId : product.productId,
                 quantity : 1,
                 price : product.price,
             }
-            console.log(CartProduct)
             return await instance.post("/user/cart/", CartProduct);
         },
         {
@@ -63,7 +59,9 @@ function WishList(props) {
                 console.error("오류!!!" + error)
             },
             onSuccess: () => {
-                console.log("성공")
+                if (window.confirm("장바구니에 추가하였습니다.\n장바구니로 이동하시겠습니까?")) {
+                navigate("/cart")
+            }
             }
         }
     )
@@ -71,9 +69,6 @@ function WishList(props) {
     // 장바구니 이동 기능 추가
     const handleProductToBaskect = (product) => {
         productToBaskect.mutate(product);
-        if (window.confirm("장바구니에 추가하였습니다.\n장바구니로 이동하시겠습니까?")) {
-            navigate("/cart")
-        }
     }
 
     // "/product?category=1&/productId=12"
@@ -95,7 +90,7 @@ function WishList(props) {
                                     <td>
                                         <div css={s.menuList}>
                                             <div css={s.imgLayout}>
-                                                <Link key={product.productId} to="/product/:productId">
+                                                <Link key={product.productId} to={`/product/${product.productId}`}>
                                                     <img src={product?.thumbnailImg} />
                                                 </Link>
                                             </div>

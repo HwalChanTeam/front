@@ -51,13 +51,14 @@ function MainPage() {
     const respectProduct = useQuery(
         ["respectProduct"],
         async () => {
-            return await instance.get("/user/public/???");
+            return await instance.get("/user/public/recom");
         },
         {
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: (response) => {
                 setRespectProductList(response.data);
+                console.log(response.data)
             },
         }
     );
@@ -154,7 +155,7 @@ function MainPage() {
                                         css={s.MDProductImgLayout}
                                         key={respectProduct.productId}
                                     >
-                                        <img src={respectProduct.thumbnailImg} />
+                                        <img src={respectProduct.thumbnailImg} onClick={() => respectImgOnClick(respectProduct.productId)}/>
                                         <div>
                                             <p>{respectProduct.title}</p>
                                             <p>{respectProduct.price.toLocaleString()}원</p>
