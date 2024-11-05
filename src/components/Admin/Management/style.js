@@ -22,9 +22,9 @@ export const contentsBox = css`
 `;
 
 export const leftBox = css`
-  width: 900px;
+  width: 750px;
 `;
 
 export const rightBox = css`
-  width: 900px;
+  width: 750px;
 `;

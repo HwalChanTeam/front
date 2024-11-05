@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { useMutation, useQuery } from "react-query";
 import { instance } from "../../../apis/util/instance";
-import Modal from "../../Modal/Modal";
 import * as s from "./style";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import StaffRegisterModal from "../../Modal/StaffRegisterModal";
 
 function StaffManagement(props) {
     // 모달 띄우는 상태 추가
@@ -26,16 +26,21 @@ function StaffManagement(props) {
     const staffQuery = useQuery(
         ["useQuery"],
         async () => {
-            const response = await instance.get("admin/user?role=2");
-            console.log(response?.data?.user);
+            const response = await instance.get("admin/user", {params: {page:pageCount, limit, role: 2}});
+            console.log(response);
             setStaffs(response?.data?.user);
+        },
+        {
+            retry: 0,
+            refetchOnWindowFocus: false
         }
     );
 
+    // 삭제를 위한 mutation
     const deleteMutation = useMutation(
         async () => {
             console.log(checkedIds);
-            await instance.delete("/admin/user", { data: { checkedIds } });
+            await instance.delete(`/admin/user/${checkedIds}`, { data: { checkedIds } });
         },
         {
             retry: 0,
@@ -46,8 +51,8 @@ function StaffManagement(props) {
             }
         }
     );
-    
 
+    // 체크박스 체크를 위한 함수
     const handleCheckBoxOnChange = (staffId) => {
         console.log(staffId);
         setCheckedIds((ids) => {
@@ -69,7 +74,7 @@ function StaffManagement(props) {
             <h1>직원 관리</h1>
             <div css={s.buttonLayout}>
                 <button onClick={() => setOpenModal(true)}>등록</button>
-                <Modal isOpen={openModal} onClose={closeModal} />
+                <StaffRegisterModal isOpen={openModal} onClose={closeModal} refetch={staffQuery.refetch}/>
                 <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
             </div>
             <div css={s.container}>
