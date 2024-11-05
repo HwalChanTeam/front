@@ -25,6 +25,12 @@ function AdminSearch({ setPageCount }) {
         });
     };
 
+    const handleOnKeyDownEnter = (e) => {
+        if(e.keyCode === 13) {
+            handleSubmitButtonOnClick();
+        }
+    }
+
     return (
         <div css={s.layout}>
             <div css={s.searchSection}>
@@ -33,6 +39,7 @@ function AdminSearch({ setPageCount }) {
                     name="title"
                     value={searchProduct.title}
                     onChange={handleSearchOnChange}
+                    onKeyDown={handleOnKeyDownEnter}
                     placeholder="검색어를 입력하세요"
                     css={s.searchInput}
                 />
