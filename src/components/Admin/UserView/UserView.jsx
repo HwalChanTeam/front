@@ -8,6 +8,7 @@ import ReactPaginate from 'react-paginate';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
+import UserEditModal from '../../Modal/UserEditModal';
 
 function UserView(props) {
     // 모달 띄우는 상태 추가
@@ -24,19 +25,25 @@ function UserView(props) {
         setOpenModal(false); // 모달 닫기
     };
 
+    // 조회를 위한 쿼리
     const userQuery = useQuery(
         ["useQuery"],
         async () => {
-            const response = await instance.get("admin/user?role=3");
-            console.log(response?.data?.user);
-            setUsers(response?.data?.user);
+            return await instance.get("admin/user", {params: {page: pageCount, limit, role: 3}});
+        },
+        {
+            onSuccess: (response) => {
+                setUsers(response.data.user);
+                console.log(response);
+            }
         }
     );
 
+    // 삭제를 위한 mutation
     const deleteMutation = useMutation(
         async () => {
             console.log(checkedIds);
-            await instance.delete("/admin/user", { data: { checkedIds } });
+            await instance.delete(`/admin/user/${checkedIds}`, { data: { checkedIds } });
         },
         {
             retry: 0,
@@ -47,6 +54,12 @@ function UserView(props) {
             }
         }
     );
+
+    const handleDeledtButtonOnClick = () => {
+        if(window.confirm("유저가 삭제됩니다. 정말 삭제하시겠습니까?")) {
+            deleteMutation.mutate();
+        }
+    }
     
     const handleCheckBoxOnChange = (userId) => {
         console.log(userId);
@@ -64,13 +77,15 @@ function UserView(props) {
         navigate(`/admin/main/user?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
     }
 
+    console.log(userQuery)
+
     return (
         <div css={s.mainBox}>
             <h1>유저 관리</h1>
             <div css={s.buttonLayout}>
-                <button onClick={() => setOpenModal(true)}>등록</button>
-                <Modal isOpen={openModal} onClose={closeModal} />
-                <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
+                <button onClick={() => setOpenModal(true)}>수정</button>
+                <UserEditModal isOpen={openModal} onClose={closeModal} users={users} checkId={checkedIds}/> 
+                <button onClick={handleDeledtButtonOnClick}>삭제</button>
             </div>
             <div css={s.container}>
                 <table css={s.theadLayout}>
