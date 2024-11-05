@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Navigate, useLocation } from 'react-router-dom';
+import { Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 // 인증 상태를 확인하는 함수
 const isAuthenticated = () => {
@@ -7,13 +7,15 @@ const isAuthenticated = () => {
   return !!token;
 };
 
+
+
 // 관리자 권한을 확인하는 함수
 const isAdmin = () => {
   const role = localStorage.getItem('role');
-  if(role === 'ROLE_USER' || null) {
-    return;
+  if (role === 'ROLE_USER' || role === null) {
+    return false;
   }
-  return role === 'ROLE_ADMIN' || 'ROLE_MANAGER';
+  return role === 'ROLE_ADMIN' || role === 'ROLE_MANAGER';
 };
 
 // PrivateRoute 컴포넌트
@@ -22,11 +24,17 @@ const UserPrivateRoute = ({ element }) => {
   return isAuthenticated() ? element : <Navigate to="/user/signin" state={{ from: location }} />;
 };
 
-// AdminRoute 컴포넌트
 const AdminRoute = ({ element }) => {
-  const location = useLocation();
+  const navigate = useNavigate();
+  const isAdminUser = isAdmin();
 
-  return isAuthenticated() && isAdmin() ? element : <Navigate to="/admin" state={{ from: location }} />;
+  // 권한이 없으면 리다이렉트
+  if (!isAdminUser) {
+    navigate("/admin");  // 권한 없으면 관리자 로그인 페이지로 리다이렉트
+    return null;
+  }
+
+  return element;
 };
 
 export { UserPrivateRoute, AdminRoute };
