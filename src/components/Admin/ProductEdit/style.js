@@ -48,7 +48,7 @@ export const container = css`
   box-sizing: border-box;
   border: 1px solid #000000;
   margin: 0px 20px;
-  width: 1700px;
+  width: 1600px;
   height: 500px;
   overflow-y: scroll;
   -ms-overflow-style: none;
@@ -79,25 +79,28 @@ export const theadItems = css`
     width: 40px;
   }
   &:nth-of-type(2) {
-    width: 100px;
+    width: 140px;
   }
   &:nth-of-type(3) {
     width: 120px;
     table-layout: fixed;
   }
   &:nth-of-type(4) {
-    width: 200px;
+    width: 300px;
   }
   &:nth-of-type(5) {
-    width: 80px;
+    width: 160px;
   }
   &:nth-of-type(6) {
-    width: 120px;
+    width: 160px;
   }
   &:nth-of-type(7) {
-    width: 70px;
+    width: 100px;
   }
   &:nth-of-type(8) {
+    width: 100px;
+  }
+  &:nth-of-type(9) {
     border-right: none;
   }
 `;
@@ -125,27 +128,35 @@ export const productItem = css`
   }
   &:nth-of-type(2) {
     padding-left: 5px;
-    width: 100px;
+    width: 140px;
   }
   &:nth-of-type(3) {
     padding-left: 5px;
     width: 120px;
   }
   &:nth-of-type(4) {
-    width: 200px;
+    padding-left: 5px;
+    width: 300px;
   }
   &:nth-of-type(5) {
-    width: 80px;
+    padding-left: 5px;
+    width: 160px;
   }
   &:nth-of-type(6) {
-    width: 120px;
+    width: 160px;
     text-align: right;
   }
   &:nth-of-type(7) {
-    width: 70px;
+    width: 100px;
     text-align: right;
   }
-  &:nth-of-type(8) {
+
+  :nth-of-type(8) {
+    width: 100px;
+    text-align: right;
+  }
+
+  &:nth-of-type(9) {
     text-align: right;
     border-right: none;
   }
@@ -351,7 +362,7 @@ export const pageNumber = css`
         justify-content: center;
         list-style-type: none;
         padding-left: 20px;
-        width: 1700px;
+        width: 1600px;
         & > li {
             margin: 0px 5px;
             & a {
