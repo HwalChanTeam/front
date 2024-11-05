@@ -17,7 +17,7 @@ export const mainBox = css`
 
 export const buttonLayout = css`
   box-sizing: border-box;
-  padding: 90px 0 50px 20px;
+  padding-left: 20px;
   width: 300px;
   height: 50px;
 
@@ -30,6 +30,10 @@ export const buttonLayout = css`
     color: #f5f5f5;
     font-size: 14px;
     font-weight: 600;
+
+    &:nth-of-type(1) {
+      width: 80px;
+    }
 
     &:hover {
       background-color: #686d76;
@@ -46,7 +50,7 @@ export const buttonLayout = css`
 
 export const container = css`
   box-sizing: border-box;
-  margin: 50px 20px 0px;
+  margin-left: 20px;
   border: 1px solid #000000;
   width: 1200px;
   height: 500px;
