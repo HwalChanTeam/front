@@ -13,6 +13,7 @@ import { PiUsersFourLight } from "react-icons/pi";
 import { LuUser } from "react-icons/lu";
 import { IoBusinessOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
+import ProductOrder from "../../../components/Admin/ProductOrder/ProductOrder";
 
 const menus = [
     {
@@ -93,8 +94,9 @@ function AdminMainPage(props) {
                         <Route path="/" element={<DefaultComponent />} />
                         <Route path="/product/register" element={<ProductRegister />} />
                         <Route path="/product" element={<ProductEdit />} />
-                        <Route path="/staff" element={<StaffManagement />} />
                         <Route path="/business" element={<Management />} />
+                        <Route path="/order" element={< ProductOrder />} />
+                        <Route path="/staff" element={<StaffManagement />} />
                         <Route path="/user" element={<UserView />} />
                     </Routes>
                 </div>
