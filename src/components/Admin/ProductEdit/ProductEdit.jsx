@@ -90,6 +90,7 @@ function ProductEdit(props) {
                 : Math.floor(searchProduct.data?.count / limit) + 1;
             setPageCount(calculatedPageCount);
         }
+        console.log(productList)
     }, [productQuery.data, searchProduct.data]);
 
     const handleCheckBoxOnChange = (productId) => {
@@ -294,6 +295,10 @@ function ProductEdit(props) {
                                         <label for="category">카테고리</label>
                                         <select
                                             name="categoryId"
+                                            // value={checkedIds === productList.productId ?
+                                            //     "" 
+                                            //     :
+                                            //     ""}
                                             value={product.categoryId}
                                             onChange={handleMainCategoryChange}
                                             css={s.selectBox}
