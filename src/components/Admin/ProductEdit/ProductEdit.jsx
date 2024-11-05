@@ -60,6 +60,13 @@ function ProductEdit(props) {
             enabled: !keyword,
             retry: 0,
             refetchOnWindowFocus: 0,
+            onSuccess: (response) => {
+                console.log(response)
+                setPageCount(
+                    response?.data?.count % limit === 0
+                        ? response?.data?.count / limit
+                        : Math.floor(response?.data?.count / limit) + 1)
+            }
         }
     );
 
@@ -415,15 +422,15 @@ function ProductEdit(props) {
                             </td>
                             {
                                 product?.productCategories?.map(category => (
-                                    <td css={s.productItem} key={category.category.categoryId}>{category.category.name}</td>
+                                    <td css={s.productItem} key={category.category.categoryId}>{category.category.name}</td> // 카테고리
                                 ))
                             }
                             {
                                 product?.semiCategories?.map(category => ( // 데이터가 없을때 빈 td
-                                    <td css={s.productItem} key={category.semiCategoryId}>{category.name}</td>
+                                    <td css={s.productItem} key={category.semiCategoryId}>{category.name}</td> /* 서브카테고리 */
                                 ))
                             }
-                            <td css={s.productItem}>{product.title}</td>
+                            <td css={s.productItem}>{product.title}</td> {/* 상품명 */}
                             <td css={s.productItem}>{product.origin}</td>
                             <td css={s.productItem}>{product.price}</td>
                             <td css={s.productItem}>{product.stock}</td>
