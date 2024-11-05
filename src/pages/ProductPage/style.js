@@ -214,8 +214,8 @@ export const menuBox = css`
     }
 `;
 
-export const selectProductMenu = (isSelected) => css`
-    border: ${isSelected ? "2px solid #964747" : "transparent"};
+export const selectProductMenu = (redOutLine) => css`
+    border: ${redOutLine ? "2px solid #964747" : "transparent"};
 `;  
 
 export const productInfor = css`
