@@ -38,7 +38,8 @@ export const adminSigninApi = async (admin) => {
             signinData['error'] = response.data;
         } else {
             signinData['errorStatus'] = 'fieldError';
-            signinData['error'] = response.data.map(fieldError => ({
+            console.log(response)
+            signinData['error'] = response.data.errors.map(fieldError => ({
                 field: fieldError.field,
                 defaultMessage: fieldError.defaultMessage
             }));
