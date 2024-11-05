@@ -102,7 +102,7 @@ function BuyInfo(props) {
 
     return (
         <div css={s.containerStyle}>
-            <h1>구매기록</h1>
+            <h2>구매기록</h2>
             <ul>
                 {tempProducts.map((product) => (
                     <li key={product.productId} css={s.productStyle}>

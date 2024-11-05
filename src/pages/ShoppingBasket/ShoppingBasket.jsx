@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as s from "./style";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";

@@ -20,8 +20,6 @@ export const wishListSection = css`
 
 export const wishListHeader = css`
     display: flex;
-    justify-content: center;
-    align-items: center;
 
     & h2 {
         margin: 0px;

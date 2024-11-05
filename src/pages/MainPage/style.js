@@ -235,17 +235,25 @@ export const MDProductLayout = css`
 export const MDProductTitle = css`
     box-sizing: border-box;
 
-    & p {
+& p {
+    
+    margin: 0px;
+    font-size: 20px;
+    color: #c2c2c2;
+
+    &:nth-last-of-type(1) {
         margin-bottom: 20px;
         font-size: 28px;
         font-weight: 600;
+        color: #000000;
     }
+}
 `;
 
 export const MDProductContentLayout = css`
     box-sizing: border-box;
     display: flex;
-    width: 1200px;
+    width: 1180px;
 
     & div {
         &:nth-last-of-type(1) {
@@ -261,11 +269,11 @@ export const MDProductImgLayout = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    margin-right: 20px;
 
     & img {
-        margin-right: 20px;
-        width: 200px;
-        height: 200px;
+        width: 220px;
+        height: 220px;
         background-color: #dbdbdb;
         cursor: pointer;
     }
@@ -277,18 +285,27 @@ export const MDProductImgLayout = css`
         width: 200px;
         & p {
             margin: 0px;
+            width: 220px;
             font-size: 18px;
             font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
 
             &:nth-of-type(1) {
-                margin: 5px 0px;
+                color: #c2c2c2;
+                font-size: 16px;
+            }
+
+            &:nth-of-type(2) {
+                margin: 5px 0px 25px 0px;
             }
         }
     }
 
 `;
 
-// pagenumber
+// pageNumber
 export const pageNumber = css`
     & > ul {
         display: flex;
