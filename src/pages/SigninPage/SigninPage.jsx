@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as s from "./style";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
@@ -61,6 +61,10 @@ function SigninPage(props) {
         }
     }
 
+    const handleOAuthLogin = () => {
+        window.location("http://localhost:8080/oauth2/authorization/google");
+    }
+
     return (
         <div css={s.mainLayout}>
             <h1 css={s.logo}>
@@ -91,14 +95,16 @@ function SigninPage(props) {
                     <button onClick={handleLoginSubmitOnClick}>로그인 하기</button>
                 </div>
                 <div css={s.oauth2Buttons}>
-                    <button>
+                    <button >
                         <SiNaver />
                         네이버 로그인
                     </button>
-                    <button>
+                    <button onClick={handleOAuthLogin} >
                         <FcGoogle />
                         구글 로그인
                     </button>
+                    <a href="http://localhost:8080/oauth2/authorization/naver">나버로그인</a>
+                    <a href="http://localhost:8080/oauth2/authorization/google?scope=email%20profile%20https://www.googleapis.com/auth/user.phonenumbers.read">구글로그인</a>
                 </div>
                 <div css={s.joinAndSearchUser}>
                     <Link to="/user/signup">회원 가입</Link>
