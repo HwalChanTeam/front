@@ -46,15 +46,16 @@ export const buttonLayout = css`
 
 export const container = css`
   box-sizing: border-box;
-  margin: 0px 20px;
   border: 1px solid #000000;
-  width: 1000px;
+  margin: 0px 20px;
+  width: 1700px;
   height: 500px;
   overflow-y: scroll;
   -ms-overflow-style: none;
   ::-webkit-scrollbar {
     display: none;
   }
+
 `;
 
 export const theadLayout = css`
@@ -71,24 +72,24 @@ export const theadItems = css`
   box-sizing: border-box;
   border-right: 1px solid #000000;
   padding: 0px;
-  width: 100px;
   cursor: default;
 
   &:nth-of-type(1) {
     text-align: center;
-    width: 25px;
+    width: 40px;
   }
   &:nth-of-type(2) {
-    width: 50px;
-  }
-  &:nth-of-type(3) {
     width: 100px;
   }
+  &:nth-of-type(3) {
+    width: 120px;
+    table-layout: fixed;
+  }
   &:nth-of-type(4) {
-    width: 70px;
+    width: 200px;
   }
   &:nth-of-type(5) {
-    width: 70px;
+    width: 80px;
   }
   &:nth-of-type(6) {
     width: 120px;
@@ -97,7 +98,6 @@ export const theadItems = css`
     width: 70px;
   }
   &:nth-of-type(8) {
-    width: 70px;
     border-right: none;
   }
 `;
@@ -116,26 +116,26 @@ export const productItem = css`
   box-sizing: border-box;
   border: 1px solid #000000;
   padding: 0px;
-  width: 100px;
   cursor: default;
 
   &:nth-of-type(1) {
     text-align: center;
-    width: 25px;
+    width: 40px;
     border-left: none;
   }
   &:nth-of-type(2) {
-    width: 50px;
-  }
-  &:nth-of-type(3) {
+    padding-left: 5px;
     width: 100px;
   }
+  &:nth-of-type(3) {
+    padding-left: 5px;
+    width: 120px;
+  }
   &:nth-of-type(4) {
-    width: 70px;
+    width: 200px;
   }
   &:nth-of-type(5) {
-    text-align: right;
-    width: 70px;
+    width: 80px;
   }
   &:nth-of-type(6) {
     width: 120px;
@@ -146,34 +146,9 @@ export const productItem = css`
     text-align: right;
   }
   &:nth-of-type(8) {
-    width: 70px;
     text-align: right;
     border-right: none;
   }
-`;
-
-export const pageNumber = css`
-    & > ul {
-        display: flex;
-        list-style-type: none;
-        & > li {
-            margin: 0px 5px;
-            & a {
-                box-sizing: border-box;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 0 0 3px;
-                border: 1px solid #dbdbdb;
-                border-radius: 50%;
-                width: 30px;
-            }
-            
-        }
-        & li:nth-of-type(1) {
-            border: none;
-        }
-    }
 `;
 
 export const productEditInput = css`
@@ -366,5 +341,33 @@ export const contentsImgBox = css`
         width: 180px;
         height: 180px;
     
+    }
+`;
+
+// pageNumber
+export const pageNumber = css`
+    & > ul {
+        display: flex;
+        justify-content: center;
+        list-style-type: none;
+        padding-left: 20px;
+        width: 1700px;
+        & > li {
+            margin: 0px 5px;
+            & a {
+                box-sizing: border-box;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0 0 3px;
+                border: 1px solid #dbdbdb;
+                border-radius: 50%;
+                width: 30px;
+            }
+            
+        }
+        & li:nth-of-type(1) {
+            border: none;
+        }
     }
 `;

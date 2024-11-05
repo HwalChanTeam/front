@@ -52,7 +52,7 @@ export const container = css`
   box-sizing: border-box;
   margin-left: 20px;
   border: 1px solid #000000;
-  width: 1200px;
+  width: 1600px;
   height: 500px;
   overflow-y: scroll;
   -ms-overflow-style: none;
@@ -90,19 +90,19 @@ export const theadItems = css`
   }
 
   &:nth-of-type(3) {
-    width: 140px;
+    width: 200px;
   }
 
   &:nth-of-type(4) {
-    width: 100px;
+    width: 160px;
   }
 
   &:nth-of-type(5) {
-    width: 220px;
+    width: 250px;
   }
 
   &:nth-of-type(6) {
-    width: 100px;
+    width: 200px;
   }
   
   &:nth-of-type(7) {
@@ -110,11 +110,11 @@ export const theadItems = css`
   }
 
   &:nth-of-type(8) {
-    width: 120px;
+    width: 200px;
   }
 
   &:nth-of-type(9) {
-    width: 120px;
+    width: 160px;
   }
 
   &:nth-last-of-type(1) {
@@ -148,19 +148,19 @@ export const productItem = css`
   }
 
   &:nth-of-type(3) {
-    width: 140px;
+    width: 200px;
   }
 
   &:nth-of-type(4) {
-    width: 100px;
+    width: 160px;
   }
 
   &:nth-of-type(5) {
-    width: 220px;
+    width: 250px;
   }
 
   &:nth-of-type(6) {
-    width: 100px;
+    width: 200px;
     padding-right: 5px;
     text-align: right;
   }
@@ -172,13 +172,13 @@ export const productItem = css`
   }
 
   &:nth-of-type(8) {
-    width: 120px;
+    width: 200px;
     padding-right: 5px;
     text-align: right;
   }
 
   &:nth-of-type(9) {
-    width: 120px;
+    width: 160px;
   }
 
   &:nth-last-of-type(1) {

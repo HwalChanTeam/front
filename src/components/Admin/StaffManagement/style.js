@@ -49,7 +49,7 @@ export const container = css`
   box-sizing: border-box;
   margin: 0px 20px;
   border: 1px solid #000000;
-  width: 1200px;
+  width: 1600px;
   height: 500px;
   overflow-y: scroll;
   -ms-overflow-style: none;
@@ -95,18 +95,18 @@ export const theadItems = css`
   }
 
   &:nth-of-type(5) {
-    width: 200px;
+    width: 250px;
   }
 
   &:nth-of-type(6) {
-    width: 280px;
+    width: 340px;
   }
   
   &:nth-of-type(7) {
-    width: 160px;
+    width: 280px;
   }
 
-  &:nth-of-type(8) {
+  &:nth-last-of-type(1) {
     border-right: none;
   }
 `;
@@ -143,18 +143,18 @@ export const productItem = css`
   }
 
   &:nth-of-type(5) {
-    width: 200px;
+    width: 250px;
   }
 
   &:nth-of-type(6) {
-    width: 280px;
+    width: 340px;
   }
 
   &:nth-of-type(7) {
-    width: 160px;
+    width: 280px;
   }
 
-  &:nth-of-type(8) {
+  &:nth-last-of-type(1) {
     padding: 0px;
     padding-right: 5px;
     text-align: right;
@@ -163,9 +163,6 @@ export const productItem = css`
 `;
 
 // pageNumber 
-export const numberBox = css`
-  width: 1200px;
-`;
 
 export const pageNumber = css`
     & > ul {
@@ -173,7 +170,7 @@ export const pageNumber = css`
         justify-content: center;
         margin-left: 20px;
         padding: 0px;
-        width: 1200px;
+        width: 1700px;
         list-style-type: none;
         & > li {
             margin: 0px 5px;
