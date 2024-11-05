@@ -5,6 +5,10 @@ export const layout = css`
     align-items: center;
     padding: 20px 0px;
     width: 1200px;
+    position: sticky;
+    top: 100px;
+    z-index: 100;
+    background-color: white;
 `;
 
 export const menusLayout = css`
