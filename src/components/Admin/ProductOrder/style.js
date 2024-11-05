@@ -200,7 +200,7 @@ export const pageNumber = css`
         justify-content: center;
         margin-left: 20px;
         padding: 0px;
-        width: 1200px;
+        width: 1600px;
         list-style-type: none;
         & > li {
             margin: 0px 5px;

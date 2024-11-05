@@ -70,6 +70,8 @@ function ProductEdit(props) {
         }
     );
 
+    console.log(productList);
+
     // 상품 검색 쿼리
     const searchProduct = useQuery(
         ["searchQuery", keyword, selectPage],
@@ -412,6 +414,7 @@ function ProductEdit(props) {
                 </table>
                 <table css={s.tableLayout}>
                     {productList?.map(product => (
+                        product?.productCategories?.map(() => (
                         <tr key={product.id}>
                             <td css={s.productItem}>
                                 <input
@@ -437,6 +440,8 @@ function ProductEdit(props) {
                             <td css={s.productItem}>{product.salesCount}</td>
                             <td css={s.productItem}>{product.createdDate}</td>
                         </tr>
+
+                        ))
                     ))}
                 </table>
             </div>
