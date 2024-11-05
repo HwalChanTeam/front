@@ -20,7 +20,8 @@ function ProductEdit(props) {
     const [checkedIds, setCheckedIds] = useState([]);
     const [searchParam] = useSearchParams();
     const keyword = searchParam.get("keyword");
-    const page = searchParam.get("page");
+    // const page = searchParam.get("page");
+    const [selectPage, setSelectPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
     const navigate = useNavigate();
@@ -28,60 +29,69 @@ function ProductEdit(props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     // 모달을 여는 함수
     const openModal = () => setIsModalOpen(true);
+    const [isUploading, setUploading] = useState(false);
 
-    // const [isUploading, setUploading] = useState(false);
-    // const [product, setProduct] = useState({
-    //     title: "",
-    //     price: 0,
-    //     stock: 0,
-    //     categoryId: 0,
-    //     semiCategoryId: 0,
-    //     description: "",
-    //     origin: "대한민국",
-    //     thumbnailImg: "",
-    //     contentsImg: []
-    // });
+    const [contentsUrl, setContentsUrl] = useState([]);
+
+    const [product, setProduct] = useState({
+        checkedIds: 0,
+        title: "",
+        price: 0,
+        stock: 0,
+        categoryId: 0,
+        semiCategoryId: 0,
+        description: "",
+        origin: "대한민국",
+        thumbnailImg: "",
+        contentsImg: []
+    });
 
     // 상품 불러오는 쿼리
     const productQuery = useQuery(
-        ["productQuery", pageCount],
+        ["productQuery", selectPage],
         async () => {
             console.log("전체");
-            const response = await instance.get(`/admin/product?page=${pageCount}&limit=${limit}`);
+            const response = await instance.get(`/admin/product?page=${selectPage}&limit=${limit}`);
             setProductList(response?.data?.products);
             console.log(response?.data);
+            return response?.data;
         },
         {
             enabled: !keyword,
             retry: 0,
             refetchOnWindowFocus: 0,
-            onSuccess: (response) => {
-                setPageCount(
-                    response?.data?.count % limit === 0
-                        ? response?.data?.count / limit
-                        : Math.floor(response?.data?.count / limit) + 1)
-            }
         }
     );
 
+    // 상품 검색 쿼리
     const searchProduct = useQuery(
-        ["searchQuery", keyword, pageCount],
+        ["searchQuery", keyword, selectPage],
         async () => {
-            const response = await instance.get(`/admin/product/search?page=${page}&keyword=${keyword}&limit=${limit}`);
+            const response = await instance.get(`/admin/product/search?page=${selectPage}&keyword=${keyword}&limit=${limit}`);
             setProductList(response?.data?.products);
         },
         {
             enabled: !!keyword,
             refetchOnWindowFocus: false,
             retry: 0,
-            onSuccess: (response) => {
-                setPageCount(
-                    response?.data?.count % limit === 0
-                        ? response?.data?.count / limit
-                        : Math.floor(response?.data?.count / limit) + 1);
-            }
         }
     );
+
+    useEffect(() => {
+        if (productQuery.data) {
+            const calculatedPageCount = productQuery.data?.count % limit === 0
+                ? productQuery.data?.count / limit
+                : Math.floor(productQuery.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+        if (searchProduct.data) {
+            const calculatedPageCount = searchProduct.data?.count % limit === 0
+                ? searchProduct.data?.count / limit
+                : Math.floor(searchProduct.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+        console.log(productList)
+    }, [productQuery.data, searchProduct.data]);
 
     const handleCheckBoxOnChange = (productId) => {
         console.log(productId);
@@ -108,159 +118,18 @@ function ProductEdit(props) {
             refetchOnWindowFocus: false,
             onSuccess: (response) => {
                 alert("삭제가 완료되었습니다.");
-                setPageCount(page ? parseInt(page) : 1);
+                setPageCount(selectPage ? parseInt(selectPage) : 1);
                 productQuery.refetch();
                 console.log("refetch됨");
             }
         }
     );
 
-    // const hadleModifyButtonOnClick = async () => {
-    //     try {
-    //         const response = await instance.put("/admin/main/modify", productList);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
 
     const handleOnPageChange = (e) => {
-        setPageCount(e.selected + 1);
+        setSelectPage(e.selected + 1);
         navigate(`/admin/main/product?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
     }
-
-    // const handleImageUpload = useCallback((type) => {
-    //     const input = document.createElement('input');
-    //     input.setAttribute('type', 'file');
-
-    //     if (type === "contentsImg") {
-    //         input.setAttribute('multiple', 'multiple');
-    //     }
-
-    //     input.click();
-
-    //     input.onchange = async () => {
-    //         const files = Array.from(input.files);
-    //         const urls = [];
-
-    //         if (type === "contentsImg" && files.length > 4) {
-    //             alert(`최대 4장의 이미지만 업로드할 수 있습니다.`);
-    //             return;
-    //         }
-
-    //         const storage = getStorage();
-    //         setUploading(true);
-
-    //         files.forEach((file) => {
-    //             const storageRef = ref(storage, `admin/product/${uuid()}_${file.name}`);
-    //             const task = uploadBytesResumable(storageRef, file);
-
-    //             task.on(
-    //                 'state_changed',
-    //                 () => { }, // 업로드 중 상태 핸들링 (옵션)
-    //                 (e) => {
-    //                     console.error(e);
-    //                     setUploading(false);
-    //                 },
-    //                 async () => {
-    //                     try {
-    //                         const url = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
-    //                         urls.push(url);
-
-    //                         if (type === "thumbnailImg" && urls.length === 1) {
-    //                             setProduct((product) => ({
-    //                                 ...product,
-    //                                 thumbnailImg: urls[0]
-    //                             }));
-
-    //                         } else if (type === "contentsImg") {
-    //                             setProduct((product) => ({
-    //                                 ...product,
-    //                                 contentsImg: [...new Set([...product.contentsImg, ...urls])]
-    //                             }));
-    //                         }
-    //                     } catch (e) {
-    //                         console.error(e);
-    //                     } finally {
-    //                         setUploading(false); // false로 할 시 이미지가 자동으로 사라짐 
-    //                     }
-    //                 }
-    //             );
-    //         });
-    //     };
-    // }, []);
-
-    // const handleinputOnChange = (e) => {
-    //     const { name, value } = e.target;
-
-    //     // 금액 입력일 때 숫자만 허용
-    //     if (name === "price" && isNaN(value)) {
-    //         return; // 숫자가 아닐 경우 아무 것도 하지 않음
-    //     }
-    //     if (name === "stock" && isNaN(value)) {
-    //         return; // 숫자가 아닐 경우 아무 것도 하지 않음
-    //     }
-    //     setProduct((product) => ({
-    //         ...product,
-    //         [e.target.name]: e.target.value,
-    //     }));
-    // }
-
-    // const handleEditOnClick = async () => {
-    //     try {
-    //         console.log(checkedIds);
-    //         const response = await instance.put(`/admin/product/${checkedIds}`, product);
-    //         console.log(response);
-    //         alert("상품 수정이 완료되었습니다.");
-    //     } catch (e) {
-    //         console.error(e);
-    //         // 중복되었을때 에러
-    //     }
-    //     setProduct({
-    //         title: "",
-    //         price: 0,
-    //         stock: 0,
-    //         categoryId: 0,
-    //         semiCategoryId: 0,
-    //         description: "",
-    //         origin: "대한민국",
-    //         thumbnailImg: "",
-    //         contentsImg: []
-    //     });
-    // };
-
-    // const handleMainCategoryChange = (e) => {
-    //     const selectedId = parseInt(e.target.value, 10);
-    //     setProduct((product) => ({
-    //         ...product,
-    //         categoryId: selectedId,
-    //         semiCategoryId: 0
-    //     }));
-    // };
-
-    // const handleSubCategoryChange = (e) => {
-    //     const selectedId = parseInt(e.target.value, 10);
-    //     setProduct((prevProduct) => ({
-    //         ...prevProduct,
-    //         semiCategoryId: selectedId
-    //     }));
-    // };
-
-    const [isUploading, setUploading] = useState(false);
-
-    const [contentsUrl, setContentsUrl] = useState([]);
-
-    const [product, setProduct] = useState({
-        checkedIds: 0,
-        title: "",
-        price: 0,
-        stock: 0,
-        categoryId: 0,
-        semiCategoryId: 0,
-        description: "",
-        origin: "대한민국",
-        thumbnailImg: "",
-        contentsImg: []
-    });
 
     const handleMainCategoryChange = (e) => {
         const selectedId = parseInt(e.target.value, 10);
@@ -317,7 +186,7 @@ function ProductEdit(props) {
             thumbnailImg: "",
             contentsImg: []
         });
-        setPageCount(page ? parseInt(page) : 1);
+        setPageCount(selectPage ? parseInt(selectPage) : 1);
         productQuery.refetch();
         // window.location.reload();
     };
@@ -426,6 +295,10 @@ function ProductEdit(props) {
                                         <label for="category">카테고리</label>
                                         <select
                                             name="categoryId"
+                                            // value={checkedIds === productList.productId ?
+                                            //     "" 
+                                            //     :
+                                            //     ""}
                                             value={product.categoryId}
                                             onChange={handleMainCategoryChange}
                                             css={s.selectBox}
@@ -513,105 +386,6 @@ function ProductEdit(props) {
                             </div>
                         </div>
                     </div>
-                    {/* <div
-                        css={{
-                            backgroundColor: "white",
-                            padding: "20px",
-                            borderRadius: "5px",
-                            width: "300px",
-                        }}
-                    >
-                        <h2>상품 수정</h2>
-                        <div>
-                            <div css={s.productEditInput}>
-                                <label for="categoryId">카테고리</label>
-                                <select
-                                    name="categoryId"
-                                    value={product.categoryId}
-                                    onChange={handleMainCategoryChange}
-                                    css={s.selectBox}
-                                >
-                                    {
-                                        menus[0]?.subMenus.map(category => (
-                                            <option value={category.id}>{category.name}</option>
-                                        ))
-                                    }
-                                </select>
-                            </div>
-                            <div css={s.productEditInput}>
-                                <label for="semiCategoryId">서브 카테고리</label>
-                                <select
-                                    name="semiCategoryId"
-                                    value={product.semiCategoryId}
-                                    onChange={handleSubCategoryChange}
-                                    css={s.selectBox}
-                                >
-                                    {
-                                        menus[0].subMenus.find(menu => menu.id === product.categoryId)?.subSideMenus.map((subMenu) => (
-                                            <option key={subMenu.id} value={subMenu.id}>
-                                                {subMenu.name}
-                                            </option>
-                                        ))
-                                    }
-                                </select>
-                            </div>
-                            <div css={s.productEditInput}>
-                                <label for="title">이름</label>
-                                <input
-                                    type="text"
-                                    name="title"
-                                    value={product.title}
-                                    onChange={handleinputOnChange}
-                                />
-                            </div>
-                            <div css={s.productEditInput}>
-                                <label for="price">가격</label>
-                                <input
-                                    type="number"
-                                    name="price"
-                                    value={product.price}
-                                    onChange={handleinputOnChange}
-                                />
-                            </div>
-                            <div css={s.productEditInput}>
-                                <label for="stock">재고</label>
-                                <input
-                                    type="number"
-                                    name="stock"
-                                    value={product.stock}
-                                    onChange={handleinputOnChange}
-                                />
-                            </div>
-                            <div css={s.productEditInput}>
-                                <label for="description">상품설명</label>
-                                <input
-                                    type="text"
-                                    name="description"
-                                    value={product.description}
-                                    onChange={handleinputOnChange}
-                                />
-                            </div>
-                            <div css={s.productEditInput}>
-                                <label for="origin">원산지</label>
-                                <input
-                                    type="text"
-                                    name="origin"
-                                    value={product.origin}
-                                    onChange={handleinputOnChange}
-                                />
-                            </div>
-                            <div >
-                                <label>상품 이미지</label>
-                                <button onClick={() => handleImageUpload("thumbnailImg")}>상품 이미지 등록</button>
-                            </div>
-                            <div>
-                                <label>상세 이미지</label>
-                                <button onClick={() => handleImageUpload("contentsImg")}>상세 이미지 등록</button>
-                            </div>
-                        </div>
-                        <button onClick={handleEditOnClick}>수정</button>
-                        <button onClick={() => setIsModalOpen(false)}>취소</button>
-                    </div> */}
                 </ReactModal>
                 <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
             </div>
@@ -630,7 +404,6 @@ function ProductEdit(props) {
                     </tr>
                 </table>
                 <table css={s.tableLayout}>
-                    {/* <tbody css={s.tbodyLayout}> */}
                     {productList?.map(product => (
                         <tr key={product.id}>
                             <td css={s.productItem}>
@@ -658,7 +431,6 @@ function ProductEdit(props) {
                             <td css={s.productItem}>{product.createdDate}</td>
                         </tr>
                     ))}
-                    {/* </tbody> */}
                 </table>
             </div>
             <div css={s.pageNumber}>
@@ -666,7 +438,7 @@ function ProductEdit(props) {
                     breakLabel="..."
                     previousLabel={<><MdNavigateBefore /></>}
                     nextLabel={<><MdNavigateNext /></>}
-                    pageCount={4}
+                    pageCount={pageCount}
                     marginPagesDisplayed={3}
                     pageRangeDisplayed={5}
                     onPageChange={handleOnPageChange}
