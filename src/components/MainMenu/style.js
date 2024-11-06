@@ -30,28 +30,30 @@ export const menusLayout = css`
 export const selectedMenu = (isSelected) => css`
     position: relative;
     display: flex;
-    color: #5B5B5B;
     text-decoration: none; // 방문 후에도 밑줄 등 스타일 유지
+    /* color: #5B5B5B; */
     
     & a {
         text-decoration: none;
         margin-right: 25px;
+        color: #5B5B5B;
         
         & span {
             border-top: ${isSelected ? "2px solid #964747" : "transparent"};
             font-size: 18px;
-            color: #5B5B5B;
             
             &:nth-of-type(1) {
                 margin-right: 5px;
             }
+
+        }
+
+        &:hover {
+            color: #964747;
+            font-weight: 600;
         }
     }
 
-    &:hover {
-        color: #964747;
-        font-weight: 600;
-    }
     
 `;
 
