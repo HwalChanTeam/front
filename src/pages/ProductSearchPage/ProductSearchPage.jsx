@@ -3,13 +3,15 @@ import React, { useEffect, useState } from 'react';
 import *as s from './style';
 import ReactPaginate from 'react-paginate';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { instance } from '../../apis/util/instance';
 
 function ProductSearchPage(props) {
 
+    const navigate = useNavigate();
     const [ searchParams, setSearchParams ] = useSearchParams();
+    const [selectPage, setSelectPage] = useState(1);
 
     const limit = 20;
     const page = searchParams.get("page");
@@ -17,6 +19,11 @@ function ProductSearchPage(props) {
 
     const [ maxPageCount, setMaxPageCount ] = useState(1);
     const [ productTrGroups, setProductTrGroups ] = useState([]);
+
+    const handleOnPageChange = (e) => {
+        setSelectPage(e.selected + 1);
+        navigate(`/user/products/search?page=${e.selected + 1}&limit=${limit}&keyword=${keyword}`);
+    }
 
     const productsQuery = useQuery(
         ["productsSearch", page, keyword],
@@ -28,9 +35,8 @@ function ProductSearchPage(props) {
             onSuccess: (response) => {
                 setMaxPageCount(
                     response.data.count % limit === 0
-                        ? response.data.count / limit
+                        ? Math.floor(response.data.count / limit)
                         : Math.floor(response.data.count / limit) + 1)
-                
 
                 const products = response.data.products;
  
@@ -51,12 +57,12 @@ function ProductSearchPage(props) {
                     productTrList = [...productTrList, trGroupList];
                 }
                 setProductTrGroups(productTrList);
+                console.log(productTrList)
             }
         }
     );
 
-    const productCount = productsQuery?.data?.data?.count;
-    console.log(productCount)
+    const productCount = productsQuery.data?.data?.products.length;
 
     // useEffect(() => {
     //     console.log(productTrGroups)
@@ -100,13 +106,13 @@ function ProductSearchPage(props) {
                         breakLabel="..."
                         previousLabel={<><MdNavigateBefore /></>}
                         nextLabel={<><MdNavigateNext /></>}
-                        pageCount={5}
+                        pageCount={maxPageCount}
                         marginPagesDisplayed={3}
                         pageRangeDisplayed={5}
-                        onPageChange={null}
+                        onPageChange={handleOnPageChange}
                     // activeClassName='active' 
                     // onPageChange={handlePageOnChange}
-                    forcePage={parseInt(page) - 1}
+                    // forcePage={parseInt(page) - 1}
                     />
                 </div>
             </div>
