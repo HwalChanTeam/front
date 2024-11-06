@@ -11,9 +11,9 @@ export const layout = css`
 export const productLayout = css`
     box-sizing: border-box;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: flex-start;
-    padding: 40px 0px;
+    padding: 40px 0px;  
     width: 100%;
 
     border-bottom: 2px solid #dbdbdb;
@@ -22,6 +22,7 @@ export const productLayout = css`
 
 export const imgLayout = css`   
     box-sizing: border-box;
+    padding-left: 4px;
     width: 500px;
     height: 500px;
 
@@ -35,7 +36,6 @@ export const productContent = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    padding-left: 50px;
     width: calc(100%-500px); /* 이미지 너비를 뺀 나머지 너비 */
 `;
 
@@ -43,7 +43,6 @@ export const titleLayout = css`
     box-sizing: border-box;
     padding-bottom: 20px;
     border-bottom: 2px solid #dbdbdb;
-    width: 400px;
     & h2 {
         margin: 0px;
         font-size: 26px;
