@@ -18,7 +18,7 @@ export const menuBox = css`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 300px;
+  min-width: 260px;
   background-color: #3a3a3a;
   /* #1F2544 */
 
@@ -96,5 +96,5 @@ export const contentBox = css`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: auto;
 `;

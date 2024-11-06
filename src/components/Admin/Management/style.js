@@ -23,6 +23,9 @@ export const contentsBox = css`
 
 export const leftBox = css`
   width: 750px;
+  & h3 {
+    margin: 10px 0px;
+  }
 `;
 
 export const rightBox = css`
