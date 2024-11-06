@@ -50,7 +50,6 @@ function ProductEdit(props) {
     const productQuery = useQuery(
         ["productQuery", selectPage],
         async () => {
-            console.log("전체");
             const response = await instance.get(`/admin/product?page=${selectPage}&limit=${limit}`);
             setProductList(response?.data?.products);
             console.log(response?.data);
@@ -60,17 +59,9 @@ function ProductEdit(props) {
             enabled: !keyword,
             retry: 0,
             refetchOnWindowFocus: 0,
-            onSuccess: (response) => {
-                console.log(response)
-                setPageCount(
-                    response?.data?.count % limit === 0
-                        ? response?.data?.count / limit
-                        : Math.floor(response?.data?.count / limit) + 1)
-            }
         }
     );
 
-    console.log(productList);
 
     // 상품 검색 쿼리
     const searchProduct = useQuery(
@@ -99,11 +90,9 @@ function ProductEdit(props) {
                 : Math.floor(searchProduct.data?.count / limit) + 1;
             setPageCount(calculatedPageCount);
         }
-        console.log(productList)
     }, [productQuery.data, searchProduct.data]);
 
     const handleCheckBoxOnChange = (productId) => {
-        console.log(productId);
         setCheckedIds((ids) => {
             if (ids.includes(productId)) {
                 return ids.filter(id => id !== productId);
@@ -119,7 +108,6 @@ function ProductEdit(props) {
 
     const deleteMutation = useMutation(
         async () => {
-            console.log(checkedIds);
             await instance.delete("/admin/product", { data: { checkedIds } });
         },
         {
@@ -175,9 +163,7 @@ function ProductEdit(props) {
 
     const handleSubmitOnClick = async () => {
         try {
-            console.log(product);
             const response = await instance.put("/admin/product/edit", product);
-            console.log(response)
             alert("상품 수정이 완료되었습니다.");
         } catch (e) {
             console.error(e);
@@ -225,7 +211,6 @@ function ProductEdit(props) {
             files.forEach((file) => {
                 const storageRef = ref(storage, `admin/product/${uuid()}_${file.name}`);
                 const task = uploadBytesResumable(storageRef, file);
-                console.log(storageRef)
                 task.on(
                     'state_changed',
                     () => { }, // 업로드 중 상태 핸들링 (옵션)
@@ -237,7 +222,6 @@ function ProductEdit(props) {
                         try {
                             const url = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
                             urls.push(url);
-                            console.log(url);
 
                             if (type === "thumbnailImg" && urls.length === 1) {
                                 setProduct((product) => ({
@@ -304,10 +288,6 @@ function ProductEdit(props) {
                                         <label for="category">카테고리</label>
                                         <select
                                             name="categoryId"
-                                            // value={checkedIds === productList.productId ?
-                                            //     "" 
-                                            //     :
-                                            //     ""}
                                             value={product.categoryId}
                                             onChange={handleMainCategoryChange}
                                             css={s.selectBox}
@@ -415,31 +395,35 @@ function ProductEdit(props) {
                 <table css={s.tableLayout}>
                     {productList?.map(product => (
                         product?.productCategories?.map(() => (
-                        <tr key={product.id}>
-                            <td css={s.productItem}>
-                                <input
-                                    type="checkbox"
-                                    onChange={() => handleCheckBoxOnChange(product.productId)}
-                                    checked={checkedIds.includes(product.productId)}
-                                />
-                            </td>
-                            {
-                                product?.productCategories?.map(category => (
-                                    <td css={s.productItem} key={category.category.categoryId}>{category.category.name}</td> // 카테고리
-                                ))
-                            }
-                            {
-                                product?.semiCategories?.map(category => ( // 데이터가 없을때 빈 td
-                                    <td css={s.productItem} key={category.semiCategoryId}>{category.name}</td> /* 서브카테고리 */
-                                ))
-                            }
-                            <td css={s.productItem}>{product.title}</td> {/* 상품명 */}
-                            <td css={s.productItem}>{product.origin}</td>
-                            <td css={s.productItem}>{product.price}</td>
-                            <td css={s.productItem}>{product.stock}</td>
-                            <td css={s.productItem}>{product.salesCount}</td>
-                            <td css={s.productItem}>{product.createdDate}</td>
-                        </tr>
+                            <tr key={product.id}>
+                                <td css={s.productItem}>
+                                    <input
+                                        type="checkbox"
+                                        onChange={() => handleCheckBoxOnChange(product.productId)}
+                                        checked={checkedIds.includes(product.productId)}
+                                    />
+                                </td>
+                                {
+                                    product?.productCategories?.map(category => (
+                                        <td css={s.productItem} key={category.category.categoryId}>{category.category.name}</td> // 카테고리
+                                    ))
+                                }
+                                {
+                                    product?.productCategories?.semiCategoryId === 0
+                                    ?
+                                    <td css={s.productItem}></td>
+                                    :
+                                    product?.semiCategories?.map(category => ( // 데이터가 없을때 빈 td
+                                        <td css={s.productItem} key={category.semiCategoryId}>{category.name}</td> /* 서브카테고리 */
+                                    ))
+                                }
+                                <td css={s.productItem}>{product.title}</td> {/* 상품명 */}
+                                <td css={s.productItem}>{product.origin}</td>
+                                <td css={s.productItem}>{product.price}</td>
+                                <td css={s.productItem}>{product.stock}</td>
+                                <td css={s.productItem}>{product.salesCount}</td>
+                                <td css={s.productItem}>{product.createdDate}</td>
+                            </tr>
 
                         ))
                     ))}
