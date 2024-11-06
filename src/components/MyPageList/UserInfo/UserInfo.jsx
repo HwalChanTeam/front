@@ -31,6 +31,7 @@ function UserInfo(props) {
         {
             onSuccess: (response) => {
                 setUserInfo(response.data);
+                console.log(response?.data);
             },
             refetchOnWindowFocus: false,
             retry: 0,
@@ -53,6 +54,7 @@ function UserInfo(props) {
         {
             onSuccess: () => {
                 refetch();
+                console.log("refetch 됨");
             },
         }
     );
