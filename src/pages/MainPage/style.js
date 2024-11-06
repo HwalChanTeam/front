@@ -30,9 +30,7 @@ export const titleLayout = css`
     }
 `;
 
-// 신상품
-
-export const newProudctLayout = css`
+export const productLayout = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -41,11 +39,9 @@ export const newProudctLayout = css`
     width: 1200px;
 `;
 
-export const newProductTitle = css`
+export const productTitle = css`
     box-sizing: border-box;
-
     & p {
-        
         margin: 0px;
         font-size: 20px;
         color: #c2c2c2;
@@ -59,7 +55,7 @@ export const newProductTitle = css`
     }
 `;
 
-export const newProductContentLayout = css`
+export const productContentLayout = css`
     box-sizing: border-box;
     display: flex;
     width: 1200px;
@@ -73,6 +69,7 @@ export const newProductContentLayout = css`
     }
 `;
 
+// 신상품
 export const newProductLayout = css`
     box-sizing: border-box;
     display: flex;
@@ -118,6 +115,7 @@ export const newProductLayout = css`
 
 `;
 
+// new, best 상품
 export const ProductLink = css`
     box-sizing: border-box;
     display: flex;
@@ -137,172 +135,60 @@ export const ProductLink = css`
     }
 `;
 
-// best 상품
-
-export const bestProductLayout = css`
+// best, md 상품
+export const productImgLayout = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    margin-top: 50px;
-    width: 1200px;
+    margin-right: 20px;
+
+    & img {
+        width: 220px;
+        height: 220px;
+        background-color: #dbdbdb;
+        cursor: pointer;
+    }
+
+    & > div {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        width: 220px;
+        & > p {
+            margin: 0px;
+            font-size: 18px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &:nth-of-type(1) {
+                color: #c2c2c2;
+                font-size: 14px;
+            }
+
+            &:nth-of-type(2) {
+                margin: 5px 0px;
+            }
+        }
+    }
+
 `;
 
-export const bestProductTitle = css`
-    box-sizing: border-box;
+export const footerBox = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-right: 10px;
 
     & p {
-        
         margin: 0px;
-        font-size: 20px;
-        color: #c2c2c2;
-
-        &:nth-last-of-type(1) {
-            margin-bottom: 20px;
-            font-size: 28px;
-            font-weight: 600;
-            color: #000000;
-        }
-    }
-`;
-
-export const bestProductContentLayout = css`
-    box-sizing: border-box;
-    display: flex;
-    width: 1180px;
-
-    & div {
-        &:nth-last-of-type(1) {
-            & > img {
-                margin-right: 0px;
-            }
-        }
-    }
-`;
-
-
-export const bestImgLayout = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    margin-right: 20px;
-
-    & img {
-        width: 220px;
-        height: 220px;
-        background-color: #dbdbdb;
-        cursor: pointer;
-    }
-
-    & div {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        width: 200px;
-        & p {
-            margin: 0px;
-            width: 220px;
-            font-size: 18px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            &:nth-of-type(1) {
-                color: #c2c2c2;
-                font-size: 16px;
-            }
-
-            &:nth-of-type(2) {
-                margin: 5px 0px 25px 0px;
-            }
-        }
-    }
-
-`;
-
-// MD 추천 상품
-
-export const MDProductLayout = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-top: 50px;
-    width: 1200px;
-`;
-
-export const MDProductTitle = css`
-    box-sizing: border-box;
-
-& p {
-    
-    margin: 0px;
-    font-size: 20px;
-    color: #c2c2c2;
-
-    &:nth-last-of-type(1) {
-        margin-bottom: 20px;
-        font-size: 28px;
+        width: 100px;
+        font-style: italic;
+        font-size: 18px;
         font-weight: 600;
-        color: #000000;
     }
-}
-`;
-
-export const MDProductContentLayout = css`
-    box-sizing: border-box;
-    display: flex;
-    width: 1180px;
-
-    & div {
-        &:nth-last-of-type(1) {
-            & > img {
-                margin-right: 0px;
-            }
-        }
-    }
-`;
-
-
-export const MDProductImgLayout = css`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    margin-right: 20px;
-
-    & img {
-        width: 220px;
-        height: 220px;
-        background-color: #dbdbdb;
-        cursor: pointer;
-    }
-
-    & div {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        width: 200px;
-        & p {
-            margin: 0px;
-            width: 220px;
-            font-size: 18px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            &:nth-of-type(1) {
-                color: #c2c2c2;
-                font-size: 16px;
-            }
-
-            &:nth-of-type(2) {
-                margin: 5px 0px 25px 0px;
-            }
-        }
-    }
-
 `;
 
 // pageNumber

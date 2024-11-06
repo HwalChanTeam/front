@@ -4,7 +4,7 @@ export const layout = css`
   box-sizing: border-box;
   display: flex;
   width: 100%;
-  margin-top: 30px;
+  margin-top: 80px;
 `;
 export const footLayout = css`
   box-sizing: border-box;
