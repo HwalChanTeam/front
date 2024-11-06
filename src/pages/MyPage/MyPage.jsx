@@ -77,7 +77,7 @@ function MyPage(props) {
           <img src={userInfo?.img} alt="" />
         </div>
         <div css={s.userInfoBox}>
-          <p>{userInfo?.username}님 반갑습니다.</p>
+          <p>{userInfo?.name}님 반갑습니다.</p>
           <p>{userInfo?.email}</p>
           <p>적립금 : {userInfo?.point.toLocaleString()}원</p>
         </div>
