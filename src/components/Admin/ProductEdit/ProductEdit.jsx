@@ -15,6 +15,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { menus } from "../../../constants/mainMenus";
 
 function ProductEdit(props) {
+    const [selectedProducts, setSelectedProducts] = useState([]);
     const [productList, setProductList] = useState([]);
     const [checkedIds, setCheckedIds] = useState([]);
     const [searchParam] = useSearchParams();
@@ -92,6 +93,7 @@ function ProductEdit(props) {
 
     const handleCheckBoxOnChange = (product) => {
         const productId = product.productId;
+        console.log(product)
         setCheckedIds((ids) => {
             if (ids.includes(productId)) {
                 return ids.filter(id => id !== productId);
@@ -99,11 +101,21 @@ function ProductEdit(props) {
                 return [...ids, productId];
             }
         });
-        setProduct((product) => ({
-            ...product,
-            checkedIds: productId
-        }))
+        setProduct({
+            checkedIds: product.productId,
+            title: product.title,
+            price: product.price,
+            stock: product.stock,
+            // categoryId: product.productCategories.category.categoryId,
+            // semiCategoryId: product.semiCategories.semiCategoryId,
+            description: product.description,
+            origin: product.origin,
+            thumbnailImg: product.thumbnailImg,
+            contentsImg: [product.contentsImg1, product.contentsImg2, product.contentsImg3, product.contentsImg4]
+        })
     };
+
+
 
     const deleteMutation = useMutation(
         async () => {
@@ -182,7 +194,7 @@ function ProductEdit(props) {
         });
         setPageCount(selectPage ? parseInt(selectPage) : 1);
         productQuery.refetch();
-        // window.location.reload();
+        setIsModalOpen(false);
     };
 
 
@@ -280,7 +292,7 @@ function ProductEdit(props) {
                     }}
                 >
                     <div css={s.modalLayout}>
-                        <h1>상품 등록</h1>
+                        <h1>상품 수정</h1>
                         <div css={s.mainBox}>
                             <div css={s.registerBox}>
                                 <div css={s.inputBox}>
@@ -369,7 +381,7 @@ function ProductEdit(props) {
                                     </div>
                                 </div>
                                 <div css={s.buttonBox}>
-                                    <button onClick={handleSubmitOnClick}>상품 등록</button>
+                                    <button onClick={handleSubmitOnClick}>수정</button>
                                     <button onClick={() => setIsModalOpen(false)}>취소</button>
                                 </div>
                             </div>
