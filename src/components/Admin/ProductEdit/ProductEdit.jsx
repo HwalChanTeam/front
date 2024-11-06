@@ -15,6 +15,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { menus } from "../../../constants/mainMenus";
 
 function ProductEdit(props) {
+    const navigate = useNavigate();
     const [productList, setProductList] = useState([]);
     const [checkedIds, setCheckedIds] = useState([]);
     const [searchParam] = useSearchParams();
@@ -22,14 +23,10 @@ function ProductEdit(props) {
     const [selectPage, setSelectPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
-    const navigate = useNavigate();
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     // 모달을 여는 함수
     const openModal = () => setIsModalOpen(true);
     const [isUploading, setUploading] = useState(false);
-
-    const [contentsUrl, setContentsUrl] = useState([]);
 
     const [product, setProduct] = useState({
         checkedIds: 0,
@@ -92,6 +89,7 @@ function ProductEdit(props) {
 
     const handleCheckBoxOnChange = (product) => {
         const productId = product.productId;
+
         setCheckedIds((ids) => {
             if (ids.includes(productId)) {
                 return ids.filter(id => id !== productId);
@@ -99,11 +97,21 @@ function ProductEdit(props) {
                 return [...ids, productId];
             }
         });
-        setProduct((product) => ({
-            ...product,
-            checkedIds: productId
-        }))
+        setProduct({
+            checkedIds: product.productId,
+            title: product.title,
+            price: product.price,
+            stock: product.stock,
+            categoryId: product.productCategories[0].category.categoryId,
+            semiCategoryId: product.semiCategories[0].semiCategoryId,
+            description: product.description,
+            origin: product.origin,
+            thumbnailImg: product.thumbnailImg,
+            contentsImg: [product.contentsImg1, product.contentsImg2, product.contentsImg3, product.contentsImg4]
+        })
     };
+
+
 
     const deleteMutation = useMutation(
         async () => {
@@ -182,7 +190,7 @@ function ProductEdit(props) {
         });
         setPageCount(selectPage ? parseInt(selectPage) : 1);
         productQuery.refetch();
-        // window.location.reload();
+        setIsModalOpen(false);
     };
 
 
@@ -280,7 +288,7 @@ function ProductEdit(props) {
                     }}
                 >
                     <div css={s.modalLayout}>
-                        <h1>상품 등록</h1>
+                        <h1>상품 수정</h1>
                         <div css={s.mainBox}>
                             <div css={s.registerBox}>
                                 <div css={s.inputBox}>
@@ -293,9 +301,9 @@ function ProductEdit(props) {
                                             css={s.selectBox}
                                         >
                                             {
-                                                menus[0].subMenus.map(category => (
-                                                    <option value={category.id}>{category.name}</option>
-                                                ))
+                                                menus[0].subMenus.map(category => 
+                                                    <option key={category.id} value={category.id}>{category.name}</option>      
+                                                )
                                             }
                                         </select>
                                         <label for="semiCategory">서브 카테고리</label>
@@ -306,11 +314,9 @@ function ProductEdit(props) {
                                             css={s.selectBox}
                                         >
                                             {
-                                                menus[0].subMenus.find(menu => menu.id === product.categoryId)?.subSideMenus.map((subMenu) => (
-                                                    <option key={subMenu.id} value={subMenu.id}>
-                                                        {subMenu.name}
-                                                    </option>
-                                                ))
+                                                menus[0].subMenus.find(menu => menu.id === product.categoryId)?.subSideMenus.map((semiCategory) => 
+                                                    <option key={semiCategory.id} value={semiCategory.id}>{semiCategory.name}</option>
+                                                )
                                             }
                                         </select>
                                     </div>
@@ -369,7 +375,7 @@ function ProductEdit(props) {
                                     </div>
                                 </div>
                                 <div css={s.buttonBox}>
-                                    <button onClick={handleSubmitOnClick}>상품 등록</button>
+                                    <button onClick={handleSubmitOnClick}>수정</button>
                                     <button onClick={() => setIsModalOpen(false)}>취소</button>
                                 </div>
                             </div>

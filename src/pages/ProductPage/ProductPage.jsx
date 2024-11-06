@@ -4,12 +4,12 @@ import MainMenu from "../../components/MainMenu/MainMenu";
 import { FiShoppingCart } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import {
-  Link,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-  useParams,
+    Link,
+    Route,
+    Routes,
+    useLocation,
+    useNavigate,
+    useParams,
 } from "react-router-dom";
 import InformationView from "../../components/Product/InformationView/InformationView";
 import BuyReview from "../../components/Product/BuyReview/BuyReview";
@@ -22,7 +22,7 @@ import { useMutation, useQuery } from "react-query";
 import { productOrderAtom } from "../../apis/util/atom";
 import { useRecoilState } from "recoil";
 
-    const selectProductMenus = [
+const selectProductMenus = [
     {
         selectedId: 1,
         title: "상세정보",
@@ -43,7 +43,7 @@ import { useRecoilState } from "recoil";
         title: "배송",
         path: "/product/:productId/delivery",
     },
-    ];
+];
 
 function ProductPage() {
     const token = localStorage.getItem("accessToken");
@@ -53,7 +53,7 @@ function ProductPage() {
     const location = useLocation();
     const pathname = location.pathname;
     const [selectedProduct, setSelectedProduct] =
-    useRecoilState(productOrderAtom); // atom 사용
+        useRecoilState(productOrderAtom); // atom 사용
 
     // 페이지가 마운트될 때 스크롤을 맨 위로 이동
     useEffect(() => {
@@ -71,30 +71,34 @@ function ProductPage() {
     });
 
     // 상품 조회
-    const { data, refetch } = useQuery(
-        ["getProduct", productId],
+    const productData = useQuery(
+        ["getProduct"],
         async () => {
-        return await instance.get("/user/public/product/detail", {
-            params: { id: productId },
-        });
+            return await instance.get("/user/public/product/detail", {
+                params: { id: productId },
+            });
         },
         {
-        onSuccess: (response) => {
-            setProduct(response.data?.product);
-            console.log(response.data?.product)
-        },
+            retry: 0,
+            refetchOnWindowFocus: false,
+            enabled: true,
+            onSuccess: (response) => {
+                setProduct(response.data?.product);
+                console.log(response.data)
+            },
         }
     );
 
+    console.log(productData);
     // 구매수량 상태
     const [productItems, setProductItems] = useState({ buyItem: 1 });
 
     // 구매수량 숫자 증가 감소
     const handlebuyNumberChange = (delta) => {
-    setProductItems((prevItem) => ({
-        ...prevItem,
-        buyItem: Math.max(1, prevItem.buyItem + delta),
-    }));
+        setProductItems((prevItem) => ({
+            ...prevItem,
+            buyItem: Math.max(1, prevItem.buyItem + delta),
+        }));
     };
 
     const basketAddProductMutation = useMutation(
@@ -102,13 +106,13 @@ function ProductPage() {
             await instance.post("/user/cart", payload);
         },
         {
-            onSuccess : () => {
-            if(window.confirm("장바구니에 담았습니다\n장바구니로 이동하시겠습니까?")) {
-                navigate("/cart")
-            }
+            onSuccess: () => {
+                if (window.confirm("장바구니에 담았습니다\n장바구니로 이동하시겠습니까?")) {
+                    navigate("/cart")
+                }
             },
             onError: (error) => {
-            console.error("오류!!!" + error);
+                console.error("오류!!!" + error);
             },
         }
     );
@@ -117,7 +121,7 @@ function ProductPage() {
     const basketAddProductButton = async () => {
         if (!token) {
             if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
-            navigate("/user/signin");
+                navigate("/user/signin");
             }
             return;
         }
@@ -133,11 +137,11 @@ function ProductPage() {
     const handleBuyButton = async () => {
         if (!token) {
             if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
-            navigate("/user/signin");
+                navigate("/user/signin");
             }
             return;
         }
-        setSelectedProduct({productId, quantity : productItems.buyItem})
+        setSelectedProduct({ productId, quantity: productItems.buyItem })
         navigate("/order")
     };
 
@@ -147,24 +151,46 @@ function ProductPage() {
             return await instance.post(`/user/product/like/${product.productId}`);
         },
         {
+            onSuccess: response => {
+                productData.refetch();
+            },
             onError: (error) => {
-            console.log(error);
+                console.log(error);
+            },
+        }
+    );
+
+    const productDislikeMutation = useMutation(
+        async () => {
+            return await instance.delete(`/user/product/dislike/${product.productId}`);
+        },
+        {
+            onSuccess: response => {
+                productData.refetch();
+            },
+            onError: (error) => {
+                console.log(error);
             },
         }
     );
 
     // 찜 버튼
-    const handleWishListButton = async () => {
+    const handleWishListButton = () => {
         if (!token) {
             if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
                 navigate("/user/signin");
             }
             return;
         } else {
-            productLikeMutation.mutate();
+            productLikeMutation.mutateAsync().catch(() => { });
             alert("찜에 추가되었습니다.");
         }
     };
+
+    const handleDislikeOnClick = () => {
+        productDislikeMutation.mutateAsync().catch(() => { });
+    };
+
 
     // 구매수량*가격 함수
     const calculateTotalPrice = (product) => {
@@ -204,7 +230,7 @@ function ProductPage() {
                         <div css={s.producttitleBox}>
                             <p>상품명: {product?.title}</p>
                             <p>
-                            구매수량:
+                                구매수량:
                                 <span>
                                     <button onClick={() => handlebuyNumberChange(-1)}>-</button>
                                     {productItems.buyItem}
@@ -217,17 +243,27 @@ function ProductPage() {
                         <p>
                             총 {totalProductAmount.toLocaleString()} 원
                             <span>
-                            <button onClick={handleBuyButton}>구매하기</button>
-                            <IoMdHeartEmpty
-                                onClick={handleWishListButton}
-                                size="40"
-                                style={{ cursor: "pointer" }}
-                            />
-                            <FiShoppingCart
-                                onClick={basketAddProductButton}
-                                size="40"
-                                style={{ cursor: "pointer" }}
-                            />
+                                <button onClick={handleBuyButton}>구매하기</button>
+                                {
+                                    productData?.data?.data?.likeCheck
+                                        ?
+                                        <IoIosHeart
+                                            onClick={handleDislikeOnClick}
+                                            size="40"
+                                            style={{ cursor: "pointer" }}
+                                        />
+                                        :
+                                        <IoMdHeartEmpty
+                                            onClick={handleWishListButton}
+                                            size="40"
+                                            style={{ cursor: "pointer" }}
+                                        />
+                                }
+                                <FiShoppingCart
+                                    onClick={basketAddProductButton}
+                                    size="40"
+                                    style={{ cursor: "pointer" }}
+                                />
                             </span>
                         </p>
                     </div>
@@ -236,25 +272,25 @@ function ProductPage() {
             {/* 상품 상세설명란 */}
             <div css={s.menuLayout}>
                 <div css={s.menuBox}>
-                {selectProductMenus.map((menu) => (
-                    <Link
-                    key={menu.selectedId}
-                    to={menu.path.replace(":productId", productId)} // :id를 id로 대체
-                    css={s.selectProductMenu(
-                        pathname === menu.path.replace(":productId", productId)
-                    )}
-                    >
-                    <span>{menu.title}</span>
-                    </Link>
-                ))}
+                    {selectProductMenus.map((menu) => (
+                        <Link
+                            key={menu.selectedId}
+                            to={menu.path.replace(":productId", productId)} // :id를 id로 대체
+                            css={s.selectProductMenu(
+                                pathname === menu.path.replace(":productId", productId)
+                            )}
+                        >
+                            <span>{menu.title}</span>
+                        </Link>
+                    ))}
                 </div>
                 <div css={s.productInfor}>
-                <Routes>
-                    <Route path="/" element={<InformationView product={product} />} />
-                    <Route path="/review" element={<BuyReview product={product} />} />
-                    <Route path="/inquiry" element={<InquiryView product={product} />} />
-                    <Route path="/delivery" element={<DeliveryView product={product} />} />
-                </Routes>
+                    <Routes>
+                        <Route path="/" element={<InformationView product={product} />} />
+                        <Route path="/review" element={<BuyReview product={product} />} />
+                        <Route path="/inquiry" element={<InquiryView product={product} />} />
+                        <Route path="/delivery" element={<DeliveryView product={product} />} />
+                    </Routes>
                 </div>
             </div>
         </div>
