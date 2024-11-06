@@ -2,7 +2,7 @@ import { ResponsiveLine } from '@nivo/line';
 
 // 연도별 매출 추이를 나타내는 그래프
 const SalesTrend = ({ data }) => (
-    <div style={{ height: '400px' }}>
+    <div style={{ height: '350px' }}>
     <ResponsiveLine
         data={data}
         margin={{ top: 50, right: 110, bottom: 50, left: 60 }}

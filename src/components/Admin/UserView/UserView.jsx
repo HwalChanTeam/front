@@ -39,6 +39,8 @@ function UserView(props) {
         }
     );
 
+    console.log(userQuery)
+
     // 삭제를 위한 mutation
     const deleteMutation = useMutation(
         async () => {

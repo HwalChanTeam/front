@@ -48,7 +48,7 @@ export const container = css`
   box-sizing: border-box;
   margin: 0px 20px;
   border: 1px solid #000000;
-  width: 1200px;
+  width: 1600px;
   height: 500px;
   overflow-y: scroll;
   -ms-overflow-style: none;
@@ -86,19 +86,19 @@ export const theadItems = css`
   }
 
   &:nth-of-type(3) {
-    width: 140px;
+    width: 160px;
   }
 
   &:nth-of-type(4) {
-    width: 200px;
+    width: 300px;
   }
 
   &:nth-of-type(5) {
-    width: 330px;
+    width: 350px;
   }
 
   &:nth-of-type(6) {
-    width: 200px;
+    width: 280px;
   }
 
   &:nth-of-type(7) {
@@ -130,19 +130,19 @@ export const productItem = css`
   }
 
   &:nth-of-type(3) {
-    width: 140px;
+    width: 160px;
   }
 
   &:nth-of-type(4) {
-    width: 200px;
+    width: 300px;
   }
 
   &:nth-of-type(5) {
-    width: 330px;
+    width: 350px;
   }
 
   &:nth-of-type(6) {
-    width: 200px;
+    width: 280px;
   }
 
   &:nth-of-type(7) {
@@ -161,7 +161,7 @@ export const pageNumber = css`
         justify-content: center;
         margin-left: 20px;
         padding: 0px;
-        width: 1200px;
+        width: 1600px;
         list-style-type: none;
         & > li {
             margin: 0px 5px;

@@ -2,7 +2,7 @@ import { ResponsiveBar } from '@nivo/bar';
 
 // 매출량 TOP5의 음식을 나타내는 그래프
 const Top5Foods = ({ data }) => (
-    <div style={{ height: '400px' }}>
+    <div style={{ height: '350px' }}>
     <ResponsiveBar
         data={data}
         keys={['sales']}
