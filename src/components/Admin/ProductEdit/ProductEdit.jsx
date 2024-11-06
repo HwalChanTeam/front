@@ -15,12 +15,10 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { menus } from "../../../constants/mainMenus";
 
 function ProductEdit(props) {
-
     const [productList, setProductList] = useState([]);
     const [checkedIds, setCheckedIds] = useState([]);
     const [searchParam] = useSearchParams();
     const keyword = searchParam.get("keyword");
-    // const page = searchParam.get("page");
     const [selectPage, setSelectPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
@@ -92,7 +90,8 @@ function ProductEdit(props) {
         }
     }, [productQuery.data, searchProduct.data]);
 
-    const handleCheckBoxOnChange = (productId) => {
+    const handleCheckBoxOnChange = (product) => {
+        const productId = product.productId;
         setCheckedIds((ids) => {
             if (ids.includes(productId)) {
                 return ids.filter(id => id !== productId);
@@ -245,6 +244,7 @@ function ProductEdit(props) {
             });
         };
     }, []);
+
 
     return (
         <div css={s.layout}>
@@ -399,7 +399,7 @@ function ProductEdit(props) {
                                 <td css={s.productItem}>
                                     <input
                                         type="checkbox"
-                                        onChange={() => handleCheckBoxOnChange(product.productId)}
+                                        onChange={() => handleCheckBoxOnChange(product)}
                                         checked={checkedIds.includes(product.productId)}
                                     />
                                 </td>
@@ -410,12 +410,12 @@ function ProductEdit(props) {
                                 }
                                 {
                                     product?.productCategories?.semiCategoryId === 0
-                                    ?
-                                    <td css={s.productItem}></td>
-                                    :
-                                    product?.semiCategories?.map(category => ( // 데이터가 없을때 빈 td
-                                        <td css={s.productItem} key={category.semiCategoryId}>{category.name}</td> /* 서브카테고리 */
-                                    ))
+                                        ?
+                                        <td css={s.productItem}></td>
+                                        :
+                                        product?.semiCategories?.map(category => ( // 데이터가 없을때 빈 td
+                                            <td css={s.productItem} key={category.semiCategoryId}>{category.name}</td> /* 서브카테고리 */
+                                        ))
                                 }
                                 <td css={s.productItem}>{product.title}</td> {/* 상품명 */}
                                 <td css={s.productItem}>{product.origin}</td>
