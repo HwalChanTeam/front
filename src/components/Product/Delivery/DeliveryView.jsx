@@ -5,8 +5,9 @@ function DeliveryView(props) {
     const { id } = useParams();
 
     return (
-        <div>
+        <div style={{marginTop: "80px"}}>
             {/* 크롤ㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹ링 이미지 */}
+            <img src="https://www.omealdang.com/fserver//files/ckeditor/202236/1662528622_0.jpg" />
         </div>
     );
 }
