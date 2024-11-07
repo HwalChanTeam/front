@@ -68,3 +68,10 @@ export const contentBox = css`
     white-space: normal; // 줄바꿈 허용
     overflow-wrap: break-word; // 긴 단어가 있는 경우 줄바꿈 허용
 `;
+
+export const createDateStyle = css`
+
+    & p {
+        margin: 0;
+    }
+`;

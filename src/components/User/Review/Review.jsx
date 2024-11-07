@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { instance } from "../../../apis/util/instance";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import Star from "./Star/Star";
 
 function Review(props) {
   const [reviews, setReviews] = useState([]);
@@ -36,8 +37,12 @@ function Review(props) {
                     <li key={review.productId} css={s.productStyle}>
                         <img src={review.product.thumbnailImg} css={s.imageStyle}  onClick={() => handleProductImgOnClick(review.productId)}/>
                         <div css={s.textStyle}>
+                            <Star rating={review.rating}/>
                             <h2 css={s.titleStyle}>{review.title}</h2>
                             <p css={s.contentBox}>{review.content}</p>
+                        </div>
+                        <div css={s.createDateStyle}>
+                            <p>{review.createdAt}크리에이트데이트주세요</p>
                         </div>
                     </li>
                 ))}
