@@ -10,8 +10,11 @@ import { useState } from 'react';
 // 상품 당 icon을 띄우기 위한 컴포넌트 / 상품 당 장바구니 클릭 시 장바구니로 이동하게 기능 추가
 function ShoppingBasketIcon(props) {
     const token = localStorage.getItem("accessToken");
-    const navigate = useNavigate(); // useNavigate 훅을 사용합니다
     const { productId } = useParams();
+    const navigate = useNavigate(); 
+
+    // 구매수량 상태
+    const [productItems, setProductItems] = useState({ buyItem: 1 });
 
     const [product, setProduct] = useState({
         productId,
@@ -39,7 +42,7 @@ function ShoppingBasketIcon(props) {
         }
     );
 
-    const handleBasketOnClick = () => {
+    const handleBasketOnClick = async () => {
         if (!token) {
             if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
             navigate("/user/signin");
@@ -49,6 +52,7 @@ function ShoppingBasketIcon(props) {
         const payload = {
             productId: productId,
             price: product.price,
+            quantity: productItems.buyItem,
         };
         basketAddProductMutation.mutate(payload);
     }
@@ -59,13 +63,13 @@ function ShoppingBasketIcon(props) {
                 !token ?
                 <div css={s.layout}>
                     <div css={s.iconBox}>
-                        <a onClick={handleBasketOnClick}><SlBasket size="20" /></a>
+                        <a onClick={handleBasketOnClick}><SlBasket size="20" style={{cursor: "pointer"}} /></a>
                     </div>
                 </div>
                 :
                 <div css={s.layout}>
                     <div css={s.iconBox}>
-                        <a onClick={handleBasketOnClick}><SlBasket size="20" /></a>
+                        <a onClick={handleBasketOnClick}><SlBasket size="20" style={{cursor: "pointer"}}/></a>
                     </div>
                 </div>
             }

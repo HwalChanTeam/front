@@ -9,6 +9,14 @@ export const layout = css`
     height: 35px;
     border-radius: 50%;
     background-color: #e6e6e6;
+
+    &:hover {
+        background-color: #d3d3d3;
+    }
+
+    &:active {
+        background-color: #b8b8b8;
+    }
 `;
 
 export const iconBox = css`
@@ -22,5 +30,7 @@ export const iconBox = css`
         align-items: center;
         width: 25px;
         height: 25px;
+
+        
     }
 `;
