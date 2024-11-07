@@ -249,19 +249,19 @@ function ProductPage() {
                                         ?
                                         <IoIosHeart
                                             onClick={handleDislikeOnClick}
-                                            size="40"
+                                            size="30"
                                             style={{ cursor: "pointer" }}
                                         />
                                         :
                                         <IoMdHeartEmpty
                                             onClick={handleWishListButton}
-                                            size="40"
+                                            size="30"
                                             style={{ cursor: "pointer" }}
                                         />
                                 }
                                 <FiShoppingCart
                                     onClick={basketAddProductButton}
-                                    size="40"
+                                    size="30"
                                     style={{ cursor: "pointer" }}
                                 />
                             </span>

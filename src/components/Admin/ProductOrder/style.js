@@ -90,11 +90,11 @@ export const theadItems = css`
   }
 
   &:nth-of-type(3) {
-    width: 200px;
+    width: 220px;
   }
 
   &:nth-of-type(4) {
-    width: 160px;
+    width: 120px;
   }
 
   &:nth-of-type(5) {
@@ -102,7 +102,7 @@ export const theadItems = css`
   }
 
   &:nth-of-type(6) {
-    width: 200px;
+    width: 120px;
   }
   
   &:nth-of-type(7) {
@@ -110,11 +110,19 @@ export const theadItems = css`
   }
 
   &:nth-of-type(8) {
-    width: 200px;
+    width: 120px;
   }
 
   &:nth-of-type(9) {
-    width: 160px;
+    width: 120px;
+  }
+
+  &:nth-of-type(10) {
+    width: 220px;
+  }
+
+  &:nth-of-type(11) {
+    width: 100px;
   }
 
   &:nth-last-of-type(1) {
@@ -148,11 +156,11 @@ export const productItem = css`
   }
 
   &:nth-of-type(3) {
-    width: 200px;
+    width: 220px;
   }
 
   &:nth-of-type(4) {
-    width: 160px;
+    width: 120px;
   }
 
   &:nth-of-type(5) {
@@ -160,7 +168,7 @@ export const productItem = css`
   }
 
   &:nth-of-type(6) {
-    width: 200px;
+    width: 120px;
     padding-right: 5px;
     text-align: right;
   }
@@ -172,13 +180,21 @@ export const productItem = css`
   }
 
   &:nth-of-type(8) {
-    width: 200px;
+    width: 120px;
     padding-right: 5px;
     text-align: right;
   }
 
   &:nth-of-type(9) {
-    width: 160px;
+    width: 120px;
+  }
+
+  &:nth-of-type(10) {
+    width: 220px;
+  }
+
+  &:nth-of-type(11) {
+    width: 100px;
   }
 
   &:nth-last-of-type(1) {

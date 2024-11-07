@@ -8,6 +8,7 @@ import ReactPaginate from 'react-paginate';
 import Modal from '../../Modal/Modal';
 import { instance } from '../../../apis/util/instance';
 import AdminSearch from '../AdminSearch/AdminSearch';
+import DeliveryStartModal from '../../Modal/DeliveryStartModal';
 
 function ProductOrder(props) {
     // 모달 띄우는 상태 추가
@@ -79,9 +80,9 @@ function ProductOrder(props) {
             <h1>주문 관리</h1>
             <AdminSearch />
             <div css={s.buttonLayout}>
-                <button onClick={() => setOpenModal(true)}>배송시작</button>
-                <Modal isOpen={openModal} onClose={closeModal} />
-                <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
+                <button onClick={() => setOpenModal(true)}>배송등록</button>
+                <DeliveryStartModal isOpen={openModal} onClose={closeModal} orderQuery={orders} />
+                <button onClick={() => deleteMutation.mutateAsync()}>수정</button>
             </div>
             <div css={s.container}>
                 <table css={s.theadLayout}>
@@ -95,6 +96,8 @@ function ProductOrder(props) {
                         <td css={s.theadItems}>주문수량</td>
                         <td css={s.theadItems}>주문금액</td>
                         <td css={s.theadItems}>주문상태</td>
+                        <td css={s.theadItems}>운송장번호</td>
+                        <td css={s.theadItems}>배송사</td>
                         <td css={s.theadItems}>주문일자</td>
                     </tr>
                 </table>
@@ -122,6 +125,8 @@ function ProductOrder(props) {
                                         : (item.product.price) * (item.quantity) + 3000).toLocaleString()} 
                                 </td> 
                                 <td css={s.productItem}>{order.orderStatus}</td>
+                                <td css={s.productItem}></td> {/* 운송장번호 */}
+                                <td css={s.productItem}></td> {/* 배송사 */}
                                 <td css={s.productItem}>{order.createdAt}</td>
                             </tr>
                         ))
@@ -134,7 +139,7 @@ function ProductOrder(props) {
                     breakLabel="..."
                     previousLabel={<><MdNavigateBefore /></>}
                     nextLabel={<><MdNavigateNext /></>}
-                    pageCount={3}
+                    pageCount={pageCount}
                     marginPagesDisplayed={3}
                     pageRangeDisplayed={5}
                     onPageChange={handleOnPageChange}
