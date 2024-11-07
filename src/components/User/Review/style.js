@@ -31,21 +31,6 @@ export const imageStyle = css`
     cursor: pointer;
 `;
 
-export const buttonStyle = css`
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-left: 10px;
-    font-size: 18px;
-    color: #555;
-    &:hover {
-        color: #000;
-    }
-    & svg {
-        color: #964747;
-    }
-`;
-
 export const textStyle = css`
     display: flex;
     flex-direction: column;
@@ -70,8 +55,13 @@ export const contentBox = css`
 `;
 
 export const createDateStyle = css`
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
 
-    & p {
-        margin: 0;
+    p { 
+        margin: 0px;
     }
+
 `;

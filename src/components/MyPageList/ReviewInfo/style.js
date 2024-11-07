@@ -9,14 +9,7 @@ export const layout = css`
 
 export const contentLayout = css`
     box-sizing: border-box;
-    width: 850px;
-    & table {
-        width: 100%;
-    }
-`;
-
-export const tableLayout = css`
-    width: 100%;
+    width: 800px;
 `;
 
 export const subLayout = css`
@@ -32,89 +25,88 @@ export const subLayout = css`
 
 `;
 
-export const ReviewLayout = css`
-    box-sizing: border-box;
+export const productStyle = css`
     display: flex;
-    flex-direction: column;
-    width: 1200px;    
-
-    & tr {
-        margin-bottom: 15px;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    &:hover {
+        transform: scale(1.02);
     }
+
 `;
 
 export const ReviewList = css`
     box-sizing: border-box;
     display: flex;
-    width: 1200px;
-    height: 151px;
+    align-items: center;
     padding: 0px;
-    border: 1px solid #dbdbdb;
 `;
 
 export const productImgLayout = css`
     box-sizing: border-box;
     border: none;
-    background-color: #dbdbdb;
     cursor: pointer;
     
     & img {
         box-sizing: border-box;
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
     }
 `;
 
 export const productReviewLayout = css`
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    width: 1049px;
-    height: 150px;
-`;
-
-export const userLayout = css`
-    box-sizing: border-box;
-    display: flex;
-    padding-top: 5px;
-    padding-left: 10px;
-    align-items: center;
-    height: 30px;
+    flex: 1;
+    margin-left: 10px;
+    width: 630px;
 
     & h2 {
-        margin: 0px;
-        padding-left: 5px;
-        font-size: 12px;
-        font-weight: 600;
+        margin: 10px 0px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    & > p {
+        margin: 10px 0px;
+        flex-wrap: wrap;
+        font-size: 16px;
+        color: #333;
+        white-space: normal; // 줄바꿈 허용
+        overflow-wrap: break-word; // 긴 단어가 있는 경우 줄바꿈 허용
     }
 `;
 
-export const reviewContent = css`
-    box-sizing: border-box;
+export const iconBox = css`
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    margin-top: 5px;
-    padding: 0px 10px;
-    width: 1049px;
-    height: 85px;
-    border-top: 1px solid #dbdbdb;
-    overflow-wrap: break-word;
+    & > div {
 
-    & p {
-        margin: 0px;
-        width: 1029px;
-        font-size: 12px;
-    }
+        & svg{
+            color: #964747;
+            cursor: pointer;
+            &:nth-of-type(1) {
+                margin-right: 10px;
+            }
+        }
+    } 
 `;
 
 export const createData = css`
     box-sizing: border-box;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
 
     & p {
         margin: 0px;
-        padding-right: 10px;
-        padding-bottom: 5px;
     }
 `;
