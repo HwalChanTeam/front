@@ -62,7 +62,9 @@ function ProductSearchPage(props) {
         }
     );
 
-    const productCount = productsQuery.data?.data?.products.length;
+    // 상품 총 갯수를 불러오게 하기 위한 함수  
+    const productCount = productTrGroups.length
+    console.log(productsQuery)
 
     // useEffect(() => {
     //     console.log(productTrGroups)

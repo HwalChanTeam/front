@@ -138,7 +138,7 @@ export const producttitleBox = css`
 
 export const buyProduct = css`
     box-sizing: border-box;
-    padding: 20px 0px;
+    padding: 20px 70px 20px 0px;
     
     & p {
         box-sizing: border-box;
@@ -150,6 +150,7 @@ export const buyProduct = css`
         & span {
             box-sizing: border-box;
             display: flex;
+            align-items: center;
 
             & button {
                 box-sizing: border-box;
