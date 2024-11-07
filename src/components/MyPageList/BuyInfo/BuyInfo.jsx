@@ -7,49 +7,6 @@ import { useNavigate } from 'react-router-dom';
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 
-const tempProducts = [
-    {
-        productId : 1,
-        thumbnailImg: null,
-        title: "aaaa",
-        description: "aaadasd",
-        price: 19000,
-        quantity: 5
-    },
-    {
-        productId : 2,
-        thumbnailImg: null,
-        title: "aaaa",
-        description: "aaadasd",
-        price: 19000,
-        quantity: 5
-    },
-    {
-        productId : 3,
-        thumbnailImg: null,
-        title: "aaaa",
-        description: "aaadasd",
-        price: 19000,
-        quantity: 5
-    },
-    {
-        productId : 4,
-        thumbnailImg: null,
-        title: "aaaa",
-        description: "aaadasd",
-        price: 19000,
-        quantity: 5
-    },
-    {
-        productId : 5,
-        thumbnailImg: null,
-        title: "aaaa",
-        description: "aaadasd",
-        price: 19000,
-        quantity: 5
-    },
-]
-
 
 function BuyInfo(props) {
 
@@ -61,15 +18,20 @@ function BuyInfo(props) {
     const { data, isError, isLoading, refetch } = useQuery(
         ["getUserBuyInfo"],
         async () => {
-            return await instance.get("/user/info");
+            return await instance.get("/user/order/record");
         },
         {
             onSuccess: (response) => {
-                console.log(response.data)
                 setUserBuyInfo(response.data);
             }
         }
     )
+
+    console.log(userBuyInfo)
+    console.log(userBuyInfo.map((item) => item.createdAt))
+    console.log(userBuyInfo.map((item) => item.orderStatus))
+    console.log(userBuyInfo.map((item) => item.totalAmount))
+    console.log(userBuyInfo.map((item) => item.orderItems.map((product) => product.product.title)))
 
     //구매목록 삭제 기능
     const deleteBuyInfo = useMutation(
@@ -104,20 +66,20 @@ function BuyInfo(props) {
         <div css={s.containerStyle}>
             <h2>구매기록</h2>
             <ul>
-                {tempProducts.map((product) => (
-                    <li key={product.productId} css={s.productStyle}>
-                        <img src={product.thumbnailImg} alt={product.title} css={s.imageStyle} />
+                {userBuyInfo.map((products) => (
+                    <li key={products.productId} css={s.productStyle}>
+                        <img src={products?.orderItems[0]?.product.thumbnailImg} alt={products.title} css={s.imageStyle} />
                         <div css={s.textStyle}>
-                            <h2 css={s.titleStyle}>{product.title}</h2>
-                            <p css={s.descriptionStyle}>{product.description}</p>
-                            <p>수량: {product.quantity}</p>
-                            <p css={s.priceStyle}>가격: {product.price}</p>
+                            <h2 css={s.titleStyle}>{products?.orderItems[0]?.product.title} 외{products.orderItems?.length}개</h2>
+                        <p>수량: {products.quantity}토탈 수량 주세용</p>
+                            <p css={s.descriptionStyle}>{products.description}</p>
+                            <p css={s.priceStyle}>가격: {products.totalAmount.toLocaleString()}원</p>
                         </div>
                         <div>
-                            <button css={s.buttonStyle} onClick={() => handleDelete(product.productId)}>
+                            <button css={s.buttonStyle} onClick={() => handleDelete(products.productId)}>
                                 <FaTrash />
                             </button>
-                            <button css={s.buttonStyle} onClick={() => handleRepurchase(product.productId)}>
+                            <button css={s.buttonStyle} onClick={() => handleRepurchase(products.productId)}>
                                 <LuShoppingBag />
                             </button>
                         </div>

@@ -8,26 +8,17 @@ import { instance } from '../../apis/util/instance';
 import { useState } from 'react';
 
 // 상품 당 icon을 띄우기 위한 컴포넌트 / 상품 당 장바구니 클릭 시 장바구니로 이동하게 기능 추가
-function ShoppingBasketIcon(props) {
+function ShoppingBasketIcon({product}) {
     const token = localStorage.getItem("accessToken");
-    const { productId } = useParams();
     const navigate = useNavigate(); 
 
     // 구매수량 상태
     const [productItems, setProductItems] = useState({ buyItem: 1 });
 
-    const [product, setProduct] = useState({
-        productId,
-        thumbnailImg: "",
-        title: "",
-        description: "",
-        origin: "",
-        price: 0,
-        category: "",
-    });
-
+    // 장바구니 추가 mutation
     const basketAddProductMutation = useMutation(
         async (payload) => {
+            console.log(payload)
             await instance.post("/user/cart", payload);
         },
         {
@@ -42,15 +33,18 @@ function ShoppingBasketIcon(props) {
         }
     );
 
-    const handleBasketOnClick = async () => {
+    // 장바구니 추가 헨들러
+    const handleBasketOnClick = async (id) => {
         if (!token) {
             if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
             navigate("/user/signin");
             }
             return;
         }
+        console.log(id)
+        // RequestBody로 넘기기 위한 변수 생성
         const payload = {
-            productId: productId,
+            productId: product.productId,
             price: product.price,
             quantity: productItems.buyItem,
         };
@@ -58,22 +52,11 @@ function ShoppingBasketIcon(props) {
     }
 
     return (
-        <>
-            {
-                !token ?
-                <div css={s.layout}>
-                    <div css={s.iconBox}>
-                        <a onClick={handleBasketOnClick}><SlBasket size="20" style={{cursor: "pointer"}} /></a>
-                    </div>
-                </div>
-                :
-                <div css={s.layout}>
-                    <div css={s.iconBox}>
-                        <a onClick={handleBasketOnClick}><SlBasket size="20" style={{cursor: "pointer"}}/></a>
-                    </div>
-                </div>
-            }
-        </>
+        <div css={s.layout}>
+            <div css={s.iconBox}>
+                <a onClick={() => handleBasketOnClick(product.productId)}><SlBasket size="20" style={{cursor: "pointer"}} /></a>
+            </div>
+        </div>
     );
 }
 

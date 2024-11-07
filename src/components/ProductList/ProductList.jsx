@@ -28,7 +28,7 @@ function ProductList({productList, productPath}) {
                                             <h2>{pro.title}</h2>
                                             <div css={s.footerBox}>
                                                 <h2>{pro.price.toLocaleString()}원</h2>
-                                                <ShoppingBasketIcon />
+                                                <ShoppingBasketIcon product={pro}/>
                                             </div>
                                         </div>
                                     </div>

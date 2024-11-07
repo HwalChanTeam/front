@@ -141,7 +141,7 @@ function MainPage() {
                                             <p>{bestProduct.title}</p>
                                             <div css={s.footerBox}>
                                                 <p>{bestProduct.price.toLocaleString()}원</p>
-                                                <ShoppingBasketIcon />
+                                                <ShoppingBasketIcon product={bestProduct}/>
                                             </div>
                                         </div>
                                     </div>
@@ -169,7 +169,7 @@ function MainPage() {
                                             <p>{respectProduct.title}</p>
                                             <div css={s.footerBox}>
                                                 <p>{respectProduct.price.toLocaleString()}원</p>
-                                                <ShoppingBasketIcon />
+                                                <ShoppingBasketIcon product={respectProduct}/>
                                             </div>
                                         </div>
                                     </div>
