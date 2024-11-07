@@ -11,11 +11,6 @@ const inputBox = css`
     border-radius: "5px";
     width: "300px";
 
-    & p {
-        margin: 0px;
-        font-size: 14px;
-    }
-
     & button:nth-of-type(1) {
         margin: 0px 5px;
     }
@@ -36,7 +31,13 @@ function DeliveryStartModal({ isOpen, onClose, orderQuery }) {
                 orderQuery.refetch()
             }
         }
-    )
+    );
+
+    // 배송등록 버튼
+    const handelDeliverySubmitOnClick = () => {
+        deliveryPostMutation.mutate();
+        onClose();
+    }
 
     return (
         <ReactModal
@@ -71,15 +72,7 @@ function DeliveryStartModal({ isOpen, onClose, orderQuery }) {
                 <input type="text" placeholder="운송장번호를 입력하세요" />
                 <input type="text" placeholder="배송사를 입력하세요" />
                 <input type="text" placeholder="배송일자" /> {/* 배송시작일자  */}
-                <p>주문상태</p>
-                <select> {/* 주문상태 바꾸는 select  */}
-                    <option value="">배송준비중</option>
-                    <option value="">배송중</option>
-                    <option value="">배송완료</option>
-                    <option value="">주문취소</option>
-                    <option value="">환불</option>
-                </select> 
-                <button onClick={() => deliveryPostMutation.mutate}>배송등록</button>
+                <button onClick={handelDeliverySubmitOnClick}>배송등록</button>
                 <button onClick={onClose}>닫기</button>
             </div>
         </ReactModal>

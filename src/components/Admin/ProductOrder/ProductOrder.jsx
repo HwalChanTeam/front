@@ -9,10 +9,12 @@ import Modal from '../../Modal/Modal';
 import { instance } from '../../../apis/util/instance';
 import AdminSearch from '../AdminSearch/AdminSearch';
 import DeliveryStartModal from '../../Modal/DeliveryStartModal';
+import DeliveryEditModal from '../../Modal/DeliveryEditModal';
 
 function ProductOrder(props) {
     // 모달 띄우는 상태 추가
-    const [openModal, setOpenModal] = useState(false);
+    const [ openModal, setOpenModal ] = useState(false); // 배송등록 모달
+    const [ openEditModal, setOpenEditModal ] = useState(false); // 배송 수정 모달 / 안만들면 등록창이랑 겹쳐버림
 
     const [checkedIds, setCheckedIds] = useState([]);
     const [orders, setOrders] = useState([]);
@@ -26,6 +28,7 @@ function ProductOrder(props) {
 
     const closeModal = () => {
         setOpenModal(false); // 모달 닫기
+        setOpenEditModal(false); // 수정 모달창 닫기
     };
 
     // 주문 목록 조회
@@ -38,34 +41,21 @@ function ProductOrder(props) {
         }
     );
 
+    console.log(orders);
+
     // 주문상태 - 고객의 행동에 따라 환불, 취소, 배송완료, 배송중으로 바꾸기 (배송중은 관리자가 바꾸게 하기)
     useEffect(() => {
 
     }, [])
-
-    const deleteMutation = useMutation(
-        async () => {
-            console.log(checkedIds);
-            await instance.delete("/admin/order/", { data: { checkedIds } });
-        },
-        {
-            retry: 0,
-            refetchOnWindowFocus: false,
-            onSuccess: (response) => {
-                alert("삭제가 완료되었습니다.");
-                orderQuery.refetch();
-            }
-        }
-    );
     
-
-    const handleCheckBoxOnChange = (orderId) => {
-        console.log(orderId);
+    // 체크 할 시 하나씩 선택되도록 하기위해 orderId가 아닌 orderItemId 사용(각 orderItemId를 선택)
+    // 체크박스 체크를 위한 함수
+    const handleCheckBoxOnChange = (orderItemId) => {
         setCheckedIds((ids) => {
-            if (ids.includes(orderId)) {
-                return ids.filter(id => id !== orderId);
+            if (ids.includes(orderItemId)) {
+                return ids.filter(id => id !== orderItemId);
             } else {
-                return [...ids, orderId];
+                return [...ids, orderItemId];
             }
         });
     };
@@ -73,6 +63,15 @@ function ProductOrder(props) {
     const handleOnPageChange = (e) => {
         setPageCount(e.selected + 1);
         navigate(`/admin/main/order?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
+    };
+
+    // 수정 버튼 
+    const handleModifyOnClick = () => {
+        if(checkedIds.length === 1) {
+            setOpenEditModal(true)
+        } else {
+            alert("해당 주문 목록을 선택해주세요.")
+        }
     }
 
     return (
@@ -82,7 +81,15 @@ function ProductOrder(props) {
             <div css={s.buttonLayout}>
                 <button onClick={() => setOpenModal(true)}>배송등록</button>
                 <DeliveryStartModal isOpen={openModal} onClose={closeModal} orderQuery={orders} />
-                <button onClick={() => deleteMutation.mutateAsync()}>수정</button>
+                {
+                    checkedIds.length >= 2 ?
+                        <></>
+                    :
+                    <>
+                        <button onClick={handleModifyOnClick}>수정</button>
+                        <DeliveryEditModal isOpen={openEditModal} onClose={closeModal} orderQuery={orders} checkId={checkedIds}/>
+                    </>
+                }
             </div>
             <div css={s.container}>
                 <table css={s.theadLayout}>
@@ -105,12 +112,12 @@ function ProductOrder(props) {
                     {/* <tbody css={s.tbodyLayout}> */}
                     {orders?.map((order) => (
                         order.orderItems?.map((item) => (
-                            <tr key={order.orderId}>
+                            <tr key={item?.orderItemId}>
                                 <td css={s.productItem}>
                                     <input
                                         type="checkbox"
-                                        onChange={() => handleCheckBoxOnChange(order.orderId)}
-                                        checked={checkedIds.includes(order.orderId)}
+                                        onChange={() => handleCheckBoxOnChange(item.orderItemId)} // 지금은 orderItemId가 null로 뜸 그래서 2개다 선택됨 
+                                        checked={checkedIds.includes(item.orderItemId)}
                                     />
                                 </td>
                                 <td css={s.productItem}>{order.orderId}</td>
