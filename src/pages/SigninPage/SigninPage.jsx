@@ -59,7 +59,7 @@ function SigninPage(props) {
 
     const handleLoginSubmitOnkeyDown = (e) => {
         if(e.keyCode === 13) {
-            signinUser.mutate(user);
+            handleLoginSubmitOnClick();
         }
     }
 
