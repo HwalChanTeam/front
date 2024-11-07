@@ -31,23 +31,23 @@ function Review(props) {
   }
 
   return (
-<div css={s.containerStyle}>
-            <ul>
-                {reviews.map((review) => (
-                    <li key={review.productId} css={s.productStyle}>
-                        <img src={review.product.thumbnailImg} css={s.imageStyle}  onClick={() => handleProductImgOnClick(review.productId)}/>
-                        <div css={s.textStyle}>
-                            <Star rating={review.rating}/>
-                            <h2 css={s.titleStyle}>{review.title}</h2>
-                            <p css={s.contentBox}>{review.content}</p>
-                        </div>
-                        <div css={s.createDateStyle}>
-                            <p>{review.createdAt}크리에이트데이트주세요</p>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-        </div>
+    <div css={s.containerStyle}>
+        <ul>
+            {reviews.map((review) => (
+                <li key={review.productId} css={s.productStyle}>
+                    <img src={review.product.thumbnailImg} css={s.imageStyle}  onClick={() => handleProductImgOnClick(review.productId)}/>
+                    <div css={s.textStyle}>
+                        <Star rating={review.rating}/>
+                        <h2 css={s.titleStyle}>{review.title}</h2>
+                        <p css={s.contentBox}>{review.content}</p>
+                    </div>
+                    <div css={s.createDateStyle}>
+                        <p>{review.createdAt}크리에이트데이트주세요</p>
+                    </div>
+                </li>
+            ))}
+        </ul>
+    </div>
   );
 }
 

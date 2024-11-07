@@ -3,6 +3,8 @@ import { useQuery } from 'react-query';
 import { instance } from '../../../apis/util/instance';
 /** @jsxImportSource @emotion/react */
 import *as s from './style';
+import Star from '../../User/Review/Star/Star';
+import { FaRegEdit, FaTrash } from "react-icons/fa";
 
 function ReviewInfo(props) {
 
@@ -16,12 +18,19 @@ function ReviewInfo(props) {
         {
             retry: 0,
             onSuccess: (response) => {
-                console.log(response)
-                console.log(response.data.map((r) => r.id))
+                console.log(response.data)
                 setReviews(response.data)
             },
         }
     )
+
+    const handleDelectOnClick = () => {
+        alert("aaa")
+    }
+
+    const handleModifyOnClick = () => {
+        alert("aaa")
+    }
 
     return (
         <div css={s.layout}>
@@ -29,33 +38,32 @@ function ReviewInfo(props) {
                     <div css={s.subLayout}>
                         <h2>나의 리뷰</h2>
                     </div>
-                <table css={s.tableLayout}>
-                    {reviews.map((review) => {
-                    <tbody css={s.ReviewLayout}
-                        key={review.id}
-                    >
-                        <tr>
+                    <ul >
+                    { reviews.map((review) => (
+                        <li key={review.id} css={s.productStyle}>
                             <div css={s.ReviewList}>
                                 <div css={s.productImgLayout}>
-                                    <img src="" alt="" />
+                                    <img src={review?.product.thumbnailImg} />
                                 </div>
                                 <div css={s.productReviewLayout}>
-                                    <div css={s.userLayout}>
-                                        <h2>user1234</h2>
+                                    <div css={s.iconBox}>
+                                        <Star rating={review.rating}/>
+                                        <div>
+                                            <FaTrash onClick={handleDelectOnClick}/>
+                                            <FaRegEdit onClick={handleModifyOnClick}/>
+                                        </div>
                                     </div>
-                                    <div css={s.reviewContent}>
-                                        <p>ddd</p>
-                                    </div>
+                                    <h2>{review.title}</h2>
+                                    <p>{review.content}</p>
                                     <div css={s.createData}>
-                                        <p>2024-10-23 11:20</p>
+                                        <p>{review.createdAt}2024-11-07 12:02:00</p>
                                     </div>
+                                    
                                 </div>
                             </div>
-                        </tr>
-                    </tbody>
-                    })
-                    }
-                </table>
+                        </li>
+                    ))}
+                    </ul>
             </div>
         </div>
     );
