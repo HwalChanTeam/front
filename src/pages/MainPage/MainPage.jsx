@@ -81,6 +81,7 @@ function MainPage() {
         navigate(`/product/${productId}`);
     };
 
+    console.log(localStorage)
     return (
         <>
             {

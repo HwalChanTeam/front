@@ -36,10 +36,12 @@ function SigninPage(props) {
                 alert(response.response.data); // 데이터 확인 필요
             },
             onSuccess: (response) => {
+                console.log(response)
                 localStorage.setItem(
                     "accessToken",
                     "Bearer " + response.data.accessToken
                 ); // 로그인 성공하면 accessToken 집어넣음
+                localStorage.setItem("role", response.data.role.name)
 
                 instance.interceptors.request.use((config) => {
                     // 요청때 config 설정 사용해라
