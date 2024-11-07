@@ -29,27 +29,27 @@ function StaffEditModal({ isOpen, onClose, staffQuery, checkId }) {
     
     console.log(filteredStaff); // 필터링된 결과 출력
 
-        // 매니저 수정
-        const registerMutation = useMutation(
-            async () => {
-                console.log(userData)
-                return await instance.put(`/admin/signup/${checkId}`, userData);
+    // 매니저 수정
+    const registerMutation = useMutation(
+        async () => {
+            console.log(userData)
+            return await instance.put(`/admin/signup/${checkId}`, userData);
+        },
+        {
+            retry: 0,
+            refetchOnWindowFocus: false,
+            onSuccess: () => {
+                alert("매니저 수정이 완료되었습니다.")
+                staffQuery.refetch();
             },
-            {
-                retry: 0,
-                refetchOnWindowFocus: false,
-                onSuccess: () => {
-                    alert("매니저 수정이 완료되었습니다.")
-                    staffQuery.refetch();
-                },
-                onError: (error) => {
-                    console.error(error)
-                    alert("매니저 수정 실패!!!")
-                }
+            onError: (error) => {
+                console.error(error)
+                alert("매니저 수정 실패!!!")
             }
-        )
+        }
+    )
 
-            // 만약 filteredStaff가 있으면, userData 상태를 설정
+    // 만약 filteredStaff가 있으면, userData 상태를 설정
     useEffect(() => {
         if (filteredStaff.length > 0) {
             const staff = filteredStaff[0];  // 첫 번째 직원 선택

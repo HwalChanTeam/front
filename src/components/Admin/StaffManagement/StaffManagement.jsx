@@ -99,11 +99,11 @@ function StaffManagement(props) {
                 {
                     checkedIds.length >= 2
                     ?
-                    <></>
+                        <></>
                     :
                     <>
-                    <button onClick={handleEditButtonOnClick}>수정</button>
-                    <StaffEditModal isOpen={openEditModal} onClose={closeModal} staffQuery={staffs} checkId={checkedIds}/>
+                        <button onClick={handleEditButtonOnClick}>수정</button>
+                        <StaffEditModal isOpen={openEditModal} onClose={closeModal} staffQuery={staffs} checkId={checkedIds}/>
                     </>
                 }
 
