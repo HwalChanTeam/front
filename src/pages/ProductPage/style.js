@@ -42,15 +42,16 @@ export const productContent = css`
 export const titleLayout = css`
     box-sizing: border-box;
     padding-bottom: 20px;
+    width: 500px;
     border-bottom: 2px solid #dbdbdb;
     & h2 {
         margin: 0px;
-        font-size: 26px;
+        font-size: 24px;
     }
 
     & p {
         margin: 0px;
-        font-size: 20px;
+        font-size: 18px;
     }
 `;
 
@@ -60,8 +61,7 @@ export const price = css`
     border-bottom: 2px solid #dbdbdb;
     & p {
         margin: 0px;
-        font-size: 28px;
-        font-style: italic;
+        font-size: 24px;
         font-weight: 600;
     }
 `;
@@ -80,11 +80,15 @@ export const contury = css`
     & p {
         margin: 0px;
         font-size: 20px;
-        padding-bottom: 20px;
+        padding: 20px 0px;
+
+        &:nth-of-type(1) {
+            padding-bottom: 0px;
+        }
     }
 `;
 
-export const producttitleBox = css`
+export const productTitleBox = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -92,8 +96,8 @@ export const producttitleBox = css`
 
     & p {
         margin: 0px;
-        font-size: 20px;
-        padding-bottom: 20px;
+        font-size: 18px;
+        padding: 20px 0px;
 
         &:nth-last-of-type(1) {
             box-sizing: border-box;
@@ -103,14 +107,15 @@ export const producttitleBox = css`
             & span {
                 box-sizing: border-box;
                 display: flex;
-                justify-content: center;
+                justify-content: space-between;
                 align-items: center;
-                padding-top: 4px;
+                margin-left: 5px;
+                padding-top: 2px;
+                width: 90px;
                 font-size: 18px;
 
                 & button {
                     box-sizing: border-box;
-                    margin: 0px 5px;
                     padding: 0px;
                     width: 24px;
                     height: 24px;
@@ -144,8 +149,9 @@ export const buyProduct = css`
         box-sizing: border-box;
         display: flex;
         justify-content: space-between;
+        align-items: center;
         margin: 0px;
-        font-size: 24px;
+        font-size: 20px;
 
         & span {
             box-sizing: border-box;

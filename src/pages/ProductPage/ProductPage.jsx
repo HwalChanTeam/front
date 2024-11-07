@@ -227,7 +227,7 @@ function ProductPage() {
                             <p>원산지: {product?.origin}</p>
                             <p>{deliveryFee.toLocaleString()}원</p>
                         </div>
-                        <div css={s.producttitleBox}>
+                        <div css={s.productTitleBox}>
                             <p>상품명: {product?.title}</p>
                             <p>
                                 구매수량:
