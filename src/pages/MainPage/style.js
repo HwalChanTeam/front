@@ -103,6 +103,11 @@ export const newProductLayout = css`
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+
+            &:nth-of-type(1) {
+                font-size: 16px;
+                font-weight: 400;
+            }
             
             &:nth-last-of-type(1) {
                 margin-top: 10px;
