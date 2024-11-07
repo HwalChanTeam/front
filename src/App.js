@@ -47,6 +47,7 @@ function App() {
             return await instance.get("/user/public/access", {
                 params: {
                     accessToken: localStorage.getItem("accessToken"),
+                    role: localStorage.getItem("role")
                 },
             });
         },

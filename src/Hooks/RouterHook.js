@@ -3,8 +3,8 @@ import { Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 // 인증 상태를 확인하는 함수
 const isAuthenticated = () => {
-  const token = localStorage.getItem('accessToken');
-  return !!token;
+  const role = localStorage.getItem('role');
+  return role === 'ROLE_USER';
 };
 
 
