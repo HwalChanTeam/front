@@ -6,6 +6,7 @@ import { useQuery } from "react-query";
 import { instance } from "../../apis/util/instance";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import ShoppingBasketIcon from "../../components/ShoppingBasketIcon/ShoppingBasketIcon";
 
 function MainPage() {
     const navigate = useNavigate();
@@ -94,12 +95,12 @@ function MainPage() {
                         </div>
 
                         {/* 이달의 상품 */}
-                        <div css={s.newProudctLayout}>
-                            <div css={s.newProductTitle}>
+                        <div css={s.productLayout}>
+                            <div css={s.productTitle}>
                                 <p>NEW PRODUCT</p>
                                 <p>이 달의 신상품</p>
                             </div>
-                            <div css={s.newProductContentLayout}>
+                            <div css={s.productContentLayout}>
                                 {
                                     // slice를 사용해 신상품이 5개까지 뜨게 설정
                                     newProductList.slice(0, 5).map((newProduct) => (
@@ -123,14 +124,14 @@ function MainPage() {
                         </div>
 
                         {/* 베스트 상품top5 */}
-                        <div css={s.bestProductLayout}>
-                            <div css={s.bestProductTitle}>
+                        <div css={s.productLayout}>
+                            <div css={s.productTitle}>
                                 <p>BEST PRODUCT</p>
                                 <p>베스트 상품 TOP5</p>
                             </div>
-                            <div css={s.bestProductContentLayout}>
+                            <div css={s.productContentLayout}>
                                 {bestProductList.slice(0, 5).map((bestProduct) => (
-                                    <div css={s.bestImgLayout} key={bestProduct.productId}>
+                                    <div css={s.productImgLayout} key={bestProduct.productId}>
                                         <img
                                             src={bestProduct.thumbnailImg}
                                             onClick={() => bestImgOnClick(bestProduct.productId)}
@@ -138,7 +139,10 @@ function MainPage() {
                                         <div>
                                             <p>{bestProduct.description}</p>
                                             <p>{bestProduct.title}</p>
-                                            <p>{bestProduct.price.toLocaleString()}원</p>
+                                            <div css={s.footerBox}>
+                                                <p>{bestProduct.price.toLocaleString()}원</p>
+                                                <ShoppingBasketIcon />
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -149,20 +153,24 @@ function MainPage() {
                         </div>
 
                         {/* MD 추천상품(5개) */}
-                        <div css={s.MDProductLayout}>
-                            <div css={s.MDProductTitle}>
+                        <div css={s.productLayout}>
+                            <div css={s.productTitle}>
                                 <p>MD 추천상품</p>
                             </div>
-                            <div css={s.MDProductContentLayout}>
+                            <div css={s.productContentLayout}>
                                 {respectProductList.slice(0, 5).map((respectProduct) => (
                                     <div
-                                        css={s.MDProductImgLayout}
+                                        css={s.productImgLayout}
                                         key={respectProduct.productId}
                                     >
                                         <img src={respectProduct.thumbnailImg} onClick={() => respectImgOnClick(respectProduct.productId)}/>
                                         <div>
+                                            <p>{respectProduct.description}</p>
                                             <p>{respectProduct.title}</p>
-                                            <p>{respectProduct.price.toLocaleString()}원</p>
+                                            <div css={s.footerBox}>
+                                                <p>{respectProduct.price.toLocaleString()}원</p>
+                                                <ShoppingBasketIcon />
+                                            </div>
                                         </div>
                                     </div>
                                 ))}

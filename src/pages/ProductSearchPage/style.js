@@ -89,7 +89,9 @@ export const pageNumber = css`
     & > ul {
         display: flex;
         justify-content: center;
+        align-items: center;
         list-style-type: none;
+        margin-top: 50px;
         padding: 0px;
         & > li {
             margin: 0px 5px;
@@ -102,6 +104,7 @@ export const pageNumber = css`
                 border: 1px solid #dbdbdb;
                 border-radius: 50%;
                 width: 30px;
+                height: 30px;
                 
 
             }

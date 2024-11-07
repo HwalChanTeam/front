@@ -34,20 +34,26 @@ function Category(props) {
                 console.log(response);
                 // 임시로 productList 사용 추후에 수정예정 ( 상태를 뭐로 할지 )
                 const responseData = response?.data?.products // td의 배열 길이
-                let newProducts = responseData.length
+                let categoryProducts = responseData.length
                 let result = []
                 // 배열을 5개씩으로 분류 하도록 하고 결과값이 소수가 나올경우 정수로 변환시켜주기 위해 floor 사용함  
                 // productList % 5를 했을 때 나머지가 0이면 그대로 몫울 1로 두고 아니면 그 몫에 1을 더해라 
-                let num = Math.floor(newProducts % 5 === 0 ? newProducts / 5 : (newProducts / 5) + 1)  // 나머지 존재, 2까지 반복 / num = 2
+                let num = Math.floor(categoryProducts % 5 === 0 ? categoryProducts / 5 : (categoryProducts / 5) + 1)  // 나머지 존재, 2까지 반복 / num = 2
                 for (let i = 0; i < num; i++) {
-                    let newProductArray = []
+                    let categoyrProductArray = []
                     // 1. j < 2 - 1 === 0 
-                    for (let j = 0; j < (num - 1 === i ? (newProducts % 5 === 0 ? 5 : newProducts % 5) : 5); j++) {
-                        newProductArray[j] = responseData[j + (i * 5)]
+                    for (let j = 0; j < (num - 1 === i ? (categoryProducts % 5 === 0 ? 5 : categoryProducts % 5) : 5); j++) {
+                        categoyrProductArray[j] = responseData[j + (i * 5)]
                     }
-                    result[i] = newProductArray
+                    result[i] = categoyrProductArray
                 }
                 setProductList(result)
+                // page 수  
+                setPageCount(
+                    response.data.count % limit === 0
+                        ? response.data.count / limit
+                        : Math.floor(response.data.count / limit) + 1)
+                console.log(response.data.count)
             }
 
         }
@@ -68,7 +74,7 @@ function Category(props) {
                     breakLabel="..."
                     previousLabel={<><MdNavigateBefore /></>}
                     nextLabel={<><MdNavigateNext /></>}
-                    pageCount={5}
+                    pageCount={pageCount}
                     marginPagesDisplayed={3}
                     pageRangeDisplayed={5}
                     onPageChange={handleOnPageChange}

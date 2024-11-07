@@ -42,7 +42,7 @@ export const imgLayout = css`
 
 
 export const productLayout = css`
-    width: 200px;
+
     & p {
         margin: 0px;
         margin-top: 10px;
@@ -61,10 +61,21 @@ export const productLayout = css`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        &:nth-last-of-type(1) {
-            margin-top: 30px;
-            font-style: italic;
-        }
+        
+    }
+`;
+
+export const footerBox = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 200px;
+    margin-top: 30px;
+
+    & h2 {
+        margin: 0px;
+        width: 100px;
+        font-style: italic;
     }
 `;
 
