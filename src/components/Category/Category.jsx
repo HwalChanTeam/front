@@ -12,6 +12,7 @@ import ProductList from "../ProductList/ProductList";
 function Category(props) {
     const navigate = useNavigate();
     const productPath = (productId) => `/product/${productId}`; // 해당 상품의 상품페이지로 이동할려고 만든 productId
+    console.log(productPath)
     const [searchParams, setSearchParams] = useSearchParams(); // 주소:포트/페이지URL?key=value(쿼리스트링, 파람스)
     const [productList, setProductList] = useState([]);
 
