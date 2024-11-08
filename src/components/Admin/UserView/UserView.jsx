@@ -44,7 +44,7 @@ function UserView(props) {
     const userSearchQuery = useQuery(
         ["searchQuery", name, pageCount],
         async () => {
-            return await instance.get(`admin/user/search?page=${pageCount}&name=${name}&limit=${limit}`);
+            return await instance.get(`admin/user/search?name=${name}&limit=${limit}`, {params: {}});
         },
         {
             retry: 0,
@@ -113,7 +113,7 @@ function UserView(props) {
                     </tr>
                 </table>
                 <table css={s.tableLayout}>
-                    {users.map((user) => (
+                    {users.map((user, index) => (
                         <tr key={user.userId}>
                             <td css={s.productItem}>
                                 <input
@@ -122,7 +122,7 @@ function UserView(props) {
                                     checked={checkedIds.includes(user.userId)}
                                 />
                             </td>
-                            <td css={s.productItem}>{user.userId}</td>
+                            <td css={s.productItem}>{index + 1}</td>
                             <td css={s.productItem}>{user.name}</td>
                             <td css={s.productItem}>{user.username}</td>
                             <td css={s.productItem}>{user.email}</td>

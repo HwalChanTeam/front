@@ -33,8 +33,8 @@ function AdminSearch({ setPageCount }) {
             <div css={s.searchSection}>
                 <input
                     type="text"
-                    name=""
-                    value={searchProduct}
+                    name="title"
+                    value={searchProduct.title}
                     onChange={handleSearchOnChange}
                     onKeyDown={handleOnKeyDownEnter}
                     placeholder="검색어를 입력하세요"

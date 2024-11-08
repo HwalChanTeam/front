@@ -90,7 +90,7 @@ export const theadItems = css`
   }
 
   &:nth-of-type(4) {
-    width: 300px;
+    width: 400px;
   }
 
   &:nth-of-type(5) {
@@ -134,7 +134,7 @@ export const productItem = css`
   }
 
   &:nth-of-type(4) {
-    width: 300px;
+    width: 400px;
   }
 
   &:nth-of-type(5) {
@@ -154,17 +154,17 @@ export const productItem = css`
 `;
 
 // pageNumber
-
 export const pageNumber = css`
+    width: 1600px;
     & > ul {
         display: flex;
         justify-content: center;
+        align-items: center;
         margin-left: 20px;
         padding: 0px;
-        width: 1600px;
         list-style-type: none;
         & > li {
-            margin: 0px 5px;
+          margin: 0px 5px;
             & a {
                 box-sizing: border-box;
                 display: flex;
@@ -174,8 +174,6 @@ export const pageNumber = css`
                 border: 1px solid #dbdbdb;
                 border-radius: 50%;
                 width: 30px;
-                
-
             }
             
         }

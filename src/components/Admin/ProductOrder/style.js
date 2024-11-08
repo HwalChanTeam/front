@@ -33,6 +33,7 @@ export const buttonLayout = css`
 
     &:nth-of-type(1) {
       width: 80px;
+      margin-right: 20px;
     }
 
     &:hover {
@@ -40,10 +41,6 @@ export const buttonLayout = css`
     }
     &:active {
       background-color: #3d3b40;
-    }
-
-    &:nth-last-of-type(1) {
-      margin-left: 20px;
     }
   }
 `;
@@ -90,7 +87,7 @@ export const theadItems = css`
   }
 
   &:nth-of-type(3) {
-    width: 220px;
+    width: 250px;
   }
 
   &:nth-of-type(4) {
@@ -118,7 +115,7 @@ export const theadItems = css`
   }
 
   &:nth-of-type(10) {
-    width: 220px;
+    width: 100px;
   }
 
   &:nth-of-type(11) {
@@ -156,7 +153,7 @@ export const productItem = css`
   }
 
   &:nth-of-type(3) {
-    width: 220px;
+    width: 250px;
   }
 
   &:nth-of-type(4) {
@@ -190,7 +187,7 @@ export const productItem = css`
   }
 
   &:nth-of-type(10) {
-    width: 220px;
+    width: 100px;
   }
 
   &:nth-of-type(11) {

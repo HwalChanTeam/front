@@ -36,6 +36,7 @@ function ProductOrder(props) {
         async () => {
             const response = await instance.get("admin/order");
             setOrders(response?.data);
+            console.log(response?.data)
         }
     );
 
@@ -46,12 +47,12 @@ function ProductOrder(props) {
     
     // 체크 할 시 하나씩 선택되도록 하기위해 orderId가 아닌 orderItemId 사용(각 orderItemId를 선택)
     // 체크박스 체크를 위한 함수
-    const handleCheckBoxOnChange = (orderItemId) => {
+    const handleCheckBoxOnChange = (index) => {
         setCheckedIds((ids) => {
-            if (ids.includes(orderItemId)) {
-                return ids.filter(id => id !== orderItemId);
+            if (ids.includes(index)) {
+                return ids.filter(id => id !== index);
             } else {
-                return [...ids, orderItemId];
+                return [...ids, index];
             }
         });
     };
@@ -98,38 +99,36 @@ function ProductOrder(props) {
                         <td css={s.theadItems}>상품가격</td>
                         <td css={s.theadItems}>주문수량</td>
                         <td css={s.theadItems}>주문금액</td>
+                        <td css={s.theadItems}>결제</td>
+                        <td css={s.theadItems}>결제상태</td>
                         <td css={s.theadItems}>주문상태</td>
-                        <td css={s.theadItems}>운송장번호</td>
-                        <td css={s.theadItems}>배송사</td>
                         <td css={s.theadItems}>주문일자</td>
                     </tr>
                 </table>
                 <table css={s.tableLayout}>
                     {/* <tbody css={s.tbodyLayout}> */}
                     {orders?.map((order) => (
-                        order.orderItems?.map((item) => (
-                            <tr key={item?.orderItemId}>
+                        order.orderItems?.map((item, index) => (
+                            <tr key={index}>
                                 <td css={s.productItem}>
                                     <input
                                         type="checkbox"
-                                        onChange={() => handleCheckBoxOnChange(item.orderItemId)} // 지금은 orderItemId가 null로 뜸 그래서 2개다 선택됨 
-                                        checked={checkedIds.includes(item.orderItemId)}
+                                        onChange={() => handleCheckBoxOnChange(index)} // 지금은 orderItemId가 null로 뜸 그래서 2개다 선택됨 
+                                        checked={checkedIds.includes(index)}
                                     />
                                 </td>
-                                <td css={s.productItem}>{order.orderId}</td>
+                                <td css={s.productItem}>{index + 1}</td>
                                 <td css={s.productItem}>{order.user.username}</td>
                                 <td css={s.productItem}>{order.user.name}</td>
                                 <td css={s.productItem}>{item.product.title}</td> {/* 상품이름 */}
                                 <td css={s.productItem}>{item.product.price.toLocaleString()}</td> {/* 상품가격 */}
                                 <td css={s.productItem}>{item.quantity}</td> {/* 상품수량 */}
-                                <td css={s.productItem}> {/* 총 상품 금액(수량 * 가격) : 3만원 이상일시 배송비 포함 x */}
-                                    {((item.product.price) * (item.quantity) >= 30000
-                                        ? (item.product.price) * (item.quantity) 
-                                        : (item.product.price) * (item.quantity) + 3000).toLocaleString()} 
+                                <td css={s.productItem}> {/* 총 상품 금액 */}
+                                    {order.totalAmount.toLocaleString()} 
                                 </td> 
+                                <td css={s.productItem}>{order.payment.paymentMethod}</td> {/* 결제 */}
+                                <td css={s.productItem}>{order.payment.paymentStatus}</td> {/* 결제상태 */}
                                 <td css={s.productItem}>{order.orderStatus}</td>
-                                <td css={s.productItem}></td> {/* 운송장번호 */}
-                                <td css={s.productItem}></td> {/* 배송사 */}
                                 <td css={s.productItem}>{order.createdAt}</td>
                             </tr>
                         ))
