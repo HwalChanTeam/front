@@ -80,7 +80,7 @@ function ReviewInfo(props) {
                                     <h2>{review.title}</h2>
                                     <p>{review.content}</p>
                                     <div css={s.createData}>
-                                        <p>{review.createdAt}2024-11-07 12:02:00</p>
+                                        <p>{review.createdAt}</p>
                                     </div>
                                     
                                 </div>
