@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import { useMutation } from 'react-query';
-import { instance } from '../../apis/util/instance';
+import { instance } from '../../../apis/util/instance';
+/** @jsxImportSource @emotion/react */
+import *as s from './style';
 
 function UserEditModal({ isOpen, onClose, users, checkId }) {
 
@@ -78,38 +80,44 @@ function UserEditModal({ isOpen, onClose, users, checkId }) {
                     backgroundColor: "white",
                     padding: "20px",
                     borderRadius: "5px",
-                    width: "300px",
+                    width: "400px",
                     maxWidth: "90%",
                     overflow: "auto",
                     inset: "auto",
                 },
             }}
         >
-            <div
-                css={{
-                    display: "flex",
-                    flexDirection: "column",
-                    backgroundColor: "white",
-                    padding: "20px",
-                    borderRadius: "5px",
-                    width: "300px",
-                }}
-            >
-                <h2>매니저 수정</h2>
-                <input type="text" name="username" onChange={handleInputOnChange} defaultValue={editUserData[0]?.username}/>
-                <input type="text" name="name" onChange={handleInputOnChange} defaultValue={editUserData[0]?.name}/>
-                <input type="text" name="password" onChange={handleInputOnChange} defaultValue={editUserData[0]?.password}/>
-                <input type="text" name="email" placeholder='이메일' onChange={handleInputOnChange} defaultValue={editUserData[0]?.email}/>
-                <input type="text" name="phoneNumber" placeholder='연락처' onChange={handleInputOnChange} defaultValue={editUserData[0]?.phoneNumber}/>
-                <input type="text" readOnly placeholder='ROLE_MANAGER' />
-                <div
-                    css={{
-                        marginTop: "10px",  // 버튼 간격을 추가
-                        display: "flex",
-                    }}
-                >
-                    <button onClick={handleSubmit}>수정</button>
-                    <button onClick={onClose}>닫기</button>
+            <div css={s.modalLayout}>
+                <h2>유저 수정</h2>
+                <div css={s.mainBox}>
+                    <div css={s.registerBox}>
+                        <div css={s.inputBox}>
+                            <div>
+                                <label>이름</label>
+                                <input type="text" name="name" onChange={handleInputOnChange} defaultValue={editUserData[0]?.name}/>
+                            </div>
+                            <div>
+                                <label>아이디</label>
+                                <input type="text" name="username" onChange={handleInputOnChange} defaultValue={editUserData[0]?.username}/>
+                            </div>
+                            <div> {/* 상의 후 없앨지 초기화를 시켜줄지 결정해야함 */}
+                                <label>비밀번호</label>
+                                <input type="text" name="password" onChange={handleInputOnChange} defaultValue={editUserData[0]?.password}/>
+                            </div>
+                            <div>
+                                <label>이메일</label>
+                                <input type="text" name="email" placeholder='이메일' onChange={handleInputOnChange} defaultValue={editUserData[0]?.email}/>
+                            </div>
+                            <div>
+                                <label>전화번호</label>
+                                <input type="text" name="phoneNumber" placeholder='연락처' onChange={handleInputOnChange} defaultValue={editUserData[0]?.phoneNumber}/>
+                            </div>
+                        </div>
+                        <div css={s.buttonBox}>
+                            <button onClick={handleSubmit}>수정</button>
+                            <button onClick={onClose}>닫기</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </ReactModal>

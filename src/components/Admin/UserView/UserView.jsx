@@ -8,7 +8,7 @@ import ReactPaginate from 'react-paginate';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import UserEditModal from '../../Modal/UserEditModal';
+import UserEditModal from '../../Modal/UserEditModal/UserEditModal';
 
 function UserView(props) {
     // 모달 띄우는 상태 추가

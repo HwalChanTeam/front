@@ -1,20 +1,9 @@
-import { css } from '@emotion/react';
 import React from 'react';
 import ReactModal from 'react-modal';
 import { useMutation } from 'react-query';
-import { instance } from '../../apis/util/instance';
 /** @jsxImportSource @emotion/react */
-
-const inputBox = css`
-    background-color: "white";
-    padding: "20px";
-    border-radius: "5px";
-    width: "300px";
-
-    & button:nth-of-type(1) {
-        margin: 0px 5px;
-    }
-`;
+import *as s from './style';
+import { instance } from '../../../../apis/util/instance';
 
 function DeliveryStartModal({ isOpen, onClose, orderQuery }) {
 
@@ -60,20 +49,33 @@ function DeliveryStartModal({ isOpen, onClose, orderQuery }) {
                     backgroundColor: "white",
                     padding: "20px",
                     borderRadius: "5px",
-                    width: "300px",
+                    width: "400px",
                     maxWidth: "90%",
                     overflow: "auto",
                     inset: "auto",
                 },
             }}
         >
-            <div css={inputBox}>
+            <div css={s.modalLayout}>
                 <h2>배송등록</h2>
-                <input type="text" placeholder="운송장번호를 입력하세요" />
-                <input type="text" placeholder="배송사를 입력하세요" />
-                <input type="text" placeholder="배송일자" /> {/* 배송시작일자  */}
-                <button onClick={handelDeliverySubmitOnClick}>배송등록</button>
-                <button onClick={onClose}>닫기</button>
+                <div css={s.mainBox}>
+                    <div css={s.registerBox}>
+                        <div css={s.inputBox}>
+                            <div>
+                                <label >운송장번호</label>
+                                <input type="text" placeholder="운송장번호를 입력하세요" />
+                            </div>
+                            <div>
+                                <label >배송사</label>
+                                <input type="text" placeholder="배송사를 입력하세요" />
+                            </div>
+                        </div>
+                        <div css={s.buttonBox}>
+                            <button onClick={handelDeliverySubmitOnClick}>배송등록</button>
+                            <button onClick={onClose}>닫기</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </ReactModal>
     );

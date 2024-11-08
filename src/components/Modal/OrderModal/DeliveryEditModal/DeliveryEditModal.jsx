@@ -1,25 +1,11 @@
-import { css } from '@emotion/react';
 import React, { useState } from 'react';
 import ReactModal from 'react-modal';
 import { useMutation } from 'react-query';
-import { instance } from '../../apis/util/instance';
+import { instance } from '../../../../apis/util/instance';
 /** @jsxImportSource @emotion/react */
+import *as s from './style';
 
-const inputBox = css`
-    background-color: "white";
-    padding: "20px";
-    border-radius: "5px";
-    width: "300px";
 
-    & p {
-        margin: 0px;
-        font-size: 14px;
-    }
-
-    & button:nth-of-type(1) {
-        margin: 0px 5px;
-    }
-`;
 
 function DeliveryEditModal({ isOpen, onClose, orderQuery, checkId }) {
 
@@ -76,27 +62,43 @@ function DeliveryEditModal({ isOpen, onClose, orderQuery, checkId }) {
                     backgroundColor: "white",
                     padding: "20px",
                     borderRadius: "5px",
-                    width: "300px",
+                    width: "350px",
                     maxWidth: "90%",
                     overflow: "auto",
                     inset: "auto",
                 },
             }}
         >
-            <div css={inputBox}>
+            <div css={s.modalLayout}>
                 <h2>배송수정</h2>
-                <input type="text" name="" placeholder="운송장번호를 입력하세요" onChange={handleOrderOnChange} value="" /> {/* name과 value도 변수명 정해지면 쓰기 */}
-                <input type="text" name="" placeholder="배송사를 입력하세요" onChange={handleOrderOnChange} value="" />
-                <p>주문상태</p>
-                <select>
-                    <option value="">배송준비중</option>
-                    <option value="">배송중</option>
-                    <option value="">배송완료</option>
-                    <option value="">주문취소</option>
-                    <option value="">환불</option>
-                </select>
-                <button onClick={handleModifyOnClick}>수정하기</button>
-                <button onClick={onClose}>닫기</button>
+                <div css={s.mainBox}>
+                    <div css={s.registerBox}>
+                        <div css={s.inputBox}>
+                            <div>
+                                <label for="" >주문상태</label>
+                                <select>
+                                    <option value="">배송준비중</option>
+                                    <option value="">배송중</option>
+                                    <option value="">배송완료</option>
+                                    <option value="">주문취소</option>
+                                    <option value="">환불</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label >운송장번호</label>
+                                <input type="text" name="" placeholder="운송장번호를 입력하세요" onChange={handleOrderOnChange} value="" /> {/* name과 value도 변수명 정해지면 쓰기 */}
+                            </div>
+                            <div>
+                                <label >배송사</label>
+                                <input type="text" name="" placeholder="배송사를 입력하세요" onChange={handleOrderOnChange} value="" />
+                            </div>
+                        </div>
+                        <div css={s.buttonBox}>
+                            <button onClick={handleModifyOnClick}>수정</button>
+                            <button onClick={onClose}>닫기</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </ReactModal>
     );
