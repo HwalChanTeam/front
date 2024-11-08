@@ -1,9 +1,70 @@
 /** @jsxImportSource @emotion/react */
+import { useEffect, useState } from "react";
 import * as s from "./style";
 
 
 // 오른쪽 결제 박스
-function OrderSummary({ totalProductAmount, deliveryFee, totalAmount, buyButtonOnClick }) {
+function OrderSummary({ productList, payMentState, userInfo, totalProductAmount, deliveryFee, totalAmount, buyButtonOnClick }) {
+
+    const [ orderData, setOrderData ] = useState({
+        customerId: userInfo.userId,
+        fullName: "",
+        products: [],
+        totalAmount : 0,
+        orderItemCount: 0,
+        // orderStatus: "",
+        orderName: "",
+        zipcode: "",
+        addressDefault: "",
+        addressDetail: "",
+        phoneNumber: "",
+        email: "",
+        request: "",
+        paymentId: "", //포트원에서 받아온 아이디
+        paymentMethod: "",
+        payMethod: "",
+        currency: "",
+        country: "",
+        card: ""
+    });
+
+    const products = productList.map((item) => ({
+        id: item.cartItemId,
+        name: item.product.title,
+        amount: item.product.price,
+        quantity: item.quantity
+      }));
+      
+      console.log(products);
+    
+      useEffect(() => {
+        setOrderData({
+            customerId: userInfo.userId,
+            fullName: userInfo.name,
+            products: products,
+            totalAmount,
+            orderItemCount: 0,
+            // orderStatus: "",
+            orderName: "",
+            zipcode: userInfo.address.zipCode,
+            address: userInfo.address.address,
+            detailAddress: userInfo.address.detailAddress,
+            phoneNumber: "",
+            email: userInfo.email,
+            request: "",
+            paymentId: "", //포트원에서 받아온 아이디
+            payMethod: payMentState,
+            currency: "KRW",
+            country: "KR",
+            card: "CARD"
+        })
+      },[userInfo])
+    
+      console.log(productList)
+      console.log(productList.map((item) => item.title));
+      console.log(productList.map((item) => item.product.title));
+      console.log(orderData);
+
     return (
         <div css={s.rightBox}>
             <div css={s.payInfoMain}>
@@ -20,6 +81,10 @@ function OrderSummary({ totalProductAmount, deliveryFee, totalAmount, buyButtonO
                 </div>
                 <div css={s.payinfo}>
                     <p>배송비 : </p>
+                    <p>{deliveryFee.toLocaleString()}원</p>
+                </div>
+                <div css={s.payinfo}>
+                    <p>적립금 : </p>
                     <p>{deliveryFee.toLocaleString()}원</p>
                 </div>
                 <div css={s.payinfo}>

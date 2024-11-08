@@ -52,6 +52,7 @@ function UserInfo(props) {
         },
         {
             onSuccess: () => {
+                alert("수정이 완료되었습니다.")
                 refetch();
             },
         }

@@ -28,6 +28,27 @@ export const inputBox = css`
   }
 `;
 
+export const pointBox = css`
+box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 1px solid #dbdbdb;
+  & input {
+    height: 30px;
+    border: 1px solid #dbdbdb;
+    padding-left: 10px;
+  }
+`;
+
+export const pointInputBox = css`
+`;
+
 export const adressInputBox = css`
   box-sizing: border-box;
   display: flex;

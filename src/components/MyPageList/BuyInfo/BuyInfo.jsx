@@ -14,6 +14,9 @@ function BuyInfo(props) {
     // 구매상품 목록 배열로 불러오기
     const [userBuyInfo, setUserBuyInfo] = useState([]);
 
+    // 구매기록 map돌리는 거에 후기작성 버튼 추가 - 모달창 띄움 - 별점(1 - 5), 제목, 내용 입력
+    // 배송완료 후 7일 이내에만 리뷰 작성 가능하게 해야함
+
     //구매목록 조회 기능
     const { data, isError, isLoading, refetch } = useQuery(
         ["getUserBuyInfo"],

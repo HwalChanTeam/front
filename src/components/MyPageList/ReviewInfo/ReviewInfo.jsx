@@ -6,6 +6,7 @@ import *as s from './style';
 import Star from '../../User/Review/Star/Star';
 import { FaRegEdit, FaTrash } from "react-icons/fa";
 import ReviewEditModal from '../../Modal/ReviewEditModal';
+import { useNavigate } from 'react-router';
 
 function ReviewInfo(props) {
 
@@ -13,6 +14,7 @@ function ReviewInfo(props) {
         const [openEditModal, setOpenEditModal] = useState(false);
 
     const [reviews, setReviews] = useState([]);
+    const navigate = useNavigate();
 
     const closeModal = () => {
         setOpenEditModal(false);
@@ -46,14 +48,15 @@ function ReviewInfo(props) {
         }
     )
 
-
-
     const handleDelectOnClick = (id) => {
         if(window.confirm("리뷰가 삭제됩니다.")) {
             deleteReviewMutation.mutate(id);
         }
     }
 
+    const handleProductImgOnClick = (id) => {
+        navigate(`/product/${id}`);
+      }
 
     return (
         <div css={s.layout}>
@@ -66,7 +69,7 @@ function ReviewInfo(props) {
                         <li key={review.reviewId} css={s.productStyle}>
                             <div css={s.ReviewList}>
                                 <div css={s.productImgLayout}>
-                                    <img src={review?.product.thumbnailImg} />
+                                    <img src={review?.product.thumbnailImg} onClick={() => handleProductImgOnClick(review.productId)}/>
                                 </div>
                                 <div css={s.productReviewLayout}>
                                     <div css={s.iconBox}>

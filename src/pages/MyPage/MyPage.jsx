@@ -101,7 +101,7 @@ function MyPage(props) {
           <Route path="/buyinfo" element={<BuyInfo />} />
           <Route path="/reviewinfo" element={<ReviewInfo />} />
           <Route path="/leaveUser" element={<LeaveUser 
-          userInfo={getUserInfo}
+          userInfo={userInfo}
           />} />
         </Routes>
       </div>

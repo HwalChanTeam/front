@@ -92,6 +92,61 @@ function OrderPage(props) {
 
   const [productList, setProductList] = useState([]);
 
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    point: 0,
+    address: {
+      address: "",
+      detailAddress: "",
+      zipCode: "",
+    },
+    message: "",
+  });
+
+  // 가겨 * 수량 함수
+  const calculateTotalPrice = (product) => {
+    return product.product.price * product.quantity;
+  };
+
+  const calculateTotals = () => {
+    let totalProductAmount = 0;
+    let deliveryFee = 0;
+    let totalAmount = 0;
+
+    if (Array.isArray(productList) && productList.length > 0) {
+      totalProductAmount = productList.reduce((total, product) => {
+        return total + calculateTotalPrice(product);
+      }, 0);
+    }
+
+    deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+    totalAmount = totalProductAmount + deliveryFee;
+
+    return { totalProductAmount, totalAmount, deliveryFee };
+  };
+
+  const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
+
+  const {
+    data: userInfoData,
+    isLoading: isUserInfoLoading,
+    isError: isUserInfoError,
+  } = useQuery(
+    "userInfo",
+    async () => {
+      return await instance.get("/user"); // 유저 정보 가져오는 API 호출
+    },
+    {
+      onSuccess: (response) => {
+        setUserInfo(response.data); // 성공 시 userInfo 상태 업데이트
+      },
+      retry: 0,
+      refetchOnWindowFocus: false,
+    }
+  );
+
   // 다건 조회시 사용하는 쿼리
   const {
     data: products,
@@ -128,42 +183,25 @@ function OrderPage(props) {
     // await instance.post("/user/buy", selectedProductIds);
   };
 
-  // 가겨 * 수량 함수
-  const calculateTotalPrice = (product) => {
-    return product.product.price * product.quantity;
-  };
-
-  const calculateTotals = () => {
-    let totalProductAmount = 0;
-    let deliveryFee = 0;
-    let totalAmount = 0;
-
-    if (Array.isArray(productList) && productList.length > 0) {
-      totalProductAmount = productList.reduce((total, product) => {
-        return total + calculateTotalPrice(product);
-      }, 0);
-    }
-
-    deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
-    totalAmount = totalProductAmount + deliveryFee;
-
-    return { totalProductAmount, totalAmount, deliveryFee };
-  };
-
-  const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
 
   return (
     <div css={s.layout}>
       <div css={s.mainBox}>
-        <UserInfo />
+        <UserInfo
+          userInfo={userInfo}
+          setUserInfo={setUserInfo}
+          isUserInfoLoading={isUserInfoLoading}
+          isUserInfoError={isUserInfoError}
+        />
         <ProductInfo
           productList={productList}
           deliveryFee={deliveryFee}
+          point={userInfo.point}
         />
         <PaymentMethod setPatMentState={setPatMentState} />
-        {payMentState === 1 ? (
+        {payMentState === "bankbook" ? (
           <BankAccount />
-        ) : payMentState === 2 ? (
+        ) : payMentState === "CARD" ? (
           <Card />
         ) : null}
       </div>
@@ -172,6 +210,9 @@ function OrderPage(props) {
         deliveryFee={deliveryFee}
         totalAmount={totalAmount}
         buyButtonOnClick={buyButtonOnClick}
+        userInfo={userInfo}
+        payMentState={payMentState}
+        productList={productList}
       />
     </div>
   );
