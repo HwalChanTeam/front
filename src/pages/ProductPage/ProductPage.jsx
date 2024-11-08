@@ -141,7 +141,7 @@ function ProductPage() {
             return;
         }
         setSelectedProduct({ productId, quantity: productItems.buyItem })
-        navigate("/order")
+        navigate(`/order?productId=${productId}&quantity=${productItems.buyItem}`)
     };
 
     // 찜버튼 mutation
