@@ -30,7 +30,6 @@ function StaffManagement(props) {
         ["useQuery"],
         async () => {
             const response = await instance.get("admin/user", {params: {page:pageCount, limit, role: 2}});
-            console.log(response);
             setStaffs(response?.data?.user);
         },
         {
@@ -38,7 +37,6 @@ function StaffManagement(props) {
             refetchOnWindowFocus: false
         }
     );
-    console.log(staffs)
 
     const handleEditButtonOnClick = () => {
         if(checkedIds.length === 1) {
@@ -75,7 +73,6 @@ function StaffManagement(props) {
 
     // 체크박스 체크를 위한 함수
     const handleCheckBoxOnChange = (staffId) => {
-        console.log(staffId);
         setCheckedIds((ids) => {
             if (ids.includes(staffId)) {
                 return ids.filter(id => id !== staffId);

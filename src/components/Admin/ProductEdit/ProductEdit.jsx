@@ -47,7 +47,6 @@ function ProductEdit(props) {
         async () => {
             const response = await instance.get(`/admin/product?page=${selectPage}&limit=${limit}`);
             setProductList(response?.data?.products);
-            console.log(response?.data);
             return response?.data;
         },
         {
@@ -124,7 +123,6 @@ function ProductEdit(props) {
                 alert("삭제가 완료되었습니다.");
                 setPageCount(selectPage ? parseInt(selectPage) : 1);
                 productQuery.refetch();
-                console.log("refetch됨");
             }
         }
     );

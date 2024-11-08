@@ -13,7 +13,6 @@ function LeaveUser({ userInfo }) {
     }
     return;
   };
-  console.log(userInfo?.data?.data);
 
   return (
     <div css={s.container}>

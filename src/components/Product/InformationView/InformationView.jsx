@@ -4,7 +4,6 @@ import *as s from './style';
 import { useState } from 'react';
 
 function InformationView({product}) {
-    console.log(product)
     
     const { id } = useParams();
 

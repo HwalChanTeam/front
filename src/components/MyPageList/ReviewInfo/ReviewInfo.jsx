@@ -27,7 +27,6 @@ function ReviewInfo(props) {
         {
             retry: 0,
             onSuccess: (response) => {
-                console.log(response.data)
                 setReviews(response.data)
             },
         }
@@ -36,9 +35,7 @@ function ReviewInfo(props) {
     // 리뷰 삭제 뮤테이션
     const deleteReviewMutation = useMutation(
         async (id) => {
-            console.log(id)
             const checkedIds = [id]
-            console.log(checkedIds)
             return await instance.delete("user/review", {data : {checkedIds: checkedIds}})
         },
         {

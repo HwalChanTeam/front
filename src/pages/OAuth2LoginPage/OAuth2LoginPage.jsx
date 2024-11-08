@@ -7,7 +7,6 @@ function OAuth2LoginPage(props) {
     const navigate = useNavigate();
 
     const roleParam = searchParams.get("role");
-    console.log(roleParam)
 
     useEffect(() => {
         const accessToken = searchParams.get("accessToken");

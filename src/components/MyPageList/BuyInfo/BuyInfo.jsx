@@ -27,12 +27,6 @@ function BuyInfo(props) {
         }
     )
 
-    console.log(userBuyInfo)
-    console.log(userBuyInfo.map((item) => item.createdAt))
-    console.log(userBuyInfo.map((item) => item.orderStatus))
-    console.log(userBuyInfo.map((item) => item.totalAmount))
-    console.log(userBuyInfo.map((item) => item.orderItems.map((product) => product.product.title)))
-
     //구매목록 삭제 기능
     const deleteBuyInfo = useMutation(
         async (id) => {

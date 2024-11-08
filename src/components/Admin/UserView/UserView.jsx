@@ -34,17 +34,13 @@ function UserView(props) {
         {
             onSuccess: (response) => {
                 setUsers(response.data.user);
-                console.log(response);
             }
         }
     );
 
-    console.log(userQuery)
-
     // 삭제를 위한 mutation
     const deleteMutation = useMutation(
         async () => {
-            console.log(checkedIds);
             await instance.delete(`/admin/user/${checkedIds}`, { data: { checkedIds } });
         },
         {
@@ -64,7 +60,6 @@ function UserView(props) {
     }
     
     const handleCheckBoxOnChange = (userId) => {
-        console.log(userId);
         setCheckedIds((ids) => {
             if (ids.includes(userId)) {
                 return ids.filter(id => id !== userId);
@@ -78,8 +73,6 @@ function UserView(props) {
         setPageCount(e.selected + 1);
         navigate(`/admin/main/user?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
     }
-
-    console.log(userQuery)
 
     return (
         <div css={s.mainBox}>

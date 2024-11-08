@@ -26,9 +26,6 @@ function DaumPost({ onComplete }) {
             detailAddress: fullAddress + (extraAddress !== '' ? ` (${extraAddress})` : ''), // 나머지 주소
             zipCode : zipCode
         });
-        console.log(zipCode);
-        console.log(address);
-        console.log(fullAddress);
     };
 
     // 클릭 시 발생할 이벤트

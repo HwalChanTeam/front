@@ -31,7 +31,6 @@ function UserInfo(props) {
         {
             onSuccess: (response) => {
                 setUserInfo(response.data);
-                console.log(response?.data);
             },
             refetchOnWindowFocus: false,
             retry: 0,
@@ -54,7 +53,6 @@ function UserInfo(props) {
         {
             onSuccess: () => {
                 refetch();
-                console.log("refetch 됨");
             },
         }
     );
@@ -97,8 +95,6 @@ function UserInfo(props) {
     if (isLoading) return <div>Loading...</div>;
     // if (isError) return <div>데이터를 가져오는데 실패했습니다.</div>
 
-
-    console.log(userInfo)
     return (
         <div css={s.layout}>
             <div css={s.mainBox}>

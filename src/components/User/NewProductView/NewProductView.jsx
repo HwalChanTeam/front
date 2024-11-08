@@ -24,7 +24,6 @@ function NewProductView(props) {
             onSuccess: (response) => {
                 const responseData = response.data // td의 배열 길이 ( 8개 )
                 let newProducts = responseData.length
-                console.log(response.data)
                 let result = []
                 // 배열을 5개씩으로 분류 하도록 하고 결과값이 소수가 나올경우 정수로 변환시켜주기 위해 floor 사용함  
                 // productList % 5를 했을 때 나머지가 0이면 그대로 몫울 1로 두고 아니면 그 몫에 1을 더해라 
@@ -38,7 +37,6 @@ function NewProductView(props) {
                     result[i] = newProductArray
                 }
                 setNewProductList(result)
-                // console.log(result)
             },
             refetchOnWindowFocus: false,
             retry: 0

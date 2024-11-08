@@ -31,7 +31,6 @@ function Category(props) {
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: response => {
-                console.log(response);
                 // 임시로 productList 사용 추후에 수정예정 ( 상태를 뭐로 할지 )
                 const responseData = response?.data?.products // td의 배열 길이
                 let categoryProducts = responseData.length
@@ -53,9 +52,7 @@ function Category(props) {
                     response.data.count % limit === 0
                         ? response.data.count / limit
                         : Math.floor(response.data.count / limit) + 1)
-                console.log(response.data.count)
             }
-
         }
     );
 
