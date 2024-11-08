@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { SlBasket } from 'react-icons/sl';
 import ShoppingBasketIcon from '../ShoppingBasketIcon/ShoppingBasketIcon';
 
-function ProductList({productList, productPath}) {
+function ProductList({productList}) {
 
     return (
         <>
@@ -19,7 +19,7 @@ function ProductList({productList, productPath}) {
                                         <div css={s.imgLayout}>
                                             <Link
                                                 key={pro.productId}
-                                                to={productPath(pro.productId)}>
+                                                to={`/product/${pro.productId}`}>
                                                 <img src={pro.thumbnailImg} />
                                             </Link>
                                         </div>
