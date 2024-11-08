@@ -114,9 +114,6 @@ function App() {
                         <Route path="/cart" element={<UserPrivateRoute element={<ShoppingBasket />} />} />
                         <Route path="/order/*" element={<UserPrivateRoute element={<OrderPage />} />} />
                         <Route path="/mypage/*" element={<UserPrivateRoute element={<MyPage />} />} />
-                        <Route path="/test" element={<TestExam />} />
-                        <Route path="/test2" element={<TestExam2 />} />
-                        <Route path="/test3" element={<PopularityProduct />} />
                     </Routes>
                     <MainFooter />
                 </>
