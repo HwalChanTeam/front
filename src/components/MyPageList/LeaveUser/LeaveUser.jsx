@@ -1,13 +1,35 @@
 /** @jsxImportSource @emotion/react */
+import { useMutation } from "react-query";
 import * as s from "./style";
+import { instance } from "../../../apis/util/instance";
+import { useNavigate } from "react-router";
 
 function LeaveUser({ userInfo }) {
+  const navigate = useNavigate();
+
+  const deleteUserMutation = useMutation(
+    async () => {
+      return await instance.delete(`/user/${userInfo.userId}`)
+    },
+    {
+      onSuccess: () => {
+        localStorage.removeItem("accessToken"); // 로컬 스토리지에서 토큰 삭제
+        localStorage.removeItem("role");
+        alert("회원탈퇴가 완료되었습니다.\n홈화면으로 이동합니다.")
+        navigate("/");
+        window.location.reload(); // 페이지를 새로 고침하여 상태를 초기화
+      }
+    }
+  )
+
+  console.log(userInfo)
+
   const handleLeaveButtonOnClick = () => {
     if (
       window.confirm("계정 정보가 전부 삭제됩니다.\n정말 삭제하시겠습니까?")
     ) {
       if (window.confirm("정말?ㅠㅠㅠㅠㅠ")) {
-        // 백엔드에 요청
+        deleteUserMutation.mutate();
       }
       return;
     }

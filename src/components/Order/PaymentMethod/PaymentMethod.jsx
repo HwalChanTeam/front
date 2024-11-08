@@ -12,13 +12,13 @@ function PaymentMethod({ setPatMentState }) {
     const [ bankAccountRedOutLine, setBankAccountRedOutLine ] = useState(false);
 
     const handleCardClick = () => {
-        setPatMentState(2);
+        setPatMentState("CARD");
         setCardRedOutLine(true); // 카드의 상태가 true로 바뀌면서 테두리 o
         setBankAccountRedOutLine(false); // 무통장의 상태가 false로 바뀌면서 테두리 x
     };
 
     const handleBankAccountClick = () => {
-        setPatMentState(1);
+        setPatMentState("bankbook");
         setCardRedOutLine(false); // 카드의 상태가 false로 바뀌면서 테두리 x
         setBankAccountRedOutLine(true); // 무통장의 상태가 true로 바뀌면서 테두리 o
     };
