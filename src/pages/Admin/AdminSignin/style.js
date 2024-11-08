@@ -15,27 +15,26 @@ export const signin = css`
     justify-content: center;
     align-items: center;
     border: 1px solid black;
-    width: 900px;
-    height: 900px;
+    width: 600px;
+    height: 600px;
 
     & input {
         display: flex;
         padding: 0px 20px;
         width: 450px;
         height: 50px;
-        border-radius: 10px;
         border: 1px solid #000000;
+        outline: none;
         :nth-of-type(1) {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
     }
 
     & button {
-        margin-top: 80px;
-        width: 450px;
+        margin-top: 50px;
+        width: 492px;
         height: 50px;
-        border-radius: 10px;
-        font-size: 30px;
+        font-size: 20px;
         font-weight: 600;
         background-color: white;
         border: 1px solid #000000;
@@ -51,6 +50,9 @@ export const signin = css`
 
 export const signinHeader = css`
     box-sizing: border-box;
-    padding-bottom: 200px;
+    padding-bottom: 50px;
+    & h1 {
+        font-size: 24px;
+    }
 `;
 

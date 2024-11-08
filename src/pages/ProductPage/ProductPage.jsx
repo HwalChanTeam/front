@@ -52,8 +52,7 @@ function ProductPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
-    const [selectedProduct, setSelectedProduct] =
-        useRecoilState(productOrderAtom); // atom 사용
+    const [selectedProduct, setSelectedProduct] = useRecoilState(productOrderAtom); // atom 사용
 
     // 페이지가 마운트될 때 스크롤을 맨 위로 이동
     useEffect(() => {
@@ -84,8 +83,11 @@ function ProductPage() {
             enabled: true,
             onSuccess: (response) => {
                 setProduct(response.data?.product);
-                console.log(response.data)
+                console.log(response)
             },
+            onError: (response) => {
+                console.log(response)
+            }
         }
     );
 

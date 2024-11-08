@@ -63,7 +63,7 @@ function ProductSearchPage(props) {
     );
 
     // 상품 총 갯수를 불러오게 하기 위한 함수  
-    const productCount = productTrGroups.length
+    const productCount = productsQuery?.data?.data.count;
     console.log(productsQuery)
 
     // useEffect(() => {
