@@ -255,7 +255,7 @@ function ProductEdit(props) {
     return (
         <div css={s.layout}>
             <h1>상품 관리</h1>
-            <AdminSearch setPageCount={setPageCount} />
+            <AdminSearch setPageCount={setPageCount} type={"title"} />
             <div css={s.buttonLayout}>
                 <button onClick={openModal} disabled={checkedIds.length !== 1}>수정</button>
                 <ReactModal
