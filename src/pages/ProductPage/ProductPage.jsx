@@ -73,9 +73,8 @@ function ProductPage() {
     const productData = useQuery(
         ["getProduct"],
         async () => {
-            return await instance.get("/user/public/product/detail", {
-                params: { id: productId },
-            });
+            const id = parseInt(productId);
+            return await instance.get("/user/public/product/detail", id);
         },
         {
             retry: 0,
