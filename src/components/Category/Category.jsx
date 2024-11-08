@@ -2,7 +2,7 @@ import { Route, Routes, useNavigate, useParams } from "react-router";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { instance } from "../../apis/util/instance";
@@ -11,28 +11,30 @@ import ProductList from "../ProductList/ProductList";
 
 function Category(props) {
     const navigate = useNavigate();
-    const productPath = (productId) => `/product/${productId}`; // 해당 상품의 상품페이지로 이동할려고 만든 productId
+    const productPath = () => `/product/${productList?.data?.productId}`; // 해당 상품의 상품페이지로 이동할려고 만든 productId
     const [searchParams, setSearchParams] = useSearchParams(); // 주소:포트/페이지URL?key=value(쿼리스트링, 파람스)
     const [productList, setProductList] = useState([]);
 
     const categoryId = searchParams.get("categoryId");
-    const selectPage = searchParams.get("page");
+    // const selectPage = searchParams.get("page");
+    const [selectPage, setSelectPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
     
     // 카테고리 조회 query
-    const category = useQuery(
-        ["category", categoryId, pageCount],
+    const categoryQuery = useQuery(
+        ["categoryQuery", selectPage, categoryId],
         async () => {
-            setPageCount(selectPage ? parseInt(selectPage) : 1);
-            return await instance.get(`/user/public/product/category?categoryId=${categoryId}&page=${pageCount}&limit=${limit}`); // 추후 수정 예정 
+            // setPageCount(selectPage ? parseInt(selectPage) : 1);
+            return await instance.get(`/user/public/product/category?categoryId=${categoryId}&page=${selectPage}&limit=${limit}`); // 추후 수정 예정 
         },
         {
+            enabled: true,
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: response => {
-                console.log(response);
                 // 임시로 productList 사용 추후에 수정예정 ( 상태를 뭐로 할지 )
+                console.log(response);
                 const responseData = response?.data?.products // td의 배열 길이
                 let categoryProducts = responseData.length
                 let result = []
@@ -48,20 +50,24 @@ function Category(props) {
                     result[i] = categoyrProductArray
                 }
                 setProductList(result)
-                // page 수  
-                setPageCount(
-                    response.data.count % limit === 0
-                        ? response.data.count / limit
-                        : Math.floor(response.data.count / limit) + 1)
-                console.log(response.data.count)
             }
 
         }
     );
 
+    useEffect(() => {
+        // page 수
+        console.log(categoryQuery.data);
+        if (categoryQuery.data) {
+            const calculatedPageCount = categoryQuery.data?.data?.count % limit === 0
+                ? categoryQuery.data?.data?.count / limit
+                : Math.floor(categoryQuery.data?.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount)};
+    }, [categoryQuery.data]);
+    
     const handleOnPageChange = (e) => {
-        
-        navigate(`/user/category?categoryId=${categoryId}&page=${e.selected + 1}&limit=${limit}`);
+        setSelectPage(e.selected + 1);
+        navigate(`/user/public/product/category?categoryId=${categoryId}&page=${e.selected + 1}&limit=${limit}`);
     }
 
     return (
