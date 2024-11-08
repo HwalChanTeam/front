@@ -24,6 +24,8 @@ import MainMenu from "./components/MainMenu/MainMenu";
 import { AdminRoute, UserPrivateRoute } from "./Hooks/RouterHook";
 import ProductSearchPage from "./pages/ProductSearchPage/ProductSearchPage";
 import OAuth2LoginPage from "./pages/OAuth2LoginPage/OAuth2LoginPage";
+import FindIdPage from "./pages/FindIdPage/FindIdPage";
+import FindPasswordPage from "./pages/FindPasswordPage/FindPasswordPage";
 
 
 
@@ -109,6 +111,8 @@ function App() {
                         <Route path="/user/signup" element={<SignupPage />} />
                         <Route path="/user/signin" element={<SigninPage />} />
                         <Route path="/user/signin/oauth2" element={<OAuth2LoginPage />} />
+                        <Route path="/user/signin/findid" element={<FindIdPage />} />
+                        <Route path="/user/signin/findpassword" element={<FindPasswordPage />} />
                         <Route path="/user/public/product/category" element={<Category />} />
                         <Route path="/user/products/search" element={<ProductSearchPage />} />
                         <Route path="/cart" element={<UserPrivateRoute element={<ShoppingBasket />} />} />
