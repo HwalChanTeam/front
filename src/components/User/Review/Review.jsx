@@ -39,7 +39,7 @@ function Review(props) {
                         <p css={s.contentBox}>{review.content}</p>
                     </div>
                     <div css={s.createDateStyle}>
-                        <p>{review.createdAt}크리에이트데이트주세요</p>
+                        <p>{review.createdAt}</p>
                     </div>
                 </li>
             ))}
