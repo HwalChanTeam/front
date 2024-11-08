@@ -75,7 +75,7 @@ function ProductPage() {
         ["getProduct"],
         async () => {
             const id = parseInt(productId);
-            return await instance.get("/user/public/product/detail", id);
+            return await instance.get("/user/public/product/detail", {params: {id : id}});
         },
         {
             retry: 0,
