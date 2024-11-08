@@ -86,9 +86,9 @@ function ShoppingBasket(props) {
   };
 
   // 개별 체크박스 체인지 함수
-  const handleCheckBoxOnChange = (productId) => {
+  const handleCheckBoxOnChange = (cartItemId) => {
     const updateProductList = productList.map((product) =>
-      product.productId === productId
+      product.cartItemId === cartItemId
         ? { ...product, checked: !product.checked }
         : product
     );
@@ -214,7 +214,7 @@ function ShoppingBasket(props) {
                   <td>
                     <input
                       type="checkbox"
-                      onChange={() => handleCheckBoxOnChange(product.productId)}
+                      onChange={() => handleCheckBoxOnChange(product.cartItemId)}
                       checked={product.checked}
                     />
                   </td>
