@@ -9,6 +9,7 @@ import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import UserEditModal from '../../Modal/UserEditModal/UserEditModal';
+import AdminSearch from '../AdminSearch/AdminSearch';
 
 function UserView(props) {
     // 모달 띄우는 상태 추가
@@ -16,7 +17,7 @@ function UserView(props) {
     const [checkedIds, setCheckedIds] = useState([]);
     const [users, setUsers] = useState([]);
     const [searchParam] = useSearchParams();
-    const keyword = searchParam.get("keyword");
+    const name = searchParam.get("name");
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
     const navigate = useNavigate();
@@ -33,7 +34,23 @@ function UserView(props) {
         },
         {
             onSuccess: (response) => {
+                console.log(response)
                 setUsers(response.data.user);
+            }
+        }
+    );
+
+    // 유저 검색 
+    const userSearchQuery = useQuery(
+        ["searchQuery", name, pageCount],
+        async () => {
+            return await instance.get(`admin/user/search?page=${pageCount}&name=${name}&limit=${limit}`);
+        },
+        {
+            retry: 0,
+            refetchOnWindowFocus: false,
+            onSuccess: (response) => {
+                setUsers(response.data.user)
             }
         }
     );
@@ -71,12 +88,13 @@ function UserView(props) {
 
     const handleOnPageChange = (e) => {
         setPageCount(e.selected + 1);
-        navigate(`/admin/main/user?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
+        navigate(`/admin/main/user?page=${e.selected + 1}${name ? `&name=${name}` : ''}&limit=${limit}`);
     }
 
     return (
         <div css={s.mainBox}>
             <h1>유저 관리</h1>
+            <AdminSearch setPageCount={setPageCount} />
             <div css={s.buttonLayout}>
                 <button onClick={() => setOpenModal(true)}>수정</button>
                 <UserEditModal isOpen={openModal} onClose={closeModal} users={users} checkId={checkedIds}/> 
@@ -95,7 +113,6 @@ function UserView(props) {
                     </tr>
                 </table>
                 <table css={s.tableLayout}>
-                    {/* <tbody css={s.tbodyLayout}> */}
                     {users.map((user) => (
                         <tr key={user.userId}>
                             <td css={s.productItem}>
@@ -113,7 +130,6 @@ function UserView(props) {
                             <td css={s.productItem}>{user.createdAt}</td>
                         </tr>
                     ))}
-                    {/* </tbody> */}
                 </table>
             </div>
                 <div css={s.pageNumber}>
@@ -121,7 +137,7 @@ function UserView(props) {
                         breakLabel="..."
                         previousLabel={<><MdNavigateBefore /></>}
                         nextLabel={<><MdNavigateNext /></>}
-                        pageCount={3}
+                        pageCount={pageCount}
                         marginPagesDisplayed={3}
                         pageRangeDisplayed={5}
                         onPageChange={handleOnPageChange}

@@ -17,7 +17,7 @@ export const mainBox = css`
 
 export const buttonLayout = css`
   box-sizing: border-box;
-  padding: 90px 0 50px 20px;
+  padding-left: 20px;
   width: 300px;
   height: 50px;
 
