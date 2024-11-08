@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ReactModal from 'react-modal';
 import { useMutation } from 'react-query';
 import { instance } from '../../apis/util/instance';
+/** @jsxImportSource @emotion/react */
+import * as s from './staffRegister';
 
 function StaffRegisterModal({ isOpen, onClose, refetch }) {
 
@@ -75,40 +77,56 @@ function StaffRegisterModal({ isOpen, onClose, refetch }) {
                     backgroundColor: "white",
                     padding: "20px",
                     borderRadius: "5px",
-                    width: "300px",
+                    width: "450px",
                     maxWidth: "90%",
                     overflow: "auto",
                     inset: "auto",
                 },
             }}
         >
-            <div
-                css={{
-                    display: "flex",
-                    backgroundColor: "white",
-                    padding: "20px",
-                    borderRadius: "5px",
-                    width: "300px",
-                }}
-            >
-                <h2>매니저 등록</h2>
-                <input type="text" name="name" placeholder='이름' onChange={handleInputOnChange} value={userData.name}/>
-                <input type="text" name="username" placeholder='아이디' onChange={handleInputOnChange} value={userData.username}/>
-                <input type="text" name="password" placeholder='비밀번호' onChange={handleInputOnChange} value={userData.password}/>
-                <input type="text" name="checkPassword" placeholder='비밀번호 확인' onChange={handleInputOnChange} value={userData.checkPassword}/>
-                <input type="text" name="email" placeholder='이메일' onChange={handleInputOnChange} value={userData.email}/>
-                <input type="text" name="phoneNumber" placeholder='연락처' onChange={handleInputOnChange} value={userData.phoneNumber}/>
-                <input type="text" readOnly placeholder='ROLE_MANAGER' />
-                <div
-                    css={{
-                        marginTop: "10px",  // 버튼 간격을 추가
-                        display: "flex",
-                    }}
-                >
-                <button onClick={handleRegisterUser}>등록</button>
-                <button onClick={onClose}>닫기</button>
-                </div>
-            </div>
+                        <div css={s.modalLayout}>
+                        <h1>직원 등록</h1>
+                        <div css={s.mainBox}>
+                            <div css={s.registerBox}>
+                                <div css={s.inputBox}>
+                                    <div>
+                                    </div>
+                                    <div>
+                                        <label for="name">이름</label>
+                                        <input type="text" name="name" placeholder='이름' onChange={handleInputOnChange} value={userData.name}/>
+                                    </div>
+                                    <div>
+                                        <label for="username">아이디</label>
+                                        <input type="text" name="username" placeholder='아이디' onChange={handleInputOnChange} value={userData.username}/>
+                                    </div>
+                                    <div>
+                                        <label for="password">비밀번호</label>
+                                        <input type="text" name="password" placeholder='비밀번호' onChange={handleInputOnChange} value={userData.password}/>
+                                    </div>
+                                    <div>
+                                        <label for="checkPassword">비밀번호 확인</label>
+                                        <input type="text" name="checkPassword" placeholder='비밀번호 확인' onChange={handleInputOnChange} value={userData.checkPassword}/>
+                                    </div>
+                                    <div>
+                                        <label for="email">이메일</label>
+                                        <input type="text" name="email" placeholder='이메일' onChange={handleInputOnChange} value={userData.email}/>
+                                    </div>
+                                    <div>
+                                        <label for="phoneNumber">연락처</label>
+                                        <input type="text" name="phoneNumber" placeholder='연락처' onChange={handleInputOnChange} value={userData.phoneNumber}/>
+                                    </div>
+                                    <div>
+                                        <label for="role">권한</label>
+                                        <input type="text" readOnly placeholder='ROLE_MANAGER' />
+                                    </div>
+                                </div>
+                                <div css={s.buttonBox}>
+                                <button onClick={handleRegisterUser}>등록</button>
+                                <button onClick={onClose}>닫기</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
         </ReactModal>
     );
 };

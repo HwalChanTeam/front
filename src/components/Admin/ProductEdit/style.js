@@ -300,6 +300,8 @@ export const buttonBox = css`
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
+        margin-left: 10px;
+        margin-right: 10px;
 
         &:hover {
         background-color: #686d76;
