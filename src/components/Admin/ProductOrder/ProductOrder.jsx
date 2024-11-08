@@ -5,11 +5,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import ReactPaginate from 'react-paginate';
-import Modal from '../../Modal/Modal';
 import { instance } from '../../../apis/util/instance';
 import AdminSearch from '../AdminSearch/AdminSearch';
-import DeliveryStartModal from '../../Modal/DeliveryStartModal';
-import DeliveryEditModal from '../../Modal/DeliveryEditModal';
+import DeliveryStartModal from '../../Modal/OrderModal/DeliveryStartModal/DeliveryStartModal';
+import DeliveryEditModal from '../../Modal/OrderModal/DeliveryEditModal/DeliveryEditModal';
 
 function ProductOrder(props) {
     // 모달 띄우는 상태 추가
