@@ -14,7 +14,7 @@ function Category(props) {
     const productPath = () => `/product/${productList?.data?.productId}`; // 해당 상품의 상품페이지로 이동할려고 만든 productId
     const [searchParams, setSearchParams] = useSearchParams(); // 주소:포트/페이지URL?key=value(쿼리스트링, 파람스)
     const [productList, setProductList] = useState([]);
-
+    console.log(productList)
     const categoryId = searchParams.get("categoryId");
     // const selectPage = searchParams.get("page");
     const [selectPage, setSelectPage] = useState(1);
@@ -35,6 +35,7 @@ function Category(props) {
             onSuccess: response => {
                 // 임시로 productList 사용 추후에 수정예정 ( 상태를 뭐로 할지 )
                 console.log(response);
+
                 const responseData = response?.data?.products // td의 배열 길이
                 let categoryProducts = responseData.length
                 let result = []
@@ -56,7 +57,6 @@ function Category(props) {
 
     useEffect(() => {
         // page 수
-        console.log(categoryQuery.data);
         if (categoryQuery.data) {
             const calculatedPageCount = categoryQuery.data?.data?.count % limit === 0
                 ? categoryQuery.data?.data?.count / limit
@@ -72,7 +72,7 @@ function Category(props) {
     return (
         <div css={s.layout}>
             <div css={s.contentLayout}>
-                <ProductList productList={productList} productPath={productPath} />
+                <ProductList productList={productList} />
             </div>
             <div css={s.pageNumber}>
                 <ReactPaginate
