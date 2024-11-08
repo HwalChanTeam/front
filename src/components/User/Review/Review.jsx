@@ -13,18 +13,15 @@ function Review(props) {
   const getReviewAll = useQuery(
     ["getReviewAll"],
     async () => {
-      console.log("요청날아감");
       return await instance.get("/user/public/review");
     },
     {
       retry: 0,
       onSuccess: (response) => {
-        console.log(response.data);
         setReviews(response.data);
       },
     }
   );
-  console.log(reviews)
 
   const handleProductImgOnClick = (id) => {
     navigate(`/product/${id}`);

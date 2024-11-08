@@ -65,7 +65,6 @@ function SignupPage(props) {
     };
 
     const showFieldErrorMessage = (fieldErrors) => {
-        console.log(fieldErrors); // 에러 내용 확인
         let EmptyFieldErrors = {
             // 에러메시지 초기값
             username: <></>,
@@ -143,7 +142,6 @@ function SignupPage(props) {
 
     // 이메일 인증 체크 버튼
     const handleCheckEmailButtonOnClick = () => {
-        console.log(sendCheckNum.checkNum);
         checkEmailMutation.mutate();
     };
 

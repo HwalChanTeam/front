@@ -61,12 +61,10 @@ function ShoppingBasket(props) {
     // 삭제 요청을 위한 mutation
     const deleteMutation = useMutation(
         async (product) => {
-            console.log("아래가 데이터!!!!!!!!!!!!!!!")
             const deleteProduct = {
                 cartId : product.cartId,
                 cartItemId : product.cartItemId
                 }
-            console.log(deleteProduct)
             return await instance.delete(`/user/cart/${product.cartItemId}`,{ data: { cartId: product.cartId, cartItemId: product.cartItemId } });
         },
         {
@@ -149,7 +147,6 @@ function ShoppingBasket(props) {
         const params = {
             products: selectedProductIds,
         };
-        console.log(selectedProductIds)
         if (selectedProductIds.length > 0) {
             setSelectedProducts(selectedProductIds);
             navigate("/order");
@@ -165,7 +162,6 @@ function ShoppingBasket(props) {
             cartItemId : productList.map((item) => item.cartItemId)
         }
         if(window.confirm("모든 상품이 삭제됩니다. 삭제하시겠습니까?")) {
-            console.log(allProductId)
             await instance.delete("user/cart", { data: { cartId: allProductId.cartId, cartItemId: allProductId.cartItemId } });
             refetch();
         }

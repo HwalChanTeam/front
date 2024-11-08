@@ -26,12 +26,10 @@ function AdminSignin(props) {
             }
             return;
         }
-        console.log(signinData.role)
         localStorage.setItem("accessToken", "Bearer " + signinData.token.accessToken);
 
         // role 값을 localStorage에 저장
         localStorage.setItem("role", signinData.role.name)
-        console.log(signinData.role)
 
         instance.interceptors.request.use(config => {
             config.headers["Authorization"] = localStorage.getItem("accessToken");

@@ -83,7 +83,6 @@ function ProductPage() {
             enabled: true,
             onSuccess: (response) => {
                 setProduct(response.data?.product);
-                console.log(response)
             },
             onError: (response) => {
                 console.log(response)
@@ -91,7 +90,6 @@ function ProductPage() {
         }
     );
 
-    console.log(productData);
     // 구매수량 상태
     const [productItems, setProductItems] = useState({ buyItem: 1 });
 

@@ -18,7 +18,6 @@ function ShoppingBasketIcon({product}) {
     // 장바구니 추가 mutation
     const basketAddProductMutation = useMutation(
         async (payload) => {
-            console.log(payload)
             await instance.post("/user/cart", payload);
         },
         {
@@ -41,7 +40,6 @@ function ShoppingBasketIcon({product}) {
             }
             return;
         }
-        console.log(id)
         // RequestBody로 넘기기 위한 변수 생성
         const payload = {
             productId: product.productId,

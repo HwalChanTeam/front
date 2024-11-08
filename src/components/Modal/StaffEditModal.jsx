@@ -21,18 +21,13 @@ function StaffEditModal({ isOpen, onClose, staffQuery, checkId }) {
         }))
     }
 
-    console.log(userData)
-
     const staffData = staffQuery || [];
     // 필터링 로직 수정
     const filteredStaff = staffData.filter(staff => checkId.includes(staff.userId));
-    
-    console.log(filteredStaff); // 필터링된 결과 출력
 
     // 매니저 수정
     const registerMutation = useMutation(
         async () => {
-            console.log(userData)
             return await instance.put(`/admin/signup/${checkId}`, userData);
         },
         {

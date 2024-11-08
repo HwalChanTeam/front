@@ -60,9 +60,7 @@ function ProductRegister(props) {
 
     const handleSubmitOnClick = async () => {
         try {
-            console.log(product);
             const response = await instance.post("/admin/product/add", product);
-            console.log(response)
             alert("상품 등록이 완료되었습니다.");
         } catch (e) {
             console.error(e);

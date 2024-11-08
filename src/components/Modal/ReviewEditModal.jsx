@@ -7,8 +7,6 @@ function Modal({ isOpen, onClose, reviews, reviewId, refetch }) {
 
 const editReview = reviews.find((review) => review.reviewId === reviewId);
 
-console.log(editReview)
-
 const [review, setReview] = useState({
     reviewId: editReview.reviewId || '',
     title: editReview.title || '',

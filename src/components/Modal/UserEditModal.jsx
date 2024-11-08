@@ -35,9 +35,6 @@ function UserEditModal({ isOpen, onClose, users, checkId }) {
         }
     }, [checkId]);
 
-
-    console.log("Updated userData:", userData); // 추가된 부분
-
     const userEditMutation = useMutation(
         async () => {
             return await instance.put(`/admin/user/${checkId}`, userData)

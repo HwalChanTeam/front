@@ -47,7 +47,6 @@ function MainPage() {
             refetchOnWindowFocus: false,
             retry: 0,
             onSuccess: (response) => {
-                console.log(response)
                 setBestProductList(response.data);
             },
         }
@@ -64,7 +63,6 @@ function MainPage() {
             retry: 0,
             onSuccess: (response) => {
                 setRespectProductList(response.data);
-                console.log(response.data)
             },
         }
     );
@@ -80,8 +78,6 @@ function MainPage() {
     const respectImgOnClick = (productId) => {
         navigate(`/product/${productId}`);
     };
-
-    console.log(localStorage)
     return (
         <>
             {

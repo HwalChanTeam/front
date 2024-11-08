@@ -36,12 +36,9 @@ function ProductOrder(props) {
         ["useQuery"],
         async () => {
             const response = await instance.get("admin/order");
-            console.log(response.data);
             setOrders(response?.data);
         }
     );
-
-    console.log(orders);
 
     // 주문상태 - 고객의 행동에 따라 환불, 취소, 배송완료, 배송중으로 바꾸기 (배송중은 관리자가 바꾸게 하기)
     useEffect(() => {
