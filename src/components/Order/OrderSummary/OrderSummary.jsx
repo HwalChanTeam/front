@@ -1,16 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from "react";
 import * as s from "./style";
+import PortOne from "@portone/browser-sdk/v2";
 
 
 // 오른쪽 결제 박스
-function OrderSummary({ productList, payMentState, userInfo, totalProductAmount, deliveryFee, totalAmount, buyButtonOnClick }) {
+function OrderSummary({ productList, payMentState, userInfo, totalAmount, buyButtonOnClick }) {
 
-    const [ orderData, setOrderData ] = useState({
-        customerId: userInfo.userId,
+    const [orderData, setOrderData] = useState({
+        customerId: "",
         fullName: "",
         products: [],
-        totalAmount : 0,
+        totalAmount: 0,
         orderItemCount: 0,
         // orderStatus: "",
         orderName: "",
@@ -28,42 +29,69 @@ function OrderSummary({ productList, payMentState, userInfo, totalProductAmount,
         card: ""
     });
 
+    const portoneData = {
+        storeId: "store-a497dea2-bbec-4135-8fb2-c2283879a5b9",
+        customer: {},           // 줘야해
+        orderType: 0,           // 줘야해
+        paymentId: "payment",          // 줘야해 
+        orderName: "mn",
+        totalAmount: 1000,         // 줘야해
+        currency: 'CURRENCY_KRW',
+        locale: 'KO_KR',
+        channelKey: portEtcData.paymentChannelKey,
+        payMethod: "",
+        products: [],             // 줘야해
+    };
+
+    const portoneData1 = {
+        storeId: "store-da6c7cb4-5165-42e3-8184-e54dd94d2b78",
+        paymentId: "우리가 주는 고유번호", // 랜덤uuid
+        orderName: "Cuisson",
+        totalAmount: totalAmount,
+        currency: 'CURRENCY_KRW',
+    };
+
+
     const products = productList.map((item) => ({
         id: item.cartItemId,
         name: item.product.title,
         amount: item.product.price,
         quantity: item.quantity
-      }));
-      
-      console.log(products);
-    
-      useEffect(() => {
+    }));
+
+
+    PortOne.requestPayment
+
+    console.log(userInfo?.data);
+
+    useEffect(() => {
         setOrderData({
             customerId: userInfo.userId,
             fullName: userInfo.name,
             products: products,
-            totalAmount,
+            totalAmount: totalAmount,
             orderItemCount: 0,
             // orderStatus: "",
-            orderName: "",
+            orderName: "Cuisson",
             zipcode: userInfo.address.zipCode,
             address: userInfo.address.address,
             detailAddress: userInfo.address.detailAddress,
-            phoneNumber: "",
+            phoneNumber: userInfo.phoneNumber,
             email: userInfo.email,
-            request: "",
             paymentId: "", //포트원에서 받아온 아이디
             payMethod: payMentState,
             currency: "KRW",
             country: "KR",
             card: "CARD"
+
+
         })
-      },[userInfo])
-    
-      console.log(productList)
-      console.log(productList.map((item) => item.title));
-      console.log(productList.map((item) => item.product.title));
-      console.log(orderData);
+    }, [userInfo])
+
+    console.log(productList)
+    console.log(productList.map((item) => item.title));
+    console.log(productList.map((item) => item.product.title));
+    console.log(orderData);
 
     return (
         <div css={s.rightBox}>

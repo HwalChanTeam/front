@@ -206,8 +206,6 @@ function OrderPage(props) {
         ) : null}
       </div>
       <OrderSummary
-        totalProductAmount={totalProductAmount}
-        deliveryFee={deliveryFee}
         totalAmount={totalAmount}
         buyButtonOnClick={buyButtonOnClick}
         userInfo={userInfo}
