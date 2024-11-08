@@ -7,22 +7,19 @@ function AdminSearch({ setPageCount }) {
     const navigate = useNavigate();
     const limit = 20;
 
-    const [searchProduct, setSearchProduct] = useState({
-        title: "",
-    });
+    const [searchProduct, setSearchProduct] = useState("");
 
     const handleSearchOnChange = (e) => {
         setSearchProduct({
             [e.target.name]: e.target.value,
         });
+        console.log(searchProduct);
     };
 
     const handleSubmitButtonOnClick = () => {
         setPageCount(1);
         navigate(`/admin/main/product?page=1&keyword=${searchProduct.title}&limit=${limit}`);
-        setSearchProduct({
-            title: ""
-        });
+        setSearchProduct("");
     };
 
     const handleOnKeyDownEnter = (e) => {
@@ -36,8 +33,8 @@ function AdminSearch({ setPageCount }) {
             <div css={s.searchSection}>
                 <input
                     type="text"
-                    name="title"
-                    value={searchProduct.title}
+                    name=""
+                    value={searchProduct}
                     onChange={handleSearchOnChange}
                     onKeyDown={handleOnKeyDownEnter}
                     placeholder="검색어를 입력하세요"
