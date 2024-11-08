@@ -60,11 +60,7 @@ function SigninPage(props) {
         if(e.keyCode === 13) {
             handleLoginSubmitOnClick();
         }
-    }
-
-    const handleOAuthLogin = () => {
-        window.location("http://localhost:8080/oauth2/authorization/google");
-    }
+    };
 
     return (
         <div css={s.mainLayout}>
@@ -96,20 +92,18 @@ function SigninPage(props) {
                     <button onClick={handleLoginSubmitOnClick}>로그인 하기</button>
                 </div>
                 <div css={s.oauth2Buttons}>
-                    <button >
+                    <a href="http://localhost:8080/oauth2/authorization/naver">
                         <SiNaver />
                         네이버 로그인
-                    </button>
-                    <button onClick={handleOAuthLogin} >
+                    </a>
+                    <a href="http://localhost:8080/oauth2/authorization/google?scope=email%20profile%20https://www.googleapis.com/auth/user.phonenumbers.read">
                         <FcGoogle />
                         구글 로그인
-                    </button>
-                    <a href="http://localhost:8080/oauth2/authorization/naver">나버로그인</a>
-                    <a href="http://localhost:8080/oauth2/authorization/google?scope=email%20profile%20https://www.googleapis.com/auth/user.phonenumbers.read">구글로그인</a>
+                    </a>
                 </div>
                 <div css={s.joinAndSearchUser}>
                     <Link to="/user/signup">회원 가입</Link>
-                    <Link>아이디 비밀번호 찾기</Link>
+                    <Link to="/user/signin/findid" >아이디 비밀번호 찾기</Link>
                 </div>
             </div>
         </div>
