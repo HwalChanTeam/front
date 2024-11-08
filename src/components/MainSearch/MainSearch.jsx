@@ -24,13 +24,13 @@ function MainSearch() {
     };
 
     const handleMainSearchButtonOnClick = () => {
+        setKeyword("");
         navigate(`/user/products/search?page=1&${limit}&keyword=${keyword}`);
     };
 
     const handleKeywordOnKeyDown = (e) => {
         if (e.key === "Enter") {
-            setKeyword("");
-            navigate(`/user/products/search?page=1&limit=${limit}&keyword=${keyword}`);
+            handleMainSearchButtonOnClick();
         }
     }
 
