@@ -16,14 +16,13 @@ import { instance } from "../../apis/util/instance";
 function ShoppingBasket(props) {
   const navigate = useNavigate();
 
-  // 선택된 상품 구매 위한 atom 사용
-  const [selectedProducts, setSelectedProducts] =
-    useRecoilState(selectedItemsAtom); // atom 사용
-
   const [productList, setProductList] = useState([]); // 상품 목록 상태 추가
 
   // 전체 체크박스 기본 속성 - false
   const [isAllchecked, setIsAllchecked] = useState(false);
+
+  // 수정버튼 누르면 수량 추가 버튼 보이게
+  const [isEditState, setIsEditState] = useState(false);
 
   // 장바구니 상품 가져오기
   const { data, isLoading, isError, refetch } = useQuery(
@@ -33,7 +32,12 @@ function ShoppingBasket(props) {
     },
     {
       onSuccess: (response) => {
-        setProductList(response?.data?.cartList);
+        // setProductList(response?.data?.cartList);
+        const productsWithEditState = response?.data?.cartList.map((product) => ({
+            ...product,
+            isEdit: false, // 각 상품에 대해 수정 상태 추가
+          }));
+          setProductList(productsWithEditState);
       },
       refetchOnWindowFocus: false, // 창 포커스 시 재요청 하지 않음
       retry: 0,
@@ -110,9 +114,27 @@ function ShoppingBasket(props) {
   };
 
   // 수정 버튼 클릭 함수
+  const handleEditStateButtonOnClick = (productId) => {
+    setProductList(
+        productList.map((product) =>
+          product.cartItemId === productId
+            ? { ...product, isEdit: true }
+            : { ...product, isEdit: false }
+        )
+      );
+    };
+
+  // 수정 버튼 클릭 함수
   const handleEditButtonOnClick = (product) => {
     editMutation.mutate(product);
     alert("수정이 완료되었습니다.");
+    setProductList(
+      productList.map((item) =>
+        item.cartItemId === product.cartItemId
+          ? { ...item, isEdit: false }
+          : item
+      )
+    );
   };
 
   // 삭제 버튼 클릭 함수
@@ -214,7 +236,9 @@ function ShoppingBasket(props) {
                   <td>
                     <input
                       type="checkbox"
-                      onChange={() => handleCheckBoxOnChange(product.cartItemId)}
+                      onChange={() =>
+                        handleCheckBoxOnChange(product.cartItemId)
+                      }
                       checked={product.checked}
                     />
                   </td>
@@ -228,21 +252,35 @@ function ShoppingBasket(props) {
                     <tr>{product.description}</tr>
                   </td>
                   <td>
-                    <button onClick={() => handleQuantityChange(index, -1)}>
-                      -
-                    </button>
-                    {product.quantity}
-                    <button onClick={() => handleQuantityChange(index, +1)}>
-                      +
-                    </button>
+                    {product.isEdit ? (
+                      <>
+                        <button onClick={() => handleQuantityChange(index, -1)}>
+                          -
+                        </button>
+                        {product.quantity}
+                        <button onClick={() => handleQuantityChange(index, +1)}>
+                          +
+                        </button>
+                      </>
+                    ) : (
+                      <>{product.quantity}</>
+                    )}
                   </td>
                   <td>{product.price.toLocaleString()} 원</td>
                   <td>-</td>
                   <td> {calculateTotalPrice(product).toLocaleString()} 원</td>
                   <td>
-                    <button onClick={() => handleEditButtonOnClick(product)}>
-                      수정
-                    </button>
+                    {
+                        product.isEdit ? (
+                            <button onClick={() => handleEditButtonOnClick(product)}>
+                            수정
+                          </button>
+                        ) : (
+                            <button onClick={() => handleEditStateButtonOnClick(product.cartItemId)}>
+                            수정
+                          </button>
+                        )
+                    }
                     <button onClick={() => handleDeleteButtonOnClick(product)}>
                       삭제
                     </button>
