@@ -76,8 +76,8 @@ function ProductOrder(props) {
             <h1>주문 관리</h1>
             <AdminSearch />
             <div css={s.buttonLayout}>
-                <button onClick={() => setOpenModal(true)}>배송등록</button>
-                <DeliveryStartModal isOpen={openModal} onClose={closeModal} orderQuery={orders} />
+                {/*<button onClick={() => setOpenModal(true)}>배송등록</button>
+                <DeliveryStartModal isOpen={openModal} onClose={closeModal} orderQuery={orders} />*/}
                 {
                     checkedIds.length >= 2 ?
                         <></>

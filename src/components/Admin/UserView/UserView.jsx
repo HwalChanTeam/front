@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as s from './style';
 import { useMutation, useQuery } from 'react-query';
 import { instance } from '../../../apis/util/instance';
@@ -18,6 +18,8 @@ function UserView(props) {
     const [users, setUsers] = useState([]);
     const [searchParam] = useSearchParams();
     const name = searchParam.get("name");
+    console.log(name)
+    const [selectPage, setSelectPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
     const navigate = useNavigate();
@@ -30,28 +32,31 @@ function UserView(props) {
     const userQuery = useQuery(
         ["useQuery"],
         async () => {
-            return await instance.get("admin/user", {params: {page: pageCount, limit, role: 3}});
+            const response = await instance.get("admin/user", {params: {page: selectPage, limit, role: 3}});
+            setUsers(response?.data?.user);
+            return response?.data;
         },
         {
-            onSuccess: (response) => {
-                console.log(response)
-                setUsers(response.data.user);
-            }
+            enabled: !name,
+            retry: 0,
+            refetchOnWindowFocus: false
+            
         }
     );
+
+    console.log(users)
 
     // 유저 검색 
     const userSearchQuery = useQuery(
         ["searchQuery", name, pageCount],
         async () => {
-            return await instance.get(`admin/user/search?name=${name}&limit=${limit}`, {params: {}});
+            const response = await instance.get(`admin/user/search?page=${selectPage}&name=${name}&limit=${limit}`, {params: {role: 3}});
+            setUsers(response.data.user)    
         },
         {
+            enabled: !!name,
             retry: 0,
             refetchOnWindowFocus: false,
-            onSuccess: (response) => {
-                setUsers(response.data.user)
-            }
         }
     );
 
@@ -87,14 +92,14 @@ function UserView(props) {
     };
 
     const handleOnPageChange = (e) => {
-        setPageCount(e.selected + 1);
+        setSelectPage(e.selected + 1);
         navigate(`/admin/main/user?page=${e.selected + 1}${name ? `&name=${name}` : ''}&limit=${limit}`);
     }
 
     return (
         <div css={s.mainBox}>
             <h1>유저 관리</h1>
-            <AdminSearch setPageCount={setPageCount} />
+            <AdminSearch setPageCount={setPageCount} type={"name"} />
             <div css={s.buttonLayout}>
                 <button onClick={() => setOpenModal(true)}>수정</button>
                 <UserEditModal isOpen={openModal} onClose={closeModal} users={users} checkId={checkedIds}/> 
@@ -114,7 +119,7 @@ function UserView(props) {
                 </table>
                 <table css={s.tableLayout}>
                     {users.map((user, index) => (
-                        <tr key={user.userId}>
+                        <tr key={user.id}>
                             <td css={s.productItem}>
                                 <input
                                     type="checkbox"

@@ -47,26 +47,18 @@ export const buttonLayout = css`
 export const container = css`
   box-sizing: border-box;
   margin: 0px 20px;
-  border: 1px solid #000000;
   width: 1600px;
-  height: 500px;
-  overflow-y: scroll;
-  -ms-overflow-style: none;
-  ::-webkit-scrollbar {
-    display: none;
-  }
+  height: 480px;
 `;
 
 export const theadLayout = css`
   box-sizing: border-box;
   border-collapse: collapse;
+  border: 1px solid #000000;
+  border-bottom: none;
   padding: 0px;
   width: 100%;
   height: 22px;
-  position: sticky; /* 스티키 포지션 적용 */
-  top: 0; /* 상단 고정 */
-  background-color: #fff; /* 배경색 추가 */
-  /* z-index: 1; 다른 요소 위에 있도록 설정 */
 
 `;
 
@@ -109,6 +101,8 @@ export const theadItems = css`
 export const tableLayout = css`
   width: 100%;
   border-collapse: collapse;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
 `;
 
 export const productItem = css`
@@ -155,14 +149,14 @@ export const productItem = css`
 
 // pageNumber
 export const pageNumber = css`
-    width: 1600px;
     & > ul {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-left: 20px;
-        padding: 0px;
-        list-style-type: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      list-style-type: none;
+      margin-left: 20px;
+      padding: 0px;
+      width: 1600px;
         & > li {
           margin: 0px 5px;
             & a {
@@ -174,6 +168,7 @@ export const pageNumber = css`
                 border: 1px solid #dbdbdb;
                 border-radius: 50%;
                 width: 30px;
+                height: 30px;
             }
             
         }

@@ -46,32 +46,25 @@ export const buttonLayout = css`
 
 export const container = css`
   box-sizing: border-box;
-  border: 1px solid #000000;
   margin: 0px 20px;
   width: 1600px;
-  height: 500px;
-  overflow-y: scroll;
-  -ms-overflow-style: none;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
+  height: 480px;
 `;
 
 export const theadLayout = css`
   box-sizing: border-box;
   border-collapse: collapse;
+  border: 1px solid #000000;
+  border-bottom: none;
+  padding: 0px;
   width: 100%;
-  position: sticky; /* 스티키 포지션 적용 */
-  top: 0; /* 상단 고정 */
-  background-color: #fff; /* 배경색 추가 */
-  // z-index: 1; //다른 요소 위에 있도록 설정
+  height: 22px;
 `;
 
 export const theadItems = css`
   box-sizing: border-box;
-  border-right: 1px solid #000000;
   padding: 0px;
+  border-right: 1px solid #000000;
   cursor: default;
 
   &:nth-of-type(1) {
@@ -82,8 +75,7 @@ export const theadItems = css`
     width: 140px;
   }
   &:nth-of-type(3) {
-    width: 120px;
-    table-layout: fixed;
+    width: 150px;
   }
   &:nth-of-type(4) {
     width: 300px;
@@ -108,11 +100,8 @@ export const theadItems = css`
 export const tableLayout = css`
   width: 100%;
   border-collapse: collapse;
-`;
-
-export const tbodyLayout = css`
-  width: 100%;
-  border-collapse: collapse;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
 `;
 
 export const productItem = css`
@@ -132,7 +121,7 @@ export const productItem = css`
   }
   &:nth-of-type(3) {
     padding-left: 5px;
-    width: 120px;
+    width: 150px;
   }
   &:nth-of-type(4) {
     padding-left: 5px;
@@ -143,20 +132,24 @@ export const productItem = css`
     width: 160px;
   }
   &:nth-of-type(6) {
+    padding-right: 5px;
     width: 160px;
     text-align: right;
   }
   &:nth-of-type(7) {
+    padding-right: 5px;
     width: 100px;
     text-align: right;
   }
 
   :nth-of-type(8) {
+    padding-right: 5px;
     width: 100px;
     text-align: right;
   }
 
   &:nth-of-type(9) {
+    padding-right: 5px;
     text-align: right;
     border-right: none;
   }
@@ -362,6 +355,7 @@ export const pageNumber = css`
     & > ul {
         display: flex;
         justify-content: center;
+        align-items: center;
         list-style-type: none;
         padding-left: 20px;
         width: 1600px;
@@ -376,6 +370,7 @@ export const pageNumber = css`
                 border: 1px solid #dbdbdb;
                 border-radius: 50%;
                 width: 30px;
+                height: 30px;
             }
             
         }
