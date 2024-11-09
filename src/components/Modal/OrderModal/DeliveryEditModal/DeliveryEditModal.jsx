@@ -10,7 +10,7 @@ import *as s from './style';
 function DeliveryEditModal({ isOpen, onClose, orderQuery, checkId }) {
 
     // 수정할 값을 담기위한 상태  
-    const [ orderData, setOrderData ] = useState({}); // 변수명 정해지면 객체안에 쓸 예정 (운송장번호, 배송사, 주문상태, 배송일자)
+    const [ orderData, setOrderData ] = useState({}); // 변수명 정해지면 객체안에 쓸 예정
 
     // 수정창에 배송정보를 입력할 onChange
     const handleOrderOnChange = (e) => {
@@ -70,7 +70,7 @@ function DeliveryEditModal({ isOpen, onClose, orderQuery, checkId }) {
             }}
         >
             <div css={s.modalLayout}>
-                <h2>배송수정</h2>
+                <h2>상태수정</h2>
                 <div css={s.mainBox}>
                     <div css={s.registerBox}>
                         <div css={s.inputBox}>
@@ -85,12 +85,12 @@ function DeliveryEditModal({ isOpen, onClose, orderQuery, checkId }) {
                                 </select>
                             </div>
                             <div>
-                                <label >운송장번호</label>
-                                <input type="text" name="" placeholder="운송장번호를 입력하세요" onChange={handleOrderOnChange} value="" /> {/* name과 value도 변수명 정해지면 쓰기 */}
-                            </div>
-                            <div>
-                                <label >배송사</label>
-                                <input type="text" name="" placeholder="배송사를 입력하세요" onChange={handleOrderOnChange} value="" />
+                                <label >결제상태</label>
+                                <select>
+                                    <option value="">결제중</option>
+                                    <option value="">결제완료</option>
+                                    <option value="">결제취소</option>
+                                </select>
                             </div>
                         </div>
                         <div css={s.buttonBox}>

@@ -20,6 +20,7 @@ function ProductEdit(props) {
     const [checkedIds, setCheckedIds] = useState([]);
     const [searchParam] = useSearchParams();
     const keyword = searchParam.get("keyword");
+    console.log(keyword)
     const [selectPage, setSelectPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
     const limit = 20;
@@ -56,6 +57,9 @@ function ProductEdit(props) {
         }
     );
 
+    console.log(productList);
+
+    console.log(productQuery);
 
     // 상품 검색 쿼리
     const searchProduct = useQuery(

@@ -61,8 +61,11 @@ export const inputBox = css`
     
     & div {
         display: flex;
-        justify-content: space-between;
         margin-bottom: 20px;
+
+        & label {
+            margin-right: 30px;
+        }
 
         &:nth-last-of-type(1) {
             & button {

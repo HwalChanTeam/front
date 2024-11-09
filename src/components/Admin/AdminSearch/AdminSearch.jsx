@@ -3,11 +3,14 @@ import React, { useEffect, useState } from "react";
 import * as s from "./style";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-function AdminSearch({ setPageCount }) {
+function AdminSearch({ setPageCount, type }) {
     const navigate = useNavigate();
     const limit = 20;
 
-    const [searchProduct, setSearchProduct] = useState("");
+    const [searchProduct, setSearchProduct] = useState({
+        title: "", // 카테고리
+        name: ""  // 고객 이름
+    });
 
     const handleSearchOnChange = (e) => {
         setSearchProduct({
@@ -17,9 +20,18 @@ function AdminSearch({ setPageCount }) {
     };
 
     const handleSubmitButtonOnClick = () => {
+        if(type === "title") {
+            navigate(`/admin/main/product?page=1&keyword=${searchProduct.title}&limit=${limit}`);
+        }
+
+        if(type === "name") {
+            navigate(`/admin/main/user?page=1&name=${searchProduct.name}&limit=${limit}`)
+        }
         setPageCount(1);
-        navigate(`/admin/main/product?page=1&keyword=${searchProduct.title}&limit=${limit}`);
-        setSearchProduct("");
+        setSearchProduct({
+            title: "",
+            name: ""
+        });
     };
 
     const handleOnKeyDownEnter = (e) => {
@@ -33,8 +45,8 @@ function AdminSearch({ setPageCount }) {
             <div css={s.searchSection}>
                 <input
                     type="text"
-                    name=""
-                    value={searchProduct}
+                    name={type}
+                    value={type === "title" ? searchProduct.title : searchProduct.name}
                     onChange={handleSearchOnChange}
                     onKeyDown={handleOnKeyDownEnter}
                     placeholder="검색어를 입력하세요"
