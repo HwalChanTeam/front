@@ -26,8 +26,6 @@ export const imageStyle = css`
     height: 100px;
     /* object-fit: cover;  // 필요하면 추가*/ 
     border: 1px solid #dbdbdb;
-    margin-right: 10px;
-    border-radius: 4px;
     cursor: pointer;
 `;
 
@@ -36,20 +34,21 @@ export const textStyle = css`
     flex-direction: column;
     flex: 1;
     margin-left: 10px;
-    width: 500px;
+    width: 630px;
 `;
 
 export const titleStyle = css`
+    margin: 10px 0px;
     font-size: 18px;
     font-weight: bold;
 `;
 
 export const contentBox = css`
+    margin: 10px 0px;
     flex-wrap: wrap;
     font-size: 16px;
     color: #333;
     width: 100%; // 부모 컨테이너에 맞게 크기 조정
-    max-width: 500px; // 최대 너비 500px 설정
     white-space: normal; // 줄바꿈 허용
     overflow-wrap: break-word; // 긴 단어가 있는 경우 줄바꿈 허용
 `;
@@ -58,7 +57,6 @@ export const createDateStyle = css`
     box-sizing: border-box;
     display: flex;
     justify-content: flex-end;
-    align-items: flex-end;
 
     p { 
         margin: 0px;
