@@ -28,6 +28,7 @@ function MainMenu(props) {
     const handleOnMouseLeave = (type, id) => {
         if (type === "main") {
             setOnMouseMenuId(0);
+            setOnMouseSubMenuId(0);
         } else if (type === "sub") {
             setOnMouseSubMenuId(0);
         }
@@ -46,7 +47,7 @@ function MainMenu(props) {
                     <div css={s.menusLayout}>
                         {
                             menus.map(menu =>
-                                <div css={s.selectedMenu(pathname === menu?.path)} >
+                                <div css={s.selectedMenu(pathname === menu?.path)} onMouseLeave={() => handleOnMouseLeave("main", menu.id)}>
                                     <Link
                                         to={menu?.path}
                                         onMouseEnter={() => handleOnMouseEnter("main", menu.id)}

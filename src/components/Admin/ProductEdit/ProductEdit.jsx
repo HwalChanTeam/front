@@ -427,7 +427,7 @@ function ProductEdit(props) {
                                 }
                                 <td css={s.productItem}>{product.title}</td> {/* 상품명 */}
                                 <td css={s.productItem}>{product.origin}</td>
-                                <td css={s.productItem}>{product.price}</td>
+                                <td css={s.productItem}>{product.price.toLocaleString()}</td>
                                 <td css={s.productItem}>{product.stock}</td>
                                 <td css={s.productItem}>{product.salesCount}</td>
                                 <td css={s.productItem}>{product.createdDate}</td>

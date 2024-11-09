@@ -10,8 +10,8 @@ export const mainContainer = css`
 
 export const userInfoContainer = css`
   display: flex;
-  margin-right: 900px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  width: 1200px;
 `;
 
 export const imgBox = css`
@@ -40,6 +40,9 @@ export const userInfoBox = css`
 `;
 
 export const menuBox = css`
+  display: flex;
+  align-items: center;
+  height: 60px;
   & a {
     color: inherit; /* 링크가 클릭되었을 때도 본래 색상 유지 */
     text-decoration: none; /* 방문 후에도 밑줄 등 스타일 유지 */
@@ -55,7 +58,7 @@ export const menuBox = css`
 `;
 
 export const selectedMenu = (isSelected) => css`
-   border: ${isSelected ? "2px solid #964747" : "1px solid #dbdbdb"};
+  border: ${isSelected ? "2px solid #964747" : "1px solid #dbdbdb"};
   padding: 10px; /* 여백을 추가해 클릭 영역을 늘림 */
 `;
 

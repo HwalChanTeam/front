@@ -10,8 +10,8 @@ import { useNavigate } from 'react-router';
 
 function ReviewInfo(props) {
 
-        // 모달 띄우는 상태 추가
-        const [openEditModal, setOpenEditModal] = useState(false);
+    // 모달 띄우는 상태 추가
+    const [openEditModal, setOpenEditModal] = useState(false);
 
     const [reviews, setReviews] = useState([]);
     const navigate = useNavigate();
@@ -56,7 +56,7 @@ function ReviewInfo(props) {
 
     const handleProductImgOnClick = (id) => {
         navigate(`/product/${id}`);
-      }
+    }
 
     return (
         <div css={s.layout}>
