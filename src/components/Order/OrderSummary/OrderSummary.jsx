@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { channelKey } from "../../../portone/portone";
 
 // 오른쪽 결제 박스
-function OrderSummary({ productList, payMentState, userInfo, totalAmount, buyButtonOnClick, deliveryFee, totalProductAmount }) {
+function OrderSummary({ productList, payMentState, userInfo, totalAmount, deliveryFee, totalProductAmount }) {
     const [products, setProducts] = useState([]);
     const navigate = useNavigate();
 
