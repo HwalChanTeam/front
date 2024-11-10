@@ -31,7 +31,7 @@ const menus = [
     {
         id: 3,
         name: "매출 관리",
-        path: "/admin/main/business",
+        path: "/admin/main/sales",
         icon: <IoBusinessOutline />,
     },
     {
@@ -95,7 +95,7 @@ function AdminMainPage(props) {
                         <Route path="/" element={<DefaultComponent />} />
                         <Route path="/product/register" element={<ProductRegister />} />
                         <Route path="/product" element={<ProductEdit />} />
-                        <Route path="/business" element={<Management />} />
+                        <Route path="/sales" element={<Management />} />
                         <Route path="/order" element={< ProductOrder />} />
                         <Route path="/staff" element={<StaffManagement />} />
                         <Route path="/user" element={<UserView />} />
