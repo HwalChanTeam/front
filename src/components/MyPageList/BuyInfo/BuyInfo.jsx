@@ -4,6 +4,7 @@ import { instance } from '../../../apis/util/instance';
 import { FaTrash, FaRedo } from 'react-icons/fa';
 import { LuShoppingBag } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
+import { portone } from "../../../portone/portone";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 
@@ -29,6 +30,14 @@ function BuyInfo(props) {
             }
         }
     )
+
+    // const accessTokenMutaion = useMutation(
+    //     async () => await axios.post("https://api.portone.io/login/api-secret", {"apiSecret": portone}),
+    //     {
+    //         onSuccess: response => console.log(response)
+    //     }
+    // );
+
 
     //구매목록 삭제 기능
     const deleteBuyInfo = useMutation(
