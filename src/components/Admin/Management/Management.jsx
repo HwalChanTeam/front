@@ -1,9 +1,13 @@
 /** @jsxImportSource @emotion/react */
+import { useQuery } from 'react-query';
 import CategorySalesPie from './CategorySales/CategorySales';
 import SalesTrend from './SalesTrend/SalesTrend';
 import StockVolume from './StockVolume/StockVolume';
 import * as s from './style';
 import Top5Foods from './Top5Foods/Top5Foods';
+import { instance } from '../../../apis/util/instance';
+import { useEffect, useState } from 'react';
+import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 
 // 예시 데이터
 const salesTrendData = [
@@ -23,13 +27,13 @@ const salesTrendData = [
     }
 ];
 
-const top5FoodsData = [
-    { title: '부대찌개', sales: 150 },
-    { title: '감자탕', sales: 100 },
-    { title: '누룽지탕', sales: 350 },
-    { title: '완자', sales: 300 },
-    { title: '고기김치찌개', sales: 200 },
-];
+// const top5FoodsData = [
+//     { title: '부대찌개', sales: 150 },
+//     { title: '감자탕', sales: 100 },
+//     { title: '누룽지탕', sales: 350 },
+//     { title: '완자', sales: 300 },
+//     { title: '고기김치찌개', sales: 200 },
+// ];
 
 const categorySalesData = [
     { id: '국,탕,찌개', label: '국,탕,찌개', value: 400, color: 'hsl(205, 70%, 50%)' },
@@ -40,19 +44,105 @@ const categorySalesData = [
 ];
 
 function Management(props) {
+    const [sales, setSales] = useState([]);
+    const [graph, setGraph] = useState([]);
+    const businessData = useQuery(
+        ["businessDataQuery"],
+        async () => {
+            return await instance.get("admin/sales/day")
+        },
+        {
+            enabled: true,
+            retry: 0,
+            refetchOnWindowFocus: 0,
+            onSuccess: (resopnse) => {
+                console.log(resopnse?.data?.paymentList);
+                setSales(resopnse?.data?.paymentList);
+            }
+        }
+    )
+
+    const graphData = useQuery(
+        ["graphDataQuery"],
+        async () => {
+            const response = await instance.get("admin/sales/graph")
+            return response?.data?.products
+        },
+        {
+            enabled: true,
+            retry: 0,
+            refetchOnWindowFocus: 0,
+            onSuccess: (response) => {
+                const newTop5FoodsData = [];
+                try {
+                    for (let i = 0; i < 5; i++) {
+                        newTop5FoodsData.push({
+                            name: response[i]?.title,
+                            amt: response[i]?.stock
+                        })
+                        setGraph(newTop5FoodsData);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+    )
+
+    const truncate = (str, n) => {
+        return str.length > n ? str.substr(0, n - 1) + '...' : str;
+    };
+
     return (
         <div css={s.mainBox}>
             <h1>매출 관리</h1>
             <div css={s.contentsBox}>
-                <div css={s.leftBox}>
-                <h3>매출량 TOP5</h3>
-                <Top5Foods data={top5FoodsData} />
-                <h3>매출 추이</h3>
-                <SalesTrend data={salesTrendData} />
+                <div css={s.topBox}>
+                    <h3>매출량 TOP5</h3>
+                    <LineChart width={1000} height={500} data={graph}>
+                        <XAxis dataKey="name" tick={{ fontSize: 20 }} tickFormatter={(name) => truncate(name, 10)} />
+                        <YAxis />
+                        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="amt" stroke="#8884d8" />
+                    </LineChart>
                 </div>
-                <div css={s.rightBox}>
-                <h3>항목별 판매량</h3>
-                <CategorySalesPie data={categorySalesData} />
+                <div css={s.container}>
+                    <table css={s.theadLayout}>
+                        <tr>
+                            <td css={s.productItem}>
+                                <input type="checkbox" />
+                            </td>
+                            <td css={s.theadItems}>주문ID</td>
+                            <td css={s.theadItems}>주문방법</td>
+                            <td css={s.theadItems}>결제상태</td>
+                            <td css={s.theadItems}>구매자</td>
+                            <td css={s.theadItems}>주문 상품</td>
+                            <td css={s.theadItems}>수량</td>
+                            <td css={s.theadItems}>금액</td>
+                            <td css={s.theadItems}>주문 날짜</td>
+                        </tr>
+                    </table>
+                    <table css={s.theadLayout}>
+                        {sales?.map(sales => {
+                            return(
+                            <tr key={sales.paymentId}>
+                                <td css={s.productItem}>
+                                    <input type="checkbox" />
+                                </td>
+                                <td css={s.productItem}>{sales?.paymentId}</td>
+                                <td css={s.productItem}>{sales?.paymentStatus}</td>
+                                <td css={s.productItem}>{sales?.paymentMethod}</td>
+                                <td css={s.productItem}>{sales?.order?.user?.name}</td>
+                                <td css={s.productItem}>{sales?.orderItem?.product?.title}</td>
+                                <td css={s.productItem}>{sales?.orderItem?.quantity}</td>
+                                <td css={s.productItem}>{sales?.amount}</td>
+                                <td css={s.productItem}>{sales?.paymentDate}</td>
+                            </tr>
+                            )
+                        })}
+                    </table>
                 </div>
             </div>
         </div>

@@ -35,6 +35,7 @@ function OrderSummary({ productList, payMentState, userInfo, totalAmount, buyBut
         card: ""
     });
 
+
     
     // const portoneData = {
     //     storeId: "store-a497dea2-bbec-4135-8fb2-c2283879a5b9",
@@ -232,4 +233,4 @@ function OrderSummary({ productList, payMentState, userInfo, totalAmount, buyBut
     );
 }
 
-export default OrderSummary;
+// export default OrderSummary;
