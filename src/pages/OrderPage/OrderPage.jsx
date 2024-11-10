@@ -88,7 +88,7 @@ function OrderPage(props) {
   }, []);
 
   // 결제 상태
-  const [payMentState, setPatMentState] = useState();
+  const [payMentState, setPayMentState] = useState("");
 
   const [productList, setProductList] = useState([]);
 
@@ -163,6 +163,7 @@ function OrderPage(props) {
     {
       onSuccess: (response) => {
         setProductList(response.data.cartItemList);
+        console.log(response?.data?.cartItemList);
       },
       enabled: orderProducts.length > 0,
       retry: 0,
@@ -198,7 +199,7 @@ function OrderPage(props) {
           deliveryFee={deliveryFee}
           point={userInfo.point}
         />
-        <PaymentMethod setPatMentState={setPatMentState} />
+        <PaymentMethod setPayMentState={setPayMentState} />
         {payMentState === "bankbook" ? (
           <BankAccount />
         ) : payMentState === "CARD" ? (
@@ -206,6 +207,8 @@ function OrderPage(props) {
         ) : null}
       </div>
       <OrderSummary
+        totalProductAmount={totalProductAmount}
+        deliveryFee={deliveryFee}
         totalAmount={totalAmount}
         buyButtonOnClick={buyButtonOnClick}
         userInfo={userInfo}
