@@ -176,12 +176,6 @@ function OrderPage(props) {
     return <div>데이터를 불러오는 중 에러가 발생했습니다.</div>;
   }
 
-  // 구매버튼
-  const buyButtonOnClick = async () => {
-    // await instance.post("/user/buy", selectedProductIds);
-  };
-
-
   return (
     <div css={s.layout}>
       <div css={s.mainBox}>
@@ -207,7 +201,6 @@ function OrderPage(props) {
         totalProductAmount={totalProductAmount}
         deliveryFee={deliveryFee}
         totalAmount={totalAmount}
-        buyButtonOnClick={buyButtonOnClick}
         userInfo={userInfo}
         payMentState={payMentState}
         productList={productList}
