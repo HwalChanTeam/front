@@ -8,8 +8,6 @@ import *as s from './style';
 
 function FindIdPage(props) {
     const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || '/';
 
     const [user, setUser] = useState({
         name: "",
