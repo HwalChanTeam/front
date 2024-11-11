@@ -118,18 +118,18 @@ function ProductOrder(props) {
                                     />
                                 </td>
                                 <td css={s.productItem}>{index + 1}</td>
-                                <td css={s.productItem}>{order.user.username}</td>
-                                <td css={s.productItem}>{order.user.name}</td>
-                                <td css={s.productItem}>{item.product.title}</td> {/* 상품이름 */}
-                                <td css={s.productItem}>{item.product.price.toLocaleString()}</td> {/* 상품가격 */}
-                                <td css={s.productItem}>{item.quantity}</td> {/* 상품수량 */}
+                                <td css={s.productItem}>{order?.user?.username}</td>
+                                <td css={s.productItem}>{order?.user?.name}</td>
+                                <td css={s.productItem}>{item?.product?.title}</td> {/* 상품이름 */}
+                                <td css={s.productItem}>{item?.product?.price.toLocaleString()}</td> {/* 상품가격 */}
+                                <td css={s.productItem}>{item?.quantity}</td> {/* 상품수량 */}
                                 <td css={s.productItem}> {/* 총 상품 금액 */}
                                     {order.totalAmount.toLocaleString()} 
                                 </td> 
-                                <td css={s.productItem}>{order.payment.paymentMethod}</td> {/* 결제 */}
-                                <td css={s.productItem}>{order.payment.paymentStatus}</td> {/* 결제상태 */}
-                                <td css={s.productItem}>{order.orderStatus}</td>
-                                <td css={s.productItem}>{order.createdAt}</td>
+                                <td css={s.productItem}>{order?.payment?.paymentMethod}</td> {/* 결제 */}
+                                <td css={s.productItem}>{order?.payment?.paymentStatus}</td> {/* 결제상태 */}
+                                <td css={s.productItem}>{order?.orderStatus}</td>
+                                <td css={s.productItem}>{order?.createdAt}</td>
                             </tr>
                         ))
                     ))}
