@@ -19,13 +19,12 @@ export const imgBox = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 80px;
-    height: 80px;
     box-shadow: 0px 0px 2px #00000088;
     cursor: pointer;
 
     & > img {
-        height: 100%;
+      width: 80px;
+      height: 80px;
     }
 `;
 
