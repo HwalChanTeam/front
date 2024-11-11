@@ -36,7 +36,7 @@ function FindPasswordPage(props) {
                 alert(response.response.data); // 데이터 확인 필요
             },
             onSuccess: () => {
-                if(window.confirm("비밀번호가 초기화 되었습니다.\n 1Q2w3e4r!! 입니다.")) {
+                if(window.confirm("비밀번호가 초기화 되었습니다.\n 고객님의 임시비밀번호는 1Q2w3e4r!! 입니다.\n 로그인 후 마이페이지에서 변경 바랍니다.")) {
                     navigate(from, {replace : true});
                 }
             }
