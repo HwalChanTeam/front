@@ -26,29 +26,17 @@ function FindIdPage(props) {
     // 아이디 찾기 mutation
     const findIdUser = useMutation(
         async (user) => {
-            return await instance.get(""); // 아이디 찾기 요청 url 추후의 수정 
+            return await instance.get("", user); // 아이디 찾기 요청 url 추후의 수정 
         },
         {
-            // 밑에 것도 추후에 수정예정 
-            // 로그인 에러 - 에러메시지 불러옴
             onError: (response) => {
                 alert(response.response.data); // 데이터 확인 필요
             },
             onSuccess: (response) => {
-                localStorage.setItem(
-                    "accessToken",
-                    "Bearer " + response.data.accessToken
-                ); // 로그인 성공하면 accessToken 집어넣음
-                localStorage.setItem("role", response.data.role.name)
-
-                instance.interceptors.request.use((config) => {
-                    // 요청때 config 설정 사용해라
-                    config.headers["Authorization"] = localStorage.getItem("accessToken"); // 처음에 로그인이 안되어있으면 null값 들어가 있음
-                    return config;
-                });
+                if(window.confirm("회원님의 아이디는 " + {response} + " 입니다."))
                 navigate(from, {replace : true});
-            },
-        }
+            }
+        },
     );
 
     // 아이디 찾기 onClick

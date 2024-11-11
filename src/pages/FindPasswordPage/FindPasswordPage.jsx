@@ -28,27 +28,18 @@ function FindPasswordPage(props) {
     // 비밀번호 찾기 mutation
     const passwordUser = useMutation(
         async (user) => {
-            return await instance.post(""); // 비밀번호찾기 요청 url 추후의 수정 예정 / get 요청? -> 오밀당처럼 임시비밀번호를 줄지 ?  
+            return await instance.post("", user); // 비밀번호찾기 요청 url 추후의 수정 예정 / get 요청? -> 오밀당처럼 임시비밀번호를 줄지 ?  
         },
         {
             // 로그인 에러 - 에러메시지 불러옴
             onError: (response) => {
                 alert(response.response.data); // 데이터 확인 필요
             },
-            onSuccess: (response) => {
-                localStorage.setItem(
-                    "accessToken",
-                    "Bearer " + response.data.accessToken
-                ); // 로그인 성공하면 accessToken 집어넣음
-                localStorage.setItem("role", response.data.role.name)
-
-                instance.interceptors.request.use((config) => {
-                    // 요청때 config 설정 사용해라
-                    config.headers["Authorization"] = localStorage.getItem("accessToken"); // 처음에 로그인이 안되어있으면 null값 들어가 있음
-                    return config;
-                });
-                navigate(from, {replace : true});
-            },
+            onSuccess: () => {
+                if(window.confirm("비밀번호가 초기화 되었습니다.~~뭐시기뭐시기 메시지")) {
+                    navigate(from, {replace : true});
+                }
+            }
         }
     );
 

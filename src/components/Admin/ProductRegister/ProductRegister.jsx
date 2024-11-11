@@ -11,8 +11,6 @@ function ProductRegister(props) {
 
     const [isUploading, setUploading] = useState(false);
 
-    const [ contentsUrl, setContentsUrl ] = useState([]);
-
     const [product, setProduct] = useState({
         title: "",
         price: 0,
@@ -133,7 +131,7 @@ function ProductRegister(props) {
                         } catch (e) {
                             console.error(e);
                         } finally {
-                            setUploading(false); // false로 할 시 이미지가 자동으로 사라짐 
+                            setUploading(true); // false로 할 시 이미지가 자동으로 사라짐 
                         }
                     }
                 );
