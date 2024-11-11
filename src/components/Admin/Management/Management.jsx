@@ -1,66 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import { useQuery } from 'react-query';
-import CategorySalesPie from './CategorySales/CategorySales';
-import SalesTrend from './SalesTrend/SalesTrend';
-import StockVolume from './StockVolume/StockVolume';
 import * as s from './style';
-import Top5Foods from './Top5Foods/Top5Foods';
 import { instance } from '../../../apis/util/instance';
 import { useEffect, useState } from 'react';
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
-
-// 예시 데이터
-const salesTrendData = [
-    {
-        id: 'sales',
-        data: [
-            { x: '2016', y: 100 },
-            { x: '2017', y: 400 },
-            { x: '2018', y: 500 },
-            { x: '2019', y: 300 },
-            { x: '2020', y: 500 },
-            { x: '2021', y: 200 },
-            { x: '2022', y: 700 },
-            { x: '2023', y: 900 },
-            { x: '2024', y: 800 },
-        ]
-    }
-];
-
-// const top5FoodsData = [
-//     { title: '부대찌개', sales: 150 },
-//     { title: '감자탕', sales: 100 },
-//     { title: '누룽지탕', sales: 350 },
-//     { title: '완자', sales: 300 },
-//     { title: '고기김치찌개', sales: 200 },
-// ];
-
-const categorySalesData = [
-    { id: '국,탕,찌개', label: '국,탕,찌개', value: 400, color: 'hsl(205, 70%, 50%)' },
-    { id: '밀키트', label: '밀키트', value: 300, color: 'hsl(100, 70%, 50%)' },
-    { id: '안주', label: '안주', value: 200, color: 'hsl(50, 70%, 50%)' },
-    { id: '간식', label: '간식', value: 150, color: 'hsl(10, 70%, 50%)' },
-    { id: '기타', label: '기타', value: 100, color: 'hsl(280, 70%, 50%)' },
-];
+import ReactPaginate from 'react-paginate';
+import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
+import { useNavigate } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 function Management(props) {
+    const navigate = useNavigate();
     const [sales, setSales] = useState([]);
     const [graph, setGraph] = useState([]);
-    const businessData = useQuery(
-        ["businessDataQuery"],
-        async () => {
-            return await instance.get("admin/sales/day")
-        },
-        {
-            enabled: true,
-            retry: 0,
-            refetchOnWindowFocus: 0,
-            onSuccess: (resopnse) => {
-                console.log(resopnse?.data?.paymentList);
-                setSales(resopnse?.data?.paymentList);
-            }
-        }
-    )
+    const [searchParam, setSearchParam] = useSearchParams();
+    const [pageCount, setPageCount] = useState(1);
+    const limit = 10;
 
     const graphData = useQuery(
         ["graphDataQuery"],
@@ -82,6 +37,7 @@ function Management(props) {
                         })
                         setGraph(newTop5FoodsData);
                     }
+                    console.log(newTop5FoodsData);
                 } catch (e) {
                     console.error(e);
                 }
@@ -89,9 +45,49 @@ function Management(props) {
         }
     )
 
+    const businessData = useQuery(
+        ["businessDataQuery", searchParam.get("page")],
+        async () => {
+            console.log(searchParam.get("page"));
+            return await instance.get(`admin/sales?page=${searchParam.get("page")}&limit=${limit}`)
+        },
+        {
+            enabled: !!searchParam.get("page"),
+            retry: 0,
+            refetchOnWindowFocus: 0,
+            onSuccess: (resopnse) => {
+                console.log(resopnse?.data);
+                setSales(resopnse?.data?.paymentList);
+            }
+        }
+    )
+    
+    useEffect(() => {
+        if (businessData.data) {
+            const calculatedPageCount = businessData.data?.data?.count % limit === 0
+                ? businessData.data?.data?.count / limit
+                : Math.floor(businessData.data?.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+    }, [businessData.data])
+
+    useEffect(() => {
+        if(!searchParam.get("page")) {
+            setSearchParam(searchParam => ({
+                ...searchParam,
+                page: 1
+            }))
+        }
+    },[])
+
     const truncate = (str, n) => {
         return str.length > n ? str.substr(0, n - 1) + '...' : str;
     };
+
+    const handleOnPageChange = (e) => {
+        // setSelectPage(e.selected + 1);
+        navigate(`/admin/main/sales?page=${e.selected + 1}`);
+    }
 
     return (
         <div css={s.mainBox}>
@@ -126,23 +122,34 @@ function Management(props) {
                     </table>
                     <table css={s.theadLayout}>
                         {sales?.map(sales => {
-                            return(
-                            <tr key={sales.paymentId}>
-                                <td css={s.productItem}>
-                                    <input type="checkbox" />
-                                </td>
-                                <td css={s.productItem}>{sales?.paymentId}</td>
-                                <td css={s.productItem}>{sales?.paymentStatus}</td>
-                                <td css={s.productItem}>{sales?.paymentMethod}</td>
-                                <td css={s.productItem}>{sales?.order?.user?.name}</td>
-                                <td css={s.productItem}>{sales?.orderItem?.product?.title}</td>
-                                <td css={s.productItem}>{sales?.orderItem?.quantity}</td>
-                                <td css={s.productItem}>{sales?.amount}</td>
-                                <td css={s.productItem}>{sales?.paymentDate}</td>
-                            </tr>
+                            return (
+                                <tr key={sales.paymentId}>
+                                    <td css={s.productItem}>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td css={s.productItem}>{sales?.paymentId}</td>
+                                    <td css={s.productItem}>{sales?.paymentStatus}</td>
+                                    <td css={s.productItem}>{sales?.paymentMethod}</td>
+                                    <td css={s.productItem}>{sales?.order?.userList[0]?.name}</td>
+                                    <td css={s.productItem}>{sales?.orderItem?.product?.title}</td>
+                                    <td css={s.productItem}>{sales?.orderItem?.quantity}</td>
+                                    <td css={s.productItem}>{sales?.amount}</td>
+                                    <td css={s.productItem}>{sales?.paymentDate}</td>
+                                </tr>
                             )
                         })}
                     </table>
+                </div>
+                <div css={s.pageNumber}>
+                    <ReactPaginate
+                        breakLabel="..."
+                        previousLabel={<><MdNavigateBefore /></>}
+                        nextLabel={<><MdNavigateNext /></>}
+                        pageCount={pageCount}
+                        marginPagesDisplayed={3}
+                        pageRangeDisplayed={5}
+                        onPageChange={handleOnPageChange}
+                    />
                 </div>
             </div>
         </div>

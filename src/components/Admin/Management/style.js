@@ -125,3 +125,31 @@ export const productItem = css`
     border-right: none;
   }
 `;
+
+export const pageNumber = css`
+    & > ul {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        list-style-type: none;
+        padding-left: 20px;
+        width: 1600px;
+        & > li {
+            margin: 0px 5px;
+            & a {
+                box-sizing: border-box;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0 0 3px;
+                border: 1px solid #dbdbdb;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+            }
+        }
+        & li:nth-of-type(1) {
+            border: none;
+        }
+    }
+`;
