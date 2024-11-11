@@ -5,14 +5,14 @@ import { instance } from '../../../apis/util/instance';
 /** @jsxImportSource @emotion/react */
 import *as s from './style';
 
-function UserEditModal({ isOpen, onClose, users, checkId }) {
+function UserEditModal({ isOpen, onClose, users, checkId, userQuery }) {
 
     const [userData, setUserData] = useState({
         username: "",
         name: "",
         email: "",
-        password: "",
-        phoneNumber: ""
+        phoneNumber: "",
+        checkId: checkId[0]
     })
 
     const handleInputOnChange = (e) => {
@@ -32,21 +32,23 @@ function UserEditModal({ isOpen, onClose, users, checkId }) {
                 name: user.name,
                 email: user.email,
                 phoneNumber: user.phoneNumber,
-                password: user.password
+                checkId: checkId[0]
             });
         }
     }, [checkId]);
 
     const userEditMutation = useMutation(
         async () => {
-            return await instance.put(`/admin/user/${checkId}`, userData)
+            console.log(checkId);
+            return await instance.put(`/admin/user/${userData.checkId}`, userData)
         },
         {
             retry: 0,
             refetchOnWindowFocus: false,
             onSuccess: () => {
                 alert("매니저 수정이 완료되었습니다.");
-                // 리패치 사용해주세용
+                userQuery.refetch();
+                onClose(true);
             },
             onError: (error) => {
                 console.error(error);
@@ -99,10 +101,6 @@ function UserEditModal({ isOpen, onClose, users, checkId }) {
                             <div>
                                 <label>아이디</label>
                                 <input type="text" name="username" onChange={handleInputOnChange} defaultValue={editUserData[0]?.username}/>
-                            </div>
-                            <div> {/* 상의 후 없앨지 초기화를 시켜줄지 결정해야함 */}
-                                <label>비밀번호</label>
-                                <input type="text" name="password" onChange={handleInputOnChange} defaultValue={editUserData[0]?.password}/>
                             </div>
                             <div>
                                 <label>이메일</label>
