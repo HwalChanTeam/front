@@ -164,13 +164,13 @@ function BuyInfo(props) {
                             <p css={s.priceStyle}>가격: {products.totalAmount.toLocaleString()}원</p>
                         </div>
                         <div>
-                            <button css={s.buttonStyle} onClick={() => handleDelete(products.productId)}>
+                            <button css={s.buttonStyle1} onClick={() => handleDelete(products.productId)}>
                                 <FaTrash />
                             </button>
-                            <button css={s.buttonStyle} onClick={() => handleRepurchase(products.productId)}>
+                            <button css={s.buttonStyle2} onClick={() => handleRepurchase(products.productId)}>
                                 <LuShoppingBag />
                             </button>
-                            <button css={s.buttonStyle} onClick={() => handlePaymentCancelOnClick(products.orderId)}>
+                            <button css={s.buttonStyle3} onClick={() => handlePaymentCancelOnClick(products.orderId)}>
                                 <TbTrashOff />
                             </button>
                         </div>
