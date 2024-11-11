@@ -35,22 +35,6 @@ function OrderSummary({ productList, payMentState, userInfo, totalAmount, delive
         card: ""
     });
 
-
-    
-    // const portoneData = {
-    //     storeId: "store-a497dea2-bbec-4135-8fb2-c2283879a5b9",
-    //     customer: {},           // 줘야해
-    //     orderType: 0,           // 줘야해
-    //     paymentId: "payment",          // 줘야해 
-    //     orderName: "mn",
-    //     totalAmount: 1000,         // 줘야해
-    //     currency: 'CURRENCY_KRW',
-    //     locale: 'KO_KR',
-    //     channelKey: "",
-    //     payMethod: "",
-    //     products: [],             // 줘야해
-    // };
-
     const portoneData = {
         storeId: "store-da6c7cb4-5165-42e3-8184-e54dd94d2b78",
         paymentId: crypto.randomUUID(), // 랜덤uuid 
