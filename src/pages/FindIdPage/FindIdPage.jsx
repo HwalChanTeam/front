@@ -26,17 +26,19 @@ function FindIdPage(props) {
     // 아이디 찾기 mutation
     const findIdUser = useMutation(
         async (user) => {
-            return await instance.get("", user); // 아이디 찾기 요청 url 추후의 수정 
+            
+            return await instance.get("/user/public/find", {params : {name: user.name, phoneNumber: user.phoneNumber}}); // 아이디 찾기 요청 url 추후의 수정 
         },
         {
             onError: (response) => {
                 alert(response.response.data); // 데이터 확인 필요
             },
             onSuccess: (response) => {
-                if(window.confirm("회원님의 아이디는 " + {response} + " 입니다."))
-                navigate(from, {replace : true});
-            }
-        },
+                console.log(response.data)
+                const id= response.data
+                alert("회원님의 아이디는 " + id + " 입니다.");
+            },
+        }
     );
 
     // 아이디 찾기 onClick

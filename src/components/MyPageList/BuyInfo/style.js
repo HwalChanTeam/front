@@ -30,7 +30,11 @@ export const imageStyle = css`
     border-radius: 4px;
 `;
 
-export const buttonStyle = css`
+export const iconBox = css`
+
+`;
+
+export const buttonStyle1 = css`
     background: none;
     border: none;
     cursor: pointer;
@@ -42,6 +46,40 @@ export const buttonStyle = css`
     }
     & svg {
         color: #964747;
+    }
+`;
+
+export const buttonStyle2 = css`
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 18px;
+    color: #555;
+    &:hover {
+        color: #000;
+    }
+    & svg {
+        color: #964747;
+        height: 19px;
+        width: 19px;
+    }
+`;
+
+export const buttonStyle3 = css`
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 18px;
+    color: #555;
+    &:hover {
+        color: #000;
+    }
+    & svg {
+        color: #964747;
+        height: 22px;
+        width: 21px;
     }
 `;
 
