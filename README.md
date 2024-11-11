@@ -499,11 +499,9 @@ function App() {
 - onSuccess: 서버에 응답을 성공적으로 받았을 때 permitAllPaths의 배열에 정의된 /user로 시작하는 경로는 인증 없이 접근이 가능하게 하였습니다 그리고 for of문을 사용하여 permitAllPaths가 실행이 될때마다 permitAllPath 배열에 하나씩 담습니다 만약에 permitAllPath로 시작하면 요청을 계속 반복적으로 보내지 않게 설정하였습니다 
 - onError: 인증이 필요로 하는 경로들은 로그인페이지(/user/signin)로 이동하게 설정하였습니다. 
 
-<br/>
-
 ---
 
-<br/>
+<br/><br/>
 
 **return**
 
@@ -545,10 +543,12 @@ function App() {
 }
 ```
 
-- 리턴에는 라운터를 사용하여 해당 페이지로 이동하는 로직을 설정하였습니다 
-- location.pathname.startsWith를 이용하여 
-
 <br/>
+
+- 리턴에는 해당 페이지로 이동하여 화면에 해당 페이지가 화면에 보이기 위해 라우터를 사용하였습니다. 
+- location.pathname.startsWith를 이용하여  admin 경로로 시작하는 해당 페이지만 보이도록 하고 admin 경로로 시작되지 않은 페이지만 보여주기 위해 설정하였습니다.
+- MainHeader, MainMenu, Global 등은 admin 페이지를 제외한 모든 페이지에 적용하도록 하였습니다. 
+- global에 주어진 스타일은 admin과 user로 나뉘어 적용하였습니다. 
 
 ---
 
@@ -556,17 +556,438 @@ function App() {
 
 #### 백엔드
 
+__Controller__
 ```java
+
+@RequestMapping("/user/public")
+@RestController
+public class AuthController {
+
+	@Autowired
+    private TokenService tokenService;
+    
+    @GetMapping("/access")
+    public ResponseEntity<?> access(ReqAccessDto dto) {
+        return ResponseEntity.ok().body(tokenService.isValidAccessToken(dto.getAccessToken()));
+    }
+     
+}
 
 ```
 
+<br/>
+
+- /user/public/access 라는 경로로 get 요청을 받아 accessToken이 유효한지 검사하여 그 결과를 JSON 형식으로 응답합니다.
+- @RequestMapping("/user/public") : 클래스의 모든 메서드가 /user/public 으로 매핑됩니다.
+- @RestController : 메서드의 반환 값을 JSON 형식으로 넘겨주는 역할을 합니다.
+- @Autowired : TokenService 라는 객체를 자동으로 주입해주는 역할을 합니다.
+- @GetMapping("/access) : 이 클래스에 모든 메서드에 쓰이는 /user/public 경로에 /access를 붙여 get 요청을 받아 access 경로에 해당하는 메서드를 실행시킵니다.
+- access 메서드는 클라이언트한테 accessToken을 ReqAccessDto의 객체를 통해 추출합니다(= dto.accessToken) 추출한 후 tokenService 객체에 전달하여 유효성검사를 진행합니다 성공적으로 끝났다면 200 응답을 받습니다. 
+
+---
+
 <br/><br/>
 
-### 메인페이지
-#### 메인
+**dto**
 
-(사진)  
-(코드설명)
+```java
+
+@Data
+public class ReqAccessDto {
+    private String accessToken;
+}
+
+```
+
+<br/>
+
+- 클라이언트가 accessToken 요청을 보낼 때 accessToken을 담는 역할을 합니다. 
+- @Data : 자동으로 getter와 setter와 같은 메서드를 이용하여 편리하게 데이터를 처리 할 수 있습니다.
+
+---
+
+<br/><br/>
+
+**service**
+
+```java
+
+@Service
+public class TokenService {
+
+    @Autowired
+    private JwtProvider jwtProvider;
+    @Autowired
+    private UserMapper userMapper;
+
+    public Boolean isValidAccessToken(String bearerAccessToken) {
+        try {
+            String accessToken = jwtProvider.removeBearer(bearerAccessToken);
+            Claims claims = jwtProvider.getClaims(accessToken);
+            Long userId = ((Integer) claims.get("userId")).longValue();
+            User user = userMapper.findUserByUserId(userId);
+
+            if (user == null) {
+                throw new RuntimeException();
+            }
+        } catch (RuntimeException e) {
+            throw new AccessTokenValidException("AccessToken 유효성 검사 실패");
+        }
+        return true;
+    }
+}
+
+```
+
+<br/>
+
+- TokennService는 JWT 토큰의 유효성을 검사하는 서비스입니다. 
+- @Service : 서비스에 해당하는 클래스를 정의할 때 사용합니다. 
+- isValidAccessToken(String bearerAccessToken) : 이 메서드는 bearerAccessToken을 입력받고 해당 토큰의 유효성 검사를 합니다. 
+- Bearer 토큰에서는 실제 JWT 토큰을 추출하고 해당 토큰에서 userId를 가져와 데이터베이스에서 사용자를 조회한 후, 사용자가 없을 경우 예외(RunTimeException)를 던지고 유효하면 true를 반환합니다.
+- 만약 토큰이 유효하지않을 경우에는 catch를 통해 AccessTokenValidException을 던져 유효성 검사 실패를 알립니다. 
+
+---
+
+<br/><br/>
+
+**Mapper**
+
+```java
+
+@Mapper
+public interface UserMapper {
+
+    User findUserByUserId(Long userId);
+    
+}
+
+// .xml
+
+<select id="findUserByUserId" resultMap="userResultMap">
+        select
+            ut.user_id,
+            ut.username,
+            ut.name,
+            ut.email,
+            ut.password,
+            ut.phone_number,
+            ut.img,
+            ut.created_at,
+            urt.user_roles_id,
+            urt.user_id as urt_user_id,
+            urt.role_id as urt_role_id,
+            rt.role_id,
+            rt.name as role_name
+        from
+            users_tb ut
+            left outer join user_roles_tb urt on (ut.user_id = urt.user_id)
+            left outer join roles_tb rt on (rt.role_id = urt.role_id)
+        where
+            ut.user_id = #{userId}
+    </select>
+
+
+```
+
+- userId를 받아서 해당하는 사용자 정보를 반환하는 메서드인 findUserByUserId를 정의 합니다. 
+- xml 파일에서는 해당 메서드에 대응하는 SQL 쿼리를 작성하고 이 쿼리를 실행하여 User 객체에 데이터를 전달합니다. 
+- SQL은 users_tb에 user_roles_tb, roles_tb를 left join 하여 사용자의 정보와 role정보를 함께 조회하는 쿼리문 입니다.
+
+---
+
+<br/><br/>
+
+### 메인 헤더
+
+```Jsx
+
+function MainHeader(props) {
+    const token = localStorage.getItem("accessToken");
+    const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
+
+    const handleLogout = () => {
+        localStorage.removeItem("accessToken"); // 로컬 스토리지에서 토큰 삭제
+        localStorage.removeItem("role");
+        navigate("/");
+        window.location.reload(); // 페이지를 새로 고침하여 상태를 초기화
+    };
+
+    const handleMyPageOnClick = () => {
+        if (!token) {
+            if (window.confirm("로그인이 필요한 서비스 입니다.\n로그인 하시겠습니까?")) {
+                navigate("/user/signin")
+            }
+            return;
+        }
+        navigate("/mypage")
+    }
+
+    const handleCartButtonOnClick = () => {
+        if (!token) {
+            if (window.confirm("로그인이 필요한 서비스 입니다.\n로그인 하시겠습니까?")) {
+                navigate("/user/signin")
+            }
+            return;
+        }
+        navigate("/cart")
+    }
+
+    return (
+        <div css={s.layout}>
+            <div css={s.background}>
+                <div css={s.headerLayout}>
+                    <Link to={"/"}>
+                        <h1>
+                            <img src={logo} />
+                            Cuisson
+                        </h1>
+                    </Link>
+                    {
+                        !token ?
+                            <div css={s.buttonLayout}>
+                                <Link to={"/user/signin"}><RiLoginBoxLine /></Link>
+                                <a onClick={handleCartButtonOnClick}><SlBasket /></a>
+                                <a onClick={handleMyPageOnClick}><LuUser /></a>
+                            </div>
+                            :
+                            <div css={s.buttonLayout}>
+                                <a onClick={handleLogout}><RiLogoutBoxRLine /></a>
+                                <Link to={"/cart"}><SlBasket /></Link>
+                                <Link to={"/mypage"}><LuUser /></Link>
+                            </div>
+                    }
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default MainHeader;
+
+
+```
+
+<br/>
+
+- 메인헤더에는 메인으로 갈 수 있는 로고와 로그인 장바구니 마이페이지 등으로 가는 아이콘들을 설정항였습니다.
+- 로그인과 장바구니, 마이페이지 아이콘을 클릭 시 로그인이 안되엇을 경우에 로근인을 하라는 알람창을 띄우게 하였고 로그인이 되었을 경우에는 해당 페이지로 들어갈 수 있게 하였습니다.
+- navigate를 이용하여 로그인페이지로 이동하게 하였고 Link를 이용하여 해당 페이지로 이동하게 하였습니다. 
+
+---
+
+<br/><br/>
+
+
+### 메인 메뉴
+
+```jsx
+function MainMenu(props) {
+    const location = useLocation();
+    const pathname = location.pathname;
+    const [onMouseMenuId, setOnMouseMenuId] = useState(0);
+    const [onMouseSubMenuId, setOnMouseSubMenuId] = useState(0);
+
+    // 목록 hover o
+    const handleOnMouseEnter = (type, id) => {
+        if (type === "main") {
+            setOnMouseMenuId(id);
+        } else if (type === "sub") {
+            setOnMouseSubMenuId(id);
+        }
+    };
+
+    // 목록에 hover x 
+    const handleOnMouseLeave = (type, id) => {
+        if (type === "main") {
+            setOnMouseMenuId(0);
+            setOnMouseSubMenuId(0);
+        } else if (type === "sub") {
+            setOnMouseSubMenuId(0);
+        }
+    };
+
+    // sub 목록을 클릭 시 sub 창 x 
+    const handleSelectClick = () => {
+        setOnMouseMenuId(0);
+        setOnMouseSubMenuId(0);
+    }
+
+    return (
+        <>
+            <header css={s.layout}>
+                <div css={s.box}>
+                    <div css={s.menusLayout}>
+                        {
+                            menus.map(menu =>
+                                <div css={s.selectedMenu(pathname === menu?.path)} onMouseLeave={() => handleOnMouseLeave("main", menu.id)}>
+                                    <Link
+                                        to={menu?.path}
+                                        onMouseEnter={() => handleOnMouseEnter("main", menu.id)}
+                                    >
+                                        <span>{menu?.icon}</span>
+                                        <span>{menu.name}</span>
+                                    </Link>
+                                    {
+                                        (onMouseMenuId === menu.id && !!menu?.subMenus.length) &&
+                                        <ul css={s.categorySubLayout} onMouseLeave={() => handleOnMouseLeave("main", menu.id)}>
+                                            {menu.subMenus.map(subMenu => (
+                                                <div>
+                                                    <Link
+                                                        to={subMenu.path}
+                                                        onMouseEnter={() => handleOnMouseEnter("sub", subMenu.id)}
+                                                    >
+                                                        <li onClick={handleSelectClick}>
+                                                            {subMenu.name}
+                                                        </li>
+                                                    </Link>
+                                                    {
+                                                        // 서브 목록이 옆으로 뜨는 (밀키트)
+                                                        (onMouseSubMenuId === subMenu.id && !!subMenu?.subSideMenus.length) &&
+                                                        <ul css={s.categorySubSideLayout} onMouseLeave={() => handleOnMouseLeave("sub", subMenu.id)} >
+                                                            {subMenu.subSideMenus.map(subSideMenu => (
+                                                                <Link to={subSideMenu.path}>
+                                                                    <li onClick={handleSelectClick}>
+                                                                        {subSideMenu.name}
+                                                                    </li>
+                                                                </Link>
+                                                            ))}
+                                                        </ul>
+                                                    }
+                                                </div>
+                                            ))}
+                                        </ul>
+                                    }
+                                </div>)
+                        }
+                    </div>
+                    <MainSearch />
+                </div>
+            </header>
+            <SelectProductView />
+        </>
+    );
+}
+
+export default MainMenu;
+```
+
+- 메인메뉴에는 카테고리, 신상품, 인기상품, 전체리뷰 목록과 검색창을 나타냈습니다.
+- 카테고리에 마우스를 갖다 되면 카테고리 밑에 서브 목록이 뜨도록 설정하였습니다. 
+- 서브목록은 국.탕.찌개, 안주, 밀키트, 간편식으로 이루어져 있습니다.
+- 밀키트에도 마우스를 갖다 될 시 서브목록 옆에 창에 밀키트안에 해당되는 목록(냉동, 냉장)들도 볼 수 있게 설정하였습니다. 
+- const [onMouseMenuId, setOnMouseMenuId] = useState(0);는 카테고리에 마우스를 갖다 되면 그 안에 서브 목록이 나타나게 하는 상태입니다.
+-  const [onMouseSubMenuId, setOnMouseSubMenuId] = useState(0);는 카테고리 목록들 중 밀키트에 갖다 되면 그 안에도 서브 목록이 나타나게 하는 상태입니다.
+
+<br/>
+
+```jsx
+ // 목록 hover o
+    const handleOnMouseEnter = (type, id) => {
+        if (type === "main") {
+            setOnMouseMenuId(id);
+        } else if (type === "sub") {
+            setOnMouseSubMenuId(id);
+        }
+    };
+
+    // 목록에 hover x 
+    const handleOnMouseLeave = (type, id) => {
+        if (type === "main") {
+            setOnMouseMenuId(0);
+            setOnMouseSubMenuId(0);
+        } else if (type === "sub") {
+            setOnMouseSubMenuId(0);
+        }
+    };
+    
+    
+```
+- 마우스에 갖다 될 시 type과 id에 따라 해당 목록을 작동하도록 하였습니다.
+- type이 main일땐 카테고리 
+
+### 메인페이지
+#### 메인 
+
+#### 프론트
+``` jsx
+
+// 신상품 
+
+function MainPage() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [newProductList, setNewProductList] = useState([]);
+
+	// 페이지가 마운트될 때 스크롤을 맨 위로 이동
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
+
+    // 신상품 가져오는 쿼리
+    const newProduct = useQuery(
+        ["newProducts"],
+        async () => {
+            return await instance.get("/user/public/new");
+        },
+        {
+            refetchOnWindowFocus: false,
+            retry: 0,
+            onSuccess: (response) => {
+                setNewProductList(response.data);
+            },
+        }
+    );
+    
+    return (
+        <>
+            {
+                // user로 시작한 페이지 일때 메인페이지 x
+                location.pathname.startsWith("/user") ? (
+                    <></>
+                ) : (
+                    <>
+                        <div css={s.titleLayout}>
+                            <p>쿡 배송</p>
+                            <p>빠르게 배송해드립니다!</p>
+                        </div>
+
+                        {/* 이달의 상품 */}
+                        <div css={s.productLayout}>
+                            <div css={s.productTitle}>
+                                <p>NEW PRODUCT</p>
+                                <p>이 달의 신상품</p>
+                            </div>
+                            <div css={s.productContentLayout}>
+                                {
+                                    // slice를 사용해 신상품이 5개까지 뜨게 설정
+                                    newProductList.slice(0, 5).map((newProduct) => (
+                                        <div css={s.newProductLayout} key={newProduct?.data?.productId}>
+                                            <img
+                                                src={newProduct.thumbnailImg}
+                                                onClick={() => newImgOnClick(newProduct.productId)}
+                                            />
+                                            <div>
+                                                <p>{newProduct.description}</p>
+                                                <p>{newProduct.title}</p>
+                                                <p>{newProduct.price.toLocaleString()}원</p>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                            <div css={s.ProductLink}>
+                                <Link to="/user/newproduct"> 신상품 전체 보기 </Link>
+                            </div>
+                        </div>
+	);
+};
+```
+
+<br/>
+
+- 
 
 #### 신상품
 
