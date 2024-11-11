@@ -46,13 +46,13 @@ function UserEditModal({ isOpen, onClose, users, checkId, userQuery }) {
             retry: 0,
             refetchOnWindowFocus: false,
             onSuccess: () => {
-                alert("매니저 수정이 완료되었습니다.");
+                alert("유저 수정이 완료되었습니다.");
                 userQuery.refetch();
                 onClose(true);
             },
             onError: (error) => {
                 console.error(error);
-                alert("매니저 수정 실패!!!");
+                alert("유저 수정 실패!!!");
             }
         }
     )
