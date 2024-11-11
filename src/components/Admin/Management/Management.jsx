@@ -5,11 +5,15 @@ import { instance } from '../../../apis/util/instance';
 import { useEffect, useState } from 'react';
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import ReactPaginate from 'react-paginate';
+import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
+import { useNavigate } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 function Management(props) {
+    const navigate = useNavigate();
     const [sales, setSales] = useState([]);
     const [graph, setGraph] = useState([]);
-    const [selectPage, setSelectPage] = useState(1);
+    const [searchParam, setSearchParam] = useSearchParams();
     const [pageCount, setPageCount] = useState(1);
     const limit = 10;
 
@@ -40,31 +44,49 @@ function Management(props) {
             }
         }
     )
-    
+
     const businessData = useQuery(
-        ["businessDataQuery"],
+        ["businessDataQuery", searchParam.get("page")],
         async () => {
-            return await instance.get("admin/sales/day")
+            console.log(searchParam.get("page"));
+            return await instance.get(`admin/sales?page=${searchParam.get("page")}&limit=${limit}`)
         },
         {
-            enabled: true,
+            enabled: !!searchParam.get("page"),
             retry: 0,
             refetchOnWindowFocus: 0,
             onSuccess: (resopnse) => {
-                console.log(resopnse?.data?.paymentList);
+                console.log(resopnse?.data);
                 setSales(resopnse?.data?.paymentList);
             }
         }
     )
+    
+    useEffect(() => {
+        if (businessData.data) {
+            const calculatedPageCount = businessData.data?.data?.count % limit === 0
+                ? businessData.data?.data?.count / limit
+                : Math.floor(businessData.data?.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+    }, [businessData.data])
 
+    useEffect(() => {
+        if(!searchParam.get("page")) {
+            setSearchParam(searchParam => ({
+                ...searchParam,
+                page: 1
+            }))
+        }
+    },[])
 
     const truncate = (str, n) => {
         return str.length > n ? str.substr(0, n - 1) + '...' : str;
     };
 
     const handleOnPageChange = (e) => {
-        setSelectPage(e.selected + 1);
-        // navigate(`/admin/main/product?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
+        // setSelectPage(e.selected + 1);
+        navigate(`/admin/main/sales?page=${e.selected + 1}`);
     }
 
     return (
