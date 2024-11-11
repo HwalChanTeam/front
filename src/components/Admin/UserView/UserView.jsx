@@ -102,7 +102,7 @@ function UserView(props) {
             <AdminSearch setPageCount={setPageCount} type={"name"} />
             <div css={s.buttonLayout}>
                 <button onClick={() => setOpenModal(true)}>수정</button>
-                <UserEditModal isOpen={openModal} onClose={closeModal} users={users} checkId={checkedIds}/> 
+                <UserEditModal isOpen={openModal} onClose={closeModal} users={users} checkId={checkedIds} userQuery={userQuery}/> 
                 <button onClick={handleDeledtButtonOnClick}>삭제</button>
             </div>
             <div css={s.container}>
