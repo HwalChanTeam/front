@@ -233,4 +233,4 @@ function OrderSummary({ productList, payMentState, userInfo, totalAmount, buyBut
     );
 }
 
-// export default OrderSummary;
+export default OrderSummary;
