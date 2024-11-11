@@ -28,7 +28,7 @@ function FindPasswordPage(props) {
     // 비밀번호 찾기 mutation
     const passwordUser = useMutation(
         async (user) => {
-            return await instance.post("", user); // 비밀번호찾기 요청 url 추후의 수정 예정 / get 요청? -> 오밀당처럼 임시비밀번호를 줄지 ?  
+            return await instance.put("/user/public/regen", user); // 비밀번호찾기 요청 url 추후의 수정 예정 / get 요청? -> 오밀당처럼 임시비밀번호를 줄지 ?  
         },
         {
             // 로그인 에러 - 에러메시지 불러옴
@@ -36,7 +36,7 @@ function FindPasswordPage(props) {
                 alert(response.response.data); // 데이터 확인 필요
             },
             onSuccess: () => {
-                if(window.confirm("비밀번호가 초기화 되었습니다.~~뭐시기뭐시기 메시지")) {
+                if(window.confirm("비밀번호가 초기화 되었습니다.\n 1Q2w3e4r!! 입니다.")) {
                     navigate(from, {replace : true});
                 }
             }
