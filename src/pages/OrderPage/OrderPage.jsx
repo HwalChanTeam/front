@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState, useResetRecoilState } from "recoil";
 import { useQuery } from "react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 import BankAccount from "../../components/Payments/BankAccount/BankAccount";
@@ -8,7 +7,6 @@ import OrderSummary from "../../components/Order/OrderSummary/OrderSummary";
 import PaymentMethod from "../../components/Order/PaymentMethod/PaymentMethod";
 import ProductInfo from "../../components/Order/ProductInfo/ProductInfo";
 import UserInfo from "../../components/Order/UserInfo/UserInfo";
-import { productOrderAtom, selectedItemsAtom } from "../../apis/util/atom";
 import { instance } from "../../apis/util/instance";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
@@ -121,7 +119,7 @@ function OrderPage(props) {
       }, 0);
     }
 
-    deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+    deliveryFee = totalProductAmount >= 30000 ? 0 : 0;
     totalAmount = totalProductAmount + deliveryFee;
 
     return { totalProductAmount, totalAmount, deliveryFee };
@@ -163,7 +161,6 @@ function OrderPage(props) {
     {
       onSuccess: (response) => {
         setProductList(response.data.cartItemList);
-        console.log(response?.data?.cartItemList);
       },
       enabled: orderProducts.length > 0,
       retry: 0,
