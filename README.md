@@ -26,8 +26,8 @@
  > 
  > ## 💡 [느낀점](#-느낀점)
 
-</br>
-</br>
+<br>
+<br>
 
 ## 💻 프로젝트 소개
 
@@ -43,8 +43,8 @@
 ### ◈ 제작 기간
 - 2024.10.01 ~ 2024.11.13
 
-</br>
-</br>
+<br>
+<br>
 
 
 ## 👨‍👩‍👧‍👦 팀원 소개 및 역할 분담
@@ -57,6 +57,7 @@
 
 ### 🖥️ Front_End
 - back과 front 변수명 설정
+- ㄹㅇㄹㅇㄴ
 
 ### etc.
 
@@ -425,13 +426,141 @@ react-daum-postcode | 다음 주소 API |
 
 (영상)
 
-</br>
-</br>
+<br/>
+<br/>
 
 ## 📖 주요 기능 및 코드리뷰 
 
 ### App.js
-<img />
+---
+
+#### 프론트
+
+**함수**
+```Js
+
+function App() {
+
+    const token = localStorage.getItem("accessToken");
+    const queryClient = new QueryClient();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [authRefresh, setAuthRefresh] = useState(true);
+
+    useEffect(() => {
+        if (!authRefresh) {
+            setAuthRefresh(true);
+        }
+    }, [location.pathname]);
+    
+    const accessTokenValid = useQuery(
+        ["accessTokenValidQuery"],
+        async () => {
+            setAuthRefresh(false);
+            return await instance.get("/user/public/access", {
+                params: {
+                    accessToken: localStorage.getItem("accessToken"),
+                    role: localStorage.getItem("role")
+                },
+            });
+        },
+        {
+            enabled: authRefresh,
+            retry: 0,
+            refetchOnWindowFocus: false,
+            onSuccess: (response) => {
+                const permitAllPaths = ["/user"];
+                for (let permitAllPath of permitAllPaths) {
+                    if (location.pathname.startsWith(permitAllPath)) {
+                        break;
+                    }
+                }
+            },
+            onError: (error) => {
+                const authPaths = ["/profile"];
+                for (let authPath of authPaths) {
+                    if (location.pathname.startsWith(authPath)) {
+                        navigate("/user/signin");
+                        break;
+                    }
+                }
+            },
+        }
+    );
+
+```
+<br/>
+
+- useEffect를 이용하여 페이지 이동이 일어날때 마다 authRefresh 상태를 통해 다른 페이지로 이동이 됐을 때마다 토큰을 체크해주는 로직입니다.
+- useQuery를 사용하여 해당 사용자가 accessToken과 role의 권한을 확인하기 위해 get 요청을 보내는 Query 문 입니다 accessToken과 role의 정보를 params를 통해 서버에 넘겨 권한을 확인합니다 
+- enabled는 authRefresh가 true일 때만 이 쿼리문이 실행이 될 수 있도록 하였습니다 
+- retry는 기본으로 3번 요청을 보내게 되어있어 retry: 0을 설정해줌으로써 한번만 요청을 보내도록 설정하였습니다.  
+- refetchOnWindowFocus: false = 사용자가 브라우저 탭을 다시 포커스할 때 쿼리를 자동으로 다시 요청하는 설정입니다. 
+- onSuccess: 서버에 응답을 성공적으로 받았을 때 permitAllPaths의 배열에 정의된 /user로 시작하는 경로는 인증 없이 접근이 가능하게 하였습니다 그리고 for of문을 사용하여 permitAllPaths가 실행이 될때마다 permitAllPath 배열에 하나씩 담습니다 만약에 permitAllPath로 시작하면 요청을 계속 반복적으로 보내지 않게 설정하였습니다 
+- onError: 인증이 필요로 하는 경로들은 로그인페이지(/user/signin)로 이동하게 설정하였습니다. 
+
+<br/>
+
+---
+
+<br/>
+
+**return**
+
+```Js
+ return (
+        <>
+            {location.pathname.startsWith("/admin") ? (
+                <>
+                    <Global styles={adminReset} />
+                    <Routes>
+                        <Route path="/admin" element={<AdminSignin />} />
+                        <Route path="/admin/main/*" element={<AdminRoute element={<AdminMainPage />} />} />
+                    </Routes>
+                </>
+            ) : (
+                <>
+                    <MainHeader />
+                    <MainMenu />
+                    <Global styles={UserReset} />
+                    <Routes>
+                        <Route path="/*" element={<MainPage />} />
+                        <Route path="/product/:productId/*" element={<ProductPage />} />
+                        <Route path="/user/signup" element={<SignupPage />} />
+                        <Route path="/user/signin" element={<SigninPage />} />
+                        <Route path="/user/signin/oauth2" element={<OAuth2LoginPage />} />
+                        <Route path="/user/signin/findid" element={<FindIdPage />} />
+                        <Route path="/user/signin/findpassword" element={<FindPasswordPage />} />
+                        <Route path="/user/public/product/category" element={<Category />} />
+                        <Route path="/user/products/search" element={<ProductSearchPage />} />
+                        <Route path="/cart" element={<UserPrivateRoute element={<ShoppingBasket />} />} />
+                        <Route path="/order/*" element={<UserPrivateRoute element={<OrderPage />} />} />
+                        <Route path="/mypage/*" element={<UserPrivateRoute element={<MyPage />} />} />
+                    </Routes>
+                    <MainFooter />
+                </>
+            )}
+        </>
+    );
+}
+```
+
+- 리턴에는 라운터를 사용하여 해당 페이지로 이동하는 로직을 설정하였습니다 
+- location.pathname.startsWith를 이용하여 
+
+<br/>
+
+---
+
+<br/><br/>
+
+#### 백엔드
+
+```java
+
+```
+
+<br/><br/>
 
 ### 메인페이지
 #### 메인
