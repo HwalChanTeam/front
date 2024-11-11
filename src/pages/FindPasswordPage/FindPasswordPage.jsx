@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { instance } from '../../apis/util/instance';
 import logo from "../../assets/images/logo.png";
 /** @jsxImportSource @emotion/react */
@@ -9,8 +9,6 @@ import { Link } from 'react-router-dom';
 
 function FindPasswordPage(props) {
     const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || '/';
 
     const [user, setUser] = useState({
         username: "",
@@ -36,9 +34,7 @@ function FindPasswordPage(props) {
                 alert(response.response.data); // 데이터 확인 필요
             },
             onSuccess: () => {
-                if(window.confirm("비밀번호가 초기화 되었습니다.\n 고객님의 임시비밀번호는 1Q2w3e4r!! 입니다.\n 로그인 후 마이페이지에서 변경 바랍니다.")) {
-                    navigate(from, {replace : true});
-                }
+                alert("비밀번호가 초기화 되었습니다.\n 고객님의 임시비밀번호는 1Q2w3e4r!! 입니다.\n 로그인 후 마이페이지에서 변경 바랍니다.");
             }
         }
     );
