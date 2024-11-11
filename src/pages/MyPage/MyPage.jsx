@@ -122,7 +122,6 @@ function MyPage(props) {
     }
   }, []); 
 
-  console.log(userInfo)
 
   return (
     <div css={s.mainContainer}>

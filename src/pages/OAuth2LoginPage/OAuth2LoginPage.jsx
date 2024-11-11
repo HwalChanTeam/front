@@ -23,9 +23,9 @@ function OAuth2LoginPage(props) {
             console.error(e);
         }
 
-        localStorage.setItem("accessToken", "Bearer " + accessToken);
-        if (role) {
-            localStorage.setItem("role", JSON.stringify(role)); // role을 JSON으로 저장
+        if (accessToken) {
+            localStorage.setItem("accessToken", "Bearer " + accessToken);
+            localStorage.setItem("role", "ROLE_USER"); // role을 JSON으로 저장
         }
         instance.interceptors.request.use(config => {
             config.headers["Authorization"] = localStorage.getItem("accessToken");
