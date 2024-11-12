@@ -17,6 +17,7 @@ function ProductOrder(props) {
 
     const [checkedIds, setCheckedIds] = useState([]);
     const [orders, setOrders] = useState([]);
+    console.log(orders)
     // 주문 상태 
     const [orderStatus, setOrderStatus] = useState(1); // 1: 배송준비중 1을 디볼트로 
     const [searchParam] = useSearchParams();
@@ -40,19 +41,19 @@ function ProductOrder(props) {
         }
     );
 
-    // 주문상태 - 고객의 행동에 따라 환불, 취소, 배송완료, 배송중으로 바꾸기 (배송중은 관리자가 바꾸게 하기)
+    // 주문상태 - 고객의 행동에 따라 환불, 취소, 배송완료, 배송중으로 바꾸기
     useEffect(() => {
 
     }, [])
     
     // 체크 할 시 하나씩 선택되도록 하기위해 orderId가 아닌 orderItemId 사용(각 orderItemId를 선택)
     // 체크박스 체크를 위한 함수
-    const handleCheckBoxOnChange = (index) => {
+    const handleCheckBoxOnChange = (orderId) => {
         setCheckedIds((ids) => {
-            if (ids.includes(index)) {
-                return ids.filter(id => id !== index);
+            if (ids.includes(orderId)) {
+                return ids.filter(id => id !== orderId);
             } else {
-                return [...ids, index];
+                return [...ids, orderId];
             }
         });
     };
@@ -109,15 +110,15 @@ function ProductOrder(props) {
                     {/* <tbody css={s.tbodyLayout}> */}
                     {orders?.map((order) => (
                         order.orderItems?.map((item, index) => (
-                            <tr key={index}>
+                            <tr key={order.orderId}>
                                 <td css={s.productItem}>
                                     <input
                                         type="checkbox"
-                                        onChange={() => handleCheckBoxOnChange(index)} // 지금은 orderItemId가 null로 뜸 그래서 2개다 선택됨 
-                                        checked={checkedIds.includes(index)}
+                                        onChange={() => handleCheckBoxOnChange(order.orderId)}
+                                        checked={checkedIds.includes(order.orderId)}
                                     />
                                 </td>
-                                <td css={s.productItem}>{index + 1}</td>
+                                <td css={s.productItem}>{order.orderId}</td>
                                 <td css={s.productItem}>{order?.user?.username}</td>
                                 <td css={s.productItem}>{order?.user?.name}</td>
                                 <td css={s.productItem}>{item?.product?.title}</td> {/* 상품이름 */}
