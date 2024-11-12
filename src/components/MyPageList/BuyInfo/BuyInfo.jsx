@@ -147,11 +147,12 @@ function BuyInfo(props) {
             deleteBuyInfo.mutate(productId);
         }
     };
-    const [modalProducts, setModalProducts] = useState(null);
+    const [modalProducts, setModalProducts] = useState(0);
 
     // 후기
-    const handleRepurchase = (products) => {
-        setModalProducts(products);
+    const handleReview = (productId) => {
+        console.log(productId)
+        setModalProducts(productId);
         setOpenModal(true);
     };
 
@@ -204,7 +205,7 @@ function BuyInfo(props) {
                                         <button
                                             css={s.buttonStyle2}
                                             onClick={() =>
-                                                handleRepurchase(products.orderItems[0]?.product)
+                                                handleReview(products?.orderItems[0]?.products[0].productId)
                                             }
                                         >
                                             <FaRegPenToSquare />

@@ -12,10 +12,10 @@ function InformationView({product}) {
     return (
         <div css={s.layout}>
             <div css={s.imgLayout}>
-                <img src={product.contentsImg1} />
-                <img src={product.contentsImg2} />
-                <img src={product.contentsImg3} />
-                <img src={product.contentsImg4} />
+                <img src={product?.contentsImg1} />
+                <img src={product?.contentsImg2} />
+                <img src={product?.contentsImg3} />
+                <img src={product?.contentsImg4} />
             </div>
         </div>
     );

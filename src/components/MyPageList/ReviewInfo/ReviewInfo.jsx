@@ -69,21 +69,21 @@ function ReviewInfo(props) {
                         <li key={review.reviewId} css={s.productStyle}>
                             <div css={s.ReviewList}>
                                 <div css={s.productImgLayout}>
-                                    <img src={review?.product.thumbnailImg} onClick={() => handleProductImgOnClick(review.productId)}/>
+                                    <img src={review?.product?.thumbnailImg} onClick={() => handleProductImgOnClick(review.productId)}/>
                                 </div>
                                 <div css={s.productReviewLayout}>
                                     <div css={s.iconBox}>
-                                        <Star rating={review.rating}/>
+                                        <Star rating={review?.rating}/>
                                         <div>
                                             <FaTrash onClick={() => handleDelectOnClick(review.reviewId)}/>
                                             <FaRegEdit onClick={() => setOpenEditModal(true)}/>
                                                 <ReviewEditModal isOpen={openEditModal} onClose={closeModal} reviews={reviews} reviewId={review.reviewId} refetch={getReviewAll.refetch}/>
                                         </div>
                                     </div>
-                                    <h2>{review.title}</h2>
-                                    <p>{review.content}</p>
+                                    <h2>{review?.title}</h2>
+                                    <p>{review?.content}</p>
                                     <div css={s.createData}>
-                                        <p>{review.createdAt}</p>
+                                        <p>{review?.createdAt}</p>
                                     </div>
                                 </div>
                             </div>

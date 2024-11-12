@@ -106,7 +106,7 @@ function ProductPage() {
         },
         {
             onSuccess: () => {
-                if (window.confirm("장바구니에 담았습니다\n장바구니로 이동하시겠습니까?")) {
+                if (window.confirm("상품이 장바구니에 담겼습니다! 장바구니에서 주문을 진행해 주세요.")) {
                     navigate("/cart")
                 }
             },
@@ -131,18 +131,6 @@ function ProductPage() {
         };
         basketAddProductMutation.mutateAsync(payload).catch(() => {});
     };
-
-    // 구매하기 버튼
-    // const handleBuyButton = async () => {
-    //     if (!token) {
-    //         if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
-    //             navigate("/user/signin");
-    //         }
-    //         return;
-    //     }
-    //     setSelectedProduct({ productId, quantity: productItems.buyItem })
-    //     navigate(`/order?productId=${productId}&quantity=${productItems.buyItem}`)
-    // };
 
     // 찜버튼 mutation
     const productLikeMutation = useMutation(
