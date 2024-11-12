@@ -26,7 +26,7 @@ function FindPasswordPage(props) {
     // 비밀번호 찾기 mutation
     const passwordUser = useMutation(
         async (user) => {
-            return await instance.put("/user/public/regen", user); // 비밀번호찾기 요청 url 추후의 수정 예정 / get 요청? -> 오밀당처럼 임시비밀번호를 줄지 ?  
+            return await instance.put("/user/public/regen", user);   
         },
         {
             // 로그인 에러 - 에러메시지 불러옴

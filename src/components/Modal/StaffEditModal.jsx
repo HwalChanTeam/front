@@ -5,14 +5,13 @@ import { instance } from '../../apis/util/instance';
 /** @jsxImportSource @emotion/react */
 import * as s from './staffEditStyle';
 
-function StaffEditModal({ isOpen, onClose, staffQuery, checkId }) {
+function StaffEditModal({ isOpen, onClose, staffQuery, checkId, refetch }) {
 
     const [userData, setUserData] = useState({
+        checkId,
         username: "",
         name: "",
         email: "",
-        // password: "",
-        // checkPassword: "",
         phoneNumber: ""
     })
 
@@ -30,14 +29,15 @@ function StaffEditModal({ isOpen, onClose, staffQuery, checkId }) {
     // 매니저 수정
     const registerMutation = useMutation(
         async () => {
-            return await instance.put(`/admin/signup/${checkId}`, userData);
+
+            return await instance.put(`/admin/user/${checkId[0]}`, userData);
         },
         {
             retry: 0,
             refetchOnWindowFocus: false,
             onSuccess: () => {
                 alert("매니저 수정이 완료되었습니다.")
-                staffQuery.refetch();
+                refetch();
             },
             onError: (error) => {
                 console.error(error)
@@ -51,6 +51,7 @@ function StaffEditModal({ isOpen, onClose, staffQuery, checkId }) {
         if (filteredStaff.length > 0) {
             const staff = filteredStaff[0];  // 첫 번째 직원 선택
             setUserData({
+                checkId: checkId[0],
                 username: staff.username,
                 name: staff.name,
                 email: staff.email,
@@ -101,16 +102,6 @@ function StaffEditModal({ isOpen, onClose, staffQuery, checkId }) {
                                     <div>
                                     </div>
                                     <div>
-                                        <label for="title">이름</label>
-                                        <input type="text"
-                                        readOnly
-                                        name="name"
-                                        placeholder='이름'
-                                        onChange={handleInputOnChange}
-                                        defaultValue={filteredStaff[0]?.name}
-                                        />
-                                    </div>
-                                    <div>
                                         <label for="username">아이디</label>
                                         <input type="text"
                                         readOnly
@@ -120,6 +111,16 @@ function StaffEditModal({ isOpen, onClose, staffQuery, checkId }) {
                                         defaultValue={filteredStaff[0]?.username}
                                         />
                                     </div>
+                                    <div>
+                                        <label for="title">이름</label>
+                                        <input type="text"
+                                        name="name"
+                                        placeholder='이름'
+                                        onChange={handleInputOnChange}
+                                        defaultValue={filteredStaff[0]?.name}
+                                        />
+                                    </div>
+
                                     <div>
                                         <label for="email">이메일</label>
                                         <input type="text"

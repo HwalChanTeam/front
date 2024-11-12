@@ -87,7 +87,7 @@ function MyPage(props) {
     },
     {
       onSuccess : () => {
-        alert("성공")
+        getUserInfo.refetch();
       },
       onError: (e) => {
         console.error(e)
@@ -103,7 +103,6 @@ function MyPage(props) {
 
         fileInput.onchange = (e) => {
             const files = Array.from(e.target.files);
-
 
             const storage = getStorage();
             setUploading(true);
@@ -121,6 +120,7 @@ function MyPage(props) {
                 },
                 async () => {
                     try {
+                        alert("이미지가 변경될 때 까지 기다려 주세요.")
                         const imgUrl = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
                         profileImage.push(imgUrl)
   
@@ -133,7 +133,6 @@ function MyPage(props) {
                         console.error("파일 가져오기 실패" + e);
                     } finally {
                         setUploading(false);
-                        getUserInfo.refetch();
                     }
                 }
               );
