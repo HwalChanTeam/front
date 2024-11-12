@@ -22,6 +22,7 @@ export const UserReset = css`
 
     button {
         cursor: pointer;
+        outline: none;
     }
 
     a:visited {

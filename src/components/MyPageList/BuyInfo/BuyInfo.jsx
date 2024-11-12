@@ -185,39 +185,39 @@ function BuyInfo(props) {
                                         <></>
                                 }
                             </h2>
-                            <p css={s.orderStatusStyle}>{products?.payment?.paymentStatus === "completed" ? "배송 준비 중" : "결제 취소"}</p>
+                            <p css={s.orderStatusStyle}>{products?.payment?.paymentStatus === "completed" ? "결제 완료" : "결제 취소"}</p>
                             <p css={s.priceStyle}>
                                 가격: {products?.totalAmount.toLocaleString()}원
                             </p>
                         </div>
                         <div css={s.otherBox}>
                             <div css={s.buttonBox}>
-                                <button
-                                    css={s.buttonStyle1}
-                                    onClick={() => handlePaymentCancelOnClick(products.orderId)}
-                                >
-                                    <FaTrash />
-                                </button>
-                                <button
-                                    css={s.buttonStyle2}
-                                    onClick={() =>
-                                        handleRepurchase(products.orderItems[0]?.product)
-                                    }
-                                >
-                                    <FaRegPenToSquare />
-                                </button>
+                                {products?.payment?.paymentStatus === "completed"
+                                    ?
+                                    <>
+                                        <button
+                                            css={s.buttonStyle1}
+                                            onClick={() => handlePaymentCancelOnClick(products.orderId)}
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                        <button
+                                            css={s.buttonStyle2}
+                                            onClick={() =>
+                                                handleRepurchase(products.orderItems[0]?.product)
+                                            }
+                                        >
+                                            <FaRegPenToSquare />
+                                        </button>
+                                    </>
+                                    :
+                                    <></>
+                                }
                                 <RegisterReviewModal
                                     onClose={closeModal}
                                     isOpen={openModal}
                                     product={modalProducts}
                                 />
-                                {/* <RegisterReviewModal onClose={closeModal} isOpen={openModal} product={products.orderItems[0]?.product.productId}/> */}
-                                {/* <button
-                                    css={s.buttonStyle3}
-                                    onClick={}
-                                >
-                                    <TbTrashOff />
-                                </button> */}
                             </div>
                             <p>{products.createdAt.slice(0, 10)}</p>
                         </div>

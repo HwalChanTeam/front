@@ -35,40 +35,36 @@ function RegisterReviewModal({ isOpen, onClose, product }) {
           backgroundColor: "white",
           padding: "20px",
           borderRadius: "5px",
-          width: "700px",
-          height: "700px",
+          width: "350px",
+          height: "450px",
           maxWidth: "90%",
           overflow: "auto",
           inset: "auto",
         },
       }}
     >
-      <div css={s.container}>
+      <div css={s.layout}>
         <h2>리뷰 작성</h2>
-        <div css={s.mainBox}>
+        <div css={s.container}>
           <div>
             <label for="rating">별점</label>
-            <input
-              type="text"
-            />
+            <input min={1} max={5} type="number" placeholder="1~5 사이 숫자 입력"/>
           </div>
           <div>
             <label for="title">제목</label>
-            <input
-              type="text"
+            <input type="text"
               placeholder="리뷰 제목을 입력해 주세요."
             />
           </div>
-          <div>
+          <div css={s.contentBox}>
             <label for="content">내용</label>
-            <textarea
-              type="text"
-              placeholder="리뷰 내용을 입력해 주세요."
-            />
+            <textarea type="text" placeholder="리뷰 내용을 입력해 주세요." />
+          </div>
+          <div css={s.buttonBox}>
+            <button>완료</button>
+            <button onClick={onClose}>닫기</button>
           </div>
         </div>
-        <button>완료</button>
-        <button onClick={onClose}>닫기</button>
       </div>
     </ReactModal>
   );

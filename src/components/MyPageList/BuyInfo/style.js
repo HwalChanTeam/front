@@ -40,7 +40,8 @@ export const otherBox = css`
 `;
 
 export const buttonBox = css`
-
+    display: flex;
+    justify-content: space-between;
 `;
 
 export const buttonStyle1 = css`
