@@ -30,7 +30,16 @@ export const imageStyle = css`
     border-radius: 4px;
 `;
 
-export const iconBox = css`
+export const otherBox = css`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    & p {
+        text-align: center;
+    }
+`;
+
+export const buttonBox = css`
 
 `;
 

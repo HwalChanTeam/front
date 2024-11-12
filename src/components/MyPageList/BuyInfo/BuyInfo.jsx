@@ -147,19 +147,21 @@ function BuyInfo(props) {
       deleteBuyInfo.mutate(productId);
     }
   };
-  const [modalProducts, setModalProducts] = useState(null)
+  const [modalProducts, setModalProducts] = useState(null);
 
   // 후기
   const handleRepurchase = (products) => {
-    setModalProducts(products)
+    setModalProducts(products);
     setOpenModal(true);
   };
 
   // if (isLoading) return <div>Loading...</div>;
   // if (isError) return <div>데이터를 불러오는데 실패했습니다.</div>;
 
-  console.log(userBuyInfo.map((products) => products.orderItems[0]?.product.productId))
-  console.log(userBuyInfo)
+  console.log(
+    userBuyInfo.map((products) => products.orderItems[0]?.product.productId)
+  );
+  console.log(userBuyInfo);
 
   return (
     <div css={s.containerStyle}>
@@ -174,6 +176,7 @@ function BuyInfo(props) {
             />
             <div css={s.textStyle}>
               <h2 css={s.titleStyle}>
+                {/* products.orderItems?.length가 있으면 외 N개, 없으면 표시 X */}
                 {products?.orderItems[0]?.product.title} 외
                 {products.orderItems?.length}개
               </h2>
@@ -183,24 +186,36 @@ function BuyInfo(props) {
                 가격: {products.totalAmount.toLocaleString()}원
               </p>
             </div>
-            <div>
-              <button
-                css={s.buttonStyle1}
-                onClick={() => handleDelete(products.productId)}
-              >
-                <FaTrash />
-              </button>
-              <button css={s.buttonStyle2} onClick={() => handleRepurchase(products.orderItems[0]?.product)}>
-                <FaRegPenToSquare />
-              </button>
-                <RegisterReviewModal onClose={closeModal} isOpen={openModal} product={modalProducts}/>
+            <div css={s.otherBox}>
+              <div css={s.buttonBox}>
+                <button
+                  css={s.buttonStyle1}
+                  onClick={() => handleDelete(products.productId)}
+                >
+                  <FaTrash />
+                </button>
+                <button
+                  css={s.buttonStyle2}
+                  onClick={() =>
+                    handleRepurchase(products.orderItems[0]?.product)
+                  }
+                >
+                  <FaRegPenToSquare />
+                </button>
+                <RegisterReviewModal
+                  onClose={closeModal}
+                  isOpen={openModal}
+                  product={modalProducts}
+                />
                 {/* <RegisterReviewModal onClose={closeModal} isOpen={openModal} product={products.orderItems[0]?.product.productId}/> */}
-              <button
-                css={s.buttonStyle3}
-                onClick={() => handlePaymentCancelOnClick(products.orderId)}
-              >
-                <TbTrashOff />
-              </button>
+                <button
+                  css={s.buttonStyle3}
+                  onClick={() => handlePaymentCancelOnClick(products.orderId)}
+                >
+                  <TbTrashOff />
+                </button>
+              </div>
+              <p>{products.createdAt.slice(0,10)}</p>
             </div>
           </li>
         ))}
