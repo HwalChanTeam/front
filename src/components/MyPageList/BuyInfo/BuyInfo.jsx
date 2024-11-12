@@ -115,12 +115,6 @@ function BuyInfo(props) {
         });
     };
 
-    useEffect(() => {
-        if(paymentData.paymentNum != "") {
-            modifyOrderStatus.mutateAsync().catch(() => {});
-        }
-    }, [paymentData.paymentNum])
-
     //구매목록 삭제 기능
     const deleteBuyInfo = useMutation(
         async (id) => {
