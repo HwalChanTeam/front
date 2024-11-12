@@ -185,7 +185,7 @@ function BuyInfo(props) {
                                         <></>
                                 }
                             </h2>
-                            <p css={s.orderStatusStyle}>{products?.orderStatus}</p>
+                            <p css={s.orderStatusStyle}>{products?.payment?.paymentStatus === "completed" ? "배송 준비 중" : "결제 취소"}</p>
                             <p css={s.priceStyle}>
                                 가격: {products?.totalAmount.toLocaleString()}원
                             </p>
@@ -194,7 +194,7 @@ function BuyInfo(props) {
                             <div css={s.buttonBox}>
                                 <button
                                     css={s.buttonStyle1}
-                                    onClick={() => handleDelete(products?.productId)}
+                                    onClick={() => handlePaymentCancelOnClick(products.orderId)}
                                 >
                                     <FaTrash />
                                 </button>
@@ -212,12 +212,12 @@ function BuyInfo(props) {
                                     product={modalProducts}
                                 />
                                 {/* <RegisterReviewModal onClose={closeModal} isOpen={openModal} product={products.orderItems[0]?.product.productId}/> */}
-                                <button
+                                {/* <button
                                     css={s.buttonStyle3}
-                                    onClick={() => handlePaymentCancelOnClick(products.orderId)}
+                                    onClick={}
                                 >
                                     <TbTrashOff />
-                                </button>
+                                </button> */}
                             </div>
                             <p>{products.createdAt.slice(0, 10)}</p>
                         </div>
