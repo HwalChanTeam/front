@@ -44,10 +44,10 @@ function MainMenu(props) {
         <>
             <header css={s.layout}>
                 <div css={s.box}>
-                    <div css={s.menusLayout}>
+                    <div css={s.menusLayout} onMouseLeave={() => handleOnMouseLeave("main", menus.id)}>
                         {
                             menus.map(menu =>
-                                <div css={s.selectedMenu(pathname === menu?.path)} onMouseLeave={() => handleOnMouseLeave("main", menu.id)}>
+                                <div css={s.selectedMenu(pathname === menu?.path)} >
                                     <Link
                                         to={menu?.path}
                                         onMouseEnter={() => handleOnMouseEnter("main", menu.id)}
