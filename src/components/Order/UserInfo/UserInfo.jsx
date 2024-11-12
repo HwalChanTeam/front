@@ -80,13 +80,12 @@ function UserInfo({
         <div css={s.addressInput}>
           <p css={s.adressButton}>
             <DaumPost onComplete={handleAddressComplete} />
-            {/* <button onClick={addressSaveButtonOnClick}>배송지 저장</button> */}
           </p>
           <input
             type="text"
             name="zipCode"
             readOnly
-            value={userInfo.address.zipCode}
+            value={userInfo?.address?.zipCode}
           />
         </div>
         <div css={s.adressInputBox}>
@@ -95,7 +94,7 @@ function UserInfo({
             onChange={handleInputChange}
             type="text"
             name="address"
-            defaultValue={userInfo.address.address}
+            defaultValue={userInfo?.address?.address}
             placeholder="배송지 입력해 주세요"
           />
         </div>
@@ -105,39 +104,9 @@ function UserInfo({
             onChange={handleInputChange}
             type="text"
             name="detailAddress"
-            defaultValue={userInfo.address.detailAddress}
+            defaultValue={userInfo?.address?.detailAddress}
             placeholder="배송지 입력해 주세요"
           />
-        </div>
-        <div css={s.inputBox}>
-          <label htmlFor="message">배송 메세지 : </label>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            name="message"
-            defaultValue={userInfo.message}
-            placeholder="배송 메시지를 입력해 주세요"
-          />
-        </div>
-        <div css={s.pointBox}>
-          <label htmlFor="point">적립금 : </label>
-          <div css={s.pointInputBox}>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            name="point"
-            defaultValue={0}
-          />
-          <input
-            type="text"
-            name="point"
-            readOnly
-            defaultValue={userInfo.point}
-            placeholder="적립금을 입력해주세요."
-          />
-          </div>
-          {/* 적립금 을 일단 불러와 그런 다음에 사용 버튼을 누르고, 얼마를 사용할지 input으로 받음
-                    그런데 있는 금액보다 크면?? 안되게, 전체 사용 버튼도 추가 */}
         </div>
       </div>
     </>

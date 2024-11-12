@@ -117,7 +117,7 @@ function ProductPage() {
     );
 
     // 장바구니 버튼
-    const basketAddProductButton = async () => {
+    const handleBuyButton = async () => {
         if (!token) {
             if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
                 navigate("/user/signin");
@@ -129,20 +129,20 @@ function ProductPage() {
             price: product.price,
             quantity: productItems.buyItem,
         };
-        basketAddProductMutation.mutate(payload);
+        basketAddProductMutation.mutateAsync(payload).catch(() => {});
     };
 
     // 구매하기 버튼
-    const handleBuyButton = async () => {
-        if (!token) {
-            if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
-                navigate("/user/signin");
-            }
-            return;
-        }
-        setSelectedProduct({ productId, quantity: productItems.buyItem })
-        navigate(`/order?productId=${productId}&quantity=${productItems.buyItem}`)
-    };
+    // const handleBuyButton = async () => {
+    //     if (!token) {
+    //         if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
+    //             navigate("/user/signin");
+    //         }
+    //         return;
+    //     }
+    //     setSelectedProduct({ productId, quantity: productItems.buyItem })
+    //     navigate(`/order?productId=${productId}&quantity=${productItems.buyItem}`)
+    // };
 
     // 찜버튼 mutation
     const productLikeMutation = useMutation(
@@ -258,11 +258,6 @@ function ProductPage() {
                                             style={{ cursor: "pointer" }}
                                         />
                                 }
-                                <FiShoppingCart
-                                    onClick={basketAddProductButton}
-                                    size="30"
-                                    style={{ cursor: "pointer" }}
-                                />
                             </span>
                         </p>
                     </div>

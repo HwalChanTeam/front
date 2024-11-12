@@ -102,7 +102,7 @@ export const titleStyle = css`
     font-weight: bold;
 `;
 
-export const descriptionStyle = css`
+export const orderStatusStyle = css`
     font-size: 16px;
     color: #666;
 `;
