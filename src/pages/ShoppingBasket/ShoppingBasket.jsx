@@ -139,7 +139,8 @@ function ShoppingBasket(props) {
 
   // 삭제 버튼 클릭 함수
   const handleDeleteButtonOnClick = (product) => {
-    deleteMutation.mutate(product);
+    deleteMutation.mutateAsync(product).catch(()=>{});
+    refetch();
   };
 
   // 상품갯수 * 가격 함수
@@ -232,23 +233,23 @@ function ShoppingBasket(props) {
             </thead>
             <tbody css={s.tbody}>
               {productList?.map((product, index) => (
-                <tr key={product.productId}>
+                <tr key={product?.productId}>
                   <td>
                     <input
                       type="checkbox"
                       onChange={() =>
-                        handleCheckBoxOnChange(product.cartItemId)
+                        handleCheckBoxOnChange(product?.cartItemId)
                       }
-                      checked={product.checked}
+                      checked={product?.checked}
                     />
                   </td>
                   <td>
                     <div css={s.img}>
-                      <img src={product.product.thumbnailImg} />
+                      <img src={product?.product?.thumbnailImg} />
                     </div>
                   </td>
                   <td>
-                    <div css={s.productName}>{product.product.title}</div>
+                    <div css={s.productName}>{product?.product?.title}</div>
                     <tr>{product.description}</tr>
                   </td>
                   <td>
@@ -257,16 +258,16 @@ function ShoppingBasket(props) {
                         <button onClick={() => handleQuantityChange(index, -1)}>
                           -
                         </button>
-                        {product.quantity}
+                        {product?.quantity}
                         <button onClick={() => handleQuantityChange(index, +1)}>
                           +
                         </button>
                       </>
                     ) : (
-                      <>{product.quantity}</>
+                      <>{product?.quantity}</>
                     )}
                   </td>
-                  <td>{product.price.toLocaleString()} 원</td>
+                  <td>{product?.price.toLocaleString()} 원</td>
                   <td>-</td>
                   <td> {calculateTotalPrice(product).toLocaleString()} 원</td>
                   <td>
@@ -276,7 +277,7 @@ function ShoppingBasket(props) {
                             수정
                           </button>
                         ) : (
-                            <button onClick={() => handleEditStateButtonOnClick(product.cartItemId)}>
+                            <button onClick={() => handleEditStateButtonOnClick(product?.cartItemId)}>
                             수정
                           </button>
                         )
