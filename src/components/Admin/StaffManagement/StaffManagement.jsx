@@ -100,7 +100,7 @@ function StaffManagement(props) {
                     :
                     <>
                         <button onClick={handleEditButtonOnClick}>수정</button>
-                        <StaffEditModal isOpen={openEditModal} onClose={closeModal} staffQuery={staffs} checkId={checkedIds}/>
+                        <StaffEditModal isOpen={openEditModal} onClose={closeModal} staffQuery={staffs} checkId={checkedIds} refetch={staffQuery.refetch}/>
                     </>
                 }
 

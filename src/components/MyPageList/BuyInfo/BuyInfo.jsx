@@ -6,6 +6,7 @@ import { LuShoppingBag } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
 import { TbTrashOff } from "react-icons/tb";
 import { portone } from '../../../portone/portone';
+import { FaRegPenToSquare } from "react-icons/fa6";
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 import axios from 'axios';
@@ -142,9 +143,7 @@ function BuyInfo(props) {
 
     // 상품페이지로 이동
     const handleRepurchase = (productId) => {
-        if (window.confirm("상품 페이지로 이동합니다.")) {
-            navigate(`/product/${productId}`);
-        }
+        alert("후기작성 기능 추가 예정")
     };
 
     // if (isLoading) return <div>Loading...</div>;
@@ -168,7 +167,7 @@ function BuyInfo(props) {
                                 <FaTrash />
                             </button>
                             <button css={s.buttonStyle2} onClick={() => handleRepurchase(products.productId)}>
-                                <LuShoppingBag />
+                                <FaRegPenToSquare />
                             </button>
                             <button css={s.buttonStyle3} onClick={() => handlePaymentCancelOnClick(products.orderId)}>
                                 <TbTrashOff />

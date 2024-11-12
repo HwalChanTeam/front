@@ -88,6 +88,7 @@ function MyPage(props) {
     {
       onSuccess : () => {
         alert("성공")
+        getUserInfo.refetch();
       },
       onError: (e) => {
         console.error(e)
@@ -103,7 +104,6 @@ function MyPage(props) {
 
         fileInput.onchange = (e) => {
             const files = Array.from(e.target.files);
-
 
             const storage = getStorage();
             setUploading(true);
@@ -133,7 +133,6 @@ function MyPage(props) {
                         console.error("파일 가져오기 실패" + e);
                     } finally {
                         setUploading(false);
-                        getUserInfo.refetch();
                     }
                 }
               );
