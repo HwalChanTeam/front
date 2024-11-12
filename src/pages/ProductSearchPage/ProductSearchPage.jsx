@@ -33,6 +33,7 @@ function ProductSearchPage(props) {
             retry: 0,
             refetchOnWindowFocus: false,
             onSuccess: (response) => {
+                console.log(response)
                 setMaxPageCount(
                     response.data.count % limit === 0
                         ? Math.floor(response.data.count / limit)
@@ -57,12 +58,14 @@ function ProductSearchPage(props) {
                     productTrList = [...productTrList, trGroupList];
                 }
                 setProductTrGroups(productTrList);
+                
             }
         }
     );
 
     // 상품 총 갯수를 불러오게 하기 위한 함수  
-    const productCount = productsQuery?.data?.data.count;
+    const productCount = productsQuery.data?.data.count;
+    console.log(productTrGroups);
 
     return (
         <div css={s.layout}>
