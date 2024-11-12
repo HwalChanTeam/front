@@ -577,7 +577,7 @@ public class AuthController {
 
 <br/>
 
-- /user/public/access 라는 경로로 get 요청을 받아 accessToken이 유효한지 검사하여 그 결과를 JSON 형식으로 응답합니다.
+- /user/public/access 라는 경로로 get 요청을 받아 accessToken이 유효한지 검사하여 그 결과를 JSON 형식으로 응답하는 controller 입니다.
 - @RequestMapping("/user/public") : 클래스의 모든 메서드가 /user/public 으로 매핑됩니다.
 - @RestController : 메서드의 반환 값을 JSON 형식으로 넘겨주는 역할을 합니다.
 - @Autowired : TokenService 라는 객체를 자동으로 주입해주는 역할을 합니다.
@@ -662,7 +662,17 @@ public interface UserMapper {
     
 }
 
-// .xml
+```
+
+- @Mapper : MyBatis에서 제공해주는 어노테이션 입니다.
+- userId를 받아서 해당하는 사용자 정보를 반환하는 메서드인 findUserByUserId를 정의 합니다. 
+
+--- 
+
+<br/><br/>
+
+**xml(sql)**
+```java
 
 <select id="findUserByUserId" resultMap="userResultMap">
         select
@@ -687,10 +697,8 @@ public interface UserMapper {
             ut.user_id = #{userId}
     </select>
 
-
 ```
 
-- userId를 받아서 해당하는 사용자 정보를 반환하는 메서드인 findUserByUserId를 정의 합니다. 
 - xml 파일에서는 해당 메서드에 대응하는 SQL 쿼리를 작성하고 이 쿼리를 실행하여 User 객체에 데이터를 전달합니다. 
 - SQL은 users_tb에 user_roles_tb, roles_tb를 left join 하여 사용자의 정보와 role정보를 함께 조회하는 쿼리문 입니다.
 
@@ -881,7 +889,7 @@ export default MainMenu;
 
 <br/>
 
-```jsx
+```Jsx
  // 목록 hover o
     const handleOnMouseEnter = (type, id) => {
         if (type === "main") {
@@ -904,15 +912,95 @@ export default MainMenu;
     
 ```
 - 마우스에 갖다 될 시 type과 id에 따라 해당 목록을 작동하도록 하였습니다.
-- type이 main일땐 카테고리 
+- type이 main일땐 해당하는 id의 값에 따라 목록들을 선택할 수 있게 하였고 type이 sub일때도 똑같은 형식으로 작용합니다. 
+- handleOnMouseLeave는 마우스가 해당 div을 벗어나면 꺼질 수 있게 설정하였습니다.(= id가 0으로 바뀌면 해당 목록이 꺼질 수 있게 하였습니다)
+
+---
+
+<br/><br/>
+
+**mainMenu.js**
+```Jsx
+
+export const menus = [
+    {
+        id: 1,
+        name: "카테고리",
+        icon: <FaBars />,
+        subMenus: [
+            {
+                id: 1,
+                name: "국.탕.찌개",
+                path: "/user/public/product/category?categoryId=01",
+                subSideMenus: [],
+            },
+            {
+                id: 2,
+                name: "안주",
+                path: "/user/public/product/category?categoryId=02",
+                subSideMenus: [],
+            },
+            {
+                id: 3,
+                name: "밀키트",
+                path: "/user/public/product/category?categoryId=03",
+                subSideMenus: [
+                    {
+                        id: 1,
+                        name: "냉동",
+                        path: "/user/public/product/category?categoryId=0301"
+                    },
+                    {
+                        id: 2,
+                        name: "냉장",
+                        path: "/user/public/product/category?categoryId=0302"
+                    },
+                ]
+            },
+            {
+                id: 4,
+                name: "간편식",
+                path: "/user/public/product/category?categoryId=04",
+                subSideMenus: [],
+            },
+        ]
+    },
+    {
+        id: 2,
+        name: "신상품",
+        path: "/user/newproduct",
+        subMenus: [],
+    },
+    {
+        id: 3,
+        name: "인기 상품",
+        path: "/user/best",
+        subMenus: [],
+    },
+    {
+        id: 4,
+        name: "상품 후기",
+        path: "/user/review",
+        subMenus: [],
+    },
+];
+
+```
+
+- 목록이 해당 경로로 이동하기 위해서 코드가 길어질 것을 예상하여 constants로 뺐습니다. 빼서 메인메뉴 컴포넌트에 맵을 돌려 사용하였습니다.
+- 사용하게 되면 카테고리 서브목록의 해당하는 이름(name)과 path를 사용하여 해당 경로로 이동하게 설계 하였습니다. 
+
+---
+
+<br/>
 
 ### 메인페이지
 #### 메인 
 
-#### 프론트
+#### 신상품
+__프론트__
 ``` jsx
 
-// 신상품 
 
 function MainPage() {
     const navigate = useNavigate();
@@ -939,6 +1027,10 @@ function MainPage() {
             },
         }
     );
+    
+    const newImgOnClick = (productId) => {
+        navigate(`/product/${productId}`);
+    };
     
     return (
         <>
@@ -985,9 +1077,112 @@ function MainPage() {
 };
 ```
 
-<br/>
+- 메인에는 신상품과 인기상품 md추천 상품을 5개 씩 잘라서 나타나게 하였습니다
+- 스크롤을 하고 해당 상품을 클릭하여 페이지 이동이 되었을 때 스크롤이 그대로 밑에 간 경우가 생겨 useEffect를 사용하여 마운트 될때 마다 스크롤을 초기화 시켰습니다.
+- 우선 신상품 코드를 보시면 신상품을 조회하기 위해 useQury를 사용하고 get요청을 서버에 보냈습니다. 
+- 응답이 성공적으로 오게 되면 onSuccess가 작동하게 되면서 productList(상품리스트) 상태가 해당 응답 데이터가 담겨서 업데이트 됩니다.
+-  newImgOnClick은 상품을 클릭할 때 해당 상품으로 productId를 이용하여 페이지 이동 처리를 하였습니다.
+-  user로 시작하는 경로는 메인페이지가 화면에 보이지 않도록 하기위해 설정하였습니다.
+- 해당 productList는 서버에서 가지고 온 데이터들이 배열로 담겨져 있으므로 리턴값에 맵을 돌려 상품을 화면에 띄우도록 설정하였습니다.
+- 신상품 전체 보기를 클릭시 신상품을 전체 조회한 페이지를 볼 수 있습니다 (8개까지)
 
-- 
+---
+
+<br/><br/>
+
+**백엔드**
+
+__Controller__
+
+```java
+
+@RestController
+@RequestMapping("/user/public")
+public class ProductController {
+	@Autowired
+    private ProductService productService;
+    
+    // 신상품(최근 등록순)
+    @GetMapping("/new")
+    public ResponseEntity<?> getNewProduct() {
+        return ResponseEntity.ok().body(productService.getNewProduct());
+    }
+}
+```
+- /user/public/new 경로로 클라이언트에서 get 요청을 받아 신상품을 서버에서 조회를 해서 클라이언트에 응답해주는 controller 입니다. 
+- service를 통해 조회 데이터를 받아와 클라이언트에 200 응답으로 반환해줍니다.
+
+---
+
+<br/><br/>
+
+**service**
+
+```java
+
+@Service
+public class ProductService {
+
+    @Autowired
+    private ProductMapper productMapper;
+    
+    public List<Product> getNewProduct() {
+        return productMapper.findNewProduct();
+    }
+}
+
+```
+
+- getNewProduct라는 메소드는 mapper를 이용하여 신상품을 조회하는 역할을 합니다.
+
+---
+
+<br/><br/>
+
+**Mapper**
+
+```java
+
+@Mapper
+public interface ProductMapper {
+	List<Product> findNewProduct();
+}
+
+```
+
+- findNewProduct()는 Mapper에 정의된 메서드입니다. 
+- 이 메서드는 sql에 데이터를 조회하여 service에 전달하여 controller에 적용시키는데에 사용되었습니다.
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
+
+<select id="findNewProduct" resultMap="productResultMap">
+        select
+            product_id,
+            title,
+            price,
+            description,
+            thumbnail_img
+        from
+            products_tb
+        order by
+            created_date desc limit 8
+ </select>
+
+```
+- 신상품을 조회하는 sql쿼리문 입니다.
+- 날짜는 최신순으로 불러오게 하였고 productId(상품id), title(상품명), price(상품가격), description(상품설명), thumbnail_img(상품 썸네일 이미지) 등을 products_tb로 부터 데이터를 8개 까지 들고와 조회되게 설계하였습니다.
+-  
+
+---
+
+<br/><br/>
+
 
 #### 신상품
 
