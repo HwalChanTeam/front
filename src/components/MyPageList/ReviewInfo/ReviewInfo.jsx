@@ -85,7 +85,6 @@ function ReviewInfo(props) {
                                     <div css={s.createData}>
                                         <p>{review.createdAt}</p>
                                     </div>
-                                    
                                 </div>
                             </div>
                         </li>
