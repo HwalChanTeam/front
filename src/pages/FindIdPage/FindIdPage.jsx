@@ -24,8 +24,7 @@ function FindIdPage(props) {
     // 아이디 찾기 mutation
     const findIdUser = useMutation(
         async (user) => {
-            
-            return await instance.get("/user/public/find", {params : {name: user.name, phoneNumber: user.phoneNumber}}); // 아이디 찾기 요청 url 추후의 수정 
+            return await instance.get("/user/public/find", {params : {name: user.name, phoneNumber: user.phoneNumber}});
         },
         {
             onError: (response) => {
