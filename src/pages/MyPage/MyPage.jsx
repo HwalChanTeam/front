@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Patch } from "react-axios";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import UserInfo from "../../components/MyPageList/UserInfo/UserInfo";
@@ -15,7 +15,7 @@ import {
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 import ReviewInfo from "../../components/MyPageList/ReviewInfo/ReviewInfo";
-import { useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { instance } from "../../apis/util/instance";
 import LeaveUser from "../../components/MyPageList/LeaveUser/LeaveUser";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
@@ -60,9 +60,14 @@ function MyPage(props) {
   const { pathname } = location;
 
   const [userInfo, setUserInfo] = useState();
+
+  console.log(userInfo)
   const queryClient = useQueryClient();
   const userInfoState = queryClient.getQueryState("userInfoQuery");
   const [isUploading, setUploading] = useState(false);
+  const profileImage = [];
+  const [imgUrl, setImgUrl] = useState(null); // imgUrl 상태 별도로 관리
+  console.log(imgUrl)
 
   const getUserInfo = useQuery(
     ["getUserInfo"],
@@ -75,8 +80,22 @@ function MyPage(props) {
       },
     }
   );
+
+  const imgUpload = useMutation(
+    async (imgUrl) => {
+      return await instance.put("user/img", imgUrl);
+    },
+    {
+      onSuccess : () => {
+        alert("성공")
+      },
+      onError: (e) => {
+        console.error(e)
+      }
+    }
+  )
   
-  const handleImageChangeOnClick = useCallback(() => {
+  const handleImageChangeOnClick = useCallback( async () => {
     if (window.confirm("프로필 사진을 변경하시겠습니까?")) {
         const fileInput = document.createElement("input");
         fileInput.setAttribute("type", "file");
@@ -84,7 +103,7 @@ function MyPage(props) {
 
         fileInput.onchange = (e) => {
             const files = Array.from(e.target.files);
-            const profileImage = [];
+
 
             const storage = getStorage();
             setUploading(true);
@@ -102,18 +121,19 @@ function MyPage(props) {
                 },
                 async () => {
                     try {
-                        const url = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
-                        profileImage.push(url);
+                        const imgUrl = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
+                        profileImage.push(imgUrl)
   
-                        setUserInfo((user) => ({
+                        setImgUrl((user) => ({
                             ...user,
-                            img: profileImage[0]
+                            imgUrl: profileImage[0]
                         }));
   
                     } catch (e) {
-                        console.error(e);
+                        console.error("파일 가져오기 실패" + e);
                     } finally {
-                        setUploading(true);
+                        setUploading(false);
+                        getUserInfo.refetch();
                     }
                 }
               );
@@ -121,6 +141,14 @@ function MyPage(props) {
           };
     }
   }, []); 
+
+    // imgUrl이 변경되면 서버로 업데이트
+    useEffect(() => {
+      if (imgUrl) {
+        imgUpload.mutate(imgUrl);
+        setImgUrl(null)
+      }
+    }, [imgUpload]);
 
 
   return (
