@@ -97,6 +97,7 @@ function BuyInfo(props) {
                     confirmButtonColor: "#9d6c4c",
                     confirmButtonText: "닫기",
                 });
+                window.location.reload();
             },
             onError: (error) => console.log(error),
         }

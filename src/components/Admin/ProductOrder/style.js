@@ -17,7 +17,7 @@ export const mainBox = css`
 
 export const buttonLayout = css`
   box-sizing: border-box;
-  padding-left: 20px;
+  padding: 90px 0 50px 20px;
   width: 300px;
   height: 50px;
 
@@ -30,17 +30,17 @@ export const buttonLayout = css`
     color: #f5f5f5;
     font-size: 14px;
     font-weight: 600;
-
-    //&:nth-of-type(1) {
-    //  width: 80px;
-    //  margin-right: 20px;
-    //}
+    margin-right: 20px;
 
     &:hover {
       background-color: #686d76;
     }
     &:active {
       background-color: #3d3b40;
+    }
+
+    &:nth-last-of-type(1) {
+      margin-right: 0;
     }
   }
 `;

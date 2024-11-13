@@ -75,7 +75,6 @@ function ProductOrder(props) {
     return (
         <div css={s.mainBox}>
             <h1>주문 관리</h1>
-            <AdminSearch />
             <div css={s.buttonLayout}>
                 {/*<button onClick={() => setOpenModal(true)}>배송등록</button>
                 <DeliveryStartModal isOpen={openModal} onClose={closeModal} orderQuery={orders} />*/}
