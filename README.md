@@ -436,11 +436,9 @@ react-daum-postcode | 다음 주소 API |
 ## 📖 주요 기능 및 코드리뷰 
 
 ### App.js
----
 
 #### 프론트
 
-**함수**
 ```Js
 
 function App() {
@@ -668,6 +666,8 @@ public interface UserMapper {
 
 ```
 
+<br/>
+
 - @Mapper : MyBatis에서 제공해주는 어노테이션 입니다.
 - userId를 받아서 해당하는 사용자 정보를 반환하는 메서드인 findUserByUserId를 정의 합니다. 
 
@@ -710,7 +710,7 @@ public interface UserMapper {
 
 <br/><br/>
 
-### 메인 헤더
+### 메인 헤더(MainHeader)
 
 ```Jsx
 
@@ -782,9 +782,8 @@ export default MainHeader;
 
 <br/>
 
-- 메인헤더에는 메인으로 갈 수 있는 로고와 로그인 장바구니 마이페이지 등으로 가는 아이콘들을 설정항였습니다.
-- 로그인과 장바구니, 마이페이지 아이콘을 클릭 시 로그인이 안되엇을 경우에 로근인을 하라는 알람창을 띄우게 하였고 로그인이 되었을 경우에는 해당 페이지로 들어갈 수 있게 하였습니다.
-- navigate를 이용하여 로그인페이지로 이동하게 하였고 Link를 이용하여 해당 페이지로 이동하게 하였습니다. 
+- 메인헤더에는 메인으로 갈 수 있는 로고와 로그인, 장바구니, 마이페이지 등으로 가는 아이콘을 Link를 이용해서 해당 페이지로 이동할 수 있게 하였습니다.
+- 로그인과 장바구니, 마이페이지 아이콘을 클릭 시 로그인이 안되었을 경우에 로그인을 하라는 알림창을 띄우고 로그인을 한 경우에는 navigate를 이용해 해당 페이지로 이동 할 수 있게 하였습니다.
 
 ---
 
@@ -883,13 +882,10 @@ function MainMenu(props) {
 
 export default MainMenu;
 ```
+<br/>
 
-- 메인메뉴에는 카테고리, 신상품, 인기상품, 전체리뷰 목록과 검색창을 나타냈습니다.
-- 카테고리에 마우스를 갖다 되면 카테고리 밑에 서브 목록이 뜨도록 설정하였습니다. 
+- 메인메뉴에는 카테고리, 신상품, 인기상품, 전체리뷰, 검색창을 나타내었고 useState로 상태를 이용해 카테고리에 마우스를 올리면 서브 카테고리가 나타나도록 설정하였습니다.
 - 서브목록은 국.탕.찌개, 안주, 밀키트, 간편식으로 이루어져 있습니다.
-- 밀키트에도 마우스를 갖다 될 시 서브목록 옆에 창에 밀키트안에 해당되는 목록(냉동, 냉장)들도 볼 수 있게 설정하였습니다. 
-- const [onMouseMenuId, setOnMouseMenuId] = useState(0);는 카테고리에 마우스를 갖다 되면 그 안에 서브 목록이 나타나게 하는 상태입니다.
--  const [onMouseSubMenuId, setOnMouseSubMenuId] = useState(0);는 카테고리 목록들 중 밀키트에 갖다 되면 그 안에도 서브 목록이 나타나게 하는 상태입니다.
 
 <br/>
 
@@ -991,21 +987,20 @@ export const menus = [
 
 ```
 
+<br/>
+
 - 목록이 해당 경로로 이동하기 위해서 코드가 길어질 것을 예상하여 constants로 뺐습니다. 빼서 메인메뉴 컴포넌트에 맵을 돌려 사용하였습니다.
 - 사용하게 되면 카테고리 서브목록의 해당하는 이름(name)과 path를 사용하여 해당 경로로 이동하게 설계 하였습니다. 
 
 ---
 
-<br/>
+<br/><br/>
 
 ### 메인페이지
-#### 메인 
 
 #### 신상품
 __프론트__
 ``` jsx
-
-
 function MainPage() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -1080,11 +1075,12 @@ function MainPage() {
 	);
 };
 ```
+<br/>
 
 - 메인에는 신상품과 인기상품 md추천 상품을 5개 씩 잘라서 나타나게 하였습니다
 - 스크롤을 하고 해당 상품을 클릭하여 페이지 이동이 되었을 때 스크롤이 그대로 밑에 간 경우가 생겨 useEffect를 사용하여 마운트 될때 마다 스크롤을 초기화 시켰습니다.
 - 우선 신상품 코드를 보시면 신상품을 조회하기 위해 useQury를 사용하고 get요청을 서버에 보냈습니다. 
-- 응답이 성공적으로 오게 되면 onSuccess가 작동하게 되면서 productList(상품리스트) 상태가 해당 응답 데이터가 담겨서 업데이트 됩니다.
+- 응답이 성공적으로 오게 되면 productList(상품리스트)의 상태가 해당 응답 데이터가 담겨서 업데이트 됩니다.
 -  newImgOnClick은 상품을 클릭할 때 해당 상품으로 productId를 이용하여 페이지 이동 처리를 하였습니다.
 -  user로 시작하는 경로는 메인페이지가 화면에 보이지 않도록 하기위해 설정하였습니다.
 - 해당 productList는 서버에서 가지고 온 데이터들이 배열로 담겨져 있으므로 리턴값에 맵을 돌려 상품을 화면에 띄우도록 설정하였습니다.
@@ -1113,6 +1109,8 @@ public class ProductController {
     }
 }
 ```
+<br/>
+
 - /user/public/new 경로로 클라이언트에서 get 요청을 받아 신상품을 서버에서 조회를 해서 클라이언트에 응답해주는 controller 입니다. 
 - service를 통해 조회 데이터를 받아와 클라이언트에 200 응답으로 반환해줍니다.
 
@@ -1120,7 +1118,7 @@ public class ProductController {
 
 <br/><br/>
 
-**service**
+**Service**
 
 ```java
 
@@ -1136,6 +1134,7 @@ public class ProductService {
 }
 
 ```
+<br/>
 
 - getNewProduct라는 메소드는 mapper를 이용하여 신상품을 조회하는 역할을 합니다.
 
@@ -1153,6 +1152,8 @@ public interface ProductMapper {
 }
 
 ```
+
+<br/>
 
 - findNewProduct()는 Mapper에 정의된 메서드입니다. 
 - 이 메서드는 sql에 데이터를 조회하여 service에 전달하여 controller에 적용시키는데에 사용되었습니다.
@@ -1179,24 +1180,319 @@ public interface ProductMapper {
  </select>
 
 ```
+<br/>
+
 - 신상품을 조회하는 sql쿼리문 입니다.
 - 날짜는 최신순으로 불러오게 하였고 productId(상품id), title(상품명), price(상품가격), description(상품설명), thumbnail_img(상품 썸네일 이미지) 등을 products_tb로 부터 데이터를 8개 까지 들고와 조회되게 설계하였습니다.
--  
 
 ---
 
 <br/><br/>
 
+#### 인기상품, MD추천 상품 
+
+**프론트**
+```jsx 
+
+    const [bestProductList, setBestProductList] = useState([]);
+    const [respectProductList, setRespectProductList] = useState([]);
+
+        // 인기상품 가져오는 쿼리
+    const bestProduct = useQuery(
+        ["bestProduct"],
+        async () => {
+            return await instance.get("/user/public/best");
+        },
+        {
+            refetchOnWindowFocus: false,
+            retry: 0,
+            onSuccess: (response) => {
+                setBestProductList(response.data);
+            },
+        }
+    );
+
+    // MD추천 상품 ???
+    const respectProduct = useQuery(
+        ["respectProduct"],
+        async () => {
+            return await instance.get("/user/public/recom");
+        },
+        {
+            refetchOnWindowFocus: false,
+            retry: 0,
+            onSuccess: (response) => {
+                setRespectProductList(response.data);
+            },
+        }
+    );  
+
+    const bestImgOnClick = (productId) => {
+        navigate(`/product/${productId}`);
+    };
+
+    const respectImgOnClick = (productId) => {
+        navigate(`/product/${productId}`);
+    };
+
+    return (
+        <>
+            {/* 베스트 상품top5 */}
+            <div css={s.productLayout}>
+                <div css={s.productTitle}>
+                    <p>BEST PRODUCT</p>
+                    <p>베스트 상품 TOP5</p>
+                </div>
+                <div css={s.productContentLayout}>
+                    {bestProductList.slice(0, 5).map((bestProduct) => (
+                        <div css={s.productImgLayout} key={bestProduct.productId}>
+                            <img
+                                src={bestProduct.thumbnailImg}
+                                onClick={() => bestImgOnClick(bestProduct.productId)}
+                            />
+                            <div>
+                                <p>{bestProduct.description}</p>
+                                <p>{bestProduct.title}</p>
+                                <div css={s.footerBox}>
+                                    <p>{bestProduct.price.toLocaleString()}원</p>
+                                    <ShoppingBasketIcon product={bestProduct}/>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div css={s.ProductLink}>
+                    <Link to="/user/best"> 인기상품 전체 보기 </Link>
+                </div>
+            </div>
+        
+            {/* MD 추천상품(5개) */}
+            <div css={s.productLayout}>
+                <div css={s.productTitle}>
+                    <p>MD 추천상품</p>
+                </div>
+                <div css={s.productContentLayout}>
+                    {respectProductList.slice(0, 5).map((respectProduct) => (
+                        <div
+                            css={s.productImgLayout}
+                            key={respectProduct.productId}
+                        >
+                            <img src={respectProduct.thumbnailImg} onClick={() => respectImgOnClick(respectProduct.productId)}/>
+                            <div>
+                                <p>{respectProduct.description}</p>
+                                <p>{respectProduct.title}</p>
+                                <div css={s.footerBox}>
+                                    <p>{respectProduct.price.toLocaleString()}원</p>
+                                    <ShoppingBasketIcon product={respectProduct}/>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+        </>
+    );
+
+```
+<br/>
+
+- 베스트 상품과 MD 추천상품도 신상품과 마찬가지로 코드를 똑같이 설계하였습니다
+- 대신 MD 추천상품은 전체 상품보럭 가기 버튼이 없습니다. 
+- 인기상품 전체보기 클릭 시 인기상품 목록으로 넘어갑니다 (10개까지)
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+__Controller__
+
+```java
+
+    // 인기상품(판매량순)
+    @GetMapping("/best")
+    public ResponseEntity<?> getPopularityProduct() {
+        return ResponseEntity.ok().body(productService.getPopularityProduct());
+    }
+
+    // MD 추천상품
+    @GetMapping("/recom")
+    public ResponseEntity<?> getRecommendedProduct() {
+        return ResponseEntity.ok().body(productService.getRecommendedProduct());
+    }
+
+```
+- 인기상품과 MD 추천상품도 신상품의 controller과 비슷하게 구현하였습니다.
+
+---
+
+<br/><br/>
+
+**Service**
+
+```java
+
+    // 인기상품
+    public List<Product> getPopularityProduct() {
+        return productMapper.findPopularityProduct();
+    }
+
+    // MD 추천 상품
+    public List<Product> getRecommendedProduct() {
+        return productMapper.findRecommendedProduct();
+    }
+
+```
+<br/>
+
+- 인기상품과 MD추천상품도 신상품의 Service과 비슷하게 구현하였습니다.
+
+---
+
+<br/><br/>
+
+**Mapper**
+
+```java
+
+    // 인기상품
+    List<Product> findPopularityProduct();
+    
+    // MD 추천상품
+    List<Product> findRecommendedProduct();
+
+```
+<br/>
+
+- 인기상품과 MD추천상품도 신상품의 Mapper과 비슷하게 구현하였습니다.
+
+---
+
+<br/><br/>
+
+**xml**
+```java
+
+    // 인기 상품
+    <select id="findPopularityProduct" resultMap="productResultMap">
+        select
+            product_id,
+            title,
+            price,
+            description,
+            thumbnail_img
+        from
+            products_tb
+        order by
+            sales_count desc limit 10
+    </select>
+
+    // MD 추천 상품
+    <select id="findRecommendedProduct" resultMap="productResultMap">
+        select
+            product_id,
+            title,
+            price,
+            description,
+            thumbnail_img
+        from
+            products_tb
+        order by
+            stock desc limit 5;
+    </select>
+
+```
+
+<br/>
+
+- 인기상품과 MD 추천 상품도 신상품의 xml과 비슷하게 구현하였습니다.
+- 인기상품은 판매량을 기준으로 내림차순으로 정렬 하였습니다.
+- MD 추천상품은 재고량을 기준으로 내림차순으로 정렬 하였습니다.
+
+---
+
+<br/><br/>
 
 #### 신상품
 
-(사진)  
-(코드설명)
+**프론트**
+```jsx
+
+function NewProductView(props) {
+
+    // 해당 상품 클릭시 해당하는 상품페이지로 넘어가는
+    const productPath = (productId) => `/product/${productId}`;
+
+    const [newProductList, setNewProductList] = useState([]);
+
+    const allNewProduct = useQuery(
+        "newProducts",
+        async () => {
+            return await instance.get("/user/public/new");
+        },
+        {
+            onSuccess: (response) => {
+                const responseData = response.data // li의 배열 길이 ( 8개 )
+                let newProducts = responseData.length
+                let result = []
+                // 배열을 5개씩으로 분류 하도록 하고 결과값이 소수가 나올경우 정수로 변환시켜주기 위해 floor 사용함  
+                // productList % 5를 했을 때 나머지가 0이면 그대로 몫울 1로 두고 아니면 그 몫에 1을 더해라 
+                let num = Math.floor(newProducts % 5 === 0 ? newProducts / 5 : (newProducts / 5) + 1)  // 나머지 존재, 2까지 반복 / num = 2
+                for (let i = 0; i < num; i++) {
+                    let newProductArray = []
+                    // 1. j < 2 - 1 === 0 
+                    for (let j = 0; j < (num - 1 === i ? (newProducts % 5 === 0 ? 5 : newProducts % 5) : 5); j++) {
+                        newProductArray[j] = responseData[j + (i * 5)]
+                    }
+                    result[i] = newProductArray
+                }
+                setNewProductList(result)
+            },
+            refetchOnWindowFocus: false,
+            retry: 0
+        }
+    );
+
+    return (
+        <div css={s.layout}>
+            <div css={s.contentLayout}>
+                <ProductList productList={newProductList} productPath={productPath} />
+            </div>
+        </div>
+    );
+}
+
+export default NewProductView;
+
+```
+
+<br/>
+
+- 전체 신상품을 조회하는 실행 문 입니다.
+- newProductList 라는 상태를 만들어 새로운 상품의 리스트들을 Query 문을 이용하여 신상품의 리스트들을 담아 화면에 보이게 하였습니다.
+- 하나의 ul에 li를 5개씩 보이게 하기 위해 for 문을 사용하였습니다.
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+- 메인페이지의 신상품을 조회한 백엔드의 코드문을 적용하였습니다.
+
+---
+
+<br/><br/>
 
 #### 인기상품
 
-(사진)  
-(코드설명)
+**프론트**
+
+```jsx
+
+
+
+```
 
 #### 상품후기
 
@@ -1264,10 +1560,6 @@ __유저__
 (코드설명)
 
 	__비밀번호 찾기__  
-(사진)  
-(코드설명)
-
-__관리자__  
 (사진)  
 (코드설명)
 
