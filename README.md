@@ -3217,45 +3217,313 @@ public interface CartItemMapper {
 
     <br/><br/>
 
-    **Service**
+    **RespSignupDto**
 
     ```java
 
-
+    @Builder
+    @Data
+    public class RespSignupDto {
+        private User user;
+    }
 
     ```
 
     <br/>
 
-    -
-
-    ---
-
-    **Mapper**
-
-    ```java
-
-
-
-    ```
-
-    <br/>
-
-    -
+    - 사용자가 입력한 user 정보를 service에서 받아 controller에 전달해주는 역할을 합니다.
 
     ---
 
     <br/><br/>
 
-    **xml**
+    **AuthService**
 
     ```java
 
+    @Service
+    public class AuthService {
 
+        @Autowired
+        private UserMapper userMapper;
+        @Autowired
+        private BCryptPasswordEncoder bCryptPasswordEncoder;
+        @Autowired
+        private RoleMapper roleMapper;
+        @Autowired
+        private UserRolesMapper userRolesMapper;
+
+        @Value("${user.profile.img.default}")
+        private String defaultProfileImg;
+
+        @Transactional(rollbackFor = SignupException.class)
+        public RespSignupDto signup(ReqSignupDto dto, String roleName) throws SignupException {
+
+            User user = null;
+
+            try {
+                if (isDuplicateUsername(dto.getUsername())) {
+                    throw new SignupException("이미 존재하는 사용자 입니다.");
+                }
+                if (!checkPassword(dto.getPassword(), dto.getCheckPassword())) {
+                    throw new SignupException("비밀번호가 일치하지 않습니다.");
+                }
+
+                user = dto.toEntity(bCryptPasswordEncoder, defaultProfileImg);
+                userMapper.save(user);
+
+                Role role = roleMapper.findByName(roleName);
+                if (role == null) {
+                    role = Role.builder()
+                            .name(roleName)
+                            .build();   
+
+                    roleMapper.save(role);
+                }
+
+                UserRoles userRoles = UserRoles.builder()
+                        .userId(user.getUserId())
+                        .roleId(role.getRoleId())
+                        .build();
+                userRolesMapper.save(userRoles);
+                user.setUserRoles(Set.of(userRoles));
+
+            } catch (Exception e) {
+                throw new SignupException(e.getMessage());
+            }
+
+            return RespSignupDto.builder()
+                    .user(user)
+                    .build();
+        }
+
+    }
 
     ```
 
-    -
+    <br/>
+
+    - signup 메서드는 사용자의 아이디가 동일한 사용자가 있는지, 입력한 비밀번호가 다시 입력한 비밀번호와 같은지 확인하고 입력한 정보가 올바르면 저장이 되어 controller에 전달해주는 역할을 해줍니다.
+    - @Transactional : 예외가 발생하면 DB에 저장된 데이터는 전부 취소됩니다
+    - 여기서 Transactional는 롤백으로 사용되어 첫번째 user 정보가 저장이 되있다면 두번째부터 userId를 비교하여 동일할 시 두번째 user 정보가 아예 들어가지 못하게 막는 역할을 하였습니다.
+    - user라는 객체를 생성하여 암호화된 비밀번호와 기본 프로필 사진을 가지고와 userMapper를 통해 DB에 저장합니다.
+    - role 객체에 주어진 roleName에 해당하는 역할이 데이터베이스에 존재하는지 조회하여 역할이 없으면(role == null) 새 역할을 생성하고 Role.builder 에 저장합니다.
+    - userRoles 객체는 user 객체에 가지고온 userId와 role 객체에 가지고온 roleId 를 userRolesMapper를 통해 저장하는 역할을 합니다.
+    - 최종적으로 RespSignupDto 객체에 user정보를 담아 controller에 반환하는 역할을 합니다.
+
+    ---
+
+    <br/><br/>
+
+    **EmailService**
+
+    ```java
+
+    @Service
+    public class EmailService {
+
+        @Value("${spring.mail.username}")
+        private String senderEmail;
+        @Autowired
+        private JavaMailSender javaMailSender;
+        private String verifyCode;
+
+        public void sendEmail(ReqSendMailDto dto) throws Exception {
+            verifyCode = String.format("%.0f",(Math.random() * (90000)) + 100000);
+            try {
+                StringBuilder htmlContent = new StringBuilder();
+                MimeMessage mail = javaMailSender.createMimeMessage();
+                MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+
+                htmlContent.append("<h3>요청하신 인증 번호입니다.</h3>");
+                htmlContent.append("<h1>");
+                htmlContent.append(verifyCode);
+                htmlContent.append("</h1>");
+                htmlContent.append("<h3>감사합니다.</h3>");
+
+                mail.setText(htmlContent.toString(), "UTF-8", "html");
+
+                mailHelper.setFrom(senderEmail);
+                mailHelper.setTo(dto.getToEmail());
+                mailHelper.setSubject("인증 번호 안내");
+                mailHelper.setText(htmlContent.toString(), true);
+
+                javaMailSender.send(mail);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public boolean authEmail(String checkNum) {
+
+            if (checkNum.equals(verifyCode)) {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    ```
+
+    <br/>
+
+    - sendEmail 메서드는 사용자가 입력한 이메일에 인증번호를 생서하고 전송하는 로직입니다.
+    - verifyCode는 6자리의 랜덤숫자(100000 ~ 999999 사이)를 생성하여 인증번호로 생성해주는 역할을 합니다.
+    - htmlContent 객체는 StringBuilder라는 클래스를 이용하여 메일 본문에 인증번호를 전달하는 내용을 삽입하여 구성하였습니다.
+    - authEmail 메서드는 입력한 인증번호가 메일에 전송된 인증번호와 같은지 확인하는 역할을 합니다.
+    - 만약에 입력한 인증번호가 같으면 true로 반환해주고 아니면 false로 반환해줍니다.
+
+    ---
+
+    <br/><br/>
+
+    **UserMapper**
+
+    ```java
+
+    @Mapper
+    public interface UserMapper {
+
+        int save(User user);
+
+    }
+
+    ```
+
+    <br/>
+
+    - save 메서드는 UserMapper에 정의된 메서드 입니다.
+    - 이 메서드는 입력한 사용자의 정보를 저장하기 위한 데이터를 sql에서 받아 service에 전달하는 역할을 합니다.
+
+    ---
+
+    <br/><br/>
+
+    **RoleMapper**
+
+    ```java
+
+    @Mapper
+    public interface RoleMapper {
+
+        int save(Role role);
+        Role findByName(String name);
+
+    }
+
+    ```
+
+    <br/>
+
+    - save 메서드는 role 객체를 DB에 저장하는 역할을 합니다.
+    - findByName 메서드는 AuthService에서 roleName을 받아 그 값을 name이라는 이름으로 받아 이를 통해 Role을 조회하는 메서드입니다.
+
+    ---
+
+    <br/><br/>
+
+    **UserRolesMapper**
+
+    ```java
+
+    @Mapper
+    public interface UserRolesMapper {
+
+        int save(UserRoles userRoles);
+
+    }
+
+    ```
+
+    <br/>
+
+    - save 메서드는 UserRoles 객체를 userId와 roleId 값으로 DB에 저장하여 service에 전달하는 역할을 합니다.
+
+    ---
+
+    <br/><br/>
+
+    **user.xml**
+
+    ```java
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="userId">
+        insert into users_tb(user_id, username, name, email, password, phone_number, img, created_at)
+        values(0, #{username}, #{name}, #{email}, #{password}, #{phoneNumber}, #{img}, now())
+    </insert>
+
+    ```
+
+    - 사용자가 입력한 user 정보를 users_tb에 추가하여 UserMapper에 전달하는 sql문입니다.
+    
+    ---
+
+    <br/><br/>
+
+    **role.xml**
+
+    ```java
+
+    // save 메서드
+    <insert id="save" useGeneratedKeys="true" keyProperty="roleId">
+        insert into roles_tb
+        values(0, #{name})
+    </insert>
+
+    ```
+
+    <br/>
+
+    - RoleMapper에서 받아온 roleName을 roles_tb에 추가하여 그 결과를 RoleMapper로 전달하는 sql문입니다.  
+
+    ---
+
+    <br/><br/>
+
+    **role.xml**
+
+    ```java
+
+    // findByName 메서드
+    <select id="findByName" resultType="org.test.teamproject_back.entity.Role">
+        select
+            role_id as roleId,
+            name
+        from
+            roles_tb
+        where
+            name = #{name}
+    </select>
+
+    ```
+
+    <br/>
+
+    - name에 해당하는 역할을 roles_tb 에서 조회하여 결과를 RoleMapper로 전달하는 sql문입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **user_roles.xml**
+
+    ```java
+
+    <insert id="save">
+        insert into user_roles_tb
+        values(0, #{userId}, #{roleId})
+    </insert>
+
+    ```
+
+    <br/>
+
+    - userId와 roleId를 이용하여 user와 role의 정보들을 user_roles_tb에 추가하여 결과값을 UserRolesMapper에 전달하는 sql문입니다. 
+
+    ---
+
+    <br/><br/>
 
 ---
 
@@ -4263,8 +4531,9 @@ __유저__
 <br/>
 
 🦦 이성민  
-: 처음으로 해본 웹사이트 만들기 였습니다. 약 5개월 간의 배움으로 누군가애갠 적은 경험이지만, 저는 유의미한 시간이었습니다. 
-비롣 한달간의 짧은 시간이었지만 네 명이서 매일매일 합을 맞춘 경험과 기능들을 추가하기 위해 힘 썼던 시간과 오류처리를 한 경험은 그 무었보다 소중한 경험이었다고 생각합니다.
+: 저는 이번 프로젝트를 통하여 팀원들과의 소통, 프론트-백 사이의 데이터 전달이 얼마나 중요한지와, 오류 처리의 중요성을 실감했습니다.
+특히 useQuery를 통한 데이터 조회, mutation을 통한 데이터 전달을 정확하게 이해했습니다. 
+비록 한달간의 짧은 시간이었지만 네 명이서 매일매일 합을 맞춘 경험과 기능들을 추가하기 위해 힘 썼던 시간과 오류처리를 한 경험은 그 무었보다 소중한 경험이었다고 생각합니다.
 다시 이런 기회가 있다면, 더욱 성장한 모습으로 프로젝트를 진행할 수 있을것입니다. 
 
 <br/>
