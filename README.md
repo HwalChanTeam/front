@@ -489,6 +489,581 @@ react-daum-postcode | 다음 주소 API |
 
 ## 📖 주요 기능 및 코드리뷰 
 
+### config
+
+#### 백엔드 
+
+**BCryptConfig**
+
+```java
+
+@Configuration
+public class BCryptConfig {
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+}
+
+```
+
+<br/>
+
+- 이 코드는 Spring Security에서 비밀번호를 암호화롤 처리하기 위해 bCryptPasswordEncoder 메서드를 정의한 코드입니다.
+- @Configuration : BCryptConfig 라는 클래스가 Spring의 설정 클래스임을 나타냅니다.
+- @Bean : 해당 메서드가 반환하는 객체를 Bean으로 등록하겠다는 의미입니다.
+- new BCryptPasswordEncoder() : BCryptPasswordEncoder는 기본 생성자로 인스턴스를 생성합니다. 이 객체는 비밀번호를 BCrypt 해시 방식으로 암호화는 데 사용됩니다.
+
+---
+
+<br/><br/>
+
+---
+
+**OAuth2Config**
+
+```java
+
+@Configuration
+public class OAuth2Config {
+
+    @Bean
+    public DefaultOAuth2UserService defaultOAuth2UserService() {
+        return new DefaultOAuth2UserService();
+    }
+
+}
+
+```
+
+<br/>
+
+- 이 클래스는 OAuth2를 인증하기 위한 Spring 설정 클래스입니다.
+- DefaultOAuth2UserService 빈은 OAuth2 인증과정에서 사용자의 정보를 처리할 때 사용됩니다.
+
+<br/><br/>
+
+---
+
+**SecurityConfig**
+
+```java
+
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
+@Configuration
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private JwtAccessTokenFilter jwtAccessTokenFilter;
+    @Autowired
+    private AuthenticationHandler authenticationHandler;
+    @Autowired
+    private OAuth2Service oAuth2Service;
+    @Autowired
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http
+            .formLogin().disable()
+            .httpBasic().disable()
+            .csrf().disable()
+            .cors()
+            .and()
+            .headers().frameOptions().disable()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+                .antMatchers("/admin/signin" , "/user/public/**").permitAll()
+                .antMatchers("/admin/**").hasAnyRole("ADMIN", "MANAGER")
+                .antMatchers("/user/**").hasRole("USER")
+                .anyRequest().authenticated();
+
+        http.exceptionHandling()
+                .authenticationEntryPoint(authenticationHandler);
+
+        http.addFilterBefore(jwtAccessTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.oauth2Login()
+                .successHandler(oAuth2SuccessHandler)
+                .userInfoEndpoint()
+                .userService(oAuth2Service);
+    }
+}
+
+```
+
+<br/>
+
+- 이 클래스는 웹 애플리케이션에 대한 보안구성을 처리하며 다양한 보안 메커니즘(인증, 권한관리, CSRF 비활성화 등)을 설정하는 클래스입니다.
+- @EnableGlobalMethodSecurity(prePostEnabled = true) : 메소드 실행 전에 접근 권한을 체크하거나, 메소드 실행 후 권한을 확인하는 등의 작업을 처리하는 데 유용합니다.
+- @EnableWebSecurity : Spring Security의 설정을 활성화하고, 웹 보안 관련 설정을 적용하기 위해 사용됩니다. 주로 WebSecurityConfigurerAdapter를 상속한 클래스와 함께 사용되며, 이 클래스에서 HTTP 보안 설정 및 인증, 권한 관련 구성을 정의합니다.
+- 이 클래스는 WebSecurityConfigurerAdapter를 상속하여 웹 보안 구성을 확장할 수 있게 도와주고 configure(HttpSecurity http)라는 메서드를 오버라이드하여 구체적인 보안 설정을 정의합니다.
+- configure(HttpSecurity http)라는 메서드는 HTTP 보안 설정을 담당하며 애플리케이션의 보안 규칙을 정의합니다. 
+
+- .formLogin().disable() : 기본으로 제공되는 폼 로그인 기능을 비활성화합니다.
+- .httpBasic().disable() : HTTP Basic 인증을 비활성화하고 더 안전하고 유연한 인증 방식(jwt, OAuth2 등)을 사용하도록 유도합니다. 
+- .csrf().disable() : csrf 보호를 비활성화합니다.
+- .cors() : 다른 도메인에서 API 요청을 허용하는 역할을 합니다.
+- .headers().frameOptions().disable() : X-Frame-Options 헤더를 비활성화하여 애플리케이션이 다른 사이트에서 iframe(내부프레임)으로 로드되도록 허용해주는 역할을 합니다.
+- .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) : 세션을 사용하지 않고 무상태 방식으로 처리하고 상태를 유지하지 않기 때문에 서버에서 세션 정보를 저장하지 않습니다.
+
+- .authorizeRequests() : HTTP 요청에 대한 접근 권한을 설정해주는 역할을 합니다.
+- 모든 사용자가 "/admin/signin", "/user/public/" 경로에 접근할 수 있도록 permitAll()을 설정하였습니다.
+- /admin/** 경로는 ADMIN 또는 MANAGER 역할을 가진 사용자만 접근할 수 있도록 hasAnyRole을 설정하였습니다.
+- /user/** 경로는 USER 역할을 가진 사용자만 접근할 수 있도록 hasRole을 설정하였습니다.
+- .anyRequest().authenticated() : 그 외의 모든 요청은 인증된 사용자만 접근할 수 있도록 설정하는 역할을 합니다. 
+- http.exceptionHandling() : 주로 인증 오류나 예외가 발생했을 때 적절한 응답을 authenticationHandler을 통해 처리하는 역할을 합니다.
+- http.addFilterBefore() : JWT 필터(jwtAccessTokenFilter)를 UsernamePasswordAuthenticationFilter 필터 앞에 추가하여 요청에서 JWT 추출하고 해당 JWT가 유효한지 검사하여 인증 정보를 설정하는 역할을 합니다.
+
+- http.oauth2Login() : OAuth2 로그인 방식(예: 구글, 네이버 등)을 사용할 수 있게 활성화 해주는 역할을 합니다.
+- .successHandler(oAuth2SuccessHandler) : OAuth2 로그인 성공 후 oAuth2SuccessHandler가 처리해주는 역할을 합니다.
+- .userInfoEndpoint().userService(oAuth2Service) : OAuth2 로그인 후, 사용자 정보를 oAuth2Service를 통해 처리합니다.
+
+---
+
+<br/><br/>
+
+**WebMvcConfigurer**
+
+```java
+
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("*")
+                .allowedHeaders("*");
+    }
+}
+
+```
+
+<br/>
+
+- 이 코드는 WebMvcConfigurer 이라는 인터페이스를 구현하여 CORS 설정을 해주는 Config 입니다.
+- WebMvcConfigurer 라는 인터페이스는 Mvc의 설정을 변경할 수 있는 여러 메서드(addCorsMappings 등)를 제공해주는 역할을 합니다. 
+- addCorsMappings 라는 메서드는 웹 애플리케이션에서 허용할 CORS 정책을 정의합니다. 
+- registry.addMapping("/**") : 웹 애플리케이션 내에서 모든 HTTP 요청에 대해 CORS 정책이 적용한다는 의미입니다.
+- .allowedOrigins("*") : 모든 외부 도메인에서 이 서버의 자원에 접근할 수 있도록 허용하도록 설정하는 역할을 합니다.
+- .allowedMethods("*") : 모든 HTTP 메서드(GET, POST, PUT, DELETE 등)에 대해 CORS를 허용하도록 설정하는 역할을 합니다.
+- .allowedHeaders("*") : 모든 HTTP 헤더(요청/응답 내용, 형식, 인증 정보 등)에 대해 CORS를 허용하도록 설정하는 역할을 합니다. 
+
+---
+
+<br/><br/>
+
+### security
+
+#### 백엔드
+
+**JwtAccessTokenFilter**
+
+```java
+
+@Component
+public class JwtAccessTokenFilter extends GenericFilter {
+
+    @Autowired
+    private JwtProvider jwtProvider;
+    @Autowired
+    private UserMapper userMapper;
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+
+        String bearerAccessToken = httpServletRequest.getHeader("Authorization");
+        
+        if (bearerAccessToken == null || bearerAccessToken.equals("null") || bearerAccessToken.isBlank()) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
+
+        String accessToken = jwtProvider.removeBearer(bearerAccessToken);
+
+        Claims claims = null;
+
+        try {
+            claims = jwtProvider.getClaims(accessToken);
+            Long userId = ((Integer) claims.get("userId")).longValue();
+            User user = userMapper.findUserByUserId(userId);
+            if (user == null) {
+                throw new JwtException("해당 ID(" + userId + ")의 사용자 정보를 찾지 못했습니다.");
+            }
+            PrincipalUser principalUser = user.toPrincipal();
+            Authentication authentication = new UsernamePasswordAuthenticationToken(principalUser, null, principalUser.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (JwtException e) {
+            e.printStackTrace();
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+}
+
+```
+
+<br/>
+
+- 이 필터는 요청이 들어올 때 JWT를 인증 헤더에서 확인하고 해당 JWT가 유효한지 검사하여 인증 정보를 설정하는 필터입니다.
+- JwtAccessTokenFilter는 GenericFilter를 확장한 클래스이고 GenericFilter는 JWT 토큰을 인증하는 역할을 합니다.
+- doFilter 메서드는 서블릿 필터체인에 일환으로 HTTP요청을 가로채어 JWT 토큰을 확인힌 후 인증을 처리하는 역할을 합니다.
+- 먼저 HttpServletRequest 객체로 캐스팅하여 요청 정보를 얻어 Authorization 헤더에서 Bearer 토큰을 추출합니다.
+- 만약  Authorization 헤더에 토큰이 없거나 null인 경우 필터는 더 이상 인증을 인증을 진행하지 않고 요청을 계속해서 다음 필터로 전달합니다.
+- jwtProvider.removeBearer() 메서드는 Bearer 접두어를 제거한 토큰 문자열을 반환하여 accessToken라는 변수에 담습니다. 
+- claims 객체는 JWT에 담긴 정보를 나타내어 이 정보에는 사용자의 ID, 권한, 만료 시간 등 인증 및 권한부여에 필요한 여러 데이터를 포함하고 있습니다.
+- JWT에서 userId를 추출하여 userMapper.findUserByUserId(userId)를 통해 데이터베이스에서 사용자 정보를 조회합니다. 만약에 사용자가 존재하지 않으면 "해당 ID(" + userId + ")의 사용자 정보를 찾지 못했습니다." 라고 예외를 발생시킵니다.
+- user 객체에서 PrincipalUser 객체를 생성하여 spring security에서 사용자 인증 정보를 관리합니다.
+- authentication 객체는 Spring Security에서 인증 정보를 설정하는 객체이며 이를 SecurityContextHolder에 설정하여 현재 요청에서 사용자를 인증된 상태로 만들어주는 역할을 합니다. 
+- 만약 jwt가 유효하지 않거나 예외가 발생하게 될 경우, catch를 통해 예외를 출력하고 그대로 필터체인에 넘깁니다. 그대로 필터체인에 넘길 경우 인증은 실패하지만 다른 필터에서 요청을 처리할 수 있게 됩니다.
+- 필터가 끝난 후 필터체인을 통해 요청을 다음 필터나 서블릿으로 전달하여 인증이 성공하거나 실패한 후에도 요청이 계속 진행되도록 설정하였습니다.
+
+---
+
+<br/><br/>
+
+- **UserMapper**
+
+    ```java
+
+    @Mapper
+    public interface UserMapper {
+
+        User findUserByUserId(Long userId);
+
+    }
+
+    ```
+
+    <br/>
+
+    - findUserByUserId 메서드는 userId를 기준으로 사용자를 조회하고 그 결과를 User 객체로 반환합니다.
+
+    ---
+
+    <br/><br/>
+
+- **user.xml**
+
+    ```java
+
+    <select id="findUserByUserId" resultMap="userResultMap">
+        select
+            ut.user_id,
+            ut.username,
+            ut.name,
+            ut.email,
+            ut.password,
+            ut.phone_number,
+            ut.img,
+            ut.created_at,
+            urt.user_roles_id,
+            urt.user_id as urt_user_id,
+            urt.role_id as urt_role_id,
+            rt.role_id,
+            rt.name as role_name
+        from
+            users_tb ut
+            left outer join user_roles_tb urt on (ut.user_id = urt.user_id)
+            left outer join roles_tb rt on (rt.role_id = urt.role_id)
+        where
+            ut.user_id = #{userId}
+    </select>
+
+    ```
+
+    <br/>
+
+    - 해당 사용자의 userId를 통해서 사용자의 정보를 조회하여 mapper에 전달하는 sql문 입니다. 
+
+---
+
+<br/><br/>
+
+**AuthenticationHandler**
+
+```java
+
+@Component
+public class AuthenticationHandler implements AuthenticationEntryPoint {
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(403);
+        response.getWriter().println("인증 토큰이 유효하지 않습니다.");
+        authException.printStackTrace();
+    }
+}
+
+```
+
+<br/>
+
+- 이 코드는 Spring Security에서 인증 오류가 발생하였을 때 커스텀 응답 처리를 하기 위한 클래스입니다.
+- AuthenticationEntryPoint는 인증되지 않은 사용자가 보호된 리소스에 접근할 때 호출하는 인터페이스입니다.
+- commence 메서드는 인증 오류가 발생하였을 때 Spring Security가 이 메서드를 호출하여 인증 실패 응답을 처리합니다.
+- response.setContentType("text/plain") : 클라이언트가 받게 될 응답 데이터 형식을 "text/plain"(일반 텍스트 형식)으로 설정하여 전달하는 역할을 합니다.
+- response.setCharacterEncoding("UTF-8") : 응답의 문자 인코딩을 UTF-8로 설정하여 한글 등의 문자들이 깨지지 안고 제대로 출력될 수 있도록 설정합니다.
+- response.setStatus(403) : 응답 상태 코드를 403 오류로 설정하여 사용자가 요청한 리소스에 접근할 권한이 없거나 인증에 실패한 경우에 반환될 수 있도록 설정하였습니다.
+- response.getWriter().println("인증 토큰이 유효하지 않습니다.") : 응답 본문에 "인증 토큰이 유효하지 않습니다" 라는 메시지를 출력할 수 있도록 설정하였습니다.
+- authException.printStackTrace() : 예외의 원인과 경로를 콘솔이나 로그에 출력하여 문제를 추적할 수 있게 도와주는 역할을 합니다.
+
+---
+
+<br/><br/>
+
+**OAuth2SuccessHandler**
+
+```java
+
+@Component
+public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private JwtProvider jwtProvider;
+
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        DefaultOAuth2User defaultOAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
+        Map<String, Object> attributes = defaultOAuth2User.getAttributes();
+
+        String oAuth2Name = attributes.get("id").toString();
+        String provider = attributes.get("provider").toString();
+
+        User user = userMapper.findUserByUsername(oAuth2Name);
+
+        String accessToken = jwtProvider.generateAccessToken(user);
+        response.sendRedirect("http://localhost:3000/user/signin/oauth2?accessToken=" + accessToken);
+    }
+}
+
+```
+
+<br/>
+
+- 이 코드는 OAuth2 인증 성공 후에 특정 작업을 수행하는 Handler 입니다. 
+- onAuthenticationSuccess라는 메서드는 OAuth2 인증 성공 시 호출이 되며 Authentication 객체를 매개변수로 받습니다.
+- authentication 객체에서 PrincipalUser(사용자 정보)를 불러와 defaultOAuth2User에 저장합니다.
+- DefaultOAuth2User에서 사용자의 OAuth2 속성 정보(구글, 네이버 등에서 제공하는 사용자 데이터)를 getAttributes 통해 가지고와 attributes에 저장합니다.
+- oAuth2Name : 사용자 정보를 확인하고, OAuth2 제공자의 id를 문자열 형식으로 추출하여 oAuth2Name에 저장합니다.
+- provider : 사용자가 인증에 사용한 OAuth2 제공자(구글, 네이버 등)의 이름을 provider에 저장합니다.
+- user : OAuth2 인증에서 얻은 사용자의 ID를 이용하여 해당 사용자의 정보를 조회하여 user에 저장합니다. 
+- accessToken : user 객체를 바탕으로 JWT를 생성하며 생성된 JWT는 사용자가 인증되었음을 증명하여 accessToken으로 보호된 리소스에 대한 접근 권한을 부여하는데 사용됩니다.
+- 생성된 JWT 토큰을 쿼리 파라미터로 포함하여 url(OAuth2로 인증한 로그인 페이지)로 리다이렉트되어 클라이언트에서 이 토큰(accessToken)을 사용할 수 있게 설정하였습니다.
+
+---
+
+<br/><br/>
+
+- **JwtProvider**
+
+    ```java
+
+    @Component
+    public class JwtProvider {
+
+        public Date getExpireDate() {
+            return new Date(new Date().getTime() + (1000l * 60 * 60 * 24 * 30));
+        }
+        
+        public String generateAccessToken(User user) {
+            return Jwts.builder()
+                    .claim("userId", user.getUserId())
+                    .expiration(getExpireDate())
+                    .signWith(key, SignatureAlgorithm.HS256)
+                    .compact();
+        }
+
+    }
+
+    ```
+
+    <br/>
+
+    - getExpireDate 메서드는 JWT의 토큰 만료날짜를 현재 시간에서 30일 후의 날짜를 Date 객체로 반환하는 역할을 합니다.
+    - generateAccessToken 메서드는 User 객체를 입력받아 JWT를 생성하는 역할을 합니다.
+    - Jwts는 JJWT 라이브러리의 클래스이며 JWT 생성, 검증 파싱 등을 쉽게 처리할 수 있도록 도와주는 역할을 합니다.
+    - .claim("userId", user.getUserId()) : JWT의 페이로드 부분에 데이터를 추가하는 메서드이며 "userId"는 클레임의 키입니다.
+    - user.getUserId는 해당 사용자 ID 값을 JWT의 페이로드에 "userId"라는 이름의 클레임으로 포함시켜 JWT를 검증할 때 사용자가 누구인지 식별하는 역할을 합니다. 
+    - .expiration(getExpireDate()) : JWT 토큰의 만료 시간을 설정하는 역할을 합니다.  
+    - .signWith(key, SignatureAlgorithm.HS256) : JWT의 서명을 추가하는 메서드이고 서명은 JWT가 변조되지 않았음을 확인하는 역할을 합니다.
+    - key는 토큰을 생성할 때 사용되며 토큰을 검증할 때도 동일한 키를 사용해야 유효성을 확인할 수 있게 설정하는 역할을 합니다.
+    - SignatureAlgorithm.HS256은 HS256 알고리즘을 사용하여 서명하는 역할을 합니다. 
+    - .compact() : 이 메서드를 호출하면 claim, expiration, signWith 등에서 설정한 값들이 하나의 JWT로 결합되어 최종적으로 하나의 문자열로 반환됩니다. 
+
+    ---
+
+    <br/><br/>
+
+- **UserMapper**
+
+    ```java
+
+    @Mapper
+    public interface UserMapper {
+
+        User findUserByUsername(String username);
+
+    }
+
+    ```
+
+    <br/>
+
+    - findUserByUsername 메서드는 username(사용자가 입력한 ID)을 통해 해당 사용자의 정보를 찾아 onAuthenticationSuccess 메서드 안에 user 변수에 저장합니다.
+
+    ---
+
+    <br/><br/>
+
+- **user.xml**
+
+    ```java
+
+    <select id="findUserByUsername" resultMap="userResultMap">
+        select
+            ut.user_id,
+            ut.username,
+            ut.name,
+            ut.email,
+            ut.phone_number,
+            ut.img,
+            ut.password,
+            ut.created_at,
+            urt.user_roles_id,
+            urt.user_id as urt_user_id,
+            urt.role_id as urt_role_id,
+            rt.role_id,
+            rt.name as role_name
+        from
+            users_tb ut
+            left outer join user_roles_tb urt on (ut.user_id = urt.user_id)
+            left outer join roles_tb rt on (rt.role_id = urt.role_id)
+        where
+            ut.username = #{username}
+    </select>
+
+    ```
+
+    <br/>
+
+    - OAuth2에 인증된 사용자의 ID를 통해 users_tb에서 사용자의 정보를 조회하여 UserMapper에 전달하는 sql 문입니다. 
+
+---
+
+<br/><br/>
+
+**PrincipalUser**
+
+```java
+
+@Builder
+@Data
+public class PrincipalUser implements UserDetails {
+
+    private Long id;
+    private String username;
+    private String password;
+    private Set<UserRoles> roles;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(
+                ur -> new SimpleGrantedAuthority(ur.getRole().getName())
+        ).collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+}
+
+```
+
+<br/>
+
+- PrincipalUser는 사용자의 정보를 담고 있으며, Spring Security에서 요구하는 메서드들을 구현하여 사용자의 보안 정보(권한, 계정 상태 등)를 제공합니다.
+- 이 클래스는 UserDetails 인터페이스를 구현하고 있으며 UserDetails는 사용자 인증 정보를 관리하기 위해 사용하였습니다. 
+- getAuthorities 메서드는 사용자가 가진 권한들을(roles) SimpleGrantedAuthority 객체로 변환하여 collect를 통해 Set< GrantedAuthority >의 형식으로 동일한 권한을 여러번 추가해도 한번만 저장되는 형태로 반환하는 역할을 합니다.
+- isAccountNonExpired 메서드는 계정이 만료되지 않았는지 확인하는 역할을 하며 항상 true로 반환하여 계정이 만료되지 않은 것으로 처리합니다. 
+- isAccountNonLocked 메서드는 계정이 잠겨있지 않은지 확인하는 역할을 하며 항상 true로 반환하여 계정이 잠겨있지 않음을 나타냅니다. 
+- isCredentialsNonExpired 메서드는 사용자의 비밀번호 등이 만료되지 않았는지 확인하는 역할을 하며 항상 true를 반환하여 비밀번호 등이 만료되지 않았음을 나타냅니다.
+- isEnabled 메서드는 사용자의 계정이 활성화되어 있는지 확인하는 역할을 하며 항상 true로 반환하여 계정이 활성화된 것으로 처리합니다.
+
+---
+
+<br/><br/>
+
+### application.yml
+
+#### 백엔드 
+
+```yml
+
+spring:
+  config:
+    import: application-secret.yml
+
+mybatis:
+  mapper-locations:
+    - /mappers/*.xml
+
+user:
+  profile:
+    img:
+     default: https://firebasestorage.googleapis.com/v0/b/userprofile-43e23.appspot.com/o/TeamProject%2F%ED%9D%90%EB%AD%87.PNG?alt=media&token=1fb1e5f5-f11a-4181-bdb0-1f52aab0565d
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+```
+
+<br/>
+
+- application.yml은 SpringBoot의 설정을 관리합니다. 
+- spring.config.import 는 외부에서 application-secret.yml 파일을 가져와 현재 application.yml의 설정에 통합합니다.
+- application-secret.yml 은 민감한 정보(API 키, sql비밀번호 등)를 별도로 설정하고 관리할 때 사용합니다.
+- mybatis.mapper-locations 는 MyBatis의 매퍼 파일을 찾을 위치를 지정하는 설정이며 이는 /mappers/*.xml 경로에 있는 모든 xml 파일을 MyBatis 매퍼로 사용하겠다는 의미입니다.
+- user.profile.img.default 는 Firebase Storage를 이용하여 사용자의 기본 프로필 이미지 url를 설정하는 역할을 합니다.
+- logging.level.org.springframework.security 는 Spring Security 관련 로그를 더 자세하게 출력하기 위해 DEBUG 레벨로 설정하였습니다.    
+
+---
+
+<br/><br/>
+
 ### App.js
 
 #### 프론트
@@ -613,6 +1188,7 @@ function App() {
 #### 백엔드
 
 __Controller__
+
 ```java
 
 @RequestMapping("/user/public")
@@ -699,11 +1275,59 @@ public class TokenService {
 
 - TokennService는 JWT 토큰의 유효성을 검사하는 서비스입니다. 
 - @Service : 서비스에 해당하는 클래스를 정의할 때 사용합니다. 
-- isValidAccessToken(String bearerAccessToken) : 이 메서드는 bearerAccessToken을 입력받고 해당 토큰의 유효성 검사를 합니다. 
+- isValidAccessToken는 bearerAccessToken을 입력받고 해당 토큰의 유효성 검사를 합니다. 
 - Bearer 토큰에서는 실제 JWT 토큰을 추출하고 해당 토큰에서 userId를 가져와 데이터베이스에서 사용자를 조회한 후, 사용자가 없을 경우 예외(RunTimeException)를 던지고 유효하면 true를 반환합니다.
 - 만약 토큰이 유효하지않을 경우에는 catch를 통해 AccessTokenValidException을 던져 유효성 검사 실패를 알립니다. 
 
 ---
+
+<br/><br/>
+
+**JwtProvider**
+
+```java
+
+@Component
+public class JwtProvider {
+
+    private final Key key;
+
+    public JwtProvider(@Value("${jwt.secret}") String secret) {
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    }
+
+    public String removeBearer(String bearerToken) throws RuntimeException {
+        if (bearerToken == null) {
+            throw new RuntimeException();
+        }
+
+        int bearerLength = "bearer ".length();
+        return bearerToken.substring(bearerLength);
+    }
+
+    public Claims getClaims(String token) {
+        JwtParser jwtParser = Jwts.parser()
+                .setSigningKey(key)
+                .build();
+
+        return jwtParser.parseClaimsJws(token).getPayload();
+    }
+
+}
+
+```
+
+<br/>
+
+- 이 클래스는 JWT 관련 작업을 수행하는 로직입니다.
+- @Value("${jwt.secret}") : application.ymml 파일에 정의된 jwt.secret 값을 가지고 옵니다.
+- Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)) : secret 값을 BASE64로 디코딩하여 HMAC-SHA 알고리즘에 적합한 암호화 키를 생성하여 this.key에 집어 넣습니다.
+- removeBearer 라는 메서드는 "bearer " 라는 부분을 잘라내고 나머지 토큰 값을 반환하는 역할을 합니다.
+- getClaims 라는 메서드는 JwtParser를 이용하여 JWT를 검증하고 파싱하여 Claims 객체를 반환합니다. 
+- setSigningKey(key)는 서명 검증을 위한 키를 설정합니다. 
+- jwtParser.parseClaimsJws(token).getPayload() 는 token을 파싱하고 서명을 검증하며 JWT의 유효한 페이로드 부분을 반환합니다.
+
+--- 
 
 <br/><br/>
 
@@ -715,7 +1339,7 @@ public class TokenService {
 public interface UserMapper {
 
     User findUserByUserId(Long userId);
-    
+
 }
 
 ```
@@ -942,6 +1566,8 @@ export default MainMenu;
 - 메인메뉴에는 카테고리, 신상품, 인기상품, 전체리뷰, 검색창을 나타내었고 useState로 상태를 이용해 카테고리에 마우스를 올리면 서브 카테고리가 나타나도록 설정하였습니다.
 - 서브목록은 국.탕.찌개, 안주, 밀키트, 간편식으로 이루어져 있습니다.
 
+---
+
 <br/>
 
 ```Jsx
@@ -1129,8 +1755,10 @@ function MainPage() {
                                 <Link to="/user/newproduct"> 신상품 전체 보기 </Link>
                             </div>
                         </div>
-	);
-};
+                );
+            };
+        </>
+    )
 ```
 <br/>
 
@@ -2011,6 +2639,8 @@ public class ProductService {
 
 ---
 
+<br/><br/>
+
 **Mapper**
 
 ```java
@@ -2439,6 +3069,8 @@ public class ProductService {
 
 ---
 
+<br/><br/>
+
 **Mapper**
 
 ```java
@@ -2792,738 +3424,780 @@ public interface CartItemMapper {
 ### 로그인 / 회원가입 
 #### 회원가입
 
-- __일반__  
+**프론트**
 
-    **프론트**
+```jsx
 
-    ```jsx
+function SignupPage(props) {
+    const navigate = useNavigate();
 
-    function SignupPage(props) {
-        const navigate = useNavigate();
+    // 이메일 전송된 상태
+    const [isEmailSend, setIsEmailSend] = useState(false);
 
-        // 이메일 전송된 상태
-        const [isEmailSend, setIsEmailSend] = useState(false);
+    // 60초 타이머
+    const [timer, setTimer] = useState(60);
 
-        // 60초 타이머
-        const [timer, setTimer] = useState(60);
+    const [user, setUser] = useState({
+        username: "",
+        password: "",
+        checkPassword: "",
+        name: "",
+        email: "",
+        phoneNumber: "",
+    });
 
-        const [user, setUser] = useState({
-            username: "",
-            password: "",
-            checkPassword: "",
-            name: "",
-            email: "",
-            phoneNumber: "",
-        });
+    const [fieldErrorMessages, setFieldErrorMessages] = useState({
+        username: <></>,
+        password: <></>,
+        checkPassword: <></>,
+        name: <></>,
+        email: <></>,
+        phoneNumber: <></>,
+    });
 
-        const [fieldErrorMessages, setFieldErrorMessages] = useState({
+    const [sendEmail, setSendEmail] = useState({
+        toEmail: "",
+    });
+
+    const [sendCheckNum, setSencCheckNum] = useState({
+        checkNum: "",
+    });
+
+    const handleInputOnchange = (e) => {
+        setUser((user) => ({
+            ...user,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleEmailInputOnchange = (e) => {
+        let emailValue = e.target.value;
+        setSendEmail((email) => ({
+            ...email,
+            [e.target.name]: emailValue,
+        }));
+
+        //user.eamil도 함께 업데이트
+        setUser((email) => ({
+            ...email,
+            email: emailValue,
+        }));
+    };
+
+    const showFieldErrorMessage = (fieldErrors) => {
+        let EmptyFieldErrors = {
+            // 에러메시지 초기값
             username: <></>,
             password: <></>,
             checkPassword: <></>,
             name: <></>,
             email: <></>,
-            phoneNumber: <></>,
-        });
-
-        const [sendEmail, setSendEmail] = useState({
-            toEmail: "",
-        });
-
-        const [sendCheckNum, setSencCheckNum] = useState({
-            checkNum: "",
-        });
-
-        const handleInputOnchange = (e) => {
-            setUser((user) => ({
-                ...user,
-                [e.target.name]: e.target.value,
-            }));
+            checkNum: <></>,
         };
 
-        const handleEmailInputOnchange = (e) => {
-            let emailValue = e.target.value;
-            setSendEmail((email) => ({
-                ...email,
-                [e.target.name]: emailValue,
-            }));
-
-            //user.eamil도 함께 업데이트
-            setUser((email) => ({
-                ...email,
-                email: emailValue,
-            }));
-        };
-
-        const showFieldErrorMessage = (fieldErrors) => {
-            let EmptyFieldErrors = {
-                // 에러메시지 초기값
-                username: <></>,
-                password: <></>,
-                checkPassword: <></>,
-                name: <></>,
-                email: <></>,
-                checkNum: <></>,
+        for (let fieldError of fieldErrors) {
+            EmptyFieldErrors = {
+                ...EmptyFieldErrors,
+                [fieldError.field]: <p>{fieldError.defaultMessage}</p>,
             };
+        }
+        setFieldErrorMessages(EmptyFieldErrors);
+    };
 
-            for (let fieldError of fieldErrors) {
-                EmptyFieldErrors = {
-                    ...EmptyFieldErrors,
-                    [fieldError.field]: <p>{fieldError.defaultMessage}</p>,
-                };
-            }
-            setFieldErrorMessages(EmptyFieldErrors);
-        };
+    // 이메일 전송 버튼
+    const emailSendButtonOnClick = async () => {
+        if (isEmailSend) {
+            alert("60초 후에 다시 시도해 주세요");
+            return;
+        }
 
-        // 이메일 전송 버튼
-        const emailSendButtonOnClick = async () => {
-            if (isEmailSend) {
-                alert("60초 후에 다시 시도해 주세요");
-                return;
-            }
+        try {
+            await instance.post("/user/public/email/send", sendEmail);
+            setIsEmailSend(true);
+            setTimer(60);
 
-            try {
-                await instance.post("/user/public/email/send", sendEmail);
-                setIsEmailSend(true);
-                setTimer(60);
+            const countdown = setInterval(() => {
+                setTimer((timer) => {
+                    if (timer <= 1) {
+                        clearInterval(countdown);
+                        setIsEmailSend(false);
+                        return 0;
+                    }
+                    return timer - 1;
+                });
+            }, 1000);
+        } catch (error) {
+            console.log(error); // 에러 로그 확인
+        }
+    };
 
-                const countdown = setInterval(() => {
-                    setTimer((timer) => {
-                        if (timer <= 1) {
-                            clearInterval(countdown);
-                            setIsEmailSend(false);
-                            return 0;
-                        }
-                        return timer - 1;
-                    });
-                }, 1000);
-            } catch (error) {
-                console.log(error); // 에러 로그 확인
-            }
-        };
+    // 이메일 인증번호 입력
+    const emailCheckOnChange = (e) => {
+        setSencCheckNum((checkNum) => ({
+            ...checkNum,
+            [e.target.name]: e.target.value,
+        }));
+    };
 
-        // 이메일 인증번호 입력
-        const emailCheckOnChange = (e) => {
-            setSencCheckNum((checkNum) => ({
-                ...checkNum,
-                [e.target.name]: e.target.value,
-            }));
-        };
-
-        // 이메일 인증번호 체크 mutation
-        const checkEmailMutation = useMutation(
-            async () => {
-                return await instance.post("/user/public/email/auth", sendCheckNum);
+    // 이메일 인증번호 체크 mutation
+    const checkEmailMutation = useMutation(
+        async () => {
+            return await instance.post("/user/public/email/auth", sendCheckNum);
+        },
+        {
+            onSuccess: (response) => {
+                setUser.email(response.data);
             },
-            {
-                onSuccess: (response) => {
-                    setUser.email(response.data);
-                },
-                onError: (response) => {
-                    console.log(response.data);
-                },
-            }
-        );
-
-        // 이메일 인증 체크 버튼
-        const handleCheckEmailButtonOnClick = () => {
-            checkEmailMutation.mutate();
-        };
-
-        // 회원가입 post mutation
-        const signupMutation = useMutation(
-            async () => {
-                const signupData = await instance.post("/user/public/signup", user);
+            onError: (response) => {
+                console.log(response.data);
             },
-            {
-                onSuccess: () => {
-                    alert("회원가입을 축하합니다.");
-                    navigate("/");
-                }
+        }
+    );
+
+    // 이메일 인증 체크 버튼
+    const handleCheckEmailButtonOnClick = () => {
+        checkEmailMutation.mutate();
+    };
+
+    // 회원가입 post mutation
+    const signupMutation = useMutation(
+        async () => {
+            const signupData = await instance.post("/user/public/signup", user);
+        },
+        {
+            onSuccess: () => {
+                alert("회원가입을 축하합니다.");
+                navigate("/");
             }
-        );
+        }
+    );
 
-        // 회원가입 완료 버튼
-        const handleSubmitButtonOnClick = () => {
-            signupMutation.mutate();
-        };
+    // 회원가입 완료 버튼
+    const handleSubmitButtonOnClick = () => {
+        signupMutation.mutate();
+    };
 
-        return (
-            <div css={s.mainLayout}>
-                <h1 css={s.logo}>
-                    <img src={logo} />
-                </h1>
-                <div css={s.layout}>
-                    <div css={s.headerLayout}>
-                        <h2>회원가입</h2>
-                    </div>
-                    <div css={s.inputUser}>
-                        <input
-                            type="text"
-                            onChange={handleInputOnchange}
-                            name="username"
-                            value={user.username}
-                            placeholder="아이디를 입력해 주세요"
-                        />
-                        {fieldErrorMessages.username}
-                        <input
-                            type="password"
-                            onChange={handleInputOnchange}
-                            name="password"
-                            value={user.password}
-                            placeholder="비밀번호를 입력해 주세요"
-                        />
-                        {fieldErrorMessages.password}
-                        <input
-                            type="password"
-                            onChange={handleInputOnchange}
-                            name="checkPassword"
-                            value={user.checkPassword}
-                            placeholder="비밀번호를 한번 더 입력해 주세요"
-                        />
-                        {fieldErrorMessages.checkPassword}
-                        <input
-                            type="text"
-                            onChange={handleInputOnchange}
-                            name="name"
-                            value={user.name}
-                            placeholder="이름을 작성해 주세요"
-                        />
-                        {fieldErrorMessages.name}
-                        <input
-                            type="text"
-                            onChange={handleInputOnchange}
-                            name="phoneNumber"
-                            value={user.phoneNumber}
-                            placeholder="휴대폰 번호를 입력해 주세요"
-                        />
-                        {fieldErrorMessages.phoneNumber}
-                    </div>
-                    <div css={s.inputEmail}>
-                        <input
-                            type="text"
-                            name="toEmail"
-                            value={sendEmail.toEmail}
-                            placeholder="이메일을 입력해 주세요"
-                            onChange={handleEmailInputOnchange}
-                        />
-                        {fieldErrorMessages.email}
-                        <button onClick={emailSendButtonOnClick}>
-                            인증요청 {isEmailSend && `(${timer}초 후 재시도)`}
-                        </button>
+    return (
+        <div css={s.mainLayout}>
+            <h1 css={s.logo}>
+                <img src={logo} />
+            </h1>
+            <div css={s.layout}>
+                <div css={s.headerLayout}>
+                    <h2>회원가입</h2>
+                </div>
+                <div css={s.inputUser}>
+                    <input
+                        type="text"
+                        onChange={handleInputOnchange}
+                        name="username"
+                        value={user.username}
+                        placeholder="아이디를 입력해 주세요"
+                    />
+                    {fieldErrorMessages.username}
+                    <input
+                        type="password"
+                        onChange={handleInputOnchange}
+                        name="password"
+                        value={user.password}
+                        placeholder="비밀번호를 입력해 주세요"
+                    />
+                    {fieldErrorMessages.password}
+                    <input
+                        type="password"
+                        onChange={handleInputOnchange}
+                        name="checkPassword"
+                        value={user.checkPassword}
+                        placeholder="비밀번호를 한번 더 입력해 주세요"
+                    />
+                    {fieldErrorMessages.checkPassword}
+                    <input
+                        type="text"
+                        onChange={handleInputOnchange}
+                        name="name"
+                        value={user.name}
+                        placeholder="이름을 작성해 주세요"
+                    />
+                    {fieldErrorMessages.name}
+                    <input
+                        type="text"
+                        onChange={handleInputOnchange}
+                        name="phoneNumber"
+                        value={user.phoneNumber}
+                        placeholder="휴대폰 번호를 입력해 주세요"
+                    />
+                    {fieldErrorMessages.phoneNumber}
+                </div>
+                <div css={s.inputEmail}>
+                    <input
+                        type="text"
+                        name="toEmail"
+                        value={sendEmail.toEmail}
+                        placeholder="이메일을 입력해 주세요"
+                        onChange={handleEmailInputOnchange}
+                    />
+                    {fieldErrorMessages.email}
+                    <button onClick={emailSendButtonOnClick}>
+                        인증요청 {isEmailSend && `(${timer}초 후 재시도)`}
+                    </button>
 
-                        {/* 인증번호 요청 누르면 인증번호 칸 활성화되게(추가) */}
-                        {isEmailSend === false ? (
-                            <></>
-                        ) : (
-                            <div css={s.emailCkeck}>
-                                <input
-                                    type="text"
-                                    name="checkNum"
-                                    placeholder="인증번호를 입력해 주세요"
-                                    onChange={emailCheckOnChange}
-                                    value={sendCheckNum.checkNum}
-                                />
-                                {fieldErrorMessages.checkNum}
-                                <button onClick={handleCheckEmailButtonOnClick}>확인</button>
-                            </div>
-                        )}
-                    </div>
-                    <div css={s.joinOkButton}>
-                        <button onClick={handleSubmitButtonOnClick}>회원가입 하기</button>
-                    </div>
-                    <div css={s.oauth2Buttons}>
-                        <button>
-                            <SiNaver />
-                            네이버 로그인
-                        </button>
-                        <button>
-                            <FcGoogle />
-                            구글 로그인
-                        </button>
-                    </div>
+                    {/* 인증번호 요청 누르면 인증번호 칸 활성화되게(추가) */}
+                    {isEmailSend === false ? (
+                        <></>
+                    ) : (
+                        <div css={s.emailCkeck}>
+                            <input
+                                type="text"
+                                name="checkNum"
+                                placeholder="인증번호를 입력해 주세요"
+                                onChange={emailCheckOnChange}
+                                value={sendCheckNum.checkNum}
+                            />
+                            {fieldErrorMessages.checkNum}
+                            <button onClick={handleCheckEmailButtonOnClick}>확인</button>
+                        </div>
+                    )}
+                </div>
+                <div css={s.joinOkButton}>
+                    <button onClick={handleSubmitButtonOnClick}>회원가입 하기</button>
+                </div>
+                <div css={s.oauth2Buttons}>
+                    <button>
+                        <SiNaver />
+                        네이버 로그인
+                    </button>
+                    <button>
+                        <FcGoogle />
+                        구글 로그인
+                    </button>
                 </div>
             </div>
-        );
+        </div>
+    );
+}
+
+export default SignupPage;
+
+```
+
+<br/>
+
+- 이 코드는 사용자가 회원가입을 하기 위해 아이디, 비밀번호, 이름, 휴대폰번호, 이메일을 입력하도록 구성되었습니다. 
+- 인증번호 요청은 이메일을 입력하여 이메일에 인증번호 전송 상태를 isEmailSend를 통해 관리하였습니다. 응답 온 인증번호를 60초내로 입력하도록 timer 상태로 관리하였고 인증번호 확인은 checkEmailMutation 으로 sendCheckNum 상태를 통해 관리하였습니다.
+- 아이디와 비밀번호, 이름, 휴대폰번호, 이메일을 입력할 시 user상태를 업데이트하여 사용자 정보를 저장되도록 구현하였습니다. 
+- 아이디와 비밀번호 이름, 휴대폰번호, 이메일을 입력하고 회원가입할 시 mutation을 통해 post 요청을 보냈습니다. 회원가입에 성공할 시 사용자 정보가 저장 되고 회원가입을 축하한다는 알람창과 메인으로 자동으로 이동하게 구현하였습니다.
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+**AuthController**
+
+```java
+
+@RequestMapping("/user/public")
+@RestController
+public class AuthController {
+
+    @Autowired
+    private AuthService authService;
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody ReqSignupDto dto) throws SignupException {
+    String roleName = "ROLE_USER";
+    return ResponseEntity.ok().body(authService.signup(dto, roleName));
     }
 
-    export default SignupPage;
+}
 
-    ```
+```
 
-    <br/>
+<br/>
 
-    - 이 코드는 사용자가 회원가입을 하기 위해 아이디, 비밀번호, 이름, 휴대폰번호, 이메일을 입력하도록 구성되었습니다. 
-    - 인증번호 요청은 이메일을 입력하여 이메일에 인증번호 전송 상태를 isEmailSend를 통해 관리하였습니다. 응답 온 인증번호를 60초내로 입력하도록 timer 상태로 관리하였고 인증번호 확인은 checkEmailMutation 으로 sendCheckNum 상태를 통해 관리하였습니다.
-    - 아이디와 비밀번호, 이름, 휴대폰번호, 이메일을 입력할 시 user상태를 업데이트하여 사용자 정보를 저장되도록 구현하였습니다. 
-    - 아이디와 비밀번호 이름, 휴대폰번호, 이메일을 입력하고 회원가입할 시 mutation을 통해 post 요청을 보냈습니다. 회원가입에 성공할 시 사용자 정보가 저장 되고 회원가입을 축하한다는 알람창과 메인으로 자동으로 이동하게 구현하였습니다.
+- 클라이언트에 회원가입하는 요청을 처리하고 응답을 반환하는 역할을 합니다.
+- 클라이언트가 보내는 JSON 데이터를 ReqSignupDto 객체로 변환하여 service에 전달합니다.
+- 예외가 터지면 throws SignupException로 던져서 예외처리(오류처리)를 합니다.
+- 회원가입 시 모든 유저에게 ROLE_USER라는 권한을 부여함으로써 관리자와 메니저를 차별화 두기 위해 사용하였습니다.
+- authService.signup 메서드는 실제 회원가입을 성공적으로 응답해주기 위한 메서드입니다.
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
-    **백엔드**
+**EmailController**
 
-    **AuthController**
+```java
 
-    ```java
+@RestController
+@RequestMapping("/user/public/email")
+public class EmailController {
 
-    @RequestMapping("/user/public")
-    @RestController
-    public class AuthController {
+    @Autowired
+    private EmailService emailService;
 
-        @Autowired
-        private AuthService authService;
-
-        @PostMapping("/signup")
-        public ResponseEntity<?> signup(@Valid @RequestBody ReqSignupDto dto) throws SignupException {
-        String roleName = "ROLE_USER";
-        return ResponseEntity.ok().body(authService.signup(dto, roleName));
-        }
-
+    @PostMapping("/send")
+    public ResponseEntity<?> sendEmail(@RequestBody ReqSendMailDto dto) throws Exception {
+        emailService.sendEmail(dto);
+        return ResponseEntity.ok().body(true);
     }
 
-    ```
-
-    <br/>
-
-    - 클라이언트에 회원가입하는 요청을 처리하고 응답을 반환하는 역할을 합니다.
-    - 클라이언트가 보내는 JSON 데이터를 ReqSignupDto 객체로 변환하여 service에 전달합니다.
-    - 예외가 터지면 throws SignupException로 던져서 예외처리(오류처리)를 합니다.
-    - 회원가입 시 모든 유저에게 ROLE_USER라는 권한을 부여함으로써 관리자와 메니저를 차별화 두기 위해 사용하였습니다.
-    - authService.signup 메서드는 실제 회원가입을 성공적으로 응답해주기 위한 메서드입니다.
-
-    ---
-
-    <br/><br/>
-
-    **EmailController**
-
-    ```java
-
-    @RestController
-    @RequestMapping("/user/public/email")
-    public class EmailController {
-
-        @Autowired
-        private EmailService emailService;
-
-        @PostMapping("/send")
-        public ResponseEntity<?> sendEmail(@RequestBody ReqSendMailDto dto) throws Exception {
-            emailService.sendEmail(dto);
-            return ResponseEntity.ok().body(true);
-        }
-
-        @PostMapping("/auth")
-        public ResponseEntity<?> authEmail(@RequestBody ReqCertificationDto dto) {
-            return ResponseEntity.ok().body(emailService.authEmail(dto.getCheckNum()));
-        }
+    @PostMapping("/auth")
+    public ResponseEntity<?> authEmail(@RequestBody ReqCertificationDto dto) {
+        return ResponseEntity.ok().body(emailService.authEmail(dto.getCheckNum()));
     }
+}
 
-    ```
+```
 
-    <br/>
+<br/>
 
-    - sendEmail 메서드는 이메일 인증 요청을 /user/public/email/send를 통해 받아 사용자가 입력한 정보를 ReqSendMailDto 객체로 변환하여 service에 전달하고 service에서 성공적으로 데이터를 가지고오며 true로 응답하여 클라이언트에 전달하는 역할을 합니다. 
-    - authEmail 메서드는 이메일에서 온 인증번호와 사용자가 입력한 인증번호와 똑같이 썼는지 확인하는 로직입니다.
-    - ReqCertificationDto 객체로 변환하여 service에 전달하여 인증번호를 검사하는 역할을 합니다. 
+- sendEmail 메서드는 이메일 인증 요청을 /user/public/email/send를 통해 받아 사용자가 입력한 정보를 ReqSendMailDto 객체로 변환하여 service에 전달하고 service에서 성공적으로 데이터를 가지고오며 true로 응답하여 클라이언트에 전달하는 역할을 합니다. 
+- authEmail 메서드는 이메일에서 온 인증번호와 사용자가 입력한 인증번호와 똑같이 썼는지 확인하는 로직입니다.
+- ReqCertificationDto 객체로 변환하여 service에 전달하여 인증번호를 검사하는 역할을 합니다. 
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
-    **ReqSignupDto**
+**ReqSignupDto**
 
-    ```java
+```java
 
-    @Data
-    public class ReqSignupDto {
-        @Pattern(regexp = "^[a-z0-9]{6,}$", message = "사용자이름은 6자이상의 영소문자, 숫자 조합이어야합니다.")
-        private String username;
-        @NotBlank(message = "성명은 공백일 수 없습니다.")
-        @Pattern(regexp = "^[a-zA-Z가-힣]*$", message = "이름은 한글 또는 영문자만 포함할 수 있습니다.")
-        private String name;
-        @NotBlank(message = "이메일은 공백일 수 없습니다.")
-        @Email(message = "이메일 형식이어야 합니다.")
-        private String email;
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[~!@#$%^&*?])[A-Za-z\\d~!@#$%^&*?]{8,16}$", message = "비밀번호는 8자이상 16자이하의 영대소문, 숫자, 특수문자(~!@#$%^&*?)를 포함하여합니다.")
-        private String password;
-        private String checkPassword;
-        @Pattern(regexp = "^01[0-9]{1,2}-[0-9]{3,4}-[0-9]{4}$", message = "전화번호는 010-1234-5678 형식이어야합니다.")
-        private String phoneNumber;
+@Data
+public class ReqSignupDto {
+    @Pattern(regexp = "^[a-z0-9]{6,}$", message = "사용자이름은 6자이상의 영소문자, 숫자 조합이어야합니다.")
+    private String username;
+    @NotBlank(message = "성명은 공백일 수 없습니다.")
+    @Pattern(regexp = "^[a-zA-Z가-힣]*$", message = "이름은 한글 또는 영문자만 포함할 수 있습니다.")
+    private String name;
+    @NotBlank(message = "이메일은 공백일 수 없습니다.")
+    @Email(message = "이메일 형식이어야 합니다.")
+    private String email;
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[~!@#$%^&*?])[A-Za-z\\d~!@#$%^&*?]{8,16}$", message = "비밀번호는 8자이상 16자이하의 영대소문, 숫자, 특수문자(~!@#$%^&*?)를 포함하여합니다.")
+    private String password;
+    private String checkPassword;
+    @Pattern(regexp = "^01[0-9]{1,2}-[0-9]{3,4}-[0-9]{4}$", message = "전화번호는 010-1234-5678 형식이어야합니다.")
+    private String phoneNumber;
 
-        public User toEntity(BCryptPasswordEncoder bycryptPasswordEncoder, String img) {
-            return User.builder()
-                    .username(username)
-                    .name(name)
-                    .email(email)
-                    .password(bycryptPasswordEncoder.encode(password))
-                    .phoneNumber(phoneNumber)
-                    .img(img)
+    public User toEntity(BCryptPasswordEncoder bycryptPasswordEncoder, String img) {
+        return User.builder()
+                .username(username)
+                .name(name)
+                .email(email)
+                .password(bycryptPasswordEncoder.encode(password))
+                .phoneNumber(phoneNumber)
+                .img(img)
+                .build();
+    }
+}
+
+```
+<br/>
+
+- 이 dto는 회원가입 요청에 필요한 사용자 정보를 담는 객체입니다.
+- 각 필드에는 유효성 검사를 위한 어노테이션 @Pattern을 사용하여 클라이언트에서 보낸 데이터과 올바른 형식이진 서버에서 확인해주는 역할을 합니다.
+- toEntity 메서드는 ReqSignupDto의 각 필드를 해당 User 엔티티 객체의 속성으로 설정합니다.
+- 비밀번호는 암호화 된 상태에서 User 엔티티에 저장이 되어 안전하게 처리 되었습니다.
+
+---
+
+<br/><br/>
+
+**ReqSendMailDto**
+
+```java
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class ReqSendMailDto {
+    private String toEmail;
+}
+
+```
+
+<br/>
+
+- 사용자의 이메일에 인증번호를 보내기 위해 사용자의 이메일을 담아 service에 전달하는 dto 입니다.
+
+---
+
+<br/><br/>
+
+**ReqCertificationDto**
+
+```java
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class ReqCertificationDto {
+    private String checkNum;
+}
+
+```
+
+<br/>
+
+- 사용자가 입력한 인증번호를 담아 service에 전달하여 이메일로 응답한 인증번호와 일치한지 확인하기 위한 로직입니다.
+
+---
+
+<br/><br/>
+
+**RespSignupDto**
+
+```java
+
+@Builder
+@Data
+public class RespSignupDto {
+    private User user;
+}
+
+```
+
+<br/>
+
+- 사용자가 입력한 user 정보를 service에서 받아 controller에 전달해주는 역할을 합니다.
+
+---
+
+<br/><br/>
+
+**AuthService**
+
+```java
+
+@Service
+public class AuthService {
+
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private RoleMapper roleMapper;
+    @Autowired
+    private UserRolesMapper userRolesMapper;
+
+    @Value("${user.profile.img.default}")
+    private String defaultProfileImg;
+
+    @Transactional(rollbackFor = SignupException.class)
+    public RespSignupDto signup(ReqSignupDto dto, String roleName) throws SignupException {
+
+        User user = null;
+
+        try {
+            if (isDuplicateUsername(dto.getUsername())) {
+                throw new SignupException("이미 존재하는 사용자 입니다.");
+            }
+            if (!checkPassword(dto.getPassword(), dto.getCheckPassword())) {
+                throw new SignupException("비밀번호가 일치하지 않습니다.");
+            }
+
+            user = dto.toEntity(bCryptPasswordEncoder, defaultProfileImg);
+            userMapper.save(user);
+
+            Role role = roleMapper.findByName(roleName);
+            if (role == null) {
+                role = Role.builder()
+                        .name(roleName)
+                        .build();   
+
+                roleMapper.save(role);
+            }
+
+            UserRoles userRoles = UserRoles.builder()
+                    .userId(user.getUserId())
+                    .roleId(role.getRoleId())
                     .build();
+            userRolesMapper.save(userRoles);
+            user.setUserRoles(Set.of(userRoles));
+
+        } catch (Exception e) {
+            throw new SignupException(e.getMessage());
+        }
+
+        return RespSignupDto.builder()
+                .user(user)
+                .build();
+    }
+
+}
+
+// username 중복 확인
+public boolean isDuplicateUsername(String username) {
+    return Optional.ofNullable(userMapper.findUserByUsername(username)).isPresent();
+}
+
+// password, checkPassword 같은지 확인
+public boolean checkPassword(String password, String checkPassword) {
+    return checkPassword.equals(password);
+}
+
+```
+
+<br/>
+
+- signup 메서드는 사용자의 아이디가 동일한 사용자가 있는지, 입력한 비밀번호가 다시 입력한 비밀번호와 같은지 확인하고 입력한 정보가 올바르면 저장이 되어 controller에 전달해주는 역할을 해줍니다.
+- @Transactional : 예외가 발생하면 DB에 저장된 데이터는 전부 취소됩니다
+- 여기서 Transactional는 롤백으로 사용되어 첫번째 user 정보가 저장이 되있다면 두번째부터 userId를 비교하여 동일할 시 두번째 user 정보가 아예 들어가지 못하게 막는 역할을 하였습니다.
+- user라는 객체를 생성하여 암호화된 비밀번호와 기본 프로필 사진을 가지고와 userMapper를 통해 DB에 저장합니다.
+- role 객체에 주어진 roleName에 해당하는 역할이 데이터베이스에 존재하는지 조회하여 역할이 없으면(role == null) 새 역할을 생성하고 Role.builder 에 저장합니다.
+- userRoles 객체는 user 객체에 가지고온 userId와 role 객체에 가지고온 roleId 를 userRolesMapper를 통해 저장하는 역할을 합니다.
+- 최종적으로 RespSignupDto 객체에 user정보를 담아 controller에 반환하는 역할을 합니다.
+
+---
+
+<br/><br/>
+
+**EmailService**
+
+```java
+
+@Service
+public class EmailService {
+
+    @Value("${spring.mail.username}")
+    private String senderEmail;
+    @Autowired
+    private JavaMailSender javaMailSender;
+    private String verifyCode;
+
+    public void sendEmail(ReqSendMailDto dto) throws Exception {
+        verifyCode = String.format("%.0f",(Math.random() * (90000)) + 100000);
+        try {
+            StringBuilder htmlContent = new StringBuilder();
+            MimeMessage mail = javaMailSender.createMimeMessage();
+            MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+
+            htmlContent.append("<h3>요청하신 인증 번호입니다.</h3>");
+            htmlContent.append("<h1>");
+            htmlContent.append(verifyCode);
+            htmlContent.append("</h1>");
+            htmlContent.append("<h3>감사합니다.</h3>");
+
+            mail.setText(htmlContent.toString(), "UTF-8", "html");
+
+            mailHelper.setFrom(senderEmail);
+            mailHelper.setTo(dto.getToEmail());
+            mailHelper.setSubject("인증 번호 안내");
+            mailHelper.setText(htmlContent.toString(), true);
+
+            javaMailSender.send(mail);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    ```
-    <br/>
+    public boolean authEmail(String checkNum) {
 
-    - 이 dto는 회원가입 요청에 필요한 사용자 정보를 담는 객체입니다.
-    - 각 필드에는 유효성 검사를 위한 어노테이션 @Pattern을 사용하여 클라이언트에서 보낸 데이터과 올바른 형식이진 서버에서 확인해주는 역할을 합니다.
-    - toEntity 메서드는 ReqSignupDto의 각 필드를 해당 User 엔티티 객체의 속성으로 설정합니다.
-    - 비밀번호는 암호화 된 상태에서 User 엔티티에 저장이 되어 안전하게 처리 되었습니다.
-
-    ---
-
-    <br/><br/>
-
-    **ReqSendMailDto**
-
-    ```java
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public class ReqSendMailDto {
-        private String toEmail;
-    }
-
-    ```
-
-    <br/>
-
-    - 사용자의 이메일에 인증번호를 보내기 위해 사용자의 이메일을 담아 service에 전달하는 dto 입니다.
-
-    ---
-
-    <br/><br/>
-
-    **ReqCertificationDto**
-
-    ```java
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public class ReqCertificationDto {
-        private String checkNum;
-    }
-
-    ```
-
-    <br/>
-
-    - 사용자가 입력한 인증번호를 담아 service에 전달하여 이메일로 응답한 인증번호와 일치한지 확인하기 위한 로직입니다.
-
-    ---
-
-    <br/><br/>
-
-    **RespSignupDto**
-
-    ```java
-
-    @Builder
-    @Data
-    public class RespSignupDto {
-        private User user;
-    }
-
-    ```
-
-    <br/>
-
-    - 사용자가 입력한 user 정보를 service에서 받아 controller에 전달해주는 역할을 합니다.
-
-    ---
-
-    <br/><br/>
-
-    **AuthService**
-
-    ```java
-
-    @Service
-    public class AuthService {
-
-        @Autowired
-        private UserMapper userMapper;
-        @Autowired
-        private BCryptPasswordEncoder bCryptPasswordEncoder;
-        @Autowired
-        private RoleMapper roleMapper;
-        @Autowired
-        private UserRolesMapper userRolesMapper;
-
-        @Value("${user.profile.img.default}")
-        private String defaultProfileImg;
-
-        @Transactional(rollbackFor = SignupException.class)
-        public RespSignupDto signup(ReqSignupDto dto, String roleName) throws SignupException {
-
-            User user = null;
-
-            try {
-                if (isDuplicateUsername(dto.getUsername())) {
-                    throw new SignupException("이미 존재하는 사용자 입니다.");
-                }
-                if (!checkPassword(dto.getPassword(), dto.getCheckPassword())) {
-                    throw new SignupException("비밀번호가 일치하지 않습니다.");
-                }
-
-                user = dto.toEntity(bCryptPasswordEncoder, defaultProfileImg);
-                userMapper.save(user);
-
-                Role role = roleMapper.findByName(roleName);
-                if (role == null) {
-                    role = Role.builder()
-                            .name(roleName)
-                            .build();   
-
-                    roleMapper.save(role);
-                }
-
-                UserRoles userRoles = UserRoles.builder()
-                        .userId(user.getUserId())
-                        .roleId(role.getRoleId())
-                        .build();
-                userRolesMapper.save(userRoles);
-                user.setUserRoles(Set.of(userRoles));
-
-            } catch (Exception e) {
-                throw new SignupException(e.getMessage());
-            }
-
-            return RespSignupDto.builder()
-                    .user(user)
-                    .build();
+        if (checkNum.equals(verifyCode)) {
+            return true;
         }
-
+        return false;
     }
+}
 
-    ```
+```
 
-    <br/>
+<br/>
 
-    - signup 메서드는 사용자의 아이디가 동일한 사용자가 있는지, 입력한 비밀번호가 다시 입력한 비밀번호와 같은지 확인하고 입력한 정보가 올바르면 저장이 되어 controller에 전달해주는 역할을 해줍니다.
-    - @Transactional : 예외가 발생하면 DB에 저장된 데이터는 전부 취소됩니다
-    - 여기서 Transactional는 롤백으로 사용되어 첫번째 user 정보가 저장이 되있다면 두번째부터 userId를 비교하여 동일할 시 두번째 user 정보가 아예 들어가지 못하게 막는 역할을 하였습니다.
-    - user라는 객체를 생성하여 암호화된 비밀번호와 기본 프로필 사진을 가지고와 userMapper를 통해 DB에 저장합니다.
-    - role 객체에 주어진 roleName에 해당하는 역할이 데이터베이스에 존재하는지 조회하여 역할이 없으면(role == null) 새 역할을 생성하고 Role.builder 에 저장합니다.
-    - userRoles 객체는 user 객체에 가지고온 userId와 role 객체에 가지고온 roleId 를 userRolesMapper를 통해 저장하는 역할을 합니다.
-    - 최종적으로 RespSignupDto 객체에 user정보를 담아 controller에 반환하는 역할을 합니다.
+- sendEmail 메서드는 사용자가 입력한 이메일에 인증번호를 생서하고 전송하는 로직입니다.
+- verifyCode는 6자리의 랜덤숫자(100000 ~ 999999 사이)를 생성하여 인증번호로 생성해주는 역할을 합니다.
+- htmlContent 객체는 StringBuilder라는 클래스를 이용하여 메일 본문에 인증번호를 전달하는 내용을 삽입하여 구성하였습니다.
+- authEmail 메서드는 입력한 인증번호가 메일에 전송된 인증번호와 같은지 확인하는 역할을 합니다.
+- 만약에 입력한 인증번호가 같으면 true로 반환해주고 아니면 false로 반환해줍니다.
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
-    **EmailService**
+**UserMapper**
 
-    ```java
+```java
 
-    @Service
-    public class EmailService {
+@Mapper
+public interface UserMapper {
 
-        @Value("${spring.mail.username}")
-        private String senderEmail;
-        @Autowired
-        private JavaMailSender javaMailSender;
-        private String verifyCode;
+    int save(User user);
 
-        public void sendEmail(ReqSendMailDto dto) throws Exception {
-            verifyCode = String.format("%.0f",(Math.random() * (90000)) + 100000);
-            try {
-                StringBuilder htmlContent = new StringBuilder();
-                MimeMessage mail = javaMailSender.createMimeMessage();
-                MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+    User findUserByUsername(String username);
 
-                htmlContent.append("<h3>요청하신 인증 번호입니다.</h3>");
-                htmlContent.append("<h1>");
-                htmlContent.append(verifyCode);
-                htmlContent.append("</h1>");
-                htmlContent.append("<h3>감사합니다.</h3>");
+}
 
-                mail.setText(htmlContent.toString(), "UTF-8", "html");
+```
 
-                mailHelper.setFrom(senderEmail);
-                mailHelper.setTo(dto.getToEmail());
-                mailHelper.setSubject("인증 번호 안내");
-                mailHelper.setText(htmlContent.toString(), true);
+<br/>
 
-                javaMailSender.send(mail);
+- save 메서드는 UserMapper에 정의된 메서드 입니다.
+- 이 메서드는 입력한 사용자의 정보를 저장하기 위한 데이터를 sql에서 받아 service에 전달하는 역할을 합니다.
+- findUserByUsername 메서드는 사용자가 입력한 아이디가 중복되는지 확인하는 sql문을 통해 service로 전달하는 역할을 합니다.
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+---
 
-        public boolean authEmail(String checkNum) {
+<br/><br/>
 
-            if (checkNum.equals(verifyCode)) {
-                return true;
-            }
-            return false;
-        }
-    }
+**RoleMapper**
 
-    ```
+```java
 
-    <br/>
+@Mapper
+public interface RoleMapper {
 
-    - sendEmail 메서드는 사용자가 입력한 이메일에 인증번호를 생서하고 전송하는 로직입니다.
-    - verifyCode는 6자리의 랜덤숫자(100000 ~ 999999 사이)를 생성하여 인증번호로 생성해주는 역할을 합니다.
-    - htmlContent 객체는 StringBuilder라는 클래스를 이용하여 메일 본문에 인증번호를 전달하는 내용을 삽입하여 구성하였습니다.
-    - authEmail 메서드는 입력한 인증번호가 메일에 전송된 인증번호와 같은지 확인하는 역할을 합니다.
-    - 만약에 입력한 인증번호가 같으면 true로 반환해주고 아니면 false로 반환해줍니다.
+    int save(Role role);
+    Role findByName(String name);
 
-    ---
+}
 
-    <br/><br/>
+```
 
-    **UserMapper**
+<br/>
 
-    ```java
+- save 메서드는 role 객체를 DB에 저장하는 역할을 합니다.
+- findByName 메서드는 AuthService에서 roleName을 받아 그 값을 name이라는 이름으로 받아 이를 통해 Role을 조회하는 메서드입니다.
 
-    @Mapper
-    public interface UserMapper {
+---
 
-        int save(User user);
+<br/><br/>
 
-    }
+**UserRolesMapper**
 
-    ```
+```java
 
-    <br/>
+@Mapper
+public interface UserRolesMapper {
 
-    - save 메서드는 UserMapper에 정의된 메서드 입니다.
-    - 이 메서드는 입력한 사용자의 정보를 저장하기 위한 데이터를 sql에서 받아 service에 전달하는 역할을 합니다.
+    int save(UserRoles userRoles);
 
-    ---
+}
 
-    <br/><br/>
+```
 
-    **RoleMapper**
+<br/>
 
-    ```java
+- save 메서드는 UserRoles 객체를 userId와 roleId 값으로 DB에 저장하여 service에 전달하는 역할을 합니다.
 
-    @Mapper
-    public interface RoleMapper {
+---
 
-        int save(Role role);
-        Role findByName(String name);
+<br/><br/>
 
-    }
+**user.xml**
 
-    ```
+```java
 
-    <br/>
+<insert id="save" useGeneratedKeys="true" keyProperty="userId">
+    insert into users_tb(user_id, username, name, email, password, phone_number, img, created_at)
+    values(0, #{username}, #{name}, #{email}, #{password}, #{phoneNumber}, #{img}, now())
+</insert>
 
-    - save 메서드는 role 객체를 DB에 저장하는 역할을 합니다.
-    - findByName 메서드는 AuthService에서 roleName을 받아 그 값을 name이라는 이름으로 받아 이를 통해 Role을 조회하는 메서드입니다.
+```
 
-    ---
+- 사용자가 입력한 user 정보를 users_tb에 추가하여 UserMapper에 전달하는 sql문입니다.
 
-    <br/><br/>
+---
 
-    **UserRolesMapper**
+<br/><br/>
 
-    ```java
+**user.xml**
 
-    @Mapper
-    public interface UserRolesMapper {
+```java
 
-        int save(UserRoles userRoles);
+<select id="findUserByUsername" resultMap="userResultMap">
+    select
+        ut.user_id,
+        ut.username,
+        ut.name,
+        ut.email,
+        ut.phone_number,
+        ut.img,
+        ut.password,
+        ut.created_at,
+        urt.user_roles_id,
+        urt.user_id as urt_user_id,
+        urt.role_id as urt_role_id,
+        rt.role_id,
+        rt.name as role_name
+    from
+        users_tb ut
+        left outer join user_roles_tb urt on (ut.user_id = urt.user_id)
+        left outer join roles_tb rt on (rt.role_id = urt.role_id)
+    where
+        ut.username = #{username}
+</select>
 
-    }
+```
 
-    ```
+- 사용자가 입력한 username와 users_tb에 있는 username과 같은거만 조회하는 sql문입니다. 
 
-    <br/>
+---
 
-    - save 메서드는 UserRoles 객체를 userId와 roleId 값으로 DB에 저장하여 service에 전달하는 역할을 합니다.
+<br/><br/>
 
-    ---
+**role.xml**
 
-    <br/><br/>
+```java
 
-    **user.xml**
+// save 메서드
+<insert id="save" useGeneratedKeys="true" keyProperty="roleId">
+    insert into roles_tb
+    values(0, #{name})
+</insert>
 
-    ```java
+```
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="userId">
-        insert into users_tb(user_id, username, name, email, password, phone_number, img, created_at)
-        values(0, #{username}, #{name}, #{email}, #{password}, #{phoneNumber}, #{img}, now())
-    </insert>
+<br/>
 
-    ```
+- RoleMapper에서 받아온 roleName을 roles_tb에 추가하여 그 결과를 RoleMapper로 전달하는 sql문입니다.  
 
-    - 사용자가 입력한 user 정보를 users_tb에 추가하여 UserMapper에 전달하는 sql문입니다.
-    
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
-    **role.xml**
+**role.xml**
 
-    ```java
+```java
 
-    // save 메서드
-    <insert id="save" useGeneratedKeys="true" keyProperty="roleId">
-        insert into roles_tb
-        values(0, #{name})
-    </insert>
+// findByName 메서드
+<select id="findByName" resultType="org.test.teamproject_back.entity.Role">
+    select
+        role_id as roleId,
+        name
+    from
+        roles_tb
+    where
+        name = #{name}
+</select>
 
-    ```
+```
 
-    <br/>
+<br/>
 
-    - RoleMapper에서 받아온 roleName을 roles_tb에 추가하여 그 결과를 RoleMapper로 전달하는 sql문입니다.  
+- name에 해당하는 역할을 roles_tb 에서 조회하여 결과를 RoleMapper로 전달하는 sql문입니다. 
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
-    **role.xml**
+**user_roles.xml**
 
-    ```java
+```java
 
-    // findByName 메서드
-    <select id="findByName" resultType="org.test.teamproject_back.entity.Role">
-        select
-            role_id as roleId,
-            name
-        from
-            roles_tb
-        where
-            name = #{name}
-    </select>
+<insert id="save">
+    insert into user_roles_tb
+    values(0, #{userId}, #{roleId})
+</insert>
 
-    ```
+```
 
-    <br/>
+<br/>
 
-    - name에 해당하는 역할을 roles_tb 에서 조회하여 결과를 RoleMapper로 전달하는 sql문입니다. 
-
-    ---
-
-    <br/><br/>
-
-    **user_roles.xml**
-
-    ```java
-
-    <insert id="save">
-        insert into user_roles_tb
-        values(0, #{userId}, #{roleId})
-    </insert>
-
-    ```
-
-    <br/>
-
-    - userId와 roleId를 이용하여 user와 role의 정보들을 user_roles_tb에 추가하여 결과값을 UserRolesMapper에 전달하는 sql문입니다. 
-
-    ---
-
-    <br/><br/>
+- userId와 roleId를 이용하여 user와 role의 정보들을 user_roles_tb에 추가하여 결과값을 UserRolesMapper에 전달하는 sql문입니다. 
 
 ---
 
@@ -3539,13 +4213,120 @@ __유저__
 
     ```jsx
 
+    function SigninPage(props) {
+        const navigate = useNavigate();
+        const location = useLocation();
+        const from = location.state?.from?.pathname || '/';
 
+        const [user, setUser] = useState({
+            username: "",
+            password: "",
+        });
+
+        const userInputOnChange = (e) => {
+            setUser((user) => ({
+                ...user,
+                [e.target.name]: e.target.value,
+            }));
+        };
+
+        // 로그인 mutation
+        const signinUser = useMutation(
+            async (user) => {
+                return await instance.post("user/public/signin", user);
+            },
+            {
+                // 로그인 에러 - 에러메시지 불러옴
+                onError: (response) => {
+                    alert(response.response.data); // 데이터 확인 필요
+                },
+                onSuccess: (response) => {
+                    localStorage.setItem(
+                        "accessToken",
+                        "Bearer " + response.data.accessToken
+                    ); // 로그인 성공하면 accessToken 집어넣음
+                    localStorage.setItem("role", response.data.role.name)
+
+                    instance.interceptors.request.use((config) => {
+                        // 요청때 config 설정 사용해라
+                        config.headers["Authorization"] = localStorage.getItem("accessToken"); // 처음에 로그인이 안되어있으면 null값 들어가 있음
+                        return config;
+                    });
+                    navigate(from, {replace : true});
+                },
+            }
+        );
+
+        const handleLoginSubmitOnClick = () => {
+            signinUser.mutate(user);
+        };
+
+        const handleLoginSubmitOnkeyDown = (e) => {
+            if(e.keyCode === 13) {
+                handleLoginSubmitOnClick();
+            }
+        };
+
+        return (
+            <div css={s.mainLayout}>
+                <h1 css={s.logo}>
+                    <img src={logo} />
+                </h1>
+                <div css={s.layout}>
+                    <div css={s.headerLayout}>
+                        <h2>로그인</h2>
+                    </div>
+                    <div css={s.inputUser}>
+                        <input
+                            type="text"
+                            name="username"
+                            onChange={userInputOnChange}
+                            value={user.username}
+                            placeholder="아이디를 입력해 주세요"
+                        />
+                        <input
+                            type="password"
+                            name="password"
+                            onChange={userInputOnChange}
+                            onKeyDown={handleLoginSubmitOnkeyDown}
+                            value={user.password}
+                            placeholder="비밀번호를 입력해 주세요"
+                        />
+                    </div>
+                    <div css={s.joinOkButton}>
+                        <button onClick={handleLoginSubmitOnClick}>로그인 하기</button>
+                    </div>
+                    <div css={s.oauth2Buttons}>
+                        <a href="http://localhost:8080/oauth2/authorization/naver">
+                            <SiNaver />
+                            네이버 로그인
+                        </a>
+                        <a href="http://localhost:8080/oauth2/authorization/google?scope=email%20profile%20https://www.googleapis.com/auth/user.phonenumbers.read">
+                            <FcGoogle />
+                            구글 로그인
+                        </a>
+                    </div>
+                    <div css={s.joinAndSearchUser}>
+                        <Link to="/user/signup">회원 가입</Link>
+                        <Link to="/user/signin/findid" >아이디 비밀번호 찾기</Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    export default SigninPage;
 
     ```
 
     <br/>
 
-    -
+    - 이 코드는 사용자가 회원가입한 아이디와 비밀번호를 입력하여 로그인 할 수 있도록 구현하였습니다.
+    - 입력한 아이디와 비밀번호는 상태로 관리합니다.
+    - mutation을 사용하여 로그인의 post 요청으로 처리합니다.
+    - post 요청이 성공할시 accessToken과 role(사용자의 역할)를 서버에서 받아와 localStorage에 저장하고 로그인한 정보를 통해 로그인이 필요한 페이지를 이용할 수 있게 구성하였고 로그인이 성공하면 이전 페이지로 돌아갈 수 있게 구현하였습니다.
+    - 로그인 버튼을 클릭하거나 비밀번호 창에서 엔터키를 누를 시 로그인 요청을 하는 mutation이 실행이 됩니다. 
+    - 로그인 화면에는 OAuth2 기능을 이용하여 네이버, 구글로그인을 구현하였고 아이디와 비밀번호 찾기도 할 수 있게 구현하였습니다. 아이디와 비밀번호찾기를 클릭 시 아이디 찾는 페이지로 넘어가도록 Link를 걸어 설정하였습니다. 
 
     ---
 
@@ -3557,55 +4338,234 @@ __유저__
 
     ```java
 
+    @RequestMapping("/user/public")
+    @RestController
+    public class AuthController {
+        @Autowired
+        private AuthService authService;
 
+        @PostMapping("/signin")
+        public ResponseEntity<?> signin(@Valid @RequestBody ReqSigninDto dto) {
+            return ResponseEntity.ok().body(authService.signin(dto));
+        }
 
-    ```
-
-    <br/>
-
-    -
-
-    ---
-
-    **Service**
-
-    ```java
-
-
+    }
 
     ```
 
     <br/>
 
-    -
-
-    ---
-
-    **Mapper**
-
-    ```java
-
-
-
-    ```
-
-    <br/>
-
-    -
+    - 클라이언트에서 사용자가 입력한 정보를 요청을 받아 authService를 통해 응답을 ReqSigninDto 형태로 전달해주는 controller입니다. 
 
     ---
 
     <br/><br/>
 
-    **xml**
+    **ReqSigninDto**
 
     ```java
 
+    @Data
+    public class ReqSigninDto {
 
+        @Pattern(regexp = "^[a-z0-9]{6,}$", message = "사용자이름은 6자이상의 영소문자, 숫자 조합이어야합니다.")
+        private String username;
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[~!@#$%^&*?])[A-Za-z\\d~!@#$%^&*?]{8,16}$", message = "비밀번호는 8자이상 16자이하의 영대소문, 숫자, 특수문자(~!@#$%^&*?)를 포함하여합니다.")
+        private String password;
+
+    }
 
     ```
 
-    -
+    <br/>
+
+    - 이 코드는 클라이언트에서 보낸 username과 password를 받아 유효성 검사 하는 역할을 합니다.
+
+    --- 
+
+    <br/><br/>
+
+    **RespSigninDto**
+
+    ```java
+
+    @Builder
+    @Data
+    public class RespSigninDto {
+
+        private String expireDate;
+        private String accessToken;
+        private Role role;
+
+    }
+
+    ```
+
+    <br/>
+
+    - 이 dto는 서버에서 클라이언트로 반환하는 응답데이터(expireDate, accessToken, role)가 담겨있는 dto입니다. 
+
+    --- 
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    @Service
+    public class AuthService {
+
+        @Autowired
+        private UserMapper userMapper;
+        @Autowired
+        private BCryptPasswordEncoder bCryptPasswordEncoder;
+        @Autowired
+        private RoleMapper roleMapper;
+        @Autowired
+        private JwtProvider jwtProvider;
+
+        public RespSigninDto signin(ReqSigninDto dto) {
+        User user = checkUsernameAndPassword(dto.getUsername(), dto.getPassword());
+
+            return RespSigninDto.builder()
+                    .expireDate(jwtProvider.getExpireDate().toLocaleString())
+                    .accessToken(jwtProvider.generateAccessToken(user))
+                    .role(roleMapper.findRoleByUsername(dto.getUsername()))
+                    .build();
+        }
+
+        public User checkUsernameAndPassword(String username, String password) {
+            User user = userMapper.findUserByUsername(username);
+            if (user == null) {
+                throw new UsernameNotFoundException("사용자 정보를 확인하세요.");
+            }
+            if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
+                throw new BadCredentialsException("사용자 정보를 확인하세요.");
+            }
+            return user;
+        }
+    }
+
+    ```
+
+    <br/>
+
+    - 로그인 성공 시 JWT토큰을 생성하여 반환하는 AuthService 입니다.
+    - signin 메서드는 로그인 요청을 처리합니다. 
+    - checkUsernameAndPassword 메서드를 호출하여 username과 password 정보를 user 객체에 대입합니다.
+    - expireDate는 JWT 토큰의 만료일을 문자열로 변환한 형태로 RespSigninDto에 반환합니다.
+    - accessToken는 user 정보를 바탕으로 jwt 토큰을 생성한 형태로 RespSigninDto에 반환합니다. 
+    - role는 로그인한 사용자의 역할를 찾아서 그 값을 RespSigninDto에 반환합니다.
+    - checkUsernameAndPassword 메서드는 사용자가 입력한 아이디와 비밀번호가 올바른지 검사하여 signin메서드에서 사용됩니다.
+    - 사용자가 입력한 아이디의 값이 null 이거나 찾을 수 없으면 throw를 이용하여 오류로 응답해줍니다.
+    - 사용자가 입력한 비밀번호가 올바르지 않으면 오류로 응답합니다.
+
+    ---
+
+    <br/><br/>
+
+    **UserMapper**
+
+    ```java
+
+    @Mapper
+    public interface UserMapper {
+
+        User findUserByUsername(String username);
+
+    }
+
+    ```
+
+    <br/>
+
+    - findUserByUsername 메서드는 username(사용자가 입력한 ID)을 통해 해당 사용자의 정보를 찾아 signin 메서드 안에 user 변수에 저장합니다.
+    - 이는 해당 사용자의 아이디와 데이터베이스 안에 있는 해당 사용자의 저장된 아이디와 비교하기 위한 메서드입니다.
+
+    ---
+
+    <br/><br/>
+
+    **RoleMapper**
+
+    ```java
+
+    @Mapper
+    public interface RoleMapper {
+
+        Role findRoleByUsername(String username);
+
+    }
+
+    ```
+
+    <br/>
+
+    - findRoleByUsername 메서드는 데이터베이스에서 사용자의 역할을 조회하여 username을 매개변수로 받아 AuthService에 반환하는 Mapper입니다.
+
+    ---
+
+    <br/><br/>
+
+    **user.xml**
+
+    ```java
+
+    <select id="findUserByUsername" resultMap="userResultMap">
+        select
+            ut.user_id,
+            ut.username,
+            ut.name,
+            ut.email,
+            ut.phone_number,
+            ut.img,
+            ut.password,
+            ut.created_at,
+            urt.user_roles_id,
+            urt.user_id as urt_user_id,
+            urt.role_id as urt_role_id,
+            rt.role_id,
+            rt.name as role_name
+        from
+            users_tb ut
+            left outer join user_roles_tb urt on (ut.user_id = urt.user_id)
+            left outer join roles_tb rt on (rt.role_id = urt.role_id)
+        where
+            ut.username = #{username}
+    </select>
+
+    ```
+
+    <br/>
+
+    - 입력한 사용자의 ID를 통해 users_tb에서 사용자의 정보를 조회하여 UserMapper에 전달하는 sql 문입니다.
+
+    ---
+
+    <br/><br/>
+
+    **role.xml**
+
+    ```java
+
+    <select id="findRoleByUsername" resultMap="roleResultMap">
+        select
+            rt.role_id,
+            rt.name
+        from
+            users_tb ut
+            left outer join user_roles_tb urt on (ut.user_id = urt.user_id)
+            left outer join roles_tb rt on (urt.role_id = rt.role_id)
+        where
+            ut.username = #{username};
+    </select>
+
+    ```
+
+    <br/>
+
+    - 사용자가 입력한 username을 통해 해당당 사용자의 역할을 조회하여 RoleMapper에 반환하는 sql 문입니다.
 
 ---
 
@@ -3617,13 +4577,116 @@ __유저__
 
     ```jsx
 
+    function SigninPage(props) {
+        const navigate = useNavigate();
+        const location = useLocation();
+        const from = location.state?.from?.pathname || '/';
 
+        const [user, setUser] = useState({
+            username: "",
+            password: "",
+        });
+
+        const userInputOnChange = (e) => {
+            setUser((user) => ({
+                ...user,
+                [e.target.name]: e.target.value,
+            }));
+        };
+
+        // 로그인 mutation
+        const signinUser = useMutation(
+            async (user) => {
+                return await instance.post("user/public/signin", user);
+            },
+            {
+                // 로그인 에러 - 에러메시지 불러옴
+                onError: (response) => {
+                    alert(response.response.data); // 데이터 확인 필요
+                },
+                onSuccess: (response) => {
+                    localStorage.setItem(
+                        "accessToken",
+                        "Bearer " + response.data.accessToken
+                    ); // 로그인 성공하면 accessToken 집어넣음
+                    localStorage.setItem("role", response.data.role.name)
+
+                    instance.interceptors.request.use((config) => {
+                        // 요청때 config 설정 사용해라
+                        config.headers["Authorization"] = localStorage.getItem("accessToken"); // 처음에 로그인이 안되어있으면 null값 들어가 있음
+                        return config;
+                    });
+                    navigate(from, {replace : true});
+                },
+            }
+        );
+
+        const handleLoginSubmitOnClick = () => {
+            signinUser.mutate(user);
+        };
+
+        const handleLoginSubmitOnkeyDown = (e) => {
+            if(e.keyCode === 13) {
+                handleLoginSubmitOnClick();
+            }
+        };
+
+        return (
+            <div css={s.mainLayout}>
+                <h1 css={s.logo}>
+                    <img src={logo} />
+                </h1>
+                <div css={s.layout}>
+                    <div css={s.headerLayout}>
+                        <h2>로그인</h2>
+                    </div>
+                    <div css={s.inputUser}>
+                        <input
+                            type="text"
+                            name="username"
+                            onChange={userInputOnChange}
+                            value={user.username}
+                            placeholder="아이디를 입력해 주세요"
+                        />
+                        <input
+                            type="password"
+                            name="password"
+                            onChange={userInputOnChange}
+                            onKeyDown={handleLoginSubmitOnkeyDown}
+                            value={user.password}
+                            placeholder="비밀번호를 입력해 주세요"
+                        />
+                    </div>
+                    <div css={s.joinOkButton}>
+                        <button onClick={handleLoginSubmitOnClick}>로그인 하기</button>
+                    </div>
+                    <div css={s.oauth2Buttons}>
+                        <a href="http://localhost:8080/oauth2/authorization/naver">
+                            <SiNaver />
+                            네이버 로그인
+                        </a>
+                        <a href="http://localhost:8080/oauth2/authorization/google?scope=email%20profile%20https://www.googleapis.com/auth/user.phonenumbers.read">
+                            <FcGoogle />
+                            구글 로그인
+                        </a>
+                    </div>
+                    <div css={s.joinAndSearchUser}>
+                        <Link to="/user/signup">회원 가입</Link>
+                        <Link to="/user/signin/findid" >아이디 비밀번호 찾기</Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    export default SigninPage;
 
     ```
 
     <br/>
 
-    -
+    - 기존 로그인페이지에 OAuth2 로그인 기능을 넣었습니다. 
+    - a 태그에 href를 이용하여 기존에 네이버 로그인과 구글 로그인을 할 수 있는 url를 가지고와 사용하였습니다. 
 
     ---
 
@@ -3645,6 +4708,8 @@ __유저__
 
     ---
 
+    <br/><br/>
+
     **Service**
 
     ```java
@@ -3658,6 +4723,8 @@ __유저__
     -
 
     ---
+
+    <br/><br/>
 
     **Mapper**
 
@@ -3693,11 +4760,11 @@ __유저__
 
 	__아이디 찾기__
 
-    <br/>
-
     **프론트**
 
     ```jsx
+
+
 
     ```
 
@@ -3706,12 +4773,16 @@ __유저__
 
     **백엔드**
 
-    ```jsx
+    ```java
+
+
 
     ```
     -
 
     ---
+
+    <br/><br/>
 
 	__비밀번호 찾기__  
 
@@ -3720,6 +4791,14 @@ __유저__
 
 
     ```
+
+    <br/>
+
+    -
+
+---
+
+<br/><br/>
 
 ### 장바구니
 
@@ -3757,6 +4836,8 @@ __유저__
 
     ---
 
+    <br/><br/>
+
     **Service**
 
     ```java
@@ -3770,6 +4851,8 @@ __유저__
     -
 
     ---
+
+    <br/><br/>
 
     **Mapper**
 
@@ -3835,6 +4918,8 @@ __유저__
 
     ---
 
+    <br/><br/>
+
     **Service**
 
     ```java
@@ -3848,6 +4933,8 @@ __유저__
     -
 
     ---
+
+    <br/><br/>
 
     **Mapper**
 
@@ -3915,6 +5002,8 @@ __유저__
 
 ---
 
+<br/><br/>
+
 **Service**
 
 ```java
@@ -3928,6 +5017,8 @@ __유저__
 -
 
 ---
+
+<br/><br/>
 
 **Mapper**
 
@@ -4149,6 +5240,8 @@ __유저__
 
 ---
 
+<br/><br/>
+
 **Service**
 
 ```java
@@ -4162,6 +5255,8 @@ __유저__
 -
 
 ---
+
+<br/><br/>
 
 **Mapper**
 
@@ -4551,13 +5646,5 @@ __유저__
 <br/>
 
 🐓 김영희  
-: 처음으로 이번 프로젝트를 진행하면서 제가 프로젝트 진행하기 전에 crud 중 조회하는 파트를 어려워 하였는데 이번 프로젝트로 인해 url 요청이나 데이터 정보들을 들고와서 조회하는 과정을 많이 하게 되어 극복하게 되었습니다. 제가 백엔드와 요청한 주소를 같게 써야하는 과정에서 팀원들과 소통하지 않고 제 멋대로 쓴 경우가 있었습니다. 그래서 진도 나가는 과정에서 지연된 경우가 생겨 시간이 오래 걸렸습니다. 저는 이런 점을 보면서 제 행동에 반성하게 되었고 그 후에는 팀원들과 잘 소통하고 잘 안되는 부분이 있으면 팀원들에게 물어보기도 하였고 요청 주소외 변수명도 백엔드에 맞춰 작성하게 되었습니다 이런 과정을 겪으면서 팀원들간의 소통이 정말 중요하다는 것을 깨달았습니다. 그리고 제가 검색해서 조회하는 파트를 맡게되면서 정말 어렵다고 생각이 들었고 이 파트에서 시간을 많이 쏟게 되었습니다 저 혼자 힘으론 안될거 같아서 팀원들의 도움을 받아 검색하는 파트도 무사히 끝마칠 수 있게 되었습니다. 어려웠던 점이 사용자가 검색하였을 때 그 검색한 데이터를 어떻게 조회해야 할지 조회한 페이지를 어떻게 띄워야 할지 주소를 어떻게 전달해야 할지 어려워했었습니다. 그 과정을 하게되면서 searchParams를 사용하여 파라미터 값으로 주소로 설정해 검색한 상품이 조회될 수 있도록 구현하게 되었습니다. 이 과정을 걸치면서 searchParams를 어떻게 써야할지를 알게 되었고 어려운 점이 있으면 팀원에게 도움받는 것이 시간 효율에 좋다는 것을 꺠달았습니다. 이번 프로젝트를 진행하면서 결과물도 중요하지만 무엇보다 팀원들간의 소통과 협력이 정말 중요하다는 사실을 깨닫게 되었습니다. 
-
-
-
-
-
-
-
-
-
+: 이번 프로젝트를 진행하면서 제가 프로젝트 진행하기 전에 crud 중 조회하는 파트를 어려워 하였는데 이번 프로젝트로 인해 url 요청이나 데이터 정보들을 들고와서 조회하는 과정을 많이 하게 되어 극복하게 되었습니다. 제가 백엔드와 요청한 주소를 같게 써야하는 과정에서 팀원들과 소통하지 않고 제 멋대로 쓴 경우가 있었습니다. 그래서 진도 나가는 과정에서 지연된 경우가 생겨 시간이 오래 걸렸습니다. 저는 이런 점을 보면서 제 행동에 반성하게 되었고 그 후에는 팀원들과 잘 소통하고 잘 안되는 부분이 있으면 팀원들에게 물어보기도 하였고 요청 주소외 변수명도 백엔드에 맞춰 작성하게 되었습니다 이런 과정을 겪으면서 팀원들간의 소통이 정말 중요하다는 것을 깨달았습니다. 그리고 제가 검색해서 조회하는 파트를 맡게되면서 정말 어렵다고 생각이 들었고 이 파트에서 시간을 많이 쏟게 되었습니다 저 혼자 힘으론 안될거 같아서 팀원들의 도움을 받아 검색하는 파트도 무사히 끝마칠 수 있게 되었습니다. 어려웠던 점이 사용자가 검색하였을 때 그 검색한 데이터를 어떻게 조회해야 할지 조회한 페이지를 어떻게 띄워야 할지 주소를 어떻게 전달해야 할지 어려워했었습니다. 그 과정을 하게되면서 searchParams를 사용하여 파라미터 값으로 주소로 설정해 검색한 상품이 조회될 수 있도록 구현하게 되었습니다. 이 과정을 걸치면서 searchParams를 어떻게 써야할지를 알게 되었고 어려운 점이 있으면 팀원에게 도움받는 것이 시간 효율에 좋다는 것을 꺠달았습니다. 이번 프로젝트를 진행하면서 결과물도 중요하지만 무엇보다 팀원들간의 소통과 협력이 정말 중요하다는 사실을 깨닫게 되었습니다. 
+ 
