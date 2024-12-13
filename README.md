@@ -88,7 +88,6 @@
 
 - API 명세서 작성 
 
-
 ---
 
 <h3> 🐉 팀원 : 김유진</h3>
@@ -386,104 +385,139 @@ react-daum-postcode | 다음 주소 API |
 ## 📑 API 명세서 ERD 설계도
 ### 📄 API 명세서
 
+<br/>
+
 <a href="https://smooth-agreement-bd7.notion.site/API-1386c80331b7806ab816eedea773c1e9">API 명세서</a>
 
 ### 📐 ERD 설계도
 
-<img />
+<br/>
+
+<img src="https://github.com/user-attachments/assets/84e89f80-fff7-4e88-b0b6-a27a79c4f348" />
 
 <br/><br/>
 
 ## 📄 메뉴 구조도
-### 메인 페이지 (사용자)
 
-(사진)
+<br/>
 
-### 관리자 페이지 (관리자)
-
-(사진)
+<img src="https://github.com/user-attachments/assets/a1cf1ed2-8b34-4220-bc4a-598fd02f0780" />
 
 <br/><br/>
 
 ## 🔧 화면 구현
 
-### 로그인 / 회원가입 페이지 
-#### 일반 로그인 / 회원가입 페이지
-(영상)
-#### OAuth2 소셜 로그인 / 회원가입 페이지(구글)
-(영상)
-#### OAuth2 소셜 로그인 / 회원가입 페이지(네이버)
-(영상)
+### 로그인 / 회원가입 / 아이디 찾기 / 비밀번호 찾기 페이지
+
+</br>
+
+<img src="https://github.com/user-attachments/assets/bb5b375e-a66a-4c3e-b4cf-7d2ba144fea5" />
 
 </br>
 
 ### 메인페이지
 #### 신상품과 인기상품, 관리자가 추천하는 상품을 각 5개로 추려서 보여주는 메인페이지
-(영상)
 
-</dr>
+<br/>
 
-### 밀키트 상품 판매 페이지
-#### 밀키트 리스트 페이지
-(영상)
+<img src="https://github.com/user-attachments/assets/412d2d03-4f28-4df4-9c0d-55a898cf79ad" /> 
 
-#### 카테고리 페이지
+<img src="https://github.com/user-attachments/assets/e3055d00-eeea-4c08-b692-60904b07a834" /> 
 
-(영상)
+<img src="https://github.com/user-attachments/assets/9074f3b0-e336-4457-89d0-7551c8b15561" /> 
 
-#### 통합검색 조회 페이지
-(영상)
+<br/>
 
-#### 상품 디테일 페이지
+### 카테고리 페이지
 
-(영상)
+#### 국.탕.찌개 페이지
 
-#### 상품 결제 페이지
+<br/>
 
-(영상)
+<img src="https://github.com/user-attachments/assets/2d7573e5-8be4-4f9f-bff8-6f9356b658b8" /> 
 
-#### 장바구니 추가 페이지
+<br/>
 
-(영상)
+#### 안주 페이지
 
-### 상품 후기 페이지 
+<br/>
 
-(영상)
+<img src="https://github.com/user-attachments/assets/21f3b861-d0fc-4073-8257-6b09907d4108" />
+
+<br/>
+
+#### 밀키트 페이지
+
+<br/>
+
+<img src="https://github.com/user-attachments/assets/23e77ae4-69b9-4e9f-92d8-73a39f4a8456">
+
+<br/>
+
+#### 간편식 페이지
+
+<br/>
+
+<img src="https://github.com/user-attachments/assets/db116c52-eeba-4673-bf3d-afdd96e684f5">
+
+<br/>
+
+
+
+### 상품 상세 페이지
+
+<br/>
+
+<img src="https://github.com/user-attachments/assets/ed18ff94-9484-431e-8bab-dfd9494f5738">
+
+<br/>
+
+### 상품 결제 페이지
+
+<br/>
+
+<img src="https://github.com/user-attachments/assets/2820534e-6cf3-4c8f-ba45-2862f9b7584d" />
+
+<br/>
+
+### 장바구니 추가 페이지
+
+<br/>
+
+<img src="https://github.com/user-attachments/assets/c67ba7df-a1fe-4ebf-9ea0-3ce15ed462eb" />
+
+<br/>
+
+### 찜 기능 
+
+<br/>
+
+<img src="https://github.com/user-attachments/assets/b9ef5d31-7196-49f6-8df6-78277c8c887a" />
 
 <br/>
 
 ### 마이페이지
 #### 정보조회, 구매후기, 찜목록, 구매기록, 회원탈퇴
 
-(영상)
+<br/>
+
+<img src="https://github.com/user-attachments/assets/0d067b2a-00e5-43f4-9783-44156c883219" />
+
+<br/>
+
+### 관리자 로그인 페이지
+
+<br/>
+
+<img src="https://github.com/user-attachments/assets/13a29757-5d7d-49fc-85aa-7aa51f858331" />
+
+<br/>
 
 ### 관리자 페이지
-#### 상품등록, 상품관리, 매출관리, 주문관리, 직원관리, 유저관리 등을 관리하는 페이지 
-(사진)
 
-#### 상품 등록 페이지
+<br/>
 
-(영상)
-
-#### 상품 관리 페이지 
-
-(영상)
-
-#### 매출 관리 페이지
-
-(영상)
-
-#### 주문 관리 페이지 
-
-(영상)
-
-#### 직원 관리 페이지 
-
-(영상)
-
-#### 유저 관리 페이지 
-
-(영상)
+<img src="https://github.com/user-attachments/assets/6a535f3f-7aa0-473d-8388-cf4c8b2b910a" />
 
 <br/><br/>
 
