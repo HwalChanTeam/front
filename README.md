@@ -462,8 +462,6 @@ react-daum-postcode | 다음 주소 API |
 
 <br/>
 
-
-
 ### 상품 상세 페이지
 
 <br/>
@@ -472,11 +470,11 @@ react-daum-postcode | 다음 주소 API |
 
 <br/>
 
-### 상품 결제 페이지
+### 찜 기능 
 
 <br/>
 
-<img src="https://github.com/user-attachments/assets/2820534e-6cf3-4c8f-ba45-2862f9b7584d" />
+<img src="https://github.com/user-attachments/assets/b9ef5d31-7196-49f6-8df6-78277c8c887a" />
 
 <br/>
 
@@ -488,13 +486,14 @@ react-daum-postcode | 다음 주소 API |
 
 <br/>
 
-### 찜 기능 
+### 상품 결제 페이지
 
 <br/>
 
-<img src="https://github.com/user-attachments/assets/b9ef5d31-7196-49f6-8df6-78277c8c887a" />
+<img src="https://github.com/user-attachments/assets/2820534e-6cf3-4c8f-ba45-2862f9b7584d" />
 
 <br/>
+
 
 ### 마이페이지
 #### 정보조회, 구매후기, 찜목록, 구매기록, 회원탈퇴
