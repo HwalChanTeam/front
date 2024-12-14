@@ -553,8 +553,6 @@ public class BCryptConfig {
 
 <br/><br/>
 
----
-
 **OAuth2Config**
 
 ```java
@@ -576,9 +574,9 @@ public class OAuth2Config {
 - 이 클래스는 OAuth2를 인증하기 위한 Spring 설정 클래스입니다.
 - DefaultOAuth2UserService 빈은 OAuth2 인증과정에서 사용자의 정보를 처리할 때 사용됩니다.
 
-<br/><br/>
-
 ---
+
+<br/><br/>
 
 **SecurityConfig**
 
@@ -4727,63 +4725,9 @@ __유저__
 
     **백엔드**
 
-    **Controller**
-
-    ```java
-
-
-
-    ```
-
     <br/>
 
-    -
-
-    ---
-
-    <br/><br/>
-
-    **Service**
-
-    ```java
-
-
-
-    ```
-
-    <br/>
-
-    -
-
-    ---
-
-    <br/><br/>
-
-    **Mapper**
-
-    ```java
-
-
-
-    ```
-
-    <br/>
-
-    -
-
-    ---
-
-    <br/><br/>
-
-    **xml**
-
-    ```java
-
-
-
-    ```
-
-    -
+    - OAuth2 로그인에서 백엔드는 OAuth2Config, application.yml, application-secret.yml, OAuth2SuccessHandler 로 구성하였습니다. (맨 위에 설명되어 있습니다.)
 
 ---
 
@@ -4797,21 +4741,213 @@ __유저__
 
     ```jsx
 
+    function FindIdPage(props) {
+        const navigate = useNavigate();
 
+        const [user, setUser] = useState({
+            name: "",
+            phoneNumber: ""
+        });
+
+        const userInputOnChange = (e) => {
+            setUser((user) => ({
+                ...user,
+                [e.target.name]: e.target.value,
+            }));
+        };
+
+        // 아이디 찾기 mutation
+        const findIdUser = useMutation(
+            async (user) => {
+                return await instance.get("/user/public/find", {params : {name: user.name, phoneNumber: user.phoneNumber}});
+            },
+            {
+                onError: (response) => {
+                    alert(response.response.data); // 데이터 확인 필요
+                },
+                onSuccess: (response) => {
+                    const id= response.data
+                    alert("회원님의 아이디는 " + id + " 입니다.");
+                },
+            }
+        );
+
+        // 아이디 찾기 onClick
+        const handleFindIdSubmitOnClick = () => {
+            findIdUser.mutate(user);
+        };
+
+        return (
+            <div css={s.mainLayout}>
+            <h1 css={s.logo}>
+                <img src={logo} />
+            </h1>
+            <div css={s.layout}>
+                <div css={s.headerLayout}>
+                    <h2>아이디찾기</h2>
+                </div>
+                <div css={s.inputUser}>
+                    <input
+                        type="text"
+                        name="name"
+                        onChange={userInputOnChange}
+                        value={user.name}
+                        placeholder="이름을 입력해 주세요"
+                    />
+                    <input
+                        type="text"
+                        name="phoneNumber"
+                        onChange={userInputOnChange}
+                        value={user.phoneNumber}
+                        placeholder="휴대폰 번호를 하이픈(-) 추가해서 입력해 주세요"
+                    />
+                </div>
+                <div css={s.joinOkButton}>
+                    <button onClick={handleFindIdSubmitOnClick}>아이디 찾기</button>
+                </div>
+                <div css={s.joinAndSearchUser}>
+                    <Link to="/user/signin" >로그인</Link>
+                    <Link to="/user/signin/findpassword" >비밀번호 찾기</Link>
+                    <Link to="/user/signup" >회원 가입</Link>
+                </div>
+            </div>
+        </div>
+        );
+    }
+
+    export default FindIdPage;
 
     ```
 
+    <br/>
+
+    - 사용자의 아이디를 찾는 페이지 입니다. 
+    - mutation 훅을 이용하여 서버에 "/user/public/find" URL로 get 요청을 보내고 params로 사용자의 이름과 전화번호를 넘깁니다. 
+    - onError 콜백에서 response.response.data를 alert로 표시하고 있습니다. 에러 메시지를 사용자에게 직접 보여주는 방식입니다.
+    - onSuccess 콜백에서 response.data를 콘솔에 로그하고, 사용자에게 아이디를 alert로 표시하고 있습니다.
+
     ---
+
     <br/><br/>
 
     **백엔드**
 
+    **Controller**
+
     ```java
 
+    @RequestMapping("/user/public")
+    @RestController
+    public class AuthController {
 
+        @Autowired
+        private AuthService authService;
+
+        @GetMapping("/find")
+        public ResponseEntity<?> findUsername(ReqFindUsernameDto dto) {
+            return ResponseEntity.ok().body(authService.findUsername(dto));
+        }
+
+    }
 
     ```
-    -
+
+    <br/>
+
+    - 클라이언트에서 "/user/public/find" 로 get 요청을 받아 사용자의 아이디를 authService를 통해 찾아 ReqFindUsernameDto 형태로 전달해주는 Controller 입니다.
+
+    ---
+
+    <br/><br/>
+
+    **Dto**
+
+    ```java
+
+    @Data
+    public class ReqFindUsernameDto {
+
+        private String name;
+        private String phoneNumber;
+
+    }
+
+    ```
+
+    <br/>
+
+    - 이 dto는 클라이언트에서 보낸 사용자의 이름과 전화번호를 받아 controller나 service에 전달하는 Dto 입니다.
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    @Service
+    public class AuthService {
+
+        @Autowired
+        private UserMapper userMapper;
+
+        public String findUsername(ReqFindUsernameDto dto) {
+            return userMapper.findUsername(dto.getName(), dto.getPhoneNumber());
+        }
+
+    }
+
+    ```
+
+    <br/>
+
+    - findUsername 메서드는 클라이언트로부터 전달된 ReqFindUsernameDto 객체에서 사용자의 이름과 전화번호를 추출하여 userMapper를 통해 데이터베이스에서 사용자의 아이디를 조회하여 controller에 전달하는 service입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    @Mapper
+    public interface UserMapper {
+
+        String findUsername(@Param("name") String name, @Param("phoneNumber") String phoneNumber);
+
+    }
+
+    ```
+
+    <br/>
+
+    - findUsername 메서드는 해당 사용자의 이름과 전화번호를 service에서 요청을 파라미터로 받아 이를 통해 SQL 쿼리에서 사용자의 ID를 조회하여 service에 전달하는 Mapper입니다.
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <select id="findUsername" resultType="java.lang.String">
+        select
+            username
+        from
+            users_tb
+        where
+            name = #{name}
+            and phone_number = #{phoneNumber}
+    </select>
+
+    ```
+
+    <br/>
+
+    - 사용자의 이름과 전화번호를 받아 사용자의 ID를 조회하는 sql 문입니다. 
 
     ---
 
@@ -4819,15 +4955,232 @@ __유저__
 
 	__비밀번호 찾기__  
 
+    **프론트**
+
     ```jsx
 
+    function FindPasswordPage(props) {
+        const navigate = useNavigate();
 
+        const [user, setUser] = useState({
+            username: "",
+            name:"",
+            phoneNumber: "",
+        });
+
+        const userInputOnChange = (e) => {
+            setUser((user) => ({
+                ...user,
+                [e.target.name]: e.target.value,
+            }));
+        };
+
+        // 비밀번호 찾기 mutation
+        const passwordUser = useMutation(
+            async (user) => {
+                return await instance.put("/user/public/regen", user);   
+            },
+            {
+                // 로그인 에러 - 에러메시지 불러옴
+                onError: (response) => {
+                    alert(response.response.data); // 데이터 확인 필요
+                },
+                onSuccess: () => {
+                    alert("비밀번호가 초기화 되었습니다.\n 고객님의 임시비밀번호는 1Q2w3e4r!! 입니다.\n 로그인 후 마이페이지에서 변경 바랍니다.");
+                }
+            }
+        );
+
+        // 비밀번호찾기 버튼 
+        const handleFindPasswordSubmitOnClick = () => {
+            passwordUser.mutate(user);
+        };
+
+        return (
+            <div css={s.mainLayout}>
+            <h1 css={s.logo}>
+                <img src={logo} />
+            </h1>
+            <div css={s.layout}>
+                <div css={s.headerLayout}>
+                    <h2>비밀번호 찾기</h2>
+                </div>
+                <div css={s.inputUser}>
+                    <input
+                        type="text"
+                        name="name"
+                        onChange={userInputOnChange}
+                        value={user.name}
+                        placeholder="이름을 입력해 주세요"
+                    />
+                    <input
+                        type="text"
+                        name="username"
+                        onChange={userInputOnChange}
+                        value={user.username}
+                        placeholder="아이디를 입력해 주세요"
+                    />
+                    <input
+                        type="text"
+                        name="phoneNumber"
+                        onChange={userInputOnChange}
+                        value={user.phoneNumber}
+                        placeholder="휴대폰 번호를 ( - ) 추가해서 입력해 주세요"
+                    />
+                </div>
+                <div css={s.joinOkButton}>
+                    <button onClick={handleFindPasswordSubmitOnClick}>비밀번호 찾기</button>
+                </div>
+                <div css={s.joinAndSearchUser}>
+                    <Link to="/user/signin" >로그인</Link>
+                    <Link to="/user/signin/findid" >아이디 찾기</Link>
+                    <Link to="/user/signup" >회원 가입</Link>
+                </div>
+            </div>
+        </div>
+        );
+    }
+
+    export default FindPasswordPage;
 
     ```
 
     <br/>
 
-    -
+    - 이 코드는 사용자의 비밀번호를 초기화 하기위한 페이지 입니다. 
+    - mutation을 이용하여 "/user/public/regen" 로 put 요청을 보내 서버에 응답 받습니다. 
+    - 응답을 성공적으로 받으면 비밀번호 초기화 성공 메시지를 alert로 표시하고 임시 비밀번호를 사용자에게 안내합니다.
+    - 사용자의 이름과 아이디, 전화번호를 입력 시 비밀번호를 초기화 할 수 있게 설정하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @RequestMapping("/user/public")
+    @RestController
+    public class AuthController {
+
+        @PutMapping("/regen")
+        public ResponseEntity<?> generatePassword(@RequestBody ReqGeneratePasswordDto dto) {
+            authService.generatePassword(dto);
+            return ResponseEntity.ok().body(true);
+        }
+
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에서 "/user/public/regen으로 put 요청을 받아 authService를 통해 비밀번호를 초기화하는 기능을 처리하고 응답 본문으로 true를 반환하는 Controller 입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Dto**
+
+    ```java
+
+    @Data
+    public class ReqGeneratePasswordDto {
+        private String name;
+        private String username;
+        private String phoneNumber;
+
+        public User toUser(BCryptPasswordEncoder bCryptPasswordEncoder) {
+            return User.builder()
+                    .name(name)
+                    .username(username)
+                    .phoneNumber(phoneNumber)
+                    .password(bCryptPasswordEncoder.encode("1Q2w3e4r!!"))
+                    .build();
+        }
+    }
+
+    ```
+
+    <br/>
+
+    - 이 dto는 클라이언트에서 전달받은 사용자의 이름과 아이디, 전화번호를 담는 Dto입니다.
+    - toUser메서드는 비밀번호를 초기화 과정에서 사용자의 정보와 함께 사용자의 비밀번호를 임시로 "1Q2w3e4r!!"를 설정하여 이를 암호화하여 User 객체로 변환하고고 반환합니다.
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+    
+    @Service
+    public class AuthService {
+
+        @Autowired
+        private UserMapper userMapper;
+
+        public void generatePassword(ReqGeneratePasswordDto dto) {
+            userMapper.updatePassword(dto.toUser(bCryptPasswordEncoder));
+        }
+
+    }
+
+    ```
+
+    <br/>
+
+    - generatePassword 메서드는 클라이언트로부터 전달된 ReqGeneratePasswordDto 객체에서 사용자의 해당 정보를 추출하여 userMapper를 통해 해당 사용자의 비밀번호를 toUser메서드를 통해 임시비밀번호로 변경하여 데이터베이스에 저장하고 controller에 응답을 반환하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    @Mapper
+    public interface UserMapper {
+
+        int updatePassword(User user);
+
+    }
+
+    ```
+
+    <br/>
+
+    - updatePassword 메서드는 사용자의 정보를 통해 SQL 쿼리에서 비밀번호 초기화한 데이터를 받아 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <update id="updatePassword">
+        update users_tb
+        set
+            password = #{password}
+        where
+            name = #{name}
+        and username = #{username}
+        and phone_number = #{phoneNumber}
+    </update>
+
+    ```
+
+    <br/>
+
+    - 해당 사용자의 이름, 아이디, 전화번호를 받아 비밀번호를 초기화하는 sql 문입니다.
 
 ---
 
@@ -5679,5 +6032,5 @@ __유저__
 <br/>
 
 🐓 김영희  
-: 이번 프로젝트를 진행하면서 제가 프로젝트 진행하기 전에 crud 중 조회하는 파트를 어려워 하였는데 이번 프로젝트로 인해 url 요청이나 데이터 정보들을 들고와서 조회하는 과정을 많이 하게 되어 극복하게 되었습니다. 제가 백엔드와 요청한 주소를 같게 써야하는 과정에서 팀원들과 소통하지 않고 제 멋대로 쓴 경우가 있었습니다. 그래서 진도 나가는 과정에서 지연된 경우가 생겨 시간이 오래 걸렸습니다. 저는 이런 점을 보면서 제 행동에 반성하게 되었고 그 후에는 팀원들과 잘 소통하고 잘 안되는 부분이 있으면 팀원들에게 물어보기도 하였고 요청 주소외 변수명도 백엔드에 맞춰 작성하게 되었습니다 이런 과정을 겪으면서 팀원들간의 소통이 정말 중요하다는 것을 깨달았습니다. 그리고 제가 검색해서 조회하는 파트를 맡게되면서 정말 어렵다고 생각이 들었고 이 파트에서 시간을 많이 쏟게 되었습니다 저 혼자 힘으론 안될거 같아서 팀원들의 도움을 받아 검색하는 파트도 무사히 끝마칠 수 있게 되었습니다. 어려웠던 점이 사용자가 검색하였을 때 그 검색한 데이터를 어떻게 조회해야 할지 조회한 페이지를 어떻게 띄워야 할지 주소를 어떻게 전달해야 할지 어려워했었습니다. 그 과정을 하게되면서 searchParams를 사용하여 파라미터 값으로 주소로 설정해 검색한 상품이 조회될 수 있도록 구현하게 되었습니다. 이 과정을 걸치면서 searchParams를 어떻게 써야할지를 알게 되었고 어려운 점이 있으면 팀원에게 도움받는 것이 시간 효율에 좋다는 것을 꺠달았습니다. 이번 프로젝트를 진행하면서 결과물도 중요하지만 무엇보다 팀원들간의 소통과 협력이 정말 중요하다는 사실을 깨닫게 되었습니다. 
+: 이번 프로젝트를 진행하면서 제가 프로젝트 진행하기 전에 crud 중 조회하는 파트를 어려워 하였는데 이번 프로젝트로 인해 url 요청이나 데이터 정보들을 들고와서 조회하는 과정을 많이 하게 되어 극복하게 되었습니다. 제가 백엔드와 요청한 주소를 같게 써야하는 과정에서 팀원들과 소통하지 않고 제 멋대로 쓴 경우가 있었습니다. 그래서 진도 나가는 과정에서 지연된 경우가 생겨 시간이 오래 걸렸습니다. 저는 이런 점을 보면서 제 행동에 반성하게 되었고 그 후에는 팀원들과 잘 소통하고 잘 안되는 부분이 있으면 팀원들에게 물어보기도 하였고 요청 주소와 변수명도 백엔드에 맞춰 작성하게 되었습니다 이런 과정을 겪으면서 팀원들간의 소통이 정말 중요하다는 것을 깨달았습니다. 그리고 제가 검색해서 조회하는 파트를 맡게되면서 정말 어렵다고 생각이 들었고 이 파트에서 시간을 많이 쏟게 되었습니다. 저 혼자 힘으론 안될거 같아서 팀원들의 도움을 받아 검색하는 파트도 무사히 끝마칠 수 있게 되었습니다. 어려웠던 점이 사용자가 검색하였을 때 검색한 데이터를 어떻게 조회해야 할지 조회한 페이지를 어떻게 띄워야 할지 주소를 어떻게 전달해야 할지 어려워했었습니다. 제가 도움을 요청했던 팀원분이 searchParams를 사용해서 요청 URL를 설정해 보고 검색 결과 페이지를 따로 만들어 보라는 조언 덕분에 searchParams를 사용하여 파라미터 값으로 주소로 설정해 검색한 상품이 조회될 수 있도록 구현하였고, 검색결과 페이지를 따로 만들어 검색한 결과값이 조회될 수 있도록 구현하였습니다. 이 과정을 걸치면서 searchParams를 어떻게 써야 할지를 자세히 알게 되었고 어려운 점이 있으면 팀원에게 도움받는 것이 시간 효율에 좋다는 것을 깨달았습니다. 이번 프로젝트를 진행하면서 결과물도 중요하지만 무엇보다 팀원들간의 소통과 협력이 정말 중요하다는 사실을 깨닫게 되었습니다. 
  
