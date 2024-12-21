@@ -3784,7 +3784,7 @@ public class EmailController {
 
 <br/>
 
-- sendEmail 메서드는 이메일 인증 요청을 /user/public/email/send를 통해 받아 사용자가 입력한 정보를 ReqSendMailDto 객체로 변환하여 service에 전달하고 service에서 성공적으로 데이터를 가지고오며 true로 응답하여 클라이언트에 전달하는 역할을 합니다. 
+- sendEmail 메서드는 이메일 인증 요청을 /user/public/email/send를 통해 받아 사용자가 입력한 정보를 ReqSendMailDto 객체로 변환하여 service에 전달하고 service에서 성공적으로 데이터를 가지고 오면면 true로 응답하여 클라이언트에 전달하는 역할을 합니다. 
 - authEmail 메서드는 이메일에서 온 인증번호와 사용자가 입력한 인증번호와 똑같이 썼는지 확인하는 로직입니다.
 - ReqCertificationDto 객체로 변환하여 service에 전달하여 인증번호를 검사하는 역할을 합니다. 
 
@@ -5188,19 +5188,377 @@ __유저__
 
 ### 장바구니
 
-- __수정__  
+- __ShoppingBosket__  
 
     **프론트**
 
     ```jsx
 
+    function ShoppingBasket(props) {
+        const navigate = useNavigate();
 
+        const [productList, setProductList] = useState([]); // 상품 목록 상태 추가
+
+        // 전체 체크박스 기본 속성 - false
+        const [isAllchecked, setIsAllchecked] = useState(false);
+
+        // 장바구니 상품 가져오기
+        const { data, isLoading, isError, refetch } = useQuery(
+            ["basketProducts"],
+            async () => {
+            return await instance.get("/user/cart");
+            },
+            {
+            onSuccess: (response) => {
+                const productsWithEditState = response?.data?.cartList.map((product) => ({
+                    ...product,
+                    isEdit: false, // 각 상품에 대해 수정 상태 추가
+                }));
+                setProductList(productsWithEditState);
+            },
+            refetchOnWindowFocus: false, // 창 포커스 시 재요청 하지 않음
+            retry: 0,
+            // 데이터 가져오면 productList에 설정
+            }
+        );
+
+        // 수정 요청을 위한 mutation
+        const editMutation = useMutation(
+            async (product) => {
+            const editData = {
+                cartId: product.cartId,
+                cartItemId: product.cartItemId,
+                quantity: product.quantity,
+            };
+            return await instance.put(`/user/cart/${product.cartItemId}`, editData);
+            },
+            {
+            onSuccess: () => {
+                refetch(); // 삭제 후 장바구니를 다시 불러오기
+            },
+            }
+        );
+
+        // 삭제 요청을 위한 mutation
+        const deleteMutation = useMutation(
+            async (product) => {
+            const deleteProduct = {
+                cartId: product.cartId,
+                cartItemId: product.cartItemId,
+            };
+            return await instance.delete(`/user/cart/${product.cartItemId}`, {
+                data: { cartId: product.cartId, cartItemId: product.cartItemId },
+            });
+            },
+            {
+            onSuccess: () => {
+                refetch(); // 삭제 후 장바구니를 다시 불러오기
+            },
+            }
+        );
+
+        // 전체 체크박스 체인지 함수
+        const handleAllCkeckBoxOnChange = () => {
+            const checkState = !isAllchecked;
+            setIsAllchecked(checkState);
+            setProductList(
+            productList.map((product) => ({ ...product, checked: checkState }))
+            );
+        };
+
+        // 개별 체크박스 체인지 함수
+        const handleCheckBoxOnChange = (cartItemId) => {
+            const updateProductList = productList.map((product) =>
+            product.cartItemId === cartItemId
+                ? { ...product, checked: !product.checked }
+                : product
+            );
+            setProductList(updateProductList);
+
+            // 모든 개별 체크박스가 선택된 경우 전체 체크박스도 체크
+            const allChecked = updateProductList.every((product) => product.checked);
+            setIsAllchecked(allChecked);
+        };
+
+        // 수량 변경 함수
+        const handleQuantityChange = (index, number) => {
+            const updatedProducts = productList.map((product, i) =>
+            i === index
+                ? { ...product, quantity: Math.max(1, product.quantity + number) }
+                : product
+            );
+            setProductList(updatedProducts);
+        };
+
+        // 수정 버튼 클릭 함수
+        const handleEditStateButtonOnClick = (productId) => {
+            setProductList(
+                productList.map((product) =>
+                product.cartItemId === productId
+                    ? { ...product, isEdit: true }
+                    : { ...product, isEdit: false }
+                )
+            );
+            };
+
+        // 수정 버튼 클릭 함수
+        const handleEditButtonOnClick = (product) => {
+            editMutation.mutate(product);
+            alert("수정이 완료되었습니다.");
+            setProductList(
+            productList.map((item) =>
+                item.cartItemId === product.cartItemId
+                ? { ...item, isEdit: false }
+                : item
+            )
+            );
+        };
+
+        // 삭제 버튼 클릭 함수
+        const handleDeleteButtonOnClick = (product) => {
+            deleteMutation.mutateAsync(product).catch(()=>{});
+            refetch();
+        };
+
+        // 상품갯수 * 가격 함수
+        const calculateTotalPrice = (product) => {
+            return product.price * product.quantity;
+        };
+
+        // 총 상품금액, 총합계 계산 함수
+        const calculateTotals = () => {
+            const totalProductAmount = productList?.reduce((total, product) => {
+            return total + (product.checked ? calculateTotalPrice(product) : 0);
+            }, 0);
+            const deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+            const totalAmount = totalProductAmount + deliveryFee;
+
+            return { totalProductAmount, totalAmount, deliveryFee };
+        };
+
+        const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
+
+        // 구매 버튼 클릭 시 작동
+        const handleBuyButtonOnClick = () => {
+            const selectedProducts = productList.filter((product) => product.checked);
+
+            const orderProducts = selectedProducts.map(
+            (product) =>
+                `cartId=${product.cartId}&cartItemId=${product.cartItemId}&quantity=${product.quantity}`
+            );
+            console.log();
+
+            navigate(`/order?${orderProducts.join("&")}`);
+
+        };
+
+        const handleAllDeleteButtonOnClick = async () => {
+            const allProductId = {
+            cartId: productList.map((item) => item.cartId),
+            cartItemId: productList.map((item) => item.cartItemId),
+            };
+            if (window.confirm("모든 상품이 삭제됩니다. 삭제하시겠습니까?")) {
+            await instance.delete("user/cart", {
+                data: {
+                cartId: allProductId.cartId,
+                cartItemId: allProductId.cartItemId,
+                },
+            });
+            refetch();
+            }
+        };
+
+        if (isLoading) return <div>Loading...</div>;
+        // if (isError) return <div>데이터를 가져오는데 실패했습니다.</div>
+
+        return (
+            <div css={s.cartContainer}>
+            {/* 장바구니 목록 섹션 */}
+            <div css={s.cartListSection}>
+                <div css={s.basketHeader}>
+                <h2 css={s.title}>장바구니</h2>
+                </div>
+                <div css={s.basketBox}>
+                <table css={s.productTable}>
+                    <thead css={s.thead}>
+                    <tr>
+                        <td>
+                        <input
+                            type="checkbox"
+                            onChange={handleAllCkeckBoxOnChange}
+                            checked={isAllchecked}
+                        />
+                        </td>
+                        <th>상품</th>
+                        <th>상품명</th>
+                        <th>수량</th>
+                        <th>금액</th>
+                        <th>할인</th>
+                        <th>합계금액</th>
+                        <th>비고</th>
+                    </tr>
+                    </thead>
+                    <tbody css={s.tbody}>
+                    {productList?.map((product, index) => (
+                        <tr key={product?.productId}>
+                        <td>
+                            <input
+                            type="checkbox"
+                            onChange={() =>
+                                handleCheckBoxOnChange(product?.cartItemId)
+                            }
+                            checked={product?.checked}
+                            />
+                        </td>
+                        <td>
+                            <div css={s.img}>
+                            <img src={product?.product?.thumbnailImg} />
+                            </div>
+                        </td>
+                        <td>
+                            <div css={s.productName}>{product?.product?.title}</div>
+                            <tr>{product.description}</tr>
+                        </td>
+                        <td>
+                            {product.isEdit ? (
+                            <>
+                                <button onClick={() => handleQuantityChange(index, -1)}>
+                                -
+                                </button>
+                                {product?.quantity}
+                                <button onClick={() => handleQuantityChange(index, +1)}>
+                                +
+                                </button>
+                            </>
+                            ) : (
+                            <>{product?.quantity}</>
+                            )}
+                        </td>
+                        <td>{product?.price.toLocaleString()} 원</td>
+                        <td>-</td>
+                        <td> {calculateTotalPrice(product).toLocaleString()} 원</td>
+                        <td>
+                            {
+                                product.isEdit ? (
+                                    <button onClick={() => handleEditButtonOnClick(product)}>
+                                    수정
+                                </button>
+                                ) : (
+                                    <button onClick={() => handleEditStateButtonOnClick(product?.cartItemId)}>
+                                    수정
+                                </button>
+                                )
+                            }
+                            <button onClick={() => handleDeleteButtonOnClick(product)}>
+                            삭제
+                            </button>
+                        </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+                </div>
+                <div css={s.footerBox}>
+                <div css={s.priceBox}>
+                    <div css={s.productAmount}>
+                    <p>
+                        총 {productList?.filter((product) => product.checked).length}{" "}
+                        개의 상품금액
+                    </p>
+                    <p>{totalProductAmount.toLocaleString()}원</p>
+                    </div>
+                    <FaPlus />
+                    <div css={s.deliveryFee}>
+                    <p>배송비</p>
+                    <p>{deliveryFee.toLocaleString()}원</p>
+                    </div>
+                    <FaEquals />
+                    <div css={s.totalAmount}>
+                    <p>합계</p>
+                    <p>{totalAmount.toLocaleString()}원</p>
+                    </div>
+                </div>
+                </div>
+                <div css={s.buttonBox}>
+                <button onClick={handleBuyButtonOnClick}>주문하기</button>
+                <button onClick={handleAllDeleteButtonOnClick}>전체삭제</button>
+                </div>
+            </div>
+            </div>
+        );
+    }
+
+    export default ShoppingBasket;
 
     ```
 
     <br/>
 
-    -
+    - 이 코드는 장바구니 페이지 코드 입니다. 세부적인 기능은 밑에서 설명하겠습니다. 
+
+    ---
+
+    <br/><br/>
+
+- __수정__
+
+    **프론트**
+
+    ```JSX
+
+    const [productList, setProductList] = useState([]);
+
+    // 수정 요청을 위한 mutation
+    const editMutation = useMutation(
+        async (product) => {
+            const editData = {
+                cartId: product.cartId,
+                cartItemId: product.cartItemId,
+                quantity: product.quantity,
+            };
+            return await instance.put(`/user/cart/${product.cartItemId}`, editData);
+        },
+        {
+            onSuccess: () => {
+                refetch(); // 삭제 후 장바구니를 다시 불러오기
+            },
+        }
+    );
+
+    // 수정 버튼 클릭 함수
+    const handleEditStateButtonOnClick = (productId) => {
+        setProductList(
+            productList.map((product) =>
+            product.cartItemId === productId
+                ? { ...product, isEdit: true }
+                : { ...product, isEdit: false }
+            )
+        );
+    };
+
+    // 수정 버튼 클릭 함수
+    const handleEditButtonOnClick = (product) => {
+        editMutation.mutate(product);
+        alert("수정이 완료되었습니다.");
+        setProductList(
+            productList.map((item) =>
+                item.cartItemId === product.cartItemId
+                ? { ...item, isEdit: false }
+                : item
+            )
+        );
+    };
+
+    ```
+
+    <br/>
+
+    - 이 코드는 장바구니 상품 목록의 수량을 바꾸기 위한 수정 기능을 구현한 코드입니다.
+    - editMutation : 상품 목록의 수량을 수정하기 위한 비동기 함수를 정의합니다.
+    - cartId, cartItemId, quantity를 포함한 데이터를 "/user/cart/${product.cartItemId}"로 서버에 put 요청을 보냅니다. 
+    - 수정이 성공적으로 이루어 지면 refetch를 호출하여 장바구니 데이터를 다시 불러옵니다.
+    - handleEditStateButtonOnClick(수정 상태 버튼 클릭 함수) : 특정 아이템을 수정 상태로 전환하고 다른 아이템들은 수정 상태를 해제합니다.
+    - handleEditButtonOnClick(수정 버튼 클릭 함수) : 수정된 아이템을 서버에 전송하여 업데이트하고 수정이 완료되면 알림을 표시하고, 수정 상태를 해제합니다.
 
     ---
 
@@ -5212,13 +5570,57 @@ __유저__
 
     ```java
 
+    @RestController
+    @RequestMapping("/user/cart")
+    public class CartController {
 
+        @Autowired
+        private CartService cartService;
+
+        @PutMapping("/{id}")
+        public ResponseEntity<?> modifyCart(@RequestBody ReqModifyCartDto dto) {
+            cartService.modifyCart(dto);
+            return ResponseEntity.ok().body(true);
+        }
+
+    }
 
     ```
 
     <br/>
 
-    -
+    - 클라이언트에 put 요청을 받아 장바구니의 상품의 수량을 수정하기 위해 ReqModifyCartDto 객체로 변환하여 service에 전달하고 성공적으로 데이터를 가지고 오면 응답을 true로 반환합니다. 
+
+    ---
+
+    <br/><br/>
+
+     **Dto**
+
+    ```java
+
+    @Builder
+    @Data
+    public class ReqModifyCartDto {
+        private Long cartId;
+        private Long cartItemId;
+        private int quantity;
+
+        public CartItem toCartItem(Long cartId, Long cartItemId, int quantity) {
+            return CartItem.builder()
+                    .cartId(cartId)
+                    .cartItemId(cartItemId)
+                    .quantity(quantity)
+                    .build();
+        }
+    }
+
+    ```
+
+    <br/>
+
+    - 이 dto는 장바구니 상품 목록과 상품 수량 정보를 담는 객체입니다. 
+    - toCartItem 메서드는 ReqModifyCartDto에서 받은 장바구니 수정 정보를 CartItem 객체로 변환하는 역할을 합니다. 
 
     ---
 
@@ -5228,43 +5630,127 @@ __유저__
 
     ```java
 
+    @Service
+    public class CartService {
 
+        @Autowired
+        private CartMapper cartMapper;
+        @Autowired
+        private CartItemMapper cartItemMapper;
+
+        @Transactional(rollbackFor = SQLException.class)
+        public void modifyCart(ReqModifyCartDto dto) {
+            List<Long> cartItemsIdList = cartMapper.findCartItemIdByCartId(dto.getCartId()); // 카트에 해당하는 아이템
+            List<Long> matchingCartItemIdList = cartItemsIdList.stream() // 해당 아이템 찾음
+                    .filter(cartItemId -> cartItemId.equals(dto.getCartItemId()))
+                    .collect(Collectors.toList());
+
+            if (!matchingCartItemIdList.isEmpty()) {
+                for (Long cartItemId : matchingCartItemIdList) {
+                    cartItemMapper.updateCartItems(dto.toCartItem(dto.getCartId(), cartItemId, dto.getQuantity()));
+                }
+            }
+        }
+    }
 
     ```
 
     <br/>
 
-    -
+    - 이 코드는 주어진 ReqModifyCartDto 정보를 바탕으로 해당 장바구니의 항목을 찾아서 수량을 수정하는 역할을 하는 Service 입니다.
+    - modifyCart 메서드는 트랜잭션을 통해 데이터베이스의 예외처리가 일어나면 롤백하도록 설정하였습니다.
+    - cartItemIdList : cartMapper를 사용하여 cartId를 통해 해당 사용자의 장바구니의 항목을 찾아 cartItemIdList에 저장합니다. 
+    - matchingCartItemIdList : cartItemIdList에 저장된 해당 장바구니 항목의 목록에 대해 스트림을 생성하여 cartItemId와 일치하는 장바구니 항목을 찾아 collect를 통해 수정할 데이터 목록들을 저장합니다. 
+    - 만약에 matchingCartItemIdList가 비어있지 않다면 장바구니 항목의 수량을 cartItemMapper를 통해 수정할 수 있도록 설정하였습니다. 
 
     ---
 
     <br/><br/>
 
-    **Mapper**
+    **CartMapper**
 
     ```java
 
+        @Mapper
+        public interface CartMapper {
 
+            List<Long> findCartItemIdByCartId(Long cartId);
+
+        }
 
     ```
 
     <br/>
 
-    -
+    - cartId를 통해 해당 장바구니 항목을 데이터베이스에서 찾아 findCartItemIdByCartId 메서드에 저장합니다.
 
     ---
 
     <br/><br/>
 
-    **xml**
+    **CartItemMapper**
 
     ```java
 
+    @Mapper
+    public interface CartItemMapper {
 
+        int updateCartItems(CartItem cartItem);
+
+    }
 
     ```
 
-    -
+    <br/>
+
+    - cartItem 객체를 통해 해당 장바구니 항목의 수량을 데이터베이스에서 수정하여 updateCartItems 메서드에 저장합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **cart.xml**
+
+    ```java
+
+    <select id="findCartItemIdByCartId" resultType="java.lang.Long">
+        select
+            cit.cart_item_id
+        from
+            cart_tb ct
+            left outer join cart_items_tb cit on (ct.cart_id = cit.cart_id)
+        where
+            ct.cart_id = #{cartId};
+    </select>
+
+    ```
+
+    <br/>
+
+    - 이 코드는 장바구니의 항목을 cartId를 이용하여 조회하는 sql 문입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **cart_item.xml**
+
+    ```java
+
+    <update id="updateCartItems">
+        update cart_items_tb
+        set
+            quantity = #{quantity}
+        where
+            cart_id = #{cartId}
+            and cart_item_id = #{cartItemId}
+    </update>
+
+    ```
+
+    <br/>
+
+    - 이 코드는 cartId와 carItemId를 이용하여 수량을 수정할 수 있도록 설정한 sql 문입니다. 
 
 ---
 
@@ -5276,6 +5762,1251 @@ __유저__
 
     ```jsx
 
+    // 삭제 요청을 위한 mutation
+    const deleteMutation = useMutation(
+        async (product) => {
+        const deleteProduct = {
+            cartId: product.cartId,
+            cartItemId: product.cartItemId,
+        };
+        return await instance.delete(`/user/cart/${product.cartItemId}`, {
+            data: { cartId: product.cartId, cartItemId: product.cartItemId },
+        });
+        },
+        {
+        onSuccess: () => {
+            refetch(); // 삭제 후 장바구니를 다시 불러오기
+        },
+        }
+    );
+
+    const handleDeleteButtonOnClick = (product) => {
+        deleteMutation.mutateAsync(product).catch(()=>{});
+        refetch();
+    };
+
+
+    ```
+
+    <br/>
+
+    - 이 코드는 해당 장바구니의 항목을 삭제하는 역할을 합니다. 
+    - deleteMutation을 사용하여 cartId와 cartItemId를 포함한 데이터를 서버에 전송합니다.
+    - 삭제가 성공하면 refetch를 호출하여 장바구니 데이터를 다시 불러옵니다. 
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @RestController
+    @RequestMapping("/user/cart")
+    public class CartController {
+
+        @DeleteMapping("/{id}")
+        public ResponseEntity<?> deleteCart(@RequestBody ReqDeleteCartDto dto) {
+            cartService.deleteCart(dto);
+            return ResponseEntity.ok().body(true);
+        }
+
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에서 삭제 요청을 받아 해당 사용자의 장바구니 항목을 cartService를 통해 삭제 처리하는 Controller 입니다. 
+    - ReqDeleteCartDto 객체로 변환하여 cartService에 전달하고 성공적으로 데이터를 가지고 오면 클라이언트에 응답을 true로 반환합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Dto**
+
+    ```java
+
+    @Builder
+    @Data
+    public class ReqDeleteCartDto {
+        private Long cartId;
+        private Long cartItemId;
+    }
+
+    ```
+
+    <br/>
+
+    - 이 dto는 장바구니 해당 사용자의 장바구니 목록 데이터를 담는는 객체입니다.
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    @Service
+    public class CartService {
+
+        @Autowired
+        private CartItemMapper cartItemMapper;
+
+        @Transactional(rollbackFor = SQLException.class)
+        public void deleteCart(ReqDeleteCartDto dto) {
+            cartItemMapper.deleteCartItemByCartItemId(dto.getCartItemId());
+        }
+
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 주어진 ReqDeleteCartDto 정보를 바탕으로 해당 장바구니의 항목을 cartItemMapper를 통해 삭제 처리하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    @Mapper
+    public interface CartItemMapper {
+
+        int deleteCartItemByCartItemId(Long cartItemId);
+
+    }
+
+    ```
+
+    <br/>
+
+    - cartItemId를 통해 장바구니 목록 중에 해당 항목을 sql문에서 삭제하여 그그 데이터를 deleteCartItemByCartItemId 메서드에 저장하여 CartService에 전달합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <delete id="deleteCartItemByCartItemId">
+        delete from cart_items_tb
+        where
+            cart_item_id = #{cartItemId}
+    </delete>
+
+    ```
+
+    - cartItemId를 통해 장바구니 항목을 삭제 처리하는 sql 문입니다. 
+
+    ---
+
+- __체크박스 기능__
+
+    **프론트**
+
+    ```jsx
+
+    // 전체 체크박스 체인지 함수
+    const handleAllCkeckBoxOnChange = () => {
+        const checkState = !isAllchecked;
+        setIsAllchecked(checkState);
+        setProductList(
+        productList.map((product) => ({ ...product, checked: checkState }))
+        );
+    };
+
+    // 개별 체크박스 체인지 함수
+    const handleCheckBoxOnChange = (cartItemId) => {
+        const updateProductList = productList.map((product) =>
+        product.cartItemId === cartItemId
+            ? { ...product, checked: !product.checked }
+            : product
+        );
+        setProductList(updateProductList);
+
+        // 모든 개별 체크박스가 선택된 경우 전체 체크박스도 체크
+        const allChecked = updateProductList.every((product) => product.checked);
+        setIsAllchecked(allChecked);
+    };
+
+    ```
+
+    <br/>
+
+    - 이 코드는 장바구니 목록의 체크박스를 관리하는 기능을 구현한 것입니다.
+    - 전체 체크박스 변경 함수 : 전체 선택 체크박스의 상태를 변경하며 모든 제품의 checked 상태를 전체 선택 체크박스의 상태와 동일하게 설정합니다. 
+    - 개별 체크박스 변경 함수 : 특정 개별의 체크박스 상태를 변경하고 모든 개별 체크박스가 선택된 경우 전체 선택 체크박스도 선택되록 설정합니다.
+
+    ---
+
+    <br/><br/>
+
+    - __수량 변경 기능__
+
+    **프론트**
+
+    ```jsx
+
+     // 수량 변경 함수
+    const handleQuantityChange = (index, number) => {
+        const updatedProducts = productList.map((product, i) =>
+        i === index
+            ? { ...product, quantity: Math.max(1, product.quantity + number) }
+            : product
+        );
+        setProductList(updatedProducts);
+    };
+
+    ```
+
+    <br/>
+
+    - 이 코드는 장바구니 아이템의 수량을 변경하고, 수정 상태를 관리하며, 수정 요청을 처리하는 기능을 구현한 것입니다.
+    - handleQuantityChange(수량 변경 함수) : 특정 아이템의 수량을 증가 또는 감소시키고 수량은 최소 1이상으로 유지됩니다.
+
+    ---
+
+    <br/><br/>
+
+    - __상품금액 계산 함수__
+
+    **프론트**
+
+    ```jsx
+
+    // 상품갯수 * 가격 함수
+    const calculateTotalPrice = (product) => {
+        return product.price * product.quantity;
+    };
+
+    // 총 상품금액, 총합계 계산 함수
+    const calculateTotals = () => {
+        const totalProductAmount = productList?.reduce((total, product) => {
+        return total + (product.checked ? calculateTotalPrice(product) : 0);
+        }, 0);
+        const deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+        const totalAmount = totalProductAmount + deliveryFee;
+
+        return { totalProductAmount, totalAmount, deliveryFee };
+    };
+
+    const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
+
+    ```
+
+    <br/>
+
+    - 이 코드는 장바구니의 총 상품 금액과 총 합계를 계산하는 기능을 구현한 것입니다.
+    - calculateTotalPrice : 각 상품의 가격과 수량을 곱하여 총 가격을 계산합니다.
+    - calculateTotals : 선택된 상품들의 총 금액을 계산하고 총 금액이 30,000원 이상이면 배송비는 0원, 그렇지 않으면 3,000원을 부과합니다.
+    - 총 상품 금액과 배송비를 합산하여 총 합계를 계산합니다.
+
+    ---
+
+    <br/><br/>
+
+    - __구매버튼 클릭__
+
+    **프론트**
+
+    ```jsx
+
+    // 구매 버튼 클릭 시 작동
+    const handleBuyButtonOnClick = () => {
+        const selectedProducts = productList.filter((product) => product.checked);
+
+        const orderProducts = selectedProducts.map(
+        (product) =>
+            `cartId=${product.cartId}&cartItemId=${product.cartItemId}&quantity=${product.quantity}`
+        );
+
+        navigate(`/order?${orderProducts.join("&")}`);
+
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 사용자가 구매 버튼을 클릭했을 때 선택된 상품들을 주문 페이지로 전달하는 기능을 구현한 것입니다.
+    - 선택된 상품 필터링 : productList에서  checked 상태가 true인 상품들만 필터링하여 selectedProducts 배열에 저장합니다.
+    - 주문 상품 데이터 생성 : 선택된 상품들의 cartId, cartItemId, quantity를 쿼리 문자열 형식으로 변환하여 orderProducts 배열에 저장합니다.
+    - navigate 함수를 사용하여 /order 페이지로 이동하며, 쿼리 문자열로 주문 상품 데이터를 전달합니다.
+
+---
+
+<br/><br/>
+
+### 마이페이지  
+
+#### 전체 코드
+
+**프론트**
+
+```jsx
+
+const menus = [
+  {
+    id: 1,
+    name: "정보 조회",
+    path: "/mypage/userinfo",
+    icon: <RiFileUserLine />,
+  },
+  {
+    id: 2,
+    name: "찜목록",
+    path: "/mypage/wishlist",
+    icon: <FcLike />,
+  },
+  {
+    id: 3,
+    name: "구매기록",
+    path: "/mypage/buyinfo",
+    icon: <HiOutlineClipboardDocumentList />,
+  },
+  {
+    id: 4,
+    name: "구매후기",
+    path: "/mypage/reviewinfo",
+    icon: <HiOutlinePencilSquare />,
+  },
+  {
+    id: 5,
+    name: "회원탈퇴",
+    path: "/mypage/leaveUser",
+    icon: <GoTrash />,
+  },
+];
+
+function MyPage(props) {
+    const location = useLocation();
+    const { pathname } = location;
+
+    const [userInfo, setUserInfo] = useState();
+
+    const queryClient = useQueryClient();
+    const userInfoState = queryClient.getQueryState("userInfoQuery");
+    const [isUploading, setUploading] = useState(false);
+    const profileImage = [];
+    const [imgUrl, setImgUrl] = useState(null); // imgUrl 상태 별도로 관리
+
+    const getUserInfo = useQuery(
+        ["getUserInfo"],
+        async () => {
+        return await instance.get("/user");
+        },
+        {
+        onSuccess: (response) => {
+            setUserInfo(response.data);
+        },
+        }
+    );
+
+    const imgUpload = useMutation(
+        async (imgUrl) => {
+        return await instance.put("user/img", imgUrl);
+        },
+        {
+        onSuccess : () => {
+            getUserInfo.refetch();
+        },
+        onError: (e) => {
+            console.error(e)
+        }
+        }
+    )
+    
+    const handleImageChangeOnClick = useCallback( async () => {
+        if (window.confirm("프로필 사진을 변경하시겠습니까?")) {
+            const fileInput = document.createElement("input");
+            fileInput.setAttribute("type", "file");
+            fileInput.click();
+
+            fileInput.onchange = (e) => {
+                const files = Array.from(e.target.files);
+
+                const storage = getStorage();
+                setUploading(true);
+
+                files.forEach((file) => {
+                const storageRef = ref(storage, `user/${uuid()}_${file.name}`);
+                const task = uploadBytesResumable(storageRef, file);
+    
+                task.on(
+                    'state_changed',
+                    () => { }, // 업로드 중 상태 핸들링 (옵션)
+                    (e) => {
+                        console.error(e);
+                        setUploading(false);
+                    },
+                    async () => {
+                        try {
+                            alert("이미지가 변경될 때 까지 기다려 주세요.")
+                            const imgUrl = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
+                            profileImage.push(imgUrl)
+    
+                            setImgUrl((user) => ({
+                                ...user,
+                                imgUrl: profileImage[0]
+                            }));
+    
+                        } catch (e) {
+                            console.error("파일 가져오기 실패" + e);
+                        } finally {
+                            setUploading(false);
+                        }
+                    }
+                );
+                });
+            };
+        }
+    }, []); 
+
+    // imgUrl이 변경되면 서버로 업데이트
+    useEffect(() => {
+    if (imgUrl) {
+        imgUpload.mutate(imgUrl);
+        setImgUrl(null)
+    }
+    }, [imgUpload]);
+
+
+    return (
+        <div css={s.mainContainer}>
+            <h2>마이페이지</h2>
+            <div css={s.userInfoContainer}>
+                <div css={s.imgBox} onClick={handleImageChangeOnClick} >
+                <img src={userInfo?.img} alt="" />
+                </div>
+                <div css={s.userInfoBox}>
+                <p>{userInfo?.name}님 반갑습니다.</p>
+                <p>{userInfo?.email}</p>
+                </div>
+            </div>
+            <div css={s.menuBox}>
+                {/* 메뉴 선택 버튼 */}
+                {menus.map((menu) => (
+                <Link
+                    key={menu.id}
+                    to={menu.path}
+                    css={s.selectedMenu(pathname === menu.path)}
+                >
+                    {menu.icon} <span>{menu.name}</span>
+                </Link>
+                ))}
+            </div>
+            <div css={s.contentsBox}>
+                <Routes>
+                    <Route path="/userinfo" element={<UserInfo />} />
+                    <Route path="/wishlist" element={<WishList />} />
+                    <Route path="/buyinfo" element={<BuyInfo />} />
+                    <Route path="/reviewinfo" element={<ReviewInfo />} />
+                    <Route path="/leaveUser" element={<LeaveUser 
+                    userInfo={userInfo}
+                    />} />
+                </Routes>
+            </div>
+        </div>
+    );
+}
+
+export default MyPage;
+
+```
+
+<br/>
+
+- 이 코드는 해당 사용자의 정보(프로필, 이름, 이메일 등)를 보여주고 정보수정, 찜목록, 구매기록, 자신이 쓴 리뷰, 회원 탈퇴 등 구현한 마이페이지 입니다. 
+- useQuery를 사용하여 해당 사용자의 정보를 조회하였습니다. 
+- Route를 사용하여 정보수정, 찜목록, 구매기록, 구매후기, 회원탈퇴를 이동하도록 하였습니다. 
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+<br/>
+
+- 마찬가지로 다른 코드에서 조회한 백엔드 코드와 흐름이 같습니다. 
+- 클라이언트에 /user로 get요청을 받아 사용자 정보를 조회하는 로직을 구현하였습니다. 
+
+---
+
+<br/><br/>
+
+#### 프로필 변경  
+
+**프론트**
+
+```jsx
+
+const profileImage = [];
+const [imgUrl, setImgUrl] = useState(null); // imgUrl 상태 별도로 관리
+
+const imgUpload = useMutation(
+    async (imgUrl) => {
+    return await instance.put("user/img", imgUrl);
+    },
+    {
+    onSuccess : () => {
+        getUserInfo.refetch();
+    },
+    onError: (e) => {
+        console.error(e)
+    }
+    }
+)
+
+const handleImageChangeOnClick = useCallback( async () => {
+    if (window.confirm("프로필 사진을 변경하시겠습니까?")) {
+        const fileInput = document.createElement("input");
+        fileInput.setAttribute("type", "file");
+        fileInput.click();
+
+        fileInput.onchange = (e) => {
+            const files = Array.from(e.target.files);
+
+            const storage = getStorage();
+            setUploading(true);
+
+            files.forEach((file) => {
+            const storageRef = ref(storage, `user/${uuid()}_${file.name}`);
+            const task = uploadBytesResumable(storageRef, file);
+
+            task.on(
+                'state_changed',
+                () => { }, // 업로드 중 상태 핸들링 (옵션)
+                (e) => {
+                    console.error(e);
+                    setUploading(false);
+                },
+                async () => {
+                    try {
+                        alert("이미지가 변경될 때 까지 기다려 주세요.")
+                        const imgUrl = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
+                        profileImage.push(imgUrl)
+
+                        setImgUrl((user) => ({
+                            ...user,
+                            imgUrl: profileImage[0]
+                        }));
+
+                    } catch (e) {
+                        console.error("파일 가져오기 실패" + e);
+                    } finally {
+                        setUploading(false);
+                    }
+                }
+            );
+            });
+        };
+    }
+}, []); 
+
+// imgUrl이 변경되면 서버로 업데이트
+useEffect(() => {
+if (imgUrl) {
+    imgUpload.mutate(imgUrl);
+    setImgUrl(null)
+}
+}, [imgUpload]);
+
+```
+
+<br/>
+
+- 이 코드는 프로필 사진을 변경하는 기능을 구현한 것입니다.
+- 프로필 사진 변경 확인: 사용자가 프로필 사진을 변경할지 확인하는 메시지를 표시합니다.
+- 파일 입력 생성 및 클릭: 파일 입력 요소를 동적으로 생성하고 클릭하여 파일 선택 창을 엽니다.
+- 파일 선택 처리: 사용자가 파일을 선택하면, 선택된 파일들을 배열로 변환합니다.
+- 파일 업로드:
+    - Firebase Storage를 사용하여 파일을 업로드합니다.
+    - 업로드 상태를 관리하고, 업로드 중 에러가 발생하면 처리합니다.
+    - 업로드가 완료되면 다운로드 URL을 가져와서 "profileImage" 배열에 추가합니다.
+- 프로필 이미지 업데이트: 다운로드 URL을 사용하여 프로필 이미지를 업데이트합니다.
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+**Controller**
+
+```java
+
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+    @PutMapping("/img")
+    public ResponseEntity<?> modifyImgProfile(@RequestBody ReqImgDto dto) {
+        userService.modifyImgProfile(dto);
+        return ResponseEntity.ok().body(true);
+    }
+
+}
+
+```
+
+<br/>
+
+- 클라이언트에서 "/user/img"로 put 요청을 받아 사용자의 이미지를 변경하는 로직을 수행합니다.
+- ReqImgDto 객체로 변환하여 userService에 전달하고 성공적으로 데이터를 가지고 오면 클라이언트에 응답을 true로 반환합니다.
+
+---
+
+<br/><br/>
+
+**Dto**
+
+```java
+
+@Data
+public class ReqImgDto {
+    private String imgUrl;
+}
+
+```
+
+<br/>
+
+- 이 dto는 수정할 이미지 url 데이터를 담고 있습니다. 
+
+---
+
+<br/><br/>
+
+**Service**
+
+```java
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void modifyImgProfile(ReqImgDto dto) {
+        PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        userMapper.updateUserProfile(principalUser.getId(), dto.getImgUrl());
+    }
+
+}
+
+```
+
+<br/>
+
+- 이 코드는 사용장의 프로필 이미지를 수정하는 비즈니스 로직을 처리합니다. 
+- modifyImgProfile 메서드는 현재 로그인한 사용자의 정보를 가져오고 이를 바탕으로 새로운 프로필 이미지를 데이터베이스에 업데이트하는 역할을 합니다. 
+
+---
+
+<br/><br/>
+
+**Mapper**
+
+```java
+
+@Mapper
+public interface UserMapper {
+
+    int updateUserProfile(@Param("userId") Long userId,@Param("imgUrl") String imgUrl);
+
+}
+
+```
+
+<br/>
+
+- updateUserProfile 메서드는 userId와 imgUrl를 service에서 요청을 파라미터로 받아 이를 통해 SQL 쿼리에서 로그인 한 사용자의 ID를 통해 imgUrl를 수정하여 service에 전달하는 역할을 합니다.
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
+
+<update id="updateUserProfile">
+    update users_tb
+    set
+        img = #{imgUrl}
+    where
+        user_id = #{userId}
+</update>
+
+```
+
+- 로그인 한 사용자ID로 비교하여 이미지를 업데이트(수정)하는 sql 문입니다. 
+
+---
+
+<br/><br/>
+
+#### 정보조회  
+
+**프론트**
+
+**UserInfo**
+
+```jsx
+
+function UserInfo(props) {
+    const [userInfo, setUserInfo] = useState({
+        username: "", // 수정 불가
+        name: "", // 수정 불가
+        email: "", // 수정 가능
+        phoneNumber: "", // 수정 가능
+        password: "",
+        changePassword: "",
+        checkPassword: "",
+        img: "",
+        address: {
+            address: "", // 지역 주소
+            detailAddress: "", // 상세 주소
+            zipCode: "",
+        },
+    });
+
+    // 유저 정보 불러오기
+    const { data, isError, isLoading, refetch } = useQuery(
+        ["userInfos"],
+        async () => {
+            return await instance.get("/user");
+        },
+        {
+            onSuccess: (response) => {
+                setUserInfo(response.data);
+            },
+            refetchOnWindowFocus: false,
+            retry: 0,
+        }
+    );
+
+    // onChange 핸들러
+    const handleUserInfoOnChange = (e) => {
+        setUserInfo((user) => ({
+            ...user,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    // 수정 함수
+    const userInfoEditmutation = useMutation(
+        async (dto) => {
+            return await instance.put(`/user/${dto.id}`, dto);
+        },
+        {
+            onSuccess: () => {
+                alert("수정이 완료되었습니다.")
+                refetch();
+            },
+        }
+    );
+
+    // 완료 버튼
+    const handleSubmitButtonOnClick = () => {
+        const dto = {
+            id: userInfo.id,
+            email: userInfo.email, // 이메일
+            phoneNumber: userInfo.phoneNumber, // 후대폰
+            address: userInfo.address.address, // 지역 주소
+            detailAddress: userInfo.address.detailAddress, // 상세 주소
+            zipCode: userInfo.address.zipCode, // 우편번호
+            password: userInfo.password, // 현재 비밀번호
+            changePassword: userInfo.changePassword, // 변경할 비밀번호
+            checkPassword: userInfo.checkPassword, // 비밀번호 확인
+        };
+    // 새 비밀번호와 비밀번호 확인이 입력된 경우에만 추가
+    if (userInfo.changePassword && userInfo.checkPassword) {
+        dto.changePassword = userInfo.changePassword; // 변경할 비밀번호
+        dto.checkPassword = userInfo.checkPassword; // 비밀번호 확인
+    }
+        userInfoEditmutation.mutate(dto);
+    };
+
+    // 주소 선택 완료 시 호출될 함수
+    const handleAddressComplete = (address) => {
+        setUserInfo((user) => ({
+            ...user,
+            address: {
+                address: address.address, // 지역 주소 업데이트
+                detailAddress: address.detailAddress, // 나머지 주소 업데이트
+                zipCode: address.zipCode,
+            },
+        }));
+        };
+
+    // 배송지 수정 -> 지금처럼 지역주소, 나머지 주소가 아닌, 배송지 목록 관리 버튼 -> 윈도우 창 뜸 -> 배송지 관리 가능
+
+    if (isLoading) return <div>Loading...</div>;
+
+    return (
+        <div css={s.layout}>
+            <div css={s.mainBox}>
+                <div css={s.userInfo}>
+                    <h2>사용자 정보</h2>
+                    <div css={s.inputBox}>
+                        <label htmlFor="username">아이디 : </label>
+                        <input
+                            type="text"
+                            name="username"
+                            readOnly
+                            value={userInfo.username} // defaultValue → value로 변경
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label htmlFor="name">이름 : </label>
+                        <input
+                            type="text"
+                            name="name"
+                            readOnly
+                            value={userInfo.name} // defaultValue → value로 변경
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label htmlFor="password">현재 비밀번호: </label>
+                        <input
+                            type="password"
+                            name="password"
+                            onChange={handleUserInfoOnChange}
+                            value={userInfo.password} // 현재 비밀번호 반영
+                            placeholder="현재 비밀번호를 입력하세요"
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label htmlFor="changePassword">새 비밀번호: </label>
+                        <input
+                            type="password"
+                            name="changePassword"
+                            onChange={handleUserInfoOnChange}
+                            value={userInfo.changePassword} // 새 비밀번호 반영
+                            placeholder="새 비밀번호를 입력하세요"
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label htmlFor="checkPassword">비밀번호 확인: </label>
+                        <input
+                            type="password"
+                            name="checkPassword"
+                            onChange={handleUserInfoOnChange}
+                            value={userInfo.checkPassword} // 비밀번호 확인 반영
+                            placeholder="비밀번호를 확인하세요"
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label htmlFor="email">이메일 : </label>
+                        <input
+                            onChange={handleUserInfoOnChange}
+                            type="text"
+                            name="email"
+                            value={userInfo.email} // defaultValue → value로 변경
+                            placeholder="이메일 주소를 입력해 주세요"
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label htmlFor="phoneNumber">휴대폰 번호 : </label>
+                        <input
+                            onChange={handleUserInfoOnChange}
+                            type="text"
+                            name="phoneNumber"
+                            value={userInfo.phoneNumber} // defaultValue → value로 변경
+                            placeholder="휴대폰 번호를 입력해 주세요"
+                        />
+                    </div>
+                    <p>
+                        {/* DaumPost 컴포넌트 추가 */}
+                        <input
+                            type="text"
+                            name="zipCode"
+                            readOnly
+                            value={userInfo?.address?.zipCode}
+                        />
+                        <DaumPost onComplete={handleAddressComplete} />
+                    </p>
+                    <div css={s.addressBox}>
+                        <label>지역 주소: </label>
+                        <input
+                            type="text"
+                            name="address"
+                            readOnly
+                            value={userInfo?.address?.address} // 지역 주소 반영
+                        />
+                    </div>
+                    <div css={s.inputBox}>
+                        <label>나머지 주소: </label>
+                        <input
+                            type="text"
+                            name="detailAddress"
+                            onChange={handleUserInfoOnChange}
+                            value={userInfo?.address?.detailAddress} // 나머지 주소 반영
+                        />
+                    </div>
+                </div>
+                <div css={s.buttonBox}>
+                    <button onClick={handleSubmitButtonOnClick}>정보 수정</button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default UserInfo;
+
+```
+
+<br/>
+
+- 이 코드는 로그인 한 사용자의 정보를 조회하고 수정하기 위한 역할을 수행합니다.
+- 이메일, 전화번호, 비밀번호, 주소를 변경할 수 있게 설정하였습니다. 
+- useQuery를 이용하여 로그인 한 해당 사요자의 정보를 조회하였습니다.
+- useMutation 훅을 사용하여 서버에 put 요청을 받고 성공적으로 응답이 오면 완료되었다고 알람창을 띄워서 구현하였습니다.
+- 수정완료 버튼을 클릭 시 서버로 보낼 dto를 새로 구성하였고 비밀번호 변경을 원할 시에만 비밀번호를 백엔드에 포함시키고, 그렇지 않은 경우는 비밀번호를 dto에서 제외시켰습니다.  
+- DaumPost 컴포넌트를 추가하여 해당 사용자의 주소를 입력하도록 설정하였고 handleAddressComplete(주소 선택 완료 시 호출됨)를 DaumPost 컴포넌트에 넘겨주었습니다. 
+
+---
+
+<br/><br/>
+
+**DaumPost**
+
+```jsx
+
+function DaumPost({ onComplete }) {
+    const open = useDaumPostcodePopup(postcodeScriptUrl);
+
+    const handleComplete = (data) => {
+        let fullAddress = data.address;
+        let extraAddress = ''; // 추가 주소
+        let address = data.sido + ' ' + data.sigungu; // 지역 주소
+        let zipCode = data.zonecode;
+
+        if (data.addressType === 'R') { // 도로명 주소일 경우
+            if (data.bname !== '') {
+                extraAddress += data.bname; // 법정동
+            }
+            if (data.buildingName !== '') { // 건물명
+                extraAddress += (extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName);
+            }
+            fullAddress = fullAddress.replace(address, ''); // 지역 주소 제외
+        }
+
+        // 부모 컴포넌트에 전달할 주소 객체 구성
+        onComplete({
+            address: address, // 지역 주소
+            detailAddress: fullAddress + (extraAddress !== '' ? ` (${extraAddress})` : ''), // 나머지 주소
+            zipCode : zipCode
+        });
+    };
+
+    // 클릭 시 발생할 이벤트
+    const handleClick = () => {
+        open({ onComplete: handleComplete });
+    };
+
+    return <button type="button" onClick={handleClick}>주소찾기</button>;
+}
+
+export default DaumPost;
+
+```
+
+<br/>
+
+- 이 코드는 주소찾기 클릭할 시 주소를 검색하여 찾을 수 있는 창을 띄워 주소를 입력하도록 설정하였습니다. 
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+**Controller**
+
+```java
+
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    // 비밀번호, 주소, 이메일 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<?> modifyUserInfo(@RequestBody ReqModifyUserDto dto) throws SignupException {
+        userService.modifyUserInfo(dto);
+        return ResponseEntity.ok().body(true);
+    }
+
+}
+
+```
+
+<br/>
+
+- 클라이언트에서 put 요청을 받아 사용자의 정보를 수정하는 로직을 수행합니다. 
+- ReqModifyUserDto 객체로 변환하여 modifyUserInfo 메서드에 전달하고 성공적으로 실행이 되면 클라이언트에 응답을 true로 반환합니다.  
+
+---
+
+<br/><br/>
+
+**Dto**
+
+```java
+
+@Builder
+@Data
+public class ReqModifyUserDto {
+    private String password;
+    private String changePassword;
+    private String checkPassword;
+    private String email;
+    private String address;
+    private String detailAddress;
+    private String zipCode;
+
+    public User toUpdateUser(Long userId, BCryptPasswordEncoder bycryptPasswordEncoder) {
+        return User.builder()
+                .userId(userId)
+                .password(bycryptPasswordEncoder.encode(changePassword))
+                .email(email)
+                .build();
+    }
+
+    public User toUser(Long userId, String password) {
+        return User.builder()
+                .userId(userId)
+                .password(password)
+                .email(email)
+                .build();
+    }
+
+    public Address toAddress(Long userId) {
+        return Address.builder()
+                .userId((userId))
+                .address(address)
+                .detailAddress(detailAddress)
+                .zipCode(zipCode)
+                .build();
+    }
+}
+
+```
+
+<br/>
+
+- 이 dto는 사용자의 정보를 수정하는 데 필요한 데이터를 담고 있습니다.
+- toUpdateUser 메서드는 ReqModifyUserDto의 데이터를 바탕으로 사용자 정보를 수정하기 위한 User 객체를 반환하는 역할을 합니다.
+- toUser 메서드는 ReqModifyUserDto의 데이터를 바탕으로 새로운 User 객체를 생성하고 주로 비밀번호 변경과 관련된 작업에서 사용하도록 구현하였습니다.
+- toAddress 메서드는 ReqModifyUserDto의 데이터를 바탕으로 사용자 주소 정보를 담은 Address 객체를 생성하는 역할을 합니다. 
+
+---
+
+<br/><br/>
+
+**Service**
+
+```java
+
+@Transactional(rollbackFor = SQLException.class)
+public void modifyUserInfo(ReqModifyUserDto dto) throws SignupException {
+    PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getPrincipal();
+
+    User user = userMapper.findUserByUserId(principalUser.getId());
+
+    if (!bCryptPasswordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        throw new BadCredentialsException("사용자 정보를 확인하세요.");
+    }
+
+    if (dto.getChangePassword() != null && dto.getCheckPassword() != null) {
+        if (!authService.checkPassword(dto.getChangePassword(), dto.getCheckPassword())) {
+            throw new SignupException("비밀번호가 일치하지 않습니다.");
+        }
+        userMapper.updateUserInfo(dto.toUpdateUser(user.getUserId(), bCryptPasswordEncoder));
+    } else {
+        userMapper.updateUserInfo(dto.toUser(user.getUserId(), user.getPassword()));
+    }
+
+    if(addressMapper.findAddressByUserId(user.getUserId()) != null) {
+        addressMapper.updateAddress(dto.toAddress(user.getUserId()));
+        return;
+    }
+
+    addressMapper.addAddress(dto.toAddress(user.getUserId()));
+}
+
+```
+
+<br/>
+
+- 이 코드는 사용자의 정보를 수정하는 비즈니스 로직을 처리하는 modifyUserInfo 메서드입니다. 
+- 현재 로그인한 비밀번호와 입력한 비밀번호가 맞지 않고 새비밀번호와 다시 쓰는 새비밀번호가 일치 하지 않으면 예외 처리하도록 설정하였습니다.
+- 현재 로그인한 비밀번호와 입력한 비밀번호가 일치하면 정보 수정이 되도록 구현하였습니다. 
+- 주소가 이미 존재하는 경우 : 사용자의 원래 주소에서 다른 주소로 변경할 수 있게 updateAddress 메서드를 사용하여 수정 가능하도록 구현하였습니다. 
+- 만약 주소가 없는 경우, 사용자의 주소를 추가할 수 있게 구현하였습니다. 
+
+---
+
+<br/><br/>
+
+**UserMapper**
+
+```java
+
+@Mapper
+public interface UserMapper {
+
+    User findUserByUserId(Long userId);
+
+    int updateUserInfo(User user);
+
+}
+
+```
+
+<br/>
+
+- findUserByUserId 메서드는 userId를 이용하여 sql 쿼리문에서 조회하여 성공 시 응답을 받고 이 메서드에 담아 service에 전달하는 역할을 합니다.
+- updateUserInfo 메서드는 user 객체를 통해 sql 쿼리문에서 사용자의 정보를 수정하여 성공 시 응답을 받고 이 메서드에 담아 service에 전달하는 역할을 합니다
+
+---
+
+<br/><br/>
+
+**addressMapper**
+
+```java
+
+@Mapper
+public interface AddressMapper {
+
+    int addAddress(Address address);
+
+    int updateAddress(Address address);
+
+}
+
+```
+
+<br/>
+
+- addAddress 메서드는 address 객체를 이용하여 sql 쿼리문에서 사용자의 주소를 추가하여 성공 시 응답을 받고 addAddress 메서드에 담아 service에 전달하는 역할을 합니다.
+- updateAddress 메서드는 address 객체를 이용하여 sql 쿼리문에서 사용자의 주소를 변경하여 성공 시 응답을 받고 이 메서드에 담아 service에 전달하는 역할을 합니다.
+
+---
+
+<br/><br/>
+
+**user.xml**
+
+```java
+
+<update id="updateUserInfo">
+    update users_tb
+    set
+        password = #{password},
+        email = #{email}
+    where
+        user_id = #{userId}
+</update>
+
+```
+
+- 해당 사용자의 ID를 통해 사용자의 비밀번호와 이메일을 수정할 수 있는 기능을 구현한 sql 쿼리문입니다. 
+
+---
+
+<br/><br/>
+
+**address.xml**
+
+```java
+
+<insert id="addAddress">
+    insert into shipping_addresses_tb
+    values(default, #{userId}, #{address}, #{detailAddress}, #{zipCode})
+</insert>
+
+```
+
+- 이 코드는 해당 사용자의 주소를 추가하는 기능을 구현한 sql 쿼리문입니다. 
+
+---
+
+<br/><br/>
+
+**address.xml**
+
+```java
+
+<update id="updateAddress">
+    update shipping_addresses_tb
+    set
+        address = #{address},
+        detail_address = #{detailAddress},
+        zip_code = #{zipCode}
+    where
+        user_id = #{userId}
+</update>
+
+```
+
+- 사용자의 주소를 변경하는 기능을 구현한 sql 쿼리문입니다. 
+
+---
+
+<br/><br/>
+
+#### 찜목록  
+
+**프론트**
+
+__전체 코드__
+
+```jsx
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+- __위시리스트 조회__
+
+    ```jsx
+
 
 
     ```
@@ -5304,8 +7035,6 @@ __유저__
 
     ---
 
-    <br/><br/>
-
     **Service**
 
     ```java
@@ -5320,7 +7049,83 @@ __유저__
 
     ---
 
+    **Mapper**
+
+    ```java
+
+
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
+
     <br/><br/>
+
+    **xml**
+
+    ```java
+
+
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
+
+    <br/><br/>
+
+- __위시리스트 삭제__
+
+    ```jsx
+
+
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
+
+    **Service**
+
+    ```java
+
+
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
 
     **Mapper**
 
@@ -5347,246 +7152,6 @@ __유저__
     ```
 
     -
-
----
-
-<br/><br/>
-
-### 마이페이지  
-
-#### 프로필 변경  
-
-**프론트**
-
-```jsx
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**백엔드**
-
-**Controller**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**Service**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**Mapper**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**xml**
-
-```java
-
-
-
-```
-
--
-
----
-
-<br/><br/>
-
-#### 정보조회  
-
-**프론트**
-
-```jsx
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**백엔드**
-
-**Controller**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-**Service**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-**Mapper**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**xml**
-
-```java
-
-
-
-```
-
--
-
----
-
-<br/><br/>
-
-#### 찜목록  
-
-**프론트**
-
-```jsx
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**백엔드**
-
-**Controller**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-**Service**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-**Mapper**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**xml**
-
-```java
-
-
-
-```
-
--
 
 ---
 
