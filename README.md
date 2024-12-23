@@ -5908,9 +5908,13 @@ __유저__
 
     ```
 
+    <br/>
+
     - cartItemId를 통해 장바구니 항목을 삭제 처리하는 sql 문입니다. 
 
     ---
+
+    <br/><br/>
 
 - __체크박스 기능__
 
@@ -6458,6 +6462,8 @@ public interface UserMapper {
 
 ```
 
+<br/>
+
 - 로그인 한 사용자ID로 비교하여 이미지를 업데이트(수정)하는 sql 문입니다. 
 
 ---
@@ -6977,6 +6983,8 @@ public interface AddressMapper {
 
 ```
 
+<br/>
+
 - 사용자의 주소를 변경하는 기능을 구현한 sql 쿼리문입니다. 
 
 ---
@@ -6991,13 +6999,123 @@ __전체 코드__
 
 ```jsx
 
+function WishList(props) {
 
+    const navigate = useNavigate();
+
+    const [productLikeList, setProductLikeList] = useState([]);
+
+    // 위시리스트 전체조회
+    const productWishList = useQuery(
+        ["productLikeQuery"],
+        async () => {
+            return await instance.get("/user/product")
+        },
+        {
+            refetchOnWindowFocus: false,
+            retry: 0,
+            onSuccess: (response) => {
+                setProductLikeList(response.data.body.map((item) => item.product[0])); 
+            }
+        }
+    );
+
+    // 찜 삭제 기능
+    const disLikeProductWishListMutation = useMutation(
+        async (productId) => {
+            return await instance.delete(`/user/product/dislike/${productId}`)
+        },
+        {
+            onSuccess: () => {
+                productWishList.refetch();
+            },
+        }
+    )
+
+    const handleDisLikeProductOnClick = async (id) => {
+        disLikeProductWishListMutation.mutate(id);
+    }
+
+    // 장바구니 추가 기능
+    const productToBaskect = useMutation(
+        async (product) => {
+            const CartProduct = {
+                productId : product.productId,
+                quantity : 1,
+                price : product.price,
+            }
+            return await instance.post("/user/cart/", CartProduct);
+        },
+        {
+            onError: (error) => {
+                console.error("오류!!!" + error)
+            },
+            onSuccess: () => {
+                if (window.confirm("장바구니에 추가하였습니다.\n장바구니로 이동하시겠습니까?")) {
+                navigate("/cart")
+            }
+            }
+        }
+    )
+
+    // 장바구니 이동 기능 추가
+    const handleProductToBaskect = (product) => {
+        productToBaskect.mutate(product);
+    }
+
+    return (
+        <div css={s.wishListContainer}>
+            {/* 찜 목록 섹션 */}
+            <div css={s.wishListSection}>
+                <div css={s.wishListHeader}>
+                    <h2>찜 목록</h2>
+                </div>
+                {productLikeList.length === 0 ? (
+                    <p css={s.emptyCartMessage}>찜목록이 비었습니다.</p>
+                ) : (
+                    <table css={s.tableLayout}>
+                        <tbody css={s.menuLayout}>
+                            {productLikeList.map((product) => (
+                                <tr key={product?.productId}>
+                                    <td>
+                                        <div css={s.menuList}>
+                                            <div css={s.imgLayout}>
+                                                <Link key={product.productId} to={`/product/${product.productId}`}>
+                                                    <img src={product?.thumbnailImg} />
+                                                </Link>
+                                            </div>
+                                            <div css={s.contentLayout}>
+                                                <div css={s.productLayout}>
+                                                    <h2>{product?.title}</h2>
+                                                    <h2>{product?.price.toLocaleString()}원</h2>
+                                                </div>
+                                                <div css={s.icons}>
+                                                    <button onClick={() => handleProductToBaskect(product)} ><SlBasket size="24" /></button>
+                                                    <button onClick={() => handleDisLikeProductOnClick(product.productId)} ><IoIosHeart size="25" /></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
+        </div>
+    );
+
+}
+
+export default WishList;
 
 ```
 
 <br/>
 
--
+- 이 코드는 찜목록 전체 코드입니다. 상세한 기능리뷰는 밑으로 내리면 있습니다.
+- 해당 사용자가 상품을 찜안하면 찜 목록이 비어있고 있으면 찜한 상품이 뜨도록 구현하였습니다.
+- 장바구니 추가 기능은 위에 설명이 되어있어어 스킵하겠습니다. 
 
 ---
 
@@ -7007,13 +7125,28 @@ __전체 코드__
 
     ```jsx
 
+     const [productLikeList, setProductLikeList] = useState([]);
 
+    // 위시리스트 전체조회
+    const productWishList = useQuery(
+        ["productLikeQuery"],
+        async () => {
+            return await instance.get("/user/product")
+        },
+        {
+            refetchOnWindowFocus: false,
+            retry: 0,
+            onSuccess: (response) => {
+                setProductLikeList(response.data.body.map((item) => item.product[0])); 
+            }
+        }
+    );
 
     ```
 
     <br/>
 
-    -
+    - 위시리스트 조회 API를 통해 사용자가 좋아요를 누른 상품들의 목록을 불러옵니다. useQuery 훅을 사용하여 서버로부터 데이터를 가져오고, 성공 시 setProductLikeList 함수를 통해 상태를 업데이트합니다.
 
     ---
 
@@ -7025,13 +7158,19 @@ __전체 코드__
 
     ```java
 
+    @Autowired
+    private ProductLikeService productLikeService;
 
+    @GetMapping("")
+    public ResponseEntity<?> getWishList() {
+        return ResponseEntity.ok().body(productLikeService.getWishList());
+    }
 
     ```
 
     <br/>
 
-    -
+    - 이 코드는 클라이언드에 get요청을 받아 응답을 service에 getWishList 메서드를 호출하고 반환하며 해당 사용자의 찜목록을 조회하는 역할을 합니다. 
 
     ---
 
@@ -7039,13 +7178,23 @@ __전체 코드__
 
     ```java
 
+    @Autowired
+    private ProductLikeMapper productLikeMapper;
 
+    public ResponseEntity<?> getWishList() {
+        PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        return ResponseEntity.ok(productLikeMapper.SearchProductLikeByUserId(principalUser.getId()));
+    }
 
     ```
 
     <br/>
 
-    -
+    - 이 코드는 해당 로그인한 사용자의 ID를 데이터베이스에서 조회하여 service에 응답받아 controller에 조회한 데이터 값을 전달하는 역할을 합니다. 
 
     ---
 
@@ -7053,13 +7202,13 @@ __전체 코드__
 
     ```java
 
-
+    List<ProductLike> SearchProductLikeByUserId(Long userId);
 
     ```
 
     <br/>
 
-    -
+    - userId를 통해 sql 쿼리문에서 해당 사용자의 찜목록에 찜한 상품들을 조회하여 데이터가 성공적으로 조회될 시 SearchProductLikeByUserId 메서드에 담아 service에 전달하는 역할을 합니다. 
 
     ---
 
@@ -7069,13 +7218,26 @@ __전체 코드__
 
     ```java
 
-
+    <select id="SearchProductLikeByUserId" resultMap="productLikeProductResultMap">
+        select
+            plt.product_like_id,
+            plt.user_id,
+            pt.product_id,
+            pt.title,
+            pt.price,
+            pt.thumbnail_img
+        from
+            products_like_tb plt
+            left outer join products_tb pt on(pt.product_id = plt.product_id)
+        where
+            plt.user_id = #{userId}
+    </select>
 
     ```
 
     <br/>
 
-    -
+    - userId를 이용하여 해당 사용자의 찜한 상품 목록을 조회한 sql 쿼리문입니다.
 
     ---
 
@@ -7085,13 +7247,23 @@ __전체 코드__
 
     ```jsx
 
-
+    // 찜 삭제 기능
+    const disLikeProductWishListMutation = useMutation(
+        async (productId) => {
+            return await instance.delete(`/user/product/dislike/${productId}`)
+        },
+        {
+            onSuccess: () => {
+                productWishList.refetch();
+            },
+        }
+    )
 
     ```
 
     <br/>
 
-    -
+    - 백엔드에 productId를 보내 상품을 제거한 후, 삭제가 완료되면 새로고침을 통해 리스트를 새로 불러오는 코드입니다.
 
     ---
 
@@ -7103,13 +7275,17 @@ __전체 코드__
 
     ```java
 
-
+    @DeleteMapping("/dislike/{id}")
+    public ResponseEntity<?> productDislike(@PathVariable Long id) {
+        productLikeService.productDislike(id);
+        return ResponseEntity.ok().body(true);
+    }
 
     ```
 
     <br/>
 
-    -
+    - 이 코드는 해당 사용자의 찜목록 리스트에 찜한 상품을 삭제한 결과 값을 클라이언트에 응답을 반환하는 역할을 합니다. 
 
     ---
 
@@ -7117,13 +7293,25 @@ __전체 코드__
 
     ```java
 
+    public void productDislike(Long productId) {
+        PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
 
+        ProductLike productDisLike = ProductLike.builder()
+                .productId(productId)
+                .userId(principalUser.getId())
+                .build();
+        productLikeMapper.deleteProductLike(productDisLike);
+    }
 
     ```
 
     <br/>
 
-    -
+    - 이 코드는 해당 사용자의 찜한 상품을 삭제하는 기능을 처리하는 productDislike 메서드입니다. 
+    - productDisLike 객체는 사용자가 찜한 상품을 찜목록에 삭제한 정보를 기록하여 mapper에 전달하여 데이터베이스에서 삭제하여 service에 응답을 받아 controller에 전달하는 역할을 합니다. 
 
     ---
 
@@ -7131,13 +7319,13 @@ __전체 코드__
 
     ```java
 
-
+    Long deleteProductLike(ProductLike dislike);
 
     ```
 
     <br/>
 
-    -
+    - deleteProductLike 메서드는 sql 쿼리문에서 찜한 상품을 찜목록에서 삭제한 결과값을 이 메서드에 담아 service에 전달하는 역할을 합니다. 
 
     ---
 
@@ -7147,11 +7335,18 @@ __전체 코드__
 
     ```java
 
-
+    <delete id="deleteProductLike">
+        delete from products_like_tb
+        where
+            product_id = #{productId}
+            and user_id = #{userId}
+    </delete>
 
     ```
 
-    -
+    <br/>
+
+    - 해당하는 상품의 Id와 사용자의 Id를 조건으로 찜목록의 찜한 상품을 삭제하는 sql 쿼리문입니다. 
 
 ---
 
@@ -7163,77 +7358,987 @@ __전체 코드__
 
 ```jsx
 
+function BuyInfo(props) {
+    // 모달 띄우는 상태 추가
+    const [openModal, setOpenModal] = useState(false);
 
+    const closeModal = () => {
+        setOpenModal(false);
+    };
+
+    const navigate = useNavigate();
+    // 구매상품 목록 배열로 불러오기
+    const [userBuyInfo, setUserBuyInfo] = useState([]);
+    const [paymentData, setPaymentData] = useState({});
+
+    // 구매기록 map돌리는 거에 후기작성 버튼 추가 - 모달창 띄움 - 별점(1 - 5), 제목, 내용 입력
+    // 배송완료 후 7일 이내에만 리뷰 작성 가능하게 해야함
+
+    //구매목록 조회 기능
+    const { data, isError, isLoading, refetch } = useQuery(
+        ["getUserBuyInfo"],
+        async () => {
+            return await instance.get("/user/order/record");
+        },
+        {
+            onSuccess: (response) => {
+                setUserBuyInfo(response?.data);
+            },
+        }
+    );
+
+    const getPaymentNum = async (orderId) => {
+        let response = null;
+        try {
+            response = await instance.get("/user/payment", {
+                params: { orderId: orderId },
+            });
+            setPaymentData(response?.data); 
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const accessTokenMutaion = useMutation(
+        async () =>
+            await axios.post("https://api.portone.io/login/api-secret", {
+                apiSecret: portone,
+            }),
+        {
+            onSuccess: (response) => console.log(response),
+        }
+    );
+
+    const portonePaymentCancelMutation = useMutation(
+        async ({ accessToken }) => {
+            const cancelAmount = paymentData.amount;
+            const options = {
+                method: "post",
+                url: `https://api.portone.io/payments/${paymentData.paymentNum}/cancel`, // 확인
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + accessToken,
+                },
+                data: {
+                    reason: "취소요청",
+                    cancel_request_amount: cancelAmount,
+                },
+            };
+            const { data } = await axios.request(options);
+            return data;
+        },
+        {
+            onSuccess: () => {
+                modifyOrderStatus.mutateAsync();
+                Swal.fire({
+                    text: "결제가 취소되었습니다.",
+                    icon: "success",
+                    timer: 1500,
+                    confirmButtonColor: "#9d6c4c",
+                    confirmButtonText: "닫기",
+                });
+                window.location.reload();
+            },
+            onError: (error) => console.log(error),
+        }
+    );
+
+    const modifyOrderStatus = useMutation(
+        async () => await instance.put(`/user/payment/${paymentData.paymentNum}`)
+    );
+
+    const handlePaymentCancelOnClick = (orderId) => {
+        Swal.fire({
+            text: "결제를 취소하시겠습니까?",
+            icon: "question",
+            showCancelButton: true,
+            cancelButtonColor: "#777777",
+            cancelButtonText: "닫기",
+            confirmButtonColor: "#9d6c4c",
+            confirmButtonText: "주문취소",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                getPaymentNum(orderId);
+                accessTokenMutaion
+                    .mutateAsync()
+                    .then((response) =>
+                        portonePaymentCancelMutation
+                            .mutateAsync(response?.data)
+                            .catch(() => { })
+                    );
+            }
+        });
+    };
+
+    const [modalProducts, setModalProducts] = useState(0);
+
+    // 후기
+    const handleReview = (productId) => {
+        setModalProducts(productId);
+        setOpenModal(true);
+    };   
+
+    return (
+        <div css={s.containerStyle}>
+            <h2>구매기록</h2>
+            <ul>
+                {userBuyInfo?.map((products) => (
+                    <li key={products.orderId} css={s.productStyle}>
+                        <img
+                            src={products?.orderItems[0]?.products[0].thumbnailImg}
+                            alt={products.title}
+                            css={s.imageStyle}
+                        />
+                        <div css={s.textStyle}>
+                            <h2 css={s.titleStyle}>
+                                {products?.orderItems[0]?.products[0].title}
+                                {
+                                    products?.orderItems[0]?.products?.length > 1
+                                        ?
+                                        <>
+                                            외 {products?.orderItems[0]?.products?.length - 1}개
+                                        </>
+                                        :
+                                        <></>
+                                }
+                            </h2>
+                            <p css={s.orderStatusStyle}>{products?.payment?.paymentStatus === "completed" ? "결제 완료" : "결제 취소"}</p>
+                            <p css={s.priceStyle}>
+                                가격: {products?.totalAmount.toLocaleString()}원
+                            </p>
+                        </div>
+                        <div css={s.otherBox}>
+                            <div css={s.buttonBox}>
+                                {products?.payment?.paymentStatus === "completed"
+                                    ?
+                                    <>
+                                        <button
+                                            css={s.buttonStyle1}
+                                            onClick={() => handlePaymentCancelOnClick(products.orderId)}
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                        <button
+                                            css={s.buttonStyle2}
+                                            onClick={() =>
+                                                handleReview(products?.orderItems[0]?.products[0].productId)
+                                            }
+                                        >
+                                            <FaRegPenToSquare />
+                                        </button>
+                                    </>
+                                    :
+                                    <></>
+                                }
+                                <RegisterReviewModal
+                                    onClose={closeModal}
+                                    isOpen={openModal}
+                                    product={modalProducts}
+                                />
+                            </div>
+                            <p>{products.createdAt.slice(0, 10)}</p>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+export default BuyInfo;
 
 ```
 
 <br/>
 
--
+- 이 코드는 사용자의 구매기록 전체 코드 입니다.
+- 세부 기능은 밑에 설명하겠습니다. 
 
 ---
 
-<br/><br/>
+- **구매목록 조회 기능**
 
-**백엔드**
+    **프론트**
 
-**Controller**
+    ```Jsx
 
-```java
+    const [userBuyInfo, setUserBuyInfo] = useState([]);
 
+    //구매목록 조회 기능
+    const { data, isError, isLoading, refetch } = useQuery(
+        ["getUserBuyInfo"],
+        async () => {
+            return await instance.get("/user/order/record");
+        },
+        {
+            onSuccess: (response) => {
+                setUserBuyInfo(response?.data);
+            },
+        }
+    );
 
+    ```
 
-```
+    <br/>
 
-<br/>
+    - 해당 사용자가 구매한 상품 목록을 조회하는 기능을 useQuery를 사용하여 구현하였습니다. 
+    - 서버에 get 요청을 보내고 성공적으로 응답이 오면 구매한 상품 목록을 조회합니다.
 
--
+    ---
 
----
+    <br/><br/>
 
-<br/><br/>
+    **백엔드**
 
-**Service**
+    **Controller**
 
-```java
+    ```java
 
+    @GetMapping("/order/record")
+    public ResponseEntity<?> getOrderRecord() {
+        return ResponseEntity.ok().body(orderService.getOrderRecord());
+    }
 
+    ```
 
-```
+    <br/>
 
-<br/>
+    - 이 코드는 클라이언트에 get요청을 받아 응답을 service에 getOrderRecord 메서드를 호출하고 반환하며 해당 사용자의 구매한 상품의 목록을 조회하는 역할을 합니다. 
 
--
+    ---
 
----
+    <br/><br/>
 
-<br/><br/>
+    **Service**
 
-**Mapper**
+    ```java
 
-```java
+    public List<Order> getOrderRecord() {
+        PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
 
+        return orderMapper.findUserOrder(principalUser.getId());
+    }
 
+    ```
 
-```
+    <br/>
 
-<br/>
+    - 이 코드는 orderMapper를 통해 해당 로그인한 사용자의 Id를 데이터베이스에서 조회하여 응답을 반환받아 controller에 전달하는 역할을 합니다. 
 
--
+    ---
 
----
+    <br/><br/>
 
-<br/><br/>
+    **Mapper**
 
-**xml**
+    ```java
 
-```java
+    List<Order> findUserOrder(Long userId);
 
+    ```
 
+    <br/>
 
-```
+    - findUserOrder 메서드는 userId를 이용하여 sql 쿼리문에서 해당 사용자의 구매한 상품의 목록을 조회하여 데이터가 성공적으로 가져올 시 이 메서드에 담아 sevice에 전달하는 역할을 합니다. 
 
--
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <select id="findUserOrder" resultMap="orderResultMap">
+        select
+            ot.order_id,
+            ot.total_amount,
+            ot.created_at,
+            oit.quantity,
+            pt.product_id,
+            pt.title,
+            pt.thumbnail_img,
+            pat.payment_status,
+            pat.payment_method
+        from
+            orders_tb ot
+            left outer join order_items_tb oit on(ot.order_id = oit.order_id)
+            left outer join products_tb pt on (pt.product_id = oit.product_id)
+            left outer join payments_tb pat on (pat.order_id = oit.order_id)
+        where user_id = #{userId}
+        order by ot.created_at desc
+    </select>
+
+    ```
+
+    <br/>
+
+    - userId를 이용하여 해당 사용자가 구매한 상품 정보들을 최근 구매한 날짜 순으로 정렬하여 조회한 sql 쿼리문입니다.
+
+    ---
+
+    <br/><br/>
+
+- **getPaymentNum 함수**
+
+    **프론트**
+
+    ```Jsx
+
+    const getPaymentNum = async (orderId) => {
+        let response = null;
+        try {
+            response = await instance.get("/user/payment", {
+                params: { orderId: orderId },
+            });
+            setPaymentData(response?.data); 
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @GetMapping("")
+    public ResponseEntity<?> getPaymentNum (@RequestParam (required = false) Long orderId) {
+        System.out.println(orderId);
+        return ResponseEntity.ok().body(paymentService.getPaymentNum(orderId));
+    }
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    public Payment getPaymentNum (Long orderId) {
+        return paymentsMapper.findPaymentNumByOrderId(orderId);
+    }
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    Payment findPaymentNumByOrderId (Long orderId);
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <select id="findPaymentNumByOrderId" resultMap="paymentResultMap">
+        select
+            payment_num,
+            amount
+        from
+            payments_tb
+        where
+            order_id = #{orderId}
+    </select>
+
+    ```
+
+    <br/>
+
+    -
+
+    ---
+
+    <br/><br/>
+
+- **accessTokenMutation 함수**
+
+    **프론트**
+
+    ```Jsx
+
+    const accessTokenMutaion = useMutation(
+        async () =>
+            await axios.post("https://api.portone.io/login/api-secret", {
+                apiSecret: portone,
+            }),
+        {
+            onSuccess: (response) => console.log(response),
+        }
+    );
+
+    ```
+
+    <br/>
+
+    - 이 코드는 post 요청을 사용하여 서버에서 accessToken을 받아오는 비동기 작업을 처리하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+- **구매 상태 기능**
+
+    **프론트**
+
+    ```Jsx
+
+    const modifyOrderStatus = useMutation(
+        async () => await instance.put(`/user/payment/${paymentData.paymentNum}`)
+    );
+
+    ```
+
+    <br/>
+
+    - 이 코드는 서버에 put요청을 보내 상품의 구매 상태를 처리하는 mutation 입니다.
+    - 만약 결제 하였을 때 결제 완료, 결제 취소하였을 때 결제 취소 등 이러한 상태를 수정하는 로직입니다.
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @PutMapping("/{paymentId}")
+    public ResponseEntity<?> modifyStatus (@PathVariable String paymentId) {
+        paymentService.modifyStatus(paymentId);
+        return ResponseEntity.ok().body(true);
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 클라이언트에 put 요청을 받아 해당 사용자가 구매한 상품의 결제 상태를 수정하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    @Autowired
+    private PaymentsMapper paymentsMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void modifyStatus (String paymentId) {
+        String paymentStatus = "failed";
+        paymentsMapper.updatePaymentStatus(paymentStatus, paymentId.trim());
+        List<OrderItem> orderItems = paymentsMapper.findOrderItems(paymentId.trim());
+        productMapper.updateReturnSalesCountAndStock(orderItems);
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 해당 구매한 상품의 결제상태를 수정하는 기능을 처리하는 modifyStatus 메서드입니다.
+    - paymentStatus를 failed로 초기화 시키고 paymentsMapper를 통해 updatePaymentStatus 메서드를 이용하여 결제상태를 failed에서 다른 상태로 변경하는 역할을 합니다.
+    - updateReturnSalesCountAndStock 메서드는 조회된 구매 항목들을 기반으로 상품의 판매 수량과 재고를 복원하는 업데이트 작업을 수행합니다.
+
+    ---
+
+    <br/><br/>
+
+    **paymentsMapper**
+
+    ```java
+
+    int updatePaymentStatus(String paymentStatus, String paymentId);
+
+    List<OrderItem> findOrderItems(String paymentId);
+
+    ```
+
+    <br/>
+
+    - updatePaymentStatus 메서드는 결제상태와 결제한 상품의 아이디를 이용하여 sql 쿼리문에서 결제상태를 수정한 데이터 값을 이 메서드에 저장하여 service에 전달하는 역할을 합니다.
+    - findOrderItems 메서드는 구매한 상품을 paymentId를 이용하여 sql 쿼리문에서 조회한 데이터 값을 이 메서드에 저장하여 service에 전달하는 역할을 합니다.
+
+    ---
+
+    <br/><br/>
+
+    **productMapper**
+
+    ```java
+
+    int updateReturnSalesCountAndStock(List<OrderItem> orderItemList);
+
+    ```
+
+    <br/>
+
+    - updateReturnSalesCountAndStock 메서드는 sql 쿼리문에서 해당 사용자의 구매기록에 조회된 구매 항목들을 기반으로 상품의 재고와 수량을 복원하는 업데이트 작업한 데이터 결과 값을 이 메서드에 저장하여 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **payments.xml**
+
+    ```java
+
+    <update id="updatePaymentStatus">
+        update payments_tb
+        set
+            payment_status = #{paymentStatus}
+        where
+            payment_num = #{paymentId}
+    </update>
+
+    ```
+
+    - paymentId를 이용하여 구매한 상품의 결제상태를 수정하는 sql 쿼리문입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **payments.xml**
+
+    ```java
+
+    <select id="findOrderItems" resultMap="orderItemResultMap">
+        select
+            oit.product_id,
+            oit.quantity
+        from
+            payments_tb pt
+            left outer join orders_tb ot on (pt.order_id = ot.order_id)
+            left outer join order_items_tb oit on (ot.order_id = oit.order_id)
+        where
+            pt.payment_num = #{paymentId}
+    </select>
+
+    ```
+
+    - 해당 사용자가 구매한 상품의 항목들을 paymentId를 이용하여여 조회하는 sql 쿼리문입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **product.xml**
+
+    ```java
+
+    <update id="updateReturnSalesCountAndStock">
+        update products_tb
+        set
+            sales_count =
+            case
+                <foreach collection="orderItemList" item="item" separator=" ">
+                    when product_id = #{item.productId}
+                    then sales_count - #{item.quantity}
+                </foreach>
+            else sales_count
+        end,
+
+        stock =
+        case
+            <foreach collection="orderItemList" item="item" separator=" ">
+                when product_id = #{item.productId}
+                then stock + #{item.quantity}
+            </foreach>
+            else stock
+        end
+
+        where
+            product_id in(
+                <foreach collection="orderItemList" item="item" separator=",">
+                    #{item.productId}
+                </foreach>
+            )
+    </update>
+
+    ```
+
+    <br/>
+
+    - 사용자가 구매한 상품의 결제상태에 따라 해당 상품의 재고 수와 수량이 업데이트되는 방식으로 구현한 sql 쿼리문입니다. 
+
+    ---
+
+    <br/><br/>
+
+- **구매 결제 취소 기능**
+
+    **프론트**
+
+    ```Jsx
+
+    const portonePaymentCancelMutation = useMutation(
+        async ({ accessToken }) => {
+            const cancelAmount = paymentData.amount;
+            const options = {
+                method: "post",
+                url: `https://api.portone.io/payments/${paymentData.paymentNum}/cancel`, // 확인
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + accessToken,
+                },
+                data: {
+                    reason: "취소요청",
+                    cancel_request_amount: cancelAmount,
+                },
+            };
+            const { data } = await axios.request(options);
+            return data;
+        },
+        {
+            onSuccess: () => {
+                modifyOrderStatus.mutateAsync();
+                Swal.fire({
+                    text: "결제가 취소되었습니다.",
+                    icon: "success",
+                    timer: 1500,
+                    confirmButtonColor: "#9d6c4c",
+                    confirmButtonText: "닫기",
+                });
+                window.location.reload();
+            },
+            onError: (error) => console.log(error),
+        }
+    );
+
+    const handlePaymentCancelOnClick = (orderId) => {
+        Swal.fire({
+            text: "결제를 취소하시겠습니까?",
+            icon: "question",
+            showCancelButton: true,
+            cancelButtonColor: "#777777",
+            cancelButtonText: "닫기",
+            confirmButtonColor: "#9d6c4c",
+            confirmButtonText: "주문취소",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                getPaymentNum(orderId);
+                accessTokenMutaion
+                    .mutateAsync()
+                    .then((response) =>
+                        portonePaymentCancelMutation
+                            .mutateAsync(response?.data)
+                            .catch(() => { })
+                    );
+            }
+        });
+    };
+
+    ```
+
+    <br/>
+
+    - 이 코드는 결제 취소를 처리하는 기능을 구현한 것입니다.
+    - portonePaymentCancelMutation는 결제를 취소하는 비동기 함수를 정의하고 axios를 이용하여 PortOne API에 결제 취소 요청을 보냅니다.
+    - accessToken을 사용하여 인증 헤더를 설정합니다. 
+    - 결제 취소할 시 취소 사유와 취소 금액을 포함한 데이터를 전송합니다. 
+    - 결제 취소가 성공될 시 취소 사유와 취소 금액을 포함한 데이터를 전송하고 결제가 취소가 되며 결제한 금액이 본인에게 돌아오도록 설정하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+- **구매 후기 작성 기능**
+
+    **리뷰 작성 버튼 클릭 함수**
+
+    ```Jsx
+
+    // 후기
+    const handleReview = (productId) => {
+        setModalProducts(productId);
+        setOpenModal(true);
+    };  
+
+    ```
+
+    <br/>
+
+    - 이 코드는 구매한 상품을 리뷰를 작성하도록 설정하였고 리뷰작성 아이콘을 클릭할 시 리뷰를 작성할 수 있는 모달창을 띄워 작성할 수 있도록 구현하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **리뷰 작성 모달창**
+
+    ```Jsx
+
+    function RegisterReviewModal({ isOpen, onClose, product }) {
+
+        const [reviewData, setReviewData] = useState({
+            productId: 0,
+            rating: 0,
+            title: "",
+            content: ""
+        })
+
+        useEffect(() => {
+            if (product) {
+                setReviewData((review) => ({
+                    ...review,
+                    productId: product
+                }));
+            }
+        }, [product]);
+
+        const handleWriteReview = async () => {
+            try {
+                await instance.post("/user/review", reviewData);
+                alert("리뷰가 등록되었습니다.");
+                setReviewData({
+                    productId: 0,
+                    rating: 0,
+                    title: "",
+                    content: ""
+                })
+                onClose(true);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        const handleReviewInput = (e) => {
+            setReviewData((review) => ({
+                ...review,
+                [e.target.name]: e.target.value
+            }))
+        }
+
+        return (
+            <ReactModal
+                isOpen={isOpen}
+                onRequestClose={onClose}
+                style={{
+                    overlay: {
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 100,
+                    },
+                    content: {
+                        position: "static",
+                        backgroundColor: "white",
+                        padding: "20px",
+                        borderRadius: "5px",
+                        width: "350px",
+                        height: "450px",
+                        maxWidth: "90%",
+                        overflow: "auto",
+                        inset: "auto",
+                    },
+                }}
+            >
+                <div css={s.layout}>
+                    <h2>리뷰 작성</h2>
+                    <div css={s.container}>
+                        <div>
+                            <label for="rating">별점</label>
+                            <input min={1} max={5} type="number" placeholder="1~5 사이 숫자 입력해 주세요" name="rating" value={reviewData.rating} onChange={handleReviewInput} />
+                        </div>
+                        <div>
+                            <label for="title">제목</label>
+                            <input type="text"
+                                placeholder="리뷰 제목을 입력해 주세요."
+                                onChange={handleReviewInput}
+                                name="title" value={reviewData.title}
+                            />
+                        </div>
+                        <div css={s.contentBox}>
+                            <label for="content">내용</label>
+                            <textarea type="text" placeholder="리뷰 내용을 입력해 주세요." onChange={handleReviewInput} name="content" value={reviewData.content} />
+                        </div>
+                        <div css={s.buttonBox}>
+                            <button onClick={handleWriteReview}>완료</button>
+                            <button onClick={onClose}>닫기</button>
+                        </div>
+                    </div>
+                </div>
+            </ReactModal>
+        );
+    }
+
+    export default RegisterReviewModal;
+
+    ```
+
+    <br/>
+
+    - 이 코드는 구매 기록에서 구매한 상품의 구매 후기를 작성하는 모달창 입니다.
+    - 평점과 리뷰 제목, 내용을 입력하도록 구현하였습니다. 
+    - handleWriteReview 함수는 서버에 post 요청을 보내 해당 상품을 구매한 구매 후기를 작성하도록 설정하였고 성공적으로 구매후기가 작성이 되었다면 자동으로 모달창을 닫고 리뷰가 등록이 되도록 구현하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @PostMapping("/user/review")
+    public ResponseEntity<?> addReview(@RequestBody ReqAddReviewDto dto) {
+        reviewService.addReview(dto);
+        return ResponseEntity.ok().body(true);
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에 post요청을 받아 상품을 구매한 후기를 작성하는 로직을 수행합니다.
+    - ReqAddReviewDto 객체로 변환하여 addReview 메서드에 전달하고 성공적으로 실행이 되면 클라이언트에 응답을 true로 반환합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Dto**
+
+    ```java
+
+    @Builder
+    @Data
+    public class ReqAddReviewDto {
+        private Long productId;
+        private int rating;
+        private String title;
+        private String content;
+
+        public Review toReview(Long userId) {
+            return Review.builder()
+                    .userId(userId)
+                    .productId(productId)
+                    .rating(rating)
+                    .title(title)
+                    .content(content)
+                    .build();
+        }
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 구매후기를 작성하기 위해 필요한 정보를 담는 dto입니다. 
+    - toReview 메서드는 ReqAddReviewDto의 데이터를 바탕으로 구매 후기를 작성하기 위한 Review 객체를 반환하여 이 메서드에 저장합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    @Transactional(rollbackFor = Exception.class)
+    public void addReview(ReqAddReviewDto dto) {
+        PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        reviewMapper.addReview(dto.toReview(principalUser.getId()));
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 로그인한 해당 사용자의 구매 후기를 mapper를 통해 사용자가 작성한 구매후기 데이터 값을 추가하는 작업을 수행하여 controller에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    int addReview(Review review);
+
+    ```
+
+    <br/>
+
+    - addReview 메서드는 review 객체를 이용하여 sql 쿼리문에서 작성한 구매 후기 값을 추가하고 이 메서드에 담아 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <insert id="addReview">
+        insert into reviews_tb
+        values(0, #{userId}, #{productId}, #{rating}, #{title}, #{content}, now())
+    </insert>
+
+    ```
+
+    <br/>
+
+    - 해당 사용자가 구매한 상품 후기는 평점, 제목, 내용을 작성하여 데이터베이스에 추가하는 형식으로 구현한 sql 쿼리문입니다. 
 
 ---
 
@@ -7241,81 +8346,612 @@ __전체 코드__
 
 #### 구매후기  
 
+**전체 코드**
+
 **프론트**
 
 ```jsx
 
+function ReviewInfo(props) {
 
+    // 모달 띄우는 상태 추가
+    const [openEditModal, setOpenEditModal] = useState(false);
+
+    const [reviews, setReviews] = useState([]);
+    const navigate = useNavigate();
+
+    const closeModal = () => {
+        setOpenEditModal(false);
+    };
+
+    // 리뷰 가져오는 쿼리
+    const getReviewAll = useQuery(
+        ["getReviewAll"],
+        async () => {
+            return await instance.get("/user/review");
+        },
+        {
+            retry: 0,
+            onSuccess: (response) => {
+                setReviews(response.data)
+            },
+        }
+    )
+
+    // 리뷰 삭제 뮤테이션
+    const deleteReviewMutation = useMutation(
+        async (id) => {
+            const checkedIds = [id]
+            return await instance.delete("user/review", {data : {checkedIds: checkedIds}})
+        },
+        {
+            retry: 0,
+            onSuccess: () => {
+                alert("삭제가 완료되었습니다.")
+            }
+        }
+    )
+
+    const handleDelectOnClick = (id) => {
+        if(window.confirm("리뷰가 삭제됩니다.")) {
+            deleteReviewMutation.mutate(id);
+        }
+    }
+
+    const handleProductImgOnClick = (id) => {
+        navigate(`/product/${id}`);
+    }
+
+    return (
+        <div css={s.layout}>
+            <div css={s.contentLayout}>
+                    <div css={s.subLayout}>
+                        <h2>나의 리뷰</h2>
+                    </div>
+                    <ul >
+                    { reviews.map((review) => (
+                        <li key={review.reviewId} css={s.productStyle}>
+                            <div css={s.ReviewList}>
+                                <div css={s.productImgLayout}>
+                                    <img src={review?.product?.thumbnailImg} onClick={() => handleProductImgOnClick(review.productId)}/>
+                                </div>
+                                <div css={s.productReviewLayout}>
+                                    <div css={s.iconBox}>
+                                        <Star rating={review?.rating}/>
+                                        <div>
+                                            <FaTrash onClick={() => handleDelectOnClick(review.reviewId)}/>
+                                            <FaRegEdit onClick={() => setOpenEditModal(true)}/>
+                                                <ReviewEditModal isOpen={openEditModal} onClose={closeModal} reviews={reviews} reviewId={review.reviewId} refetch={getReviewAll.refetch}/>
+                                        </div>
+                                    </div>
+                                    <h2>{review?.title}</h2>
+                                    <p>{review?.content}</p>
+                                    <div css={s.createData}>
+                                        <p>{review?.createdAt}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    ))}
+                    </ul>
+            </div>
+        </div>
+    );
+}
+
+export default ReviewInfo;
 
 ```
 
 <br/>
 
--
+- 이 코드는 해당 사용자가 구매한 상품의 후기들을 조회, 수정, 삭제 기능을 수행하는 코드입니다.
+- handleProductImgOnClick 함수는 해당 상품의 이미지를 클릭할 시 상품의 상세 페이지로 이동이 됩니다. 
+- 세부적인 기능은 밑에서 설명하겠습니다. 
 
 ---
 
 <br/><br/>
 
-**백엔드**
+- **구매후기 조회 기능**
 
-**Controller**
+    **프론트**
 
-```java
+    ```jsx
+
+    // 리뷰 가져오는 쿼리
+    const getReviewAll = useQuery(
+        ["getReviewAll"],
+        async () => {
+            return await instance.get("/user/review");
+        },
+        {
+            retry: 0,
+            onSuccess: (response) => {
+                setReviews(response.data)
+            },
+        }
+    )
+
+    ```
+
+    <br/>
+
+    - getReviewAll 함수는 useQuery를 사용하여 서버에서 리뷰 데이터를 가져와서 setReviews 함수를 통해 상태를 업데이트합니다.
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @GetMapping("/user/review")
+    public ResponseEntity<?> getAllMyReviews() { // 마이 페이지 리뷰
+        return ResponseEntity.ok().body(reviewService.getAllMyReviews());
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에서 get요청을 받아 reviewService를 통해 본인이 쓴 구매후기를 조회한 데이터를 반환하여 응답하는 controller 입니다.
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    public List<Review> getAllMyReviews() {
+        PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        return reviewMapper.findMyReviewByUserId(principalUser.getId());
+    }
+
+    ```
+
+    <br/>
+
+    - 로그인한 사용자의 구매후기를 사용자의 Id를 findMyReviewByUserId 메서드에 넘겨 데이터베이스에서 조회한 결과 값을 controller에 반환하는 역할을 합니다. 
+
+    ---
+
+    **Mapper**
+
+    ```java
+
+    List<Review> findMyReviewByUserId(Long userId);
+
+    ```
+
+    <br/>
+
+    - findMyReviewByUserId 메서드는 로그인한 사용자의 ID를 통해 sql 쿼리문에서 조회하고 이 메서드에 담아 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <select id="findMyReviewByUserId" resultMap="reviewResultMap">
+        select
+            rt.review_id,
+            rt.user_id,
+            rt.product_id,
+            rt.rating,
+            rt.title,
+            rt.content,
+            rt.created_at,
+            pt.thumbnail_img
+        from
+            reviews_tb rt
+            left outer join users_tb ut on (rt.user_id = ut.user_id)
+            left outer join products_tb pt on (rt.product_id = pt.product_id)
+        where
+            ut.user_id = #{userId}
+        order by rt.created_at desc
+    </select>
+
+    ```
+
+    - 해당 로그인한 사용자의 아이디를 조건으로 본인이 쓴 구매한 후기 목록을 조회하는 sql 쿼리문입니다.
+    - 날짜를 최신순으로 정렬하며 보여주고 있습니다.
+
+    ---
+
+    <br/><br/>
+
+    - **구매후기 수정 기능**
+
+    **프론트**
+
+    ```jsx
+
+    // 모달 띄우는 상태 추가
+    const [openEditModal, setOpenEditModal] = useState(false);
+
+    const closeModal = () => {
+        setOpenEditModal(false);
+    };
+
+    <FaRegEdit onClick={() => setOpenEditModal(true)}/>
+        <ReviewEditModal isOpen={openEditModal} onClose={closeModal} reviews={reviews} reviewId={review.reviewId} refetch={getReviewAll.refetch}/>
+
+    ```
+
+    <br/>
+
+    - 해당 사용자의 본인이 쓴 구매 후기의 수정 아이콘을 클릭할 시 모달창을 띄워 글 제목, 내용과 평점을 수정하는 기능을 구현하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **모달**
+
+    ```jsx
+
+    function Modal({ isOpen, onClose, reviews, reviewId, refetch }) {
+
+    const editReview = reviews.find((review) => review.reviewId === reviewId);
+
+    const [review, setReview] = useState({
+        reviewId: editReview.reviewId || '',
+        title: editReview.title || '',
+        content: editReview.content || '',
+        rating: editReview.rating || 0,
+    })
+
+    const modifyReviewMutation = useMutation(
+        async () => {
+            return await instance.put("/user/review/{review.reviewId}", review)
+        },
+        {
+            retry: 0,
+            onSuccess: () => {
+                refetch();
+            }
+        }
+    )
+
+    const handleModifyOnClick = () => {
+        modifyReviewMutation.mutate();
+        onClose(true);
+    }
+
+    const inputOnChange = (e) => {
+        setReview((review) => ({
+            ...review,
+            [e.target.name] : e.target.value
+        }))
+    }
 
 
+        return (
+            <ReactModal
+                isOpen={isOpen}
+                onRequestClose={onClose}
+                style={{
+                    overlay: {
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 100,
+                    },
+                    content: {
+                        position: "static",
+                        backgroundColor: "white",
+                        padding: "20px",
+                        borderRadius: "5px",
+                        width: "300px",
+                        maxWidth: "90%",
+                        overflow: "auto",
+                        inset: "auto",
+                    },
+                }}
+            >
+                <div
+                    css={{
+                        backgroundColor: "white",
+                        padding: "20px",
+                        borderRadius: "5px",
+                        width: "300px",
+                    }}
+                >
+                    <h2>리뷰 수정</h2>
+                    <input type="number" name="rating" onChange={inputOnChange} defaultValue={review.rating} placeholder='1 - 5까지 정수를 넣어주세요'/>
+                    <input type="text" name="title" onChange={inputOnChange} defaultValue={review.title} placeholder='리뷰 제목을 입력해주세요'/>
+                    <textarea type="text" name="content" onChange={inputOnChange} defaultValue={review.content} placeholder='내용을 입력해주세요'/>
+                    <button onClick={handleModifyOnClick}>완료</button>
+                    <button onClick={onClose}>닫기</button>
+                </div>
+            </ReactModal>
+        );
+    };
 
-```
 
-<br/>
+    export default Modal;
 
--
+    ```
 
----
+    <br/>
 
-**Service**
+    - 이 코드는 상품을 구매한 후기의 평점과 제목, 내용을 수정하는 모달창 입니다.
+    - useMutation 훅을 사용하여 서버에 put 요청을 보내 리뷰를 수정할 수 있게 하였고 성공적으로 응답이 오면 refetch하여 데이터를 다시 불러옵니다. 
 
-```java
+    ---
 
+    <br/><br/>
 
+    **백엔드**
 
-```
+    **Controller**
 
-<br/>
+    ```java
 
--
+    @PutMapping("/user/review/{id}")
+    public ResponseEntity<?> modifyReview(@RequestBody ReqModifyReviewDto dto) {
+        reviewService.modifyReview(dto);
+        return ResponseEntity.ok().body(true);
+    }
 
----
+    ```
 
-**Mapper**
+    <br/>
 
-```java
+    - 클라이언트에 put 요청을 받아 리뷰를 수정하는 로직을 수행합니다.
+    - ReqModifyReviewDto 객체로 변환하여 modifyReview 메서드에 전달하고 성공적으로 실행이 되면 클라이언트에 응답을 true로 반환합니다. 
 
+    ---
 
+    <br/><br/>
 
-```
+    **Dto**
 
-<br/>
+    ```java
 
--
+    @Builder
+    @Data
+    public class ReqModifyReviewDto {
+        private int reviewId;
+        private int rating;
+        private String title;
+        private String content;
 
----
+        public Review toReview() {
+            return Review.builder()
+                    .reviewId(reviewId)
+                    .rating(rating)
+                    .title(title)
+                    .content(content)
+                    .build();
+        }
+    }
 
-<br/><br/>
+    ```
 
-**xml**
+    <br/>
 
-```java
+    - 이 코드는 사용자가 쓴 구매 후기를 수정하기 위한 필요한 정보를 담는 dto 입니다. 
+    - toReview 메서드는 ReqModifyReviewDto의 데이터를 바탕으로 구매한 상품의 후기를 수정하기 위한 Review 객체로 반환하여 이 메서드에 저장합니다. 
 
+    ---
 
+    <br/><br/>
 
-```
+    **Service**
 
--
+    ```java
 
----
+    @Transactional(rollbackFor = SQLException.class)
+    public void modifyReview(ReqModifyReviewDto dto) {
+        reviewMapper.updateReview(dto.toReview());
+    }
 
-<br/><br/>
+    ```
+
+    <br/>
+
+    - 이 코드는 reviewMapper를 통해 사용자가 구매한 상품의 후기를 데이터베이스에서 수정한 결과 값을 modifyReview 메서드에에 담아 controller에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    int updateReview(Review review);
+
+    ```
+
+    <br/>
+
+    - updateReview 메서드는 review 객체를 이용하여 sql 쿼리문에서 구매한 상품의 후기를 수정하여 이 메서드에 담아 service에 전달하는 역할을 합니다.
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <update id="updateReview">
+        update reviews_tb
+        set
+            rating = #{rating},
+            title = #{title},
+            content = #{content}
+        where
+            review_id = #{reviewId}
+    </update>
+
+    ```
+
+    <br/>
+
+    - 해당 사용자가 구매한 상품의 구매후기한 Id 값을 통해 평점, 제목, 내용을 수정하는 sql 쿼리문입니다. 
+
+    ---
+
+    <br/><br/>
+
+    - **구매후기 삭제 기능**
+
+    **프론트**
+
+    ```jsx
+
+    // 리뷰 삭제 뮤테이션
+    const deleteReviewMutation = useMutation(
+        async (id) => {
+            const checkedIds = [id]
+            return await instance.delete("user/review", {data : {checkedIds: checkedIds}})
+        },
+        {
+            retry: 0,
+            onSuccess: () => {
+                alert("삭제가 완료되었습니다.")
+            }
+        }
+    )
+
+    const handleDelectOnClick = (id) => {
+        if(window.confirm("리뷰가 삭제됩니다.")) {
+            deleteReviewMutation.mutate(id);
+        }
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 mutation 훅을 사용하여 delete 요청을 서버에 보내어 사용자가 쓴 구매후기를 삭제하는 기능을 합니다. 
+    - 서버에서 성공적으로 응답이 오면 알람창을 띄워 삭제 완료되었다고 알려줍니다.
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @DeleteMapping("/user/review")
+    public ResponseEntity<?> deleteReview(@RequestBody ReqDeleteReviewDto dto) {
+        reviewService.deleteReview(dto);
+        return ResponseEntity.ok().body(true);
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에서 delete 요청을 받아 사용자가 작성한 리뷰를 삭제하는 로직을 수행합니다.
+    - ReqDeleteReviewDto 객체로 변환하여 service에 전달하여 삭제한 결과 값을 반환받아 클라이언트에 전달합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Dto**
+
+    ```java
+
+    @Data
+    public class ReqDeleteReviewDto {
+        private List<Long> checkedIds;
+    }
+
+    ```
+
+    <br/>
+
+    - 이 dto는 구매후기를 삭제하는 데이터 정보를 담는 dto입니다.
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void deleteReview(ReqDeleteReviewDto dto) {
+        reviewMapper.deleteReview(dto.getCheckedIds());
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 reviewMapper에 dto 정보를 전달하여 데이터베이스에서 리뷰를 삭제하여 그 결과값을 service에 deleteReview 메서드에 담아 controller에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    int deleteReview(List<Long> checkedIds);
+
+    ```
+
+    <br/>
+
+    - deleteReview 메서드는 checkedIds를 이용하여 sql 쿼리문에서 구매한 상품의 후기를 삭제한 결과값을 이 메서드에 저장하여 service에 전달합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <delete id="deleteReview">
+        delete from reviews_tb
+        where review_id in
+        <foreach item="id" index="index" collection="checkedIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    ```
+
+    <br/>
+
+    - 이 코드는 사용자가 작성한 구매후기를 삭제하는 sql 쿼리문입니다.
+    - 사용자가 구매한 상품의 후기에 Id 값을 이용하여 리뷰를 삭제하도록 설정하였습니다.
+
+    ---
+
+    <br/><br/>
 
 #### 회원탈퇴  
 
@@ -7323,13 +8959,114 @@ __전체 코드__
 
 ```jsx
 
+function LeaveUser({ userInfo }) {
+  const navigate = useNavigate();
 
+  const deleteUserMutation = useMutation(
+    async () => {
+      return await instance.delete(`/user/${userInfo.userId}`)
+    },
+    {
+      onSuccess: () => {
+        localStorage.removeItem("accessToken"); // 로컬 스토리지에서 토큰 삭제
+        localStorage.removeItem("role");
+        alert("회원탈퇴가 완료되었습니다.\n홈화면으로 이동합니다.")
+        navigate("/");
+        window.location.reload(); // 페이지를 새로 고침하여 상태를 초기화
+      }
+    }
+  )
+
+  const handleLeaveButtonOnClick = () => {
+    if (
+      window.confirm("계정 정보가 전부 삭제됩니다.\n정말 삭제하시겠습니까?")
+    ) {
+      if (window.confirm("정말?ㅠㅠㅠㅠㅠ")) {
+        deleteUserMutation.mutate();
+      }
+      return;
+    }
+    return;
+  };
+
+  return (
+    <div css={s.container}>
+      <div css={s.containerStyle}>
+        <h2 css={s.headingStyle}>회원탈퇴 약관</h2>
+
+        <h3 css={s.subHeadingStyle}>제1조 (목적)</h3>
+        <p css={s.paragraphStyle}>
+          이 약관은 [ㅁㅁㅁ] (이하 "회사")이 제공하는 서비스의 회원탈퇴에 관한
+          사항을 규정함을 목적으로 합니다.
+        </p>
+
+        <h3 css={s.subHeadingStyle}>제2조 (회원탈퇴 절차)</h3>
+        <ol css={s.listStyle}>
+          <li>
+            회원은 언제든지 서비스 내 설정 메뉴를 통해 회원탈퇴를 신청할 수
+            있습니다.
+          </li>
+          <li>
+            탈퇴 신청 후, 회사는 해당 회원의 탈퇴 요청을 확인하고, 탈퇴 처리를
+            진행합니다.
+          </li>
+        </ol>
+
+        <h3 css={s.subHeadingStyle}>제3조 (회원탈퇴의 효과)</h3>
+        <ol css={s.listStyle}>
+          <li>
+            회원탈퇴가 완료되면 해당 회원의 모든 개인 정보와 데이터는 회사의
+            정책에 따라 삭제되며, 복구가 불가능합니다.
+          </li>
+          <li>
+            회원 탈퇴 후에는 해당 계정으로 다시 로그인할 수 없으며, 서비스
+            이용에 제한이 있습니다.
+          </li>
+        </ol>
+
+        <h3 css={s.subHeadingStyle}>제4조 (탈퇴 후의 권리 및 의무)</h3>
+        <ol css={s.listStyle}>
+          <li>
+            탈퇴 후에도 회원이 작성한 게시물 및 댓글 등은 삭제되지 않으며,
+            회사의 정책에 따라 일정 기간 보관될 수 있습니다.
+          </li>
+          <li>
+            탈퇴에 따른 서비스 이용 중 발생한 미지급 금액이나 손해는 회원이
+            책임지며, 회사는 이에 대해 책임을 지지 않습니다.
+          </li>
+        </ol>
+
+        <h3 css={s.subHeadingStyle}>제5조 (약관의 개정)</h3>
+        <p css={s.paragraphStyle}>
+          회사는 이 약관을 변경할 수 있으며, 변경 사항은 사전에 공지합니다.
+          회원은 변경된 약관에 동의하지 않을 경우 탈퇴를 신청할 수 있습니다.
+        </p>
+
+        <h3 css={s.subHeadingStyle}>제6조 (기타)</h3>
+        <ol css={s.listStyle}>
+          <li>이 약관은 [2024.11.04]부터 시행합니다.</li>
+          <li>
+            본 약관과 관련하여 발생하는 모든 분쟁은 [무슨무슨지방법원]의 법률에
+            따릅니다.
+          </li>
+        </ol>
+      </div>
+      <div css={s.buttonBox}>
+        <button onClick={handleLeaveButtonOnClick}>회원 탈퇴</button>
+      </div>
+    </div>
+  );
+}
+
+export default LeaveUser;
 
 ```
 
 <br/>
 
--
+- 이 코드는 사용자가 이 사이트의 회원임을 삭제(탈퇴)하는 로직을 수행하는 클라이언트 입니다.
+- useMutation 훅을 사용하여 서버에 delete 요청을 보내 성공적으로 응답이 오면 localStorage 에 사용자가 로그인한 토큰과 권한을 삭제하고 홈화면으로 되돌리고 reload 하도록 설정하였습니다. 
+- 회원탈퇴 버튼을 클릭 시 정말 삭제할 것인지 두번 물어보고 삭제가 되도록 구현하였습니다. 
 
 ---
 
@@ -7341,13 +9078,17 @@ __전체 코드__
 
 ```java
 
-
+@DeleteMapping("/{id}")
+public ResponseEntity<?> deleteUser() {
+    userService.deleteUser();
+    return ResponseEntity.ok().body(true);
+}
 
 ```
 
 <br/>
 
--
+- 클라이언트에 delete 요청을 받아 해당 사용자의 정보를 삭제하는 결과값을 service를 통해 성공적으로 응답을 받아 true로 반환합니다. 
 
 ---
 
@@ -7355,41 +9096,93 @@ __전체 코드__
 
 ```java
 
+@Transactional(rollbackFor = SQLException.class)
+public void deleteUser() {
+    PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getPrincipal();
 
+    userMapper.deleteByUserId(principalUser.getId());
+    userRolesMapper.deleteUserRole(principalUser.getId());
+}
 
 ```
 
 <br/>
 
--
+- deleteUser 메서드는 해당 로그인한 사용자의 Id와 Role 데이터 값을 deleteByUserId와 deleteUserRole 메서드에 담아 controller에 전달하는 역할을 합니다.
+- deleteByUserId 메서드에는 로그인한 사용자의 Id 값을 넘겨 사용자의 Id를 삭제하도록 구현하였습니다.
+- deleteUserRole 메서드에는 로그인한 사용자의 Id 값을 넘겨 사용자의 role(권한) 데이터 값을 삭제하도록 구현하였습니다. 
 
 ---
 
-**Mapper**
+**UserMapper**
 
 ```java
 
-
+int deleteByUserId(Long userId);
 
 ```
 
 <br/>
 
--
+- 이 코드는 로그인한 사용자의 Id를 이용하여 sql 쿼리문에서 사용자의 정보를 삭제하고 deleteByUserId 메서드에 담아 service에 전달하는 역할을 합니다.  
 
 ---
 
 <br/><br/>
 
-**xml**
+**UserRolesMapper**
 
 ```java
 
-
+int deleteUserRole(Long userId);
 
 ```
 
--
+<br/>
+
+- 이 코드는 로그인한 사용자의 Id 값을 이용하여 sql 쿼리문에서 사용자의 권한을 삭제하고 deleteUserRole 메서드에 담아 service에 전달하는 역할을 합니다. 
+
+---
+
+<br/><br/>
+
+**user.xml**
+
+```java
+
+<delete id="deleteByUserId">
+    delete from users_tb
+    where
+        user_id = #{userId}
+</delete>
+
+```
+
+<br/>
+
+- users_tb 테이블안에 사용자의 Id를 삭제하면서 해당 사용자의 정보가 모두 삭제되도록 구현한 sql 쿼리문입니다.  
+
+---
+
+<br/><br/>
+
+**user_role.xml**
+
+```java
+
+<delete id="deleteUserRole">
+    delete from user_roles_tb
+    where user_id = #{userId}
+</delete>
+
+```
+
+<br/>
+
+- user_roles_tv 테이블안에 userId를 이용하여 해당 사용자의 정보와 권한이 모두 삭제되도록 구현한 sql 쿼리문입니다.
 
 ---
 
@@ -7473,7 +9266,9 @@ __전체 코드__
 
 <br/><br/>
 
-#### 결제  
+### 관리자페이지
+
+#### 로그인
 
 **프론트**
 
@@ -7521,6 +9316,8 @@ __전체 코드__
 
 ---
 
+<br/><br/>
+
 **Mapper**
 
 ```java
@@ -7545,17 +9342,411 @@ __전체 코드__
 
 ```
 
+<br/>
+
 -
 
 ---
 
 <br/><br/>
 
-### 모달
+#### 상품 등록
 
 **프론트**
 
 ```jsx
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+**Controller**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+**Service**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**Mapper**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+#### 상품 관리
+
+**프론트**
+
+```jsx
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+**Controller**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+**Service**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**Mapper**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+#### 매출 관리
+
+**프론트**
+
+```jsx
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+**Controller**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+**Service**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**Mapper**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+#### 직원 관리
+
+**프론트**
+
+```jsx
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+**Controller**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+**Service**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**Mapper**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+#### 유저 관리
+
+**프론트**
+
+```jsx
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**백엔드**
+
+**Controller**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+**Service**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**Mapper**
+
+```java
+
+
+
+```
+
+<br/>
+
+-
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
 
 
 
