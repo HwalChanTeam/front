@@ -782,9 +782,9 @@ public class JwtAccessTokenFilter extends GenericFilter {
 
     - findUserByUserId 메서드는 userId를 기준으로 사용자를 조회하고 그 결과를 User 객체로 반환합니다.
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - **user.xml**
 
@@ -938,9 +938,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     - SignatureAlgorithm.HS256은 HS256 알고리즘을 사용하여 서명하는 역할을 합니다. 
     - .compact() : 이 메서드를 호출하면 claim, expiration, signWith 등에서 설정한 값들이 하나의 JWT로 결합되어 최종적으로 하나의 문자열로 반환됩니다. 
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - **UserMapper**
 
@@ -959,9 +959,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     - findUserByUsername 메서드는 username(사용자가 입력한 ID)을 통해 해당 사용자의 정보를 찾아 onAuthenticationSuccess 메서드 안에 user 변수에 저장합니다.
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - **user.xml**
 
@@ -2923,7 +2923,6 @@ function ProductSearchPage(props) {
             retry: 0,
             refetchOnWindowFocus: false,
             onSuccess: (response) => {
-                console.log(response)
                 setMaxPageCount(
                     response.data.count % limit === 0
                         ? Math.floor(response.data.count / limit)
@@ -2955,7 +2954,6 @@ function ProductSearchPage(props) {
 
     // 상품 총 갯수를 불러오게 하기 위한 함수  
     const productCount = productsQuery.data?.data.count;
-    console.log(productTrGroups);
 
     return (
         <div css={s.layout}>
@@ -3429,6 +3427,8 @@ public interface CartItemMapper {
 
 ```
 
+<br/>
+
 - 해당 사용자의 장바구니를 생성한 데이터를 mapper에 전달해주는 sql문 입니다. 
 
 ---
@@ -3446,7 +3446,706 @@ public interface CartItemMapper {
 
 ```
 
+<br/>
+
 - 사용자의 장바구니에 해당 상품의 정보를 추가하고 추가한 데이터를 mapper에 전달해주는 sql문입니다.
+
+---
+
+<br/><br/>
+
+#### 상품 상세 페이지
+
+**전체 코드**
+
+**프론트**
+
+```jsx
+
+const selectProductMenus = [
+    {
+        selectedId: 1,
+        title: "상세정보",
+        path: "/product/:productId",
+    },
+    {
+        selectedId: 2,
+        title: "구매후기",
+        path: "/product/:productId/review",
+    },
+    {
+        selectedId: 3,
+        title: "상품문의",
+        path: "/product/:productId/inquiry",
+    },
+    {
+        selectedId: 4,
+        title: "배송",
+        path: "/product/:productId/delivery",
+    },
+];
+
+function ProductPage() {
+    const token = localStorage.getItem("accessToken");
+    const { productId } = useParams();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const pathname = location.pathname;
+    const [selectedProduct, setSelectedProduct] = useRecoilState(productOrderAtom); // atom 사용
+
+    // 페이지가 마운트될 때 스크롤을 맨 위로 이동
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    const [product, setProduct] = useState({
+        productId,
+        thumbnailImg: "",
+        title: "",
+        description: "",
+        origin: "",
+        price: 0,
+        category: "",
+    });
+
+    // 상품 조회
+    const productData = useQuery(
+        ["getProduct"],
+        async () => {
+            const id = parseInt(productId);
+            return await instance.get("/user/public/product/detail", {params: {id : id}});
+        },
+        {
+            retry: 0,
+            refetchOnWindowFocus: false,
+            enabled: true,
+            onSuccess: (response) => {
+                setProduct(response.data?.product);
+            },
+            onError: (response) => {
+                console.log(response)
+            }
+        }
+    );
+
+    // 구매수량 상태
+    const [productItems, setProductItems] = useState({ buyItem: 1 });
+
+    // 구매수량 숫자 증가 감소
+    const handlebuyNumberChange = (delta) => {
+        setProductItems((prevItem) => ({
+            ...prevItem,
+            buyItem: Math.max(1, prevItem.buyItem + delta),
+        }));
+    };
+
+    const basketAddProductMutation = useMutation(
+        async (payload) => {
+            await instance.post("/user/cart", payload);
+        },
+        {
+            onSuccess: () => {
+                if (window.confirm("상품이 장바구니에 담겼습니다! 장바구니에서 주문을 진행해 주세요.")) {
+                    navigate("/cart")
+                }
+            },
+            onError: (error) => {
+                console.error("오류!!!" + error);
+            },
+        }
+    );
+
+    // 구매하기 버튼
+    const handleBuyButton = async () => {
+        if (!token) {
+            if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
+                navigate("/user/signin");
+            }
+            return;
+        }
+        const payload = {
+            productId: productId,
+            price: product.price,
+            quantity: productItems.buyItem,
+        };
+        basketAddProductMutation.mutateAsync(payload).catch(() => {});
+    };
+
+    // 찜버튼 mutation
+    const productLikeMutation = useMutation(
+        async () => {
+            return await instance.post(`/user/product/like/${product.productId}`);
+        },
+        {
+            onSuccess: response => {
+                productData.refetch();
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        }
+    );
+
+    const productDislikeMutation = useMutation(
+        async () => {
+            return await instance.delete(`/user/product/dislike/${product.productId}`);
+        },
+        {
+            onSuccess: response => {
+                productData.refetch();
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        }
+    );
+
+    // 찜 버튼
+    const handleWishListButton = () => {
+        if (!token) {
+            if (window.confirm("로그인이 필요합니다.\n로그인 하시겠습니까?")) {
+                navigate("/user/signin");
+            }
+            return;
+        } else {
+            productLikeMutation.mutateAsync().catch(() => { });
+            alert("찜에 추가되었습니다.");
+        }
+    };
+
+    const handleDislikeOnClick = () => {
+        productDislikeMutation.mutateAsync().catch(() => { });
+    };
+
+
+    // 구매수량*가격 함수
+    const calculateTotalPrice = (product) => {
+        return product?.price * productItems.buyItem;
+    };
+
+    // 총 상품금액, 총합계 계산 함수
+    const calculateTotals = () => {
+        const totalProductAmount = calculateTotalPrice(product);
+        const deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+        const totalAmount = totalProductAmount + deliveryFee;
+
+        return { totalProductAmount, totalAmount, deliveryFee };
+    };
+
+    const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
+
+    return (
+        <div css={s.layout}>
+            <div css={s.productLayout}>
+                <div css={s.imgLayout}>
+                    <img src={product?.thumbnailImg} />
+                </div>
+                <div css={s.productContent}>
+                    <div css={s.titleLayout}>
+                        <h2>{product?.title}</h2>
+                        <p>{product?.description}</p>
+                    </div>
+                    <div css={s.price}>
+                        <p>{product?.price.toLocaleString()} 원</p>
+                    </div>
+                    <div css={s.contentBox}>
+                        <div css={s.contury}>
+                            <p>원산지: {product?.origin}</p>
+                            <p>{deliveryFee.toLocaleString()}원</p>
+                        </div>
+                        <div css={s.productTitleBox}>
+                            <p>상품명: {product?.title}</p>
+                            <p>
+                                구매수량:
+                                <span>
+                                    <button onClick={() => handlebuyNumberChange(-1)}>-</button>
+                                    {productItems.buyItem}
+                                    <button onClick={() => handlebuyNumberChange(1)}>+</button>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div css={s.buyProduct}>
+                        <p>
+                            총 {totalProductAmount.toLocaleString()} 원
+                            <span>
+                                <button onClick={handleBuyButton}>구매하기</button>
+                                {
+                                    productData?.data?.data?.likeCheck
+                                        ?
+                                        <IoIosHeart
+                                            onClick={handleDislikeOnClick}
+                                            size="30"
+                                            style={{ cursor: "pointer" }}
+                                        />
+                                        :
+                                        <IoMdHeartEmpty
+                                            onClick={handleWishListButton}
+                                            size="30"
+                                            style={{ cursor: "pointer" }}
+                                        />
+                                }
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {/* 상품 상세설명란 */}
+            <div css={s.menuLayout}>
+                <div css={s.menuBox}>
+                    {selectProductMenus.map((menu) => (
+                        <Link
+                            key={menu.selectedId}
+                            to={menu.path.replace(":productId", productId)} // :id를 id로 대체
+                            css={s.selectProductMenu(
+                                pathname === menu.path.replace(":productId", productId)
+                            )}
+                        >
+                            <span>{menu.title}</span>
+                        </Link>
+                    ))}
+                </div>
+                <div css={s.productInfor}>
+                    <Routes>
+                        <Route path="/" element={<InformationView product={product} />} />
+                        <Route path="/review" element={<BuyReview product={product} />} />
+                        <Route path="/inquiry" element={<InquiryView product={product} />} />
+                        <Route path="/delivery" element={<DeliveryView product={product} />} />
+                    </Routes>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default ProductPage;
+
+```
+
+<br/>
+
+- 이 코드는 해당 상품을 클릭할 시 상품을 상세하게 볼 수 있는 페이지로 넘어가 찜 기능, 상품의 수량, 구매하기 버튼을 클릭할 시 상품을 장바구니로 담는 기능을 구현하였고 Routes를 이용하여 상품의 상세정보, 구매후기, 상품문의, 배송 등을 볼 수 있게 하였습니다. 
+- 구매하기 버튼을 클릭할 시 로그인을 해야 장바구니에 담을 수 있고 로그인이 안되어 있는 경우 로그인 화면으로 넘기도록 설정하였습니다. 
+- 장바구니 추가 로직과 찜목록 삭제하는 기능 설명, 총 합계산 함수는 다른 파트(장바구니 아이콘, 마이페이지 - 찜목록, 장바구니)에서 볼 수 있습니다.
+
+---
+
+<br/><br/>
+
+- **상품 조회 기능**
+
+    **프론트**
+
+    ```jsx
+
+    // 상품 조회
+    const productData = useQuery(
+        ["getProduct"],
+        async () => {
+            const id = parseInt(productId);
+            return await instance.get("/user/public/product/detail", {params: {id : id}});
+        },
+        {
+            retry: 0,
+            refetchOnWindowFocus: false,
+            enabled: true,
+            onSuccess: (response) => {
+                setProduct(response.data?.product);
+            },
+            onError: (response) => {
+                console.log(response)
+            }
+        }
+    );
+
+    ```
+
+    <br/>
+
+    - useQuery 훅을 사용하여 하나의 상품을 클릭할 시 해당 상품의 상세 페이지로 넘어가 조회되도록 구현한 코드입니다.
+    - 서버에 get 요청을 보내고 파라미터로 해당 상품의 id 값을 전달하여 성공적으로 응답이 오면 해당 상품을 조회되도록 하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    // 상품 디테일 페이지
+    @GetMapping("/product/detail")
+    public ResponseEntity<?> getProductDetail(@RequestParam Long id) {
+        return ResponseEntity.ok().body(productService.getProductDetail(id));
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에 해당 상품의 id를 전달받아 sevice에 전달하여 해당 상품을 조회하는 로직을 처리하고 성공적으로 응답을 받으면 클라이언트에 반환합니다.
+
+    ---
+
+    <br/><br/>
+
+    **RespProductDetailDto**
+
+    ```java
+
+    @Builder
+    @Data
+    public class RespProductDetailDto {
+        private Product product;
+        private Boolean likeCheck;
+    }
+
+    ```
+
+    <br/>
+
+    - 해당 하는 상품을 찜한 정보와 상품의 기본 정보를 담는 dto 입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    public RespProductDetailDto getProductDetail(Long productId) {
+        Long userId = 0l;
+
+        Authentication authentication = SecurityContextHolder
+        .getContext()
+        .getAuthentication();
+
+        if(!authentication.getPrincipal().toString().equals("anonymousUser")) {
+            PrincipalUser principalUser = (PrincipalUser) authentication.getPrincipal();
+            userId = principalUser.getId();
+        }
+
+        Product product = productMapper.findProductById(productId);
+        Boolean likeCheck = productLikeMapper.isProductLike(userId, productId);
+
+        return RespProductDetailDto.builder()
+                .product(product)
+                .likeCheck(likeCheck)
+                .build();
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 특정 상품의 상세 정보와 해당 상품에 대한 사용자 맞춤 정보를 조회하고 controller에 응답을 반환하는 역할을 합니다. 
+    - userId 변수는 현재 로그인한 사용자의 ID를 저장하기 위한 변수입니다.
+    - authentication 변수는 인증된 사용자의 정보를 저장한 변수 입니다. 
+    - productMapper를 통해 해당 상품의 정보를 조회하여 product 변수에 담는 역할을 합니다.
+    - productLikeMapper를 통해 사용자가 상품을 찜 추가하였으면 찜한 상태가 보이도록 구현하여 likeCheck 변수에 담는 역할을 합니다. 
+    - RespProductDetailDto의 builder 패턴을 이용하여 product, likeCheck 객체를 controller에 응답을 반환합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **ProductMapper**
+
+    ```java
+
+    Product findProductById(Long productId);
+
+    ```
+
+    <br/>
+
+    - 해당 상품을 클릭할 시 상품의 세부 정보를 sql 쿼리문에서 조회하여 성공적으로 데이터를 가지고 오면 findProductById 메서드에 담아 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **ProductLikeMapper**
+
+    ```java
+
+    Boolean isProductLike(Long userId, Long productId);
+
+    ```
+
+    <br/>
+
+    - 로그인한 해당 사용자가 특정 상품을 찜한 상태를 sql 쿼리문에서 조회하여 성공적으로 데이터를 가지고 오면 isProductLike 메서드에 담아 service에 전달하는 역할을 합니다.  
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <select id="findProductById" resultMap="productResultMap">
+        select
+            pt.product_id,
+            pt.title,
+            pt.price,
+            pt.description,
+            pt.origin,
+            pt.thumbnail_img,
+            pt.contents_img1,
+            pt.contents_img2,
+            pt.contents_img3,
+            pt.contents_img4,
+            ct.category_id as ct_category_id,
+            ct.name,
+            sct.semi_category_id,
+            sct.name as sct_name
+        from
+            products_tb pt
+            left outer join product_categories_tb pct on (pt.product_id = pct.product_id)
+            left outer join categories_tb ct on (pct.category_id = ct.category_id)
+            left outer join semi_categories_tb sct on (sct.semi_category_id = pct.semi_category_id)
+        where
+            pt.product_id = #{productId}
+    </select>
+
+    ```
+
+    <br/>
+
+    - 해당하는 상품의 id를 이용하여 상품의 정보를 조회하는 sql 쿼리문입니다.
+
+    ---
+
+    <br/><br/>
+
+    **product_like.xml**
+
+    ```java
+
+    <select id="isProductLike" resultType="java.lang.Boolean">
+        select
+        exists(
+        select
+            1
+        from
+            products_like_tb
+        where
+            user_id = #{userId}
+            and product_id = #{productId})
+    </select>
+
+    ```
+
+    <br/>
+
+    - 사용자가 찜한 상품이면 1을 반환하고 아니면 아무 반응도 안하도록 구현한 sql 쿼리문입니다.  
+
+---
+
+<br/><br/>
+
+- **상품 수량 증가 감소**
+
+    **프론트**
+
+    ```jsx
+
+    // 구매수량 숫자 증가 감소
+    const handlebuyNumberChange = (delta) => {
+        setProductItems((prevItem) => ({
+            ...prevItem,
+            buyItem: Math.max(1, prevItem.buyItem + delta),
+        }));
+    };
+
+
+    ```
+
+    <br/>
+
+    - 이 함수는 해당 상품의 수량을 증가하고 감소하도록 하였고 무조건 1 밑으로는 못가게 구현한 함수입니다. 
+
+---
+
+<br/><br/>
+
+- **찜 추가 기능**
+
+    **프론트**
+
+    ```jsx
+
+    // 찜버튼 mutation
+    const productLikeMutation = useMutation(
+        async () => {
+            return await instance.post(`/user/product/like/${product.productId}`);
+        },
+        {
+            onSuccess: response => {
+                productData.refetch();
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        }
+    );
+
+    ```
+
+    <br/>
+
+    - mutation 훅을 사용하여 해당 상품의 찜 목록을 추가한 코드입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @PostMapping("/like/{id}")
+    public ResponseEntity<?> productLike(@PathVariable Long id) {
+        productLikeService.productLike(id);
+        return ResponseEntity.ok().body(true);
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에 post 요청을 받아 해당 상품의 찜을 추가하기 위한 controller 입니다.
+    - 해당 상품의 id를 service에 넘겨 찜을 추가한 로직을 수행하고 성공적으로 응답을 받으면 클라이언트에 응답을 true로 반환하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    public void productLike(Long productId) {
+        PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+
+        ProductLike productLike = ProductLike.builder()
+                .productId(productId)
+                .userId(principalUser.getId())
+                .build();
+        productLikeMapper.addProductLike(productLike);
+    }
+
+    ```
+
+    <br/>
+
+    - 해당 상품의 id를 이용하여 상품의 찜을 mapper를 통해 추가한 데이터를 받아 controller에 전달하는 역할을 하는 service 입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    Long addProductLike(ProductLike like);
+
+    ```
+
+    <br/>
+
+    - 특정 상품의 찜을 눌러 sql 쿼리문에서 추가하는 기능을 수행하여 성공적으로 데이터를 가지고 오면 addProductLike 메서드에 담아 service에 전달하는 역할을 합니다.
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <insert id="addProductLike">
+        insert into products_like_tb
+        values(0, #{userId}, #{productId})
+    </insert>
+
+    ```
+
+    <br/>
+
+    - 찜을 클릭한 로그인한 사용자의 id와 해당 상품의 id를 데이터베이스에서 추가하여 저장하여 mapper에 전달합니다. 
+
+---
+
+<br/><br/>
+
+- **InformationView**
+
+    **프론트**
+
+    ```jsx
+
+    function InformationView({product}) {
+
+        return (
+            <div css={s.layout}>
+                <div css={s.imgLayout}>
+                    <img src={product?.contentsImg1} />
+                    <img src={product?.contentsImg2} />
+                    <img src={product?.contentsImg3} />
+                    <img src={product?.contentsImg4} />
+                </div>
+            </div>
+        );
+    }
+
+    export default InformationView;
+
+    ```
+
+    <br/>
+
+    - 상품 상세 페이지에서 해당하는 상품의 정보를 props로 받아 상세 정보 구간에서 해당 상품의 세부 이미지들을 조회하는 코드입니다. 
+
+---
+
+<br/><br/>
+
+- **DeliveryView**
+
+    **프론트**
+
+    ```jsx
+
+    function DeliveryView(props) {
+
+        return (
+            <div style={{marginTop: "80px"}}>
+                <img src="https://www.omealdang.com/fserver//files/ckeditor/202236/1662528622_0.jpg" />
+            </div>
+        );
+    }
+
+    export default DeliveryView;
+
+    ```
+
+    <br/>
+
+    - 이 코드는 전체적인 상품의 상세 페이지의 배송정보의 이미지를 설정한 코드입니다. 
 
 ---
 
@@ -4129,6 +4828,8 @@ public interface UserRolesMapper {
 
 ```
 
+<br/>
+
 - 사용자가 입력한 user 정보를 users_tb에 추가하여 UserMapper에 전달하는 sql문입니다.
 
 ---
@@ -4163,6 +4864,8 @@ public interface UserRolesMapper {
 </select>
 
 ```
+
+<br/>
 
 - 사용자가 입력한 username와 users_tb에 있는 username과 같은거만 조회하는 sql문입니다. 
 
@@ -5346,7 +6049,6 @@ __유저__
             (product) =>
                 `cartId=${product.cartId}&cartItemId=${product.cartItemId}&quantity=${product.quantity}`
             );
-            console.log();
 
             navigate(`/order?${orderProducts.join("&")}`);
 
@@ -5890,7 +6592,7 @@ __유저__
 
     <br/>
 
-    - cartItemId를 통해 장바구니 목록 중에 해당 항목을 sql문에서 삭제하여 그그 데이터를 deleteCartItemByCartItemId 메서드에 저장하여 CartService에 전달합니다. 
+    - cartItemId를 통해 장바구니 목록 중에 해당 항목을 sql문에서 삭제하여 그 데이터를 deleteCartItemByCartItemId 메서드에 저장하여 CartService에 전달합니다. 
 
     ---
 
@@ -5912,9 +6614,9 @@ __유저__
 
     - cartItemId를 통해 장바구니 항목을 삭제 처리하는 sql 문입니다. 
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - __체크박스 기능__
 
@@ -6045,9 +6747,9 @@ __유저__
     <br/>
 
     - 이 코드는 사용자가 구매 버튼을 클릭했을 때 선택된 상품들을 주문 페이지로 전달하는 기능을 구현한 것입니다.
-    - 선택된 상품 필터링 : productList에서  checked 상태가 true인 상품들만 필터링하여 selectedProducts 배열에 저장합니다.
-    - 주문 상품 데이터 생성 : 선택된 상품들의 cartId, cartItemId, quantity를 쿼리 문자열 형식으로 변환하여 orderProducts 배열에 저장합니다.
-    - navigate 함수를 사용하여 /order 페이지로 이동하며, 쿼리 문자열로 주문 상품 데이터를 전달합니다.
+    - 선택된 상품 필터링 : productList에서 checked 상태가 true인 상품들만 필터링하여 selectedProducts 배열에 저장합니다.
+    - 주문 상품 데이터 생성 : 선택된 상품들의 cartId, cartItemId, quantity를 쿼리 문자열 형식으로 변환하여 orderProducts 배열에 저장합니다.
+    - navigate함수를 사용하여 "/order" 페이지로 이동하며, 쿼리 문자열로 주문 상품 데이터를 전달합니다.
 
 ---
 
@@ -6944,6 +7646,8 @@ public interface AddressMapper {
 
 ```
 
+<br/>
+
 - 해당 사용자의 ID를 통해 사용자의 비밀번호와 이메일을 수정할 수 있는 기능을 구현한 sql 쿼리문입니다. 
 
 ---
@@ -6960,6 +7664,8 @@ public interface AddressMapper {
 </insert>
 
 ```
+
+<br/>
 
 - 이 코드는 해당 사용자의 주소를 추가하는 기능을 구현한 sql 쿼리문입니다. 
 
@@ -7239,9 +7945,9 @@ export default WishList;
 
     - userId를 이용하여 해당 사용자의 찜한 상품 목록을 조회한 sql 쿼리문입니다.
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - __위시리스트 삭제__
 
@@ -7678,9 +8384,9 @@ export default BuyInfo;
 
     - userId를 이용하여 해당 사용자가 구매한 상품 정보들을 최근 구매한 날짜 순으로 정렬하여 조회한 sql 쿼리문입니다.
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - **getPaymentNum 함수**
 
@@ -7704,7 +8410,9 @@ export default BuyInfo;
 
     <br/>
 
-    -
+    - 이 함수는 구매한 상품의 결제 번호를 조회하는 기능을 한 함수입니다. 
+    - 서버에 상품을 주문한 Id를 파라미터 값으로 넘기고 get 요청을 보냈습니다.
+    - 성공적으로 응답이 오면 결제 번호를 조회한 데이터를 보여줍니다.
 
     ---
 
@@ -7718,7 +8426,6 @@ export default BuyInfo;
 
     @GetMapping("")
     public ResponseEntity<?> getPaymentNum (@RequestParam (required = false) Long orderId) {
-        System.out.println(orderId);
         return ResponseEntity.ok().body(paymentService.getPaymentNum(orderId));
     }
 
@@ -7726,7 +8433,8 @@ export default BuyInfo;
 
     <br/>
 
-    -
+    - 클라이언트에 get 요청과 파라미터로 orderId를 받아 사용자가 구매한 상품의 결제 번호를 조회하는 작업을 수행합니다.
+    - service에 상품을 주문한 id를 넘겨 해당 결제 번호를 전달받아 클라이언트에 응답을 반환합니다. 
 
     ---
 
@@ -7744,7 +8452,7 @@ export default BuyInfo;
 
     <br/>
 
-    -
+    - 이 코드는 mapper에 orderId를 넘겨 결제 번호를 조회한 데이터를 받아 controller에 전달하는 역할을 합니다. 
 
     ---
 
@@ -7760,7 +8468,7 @@ export default BuyInfo;
 
     <br/>
 
-    -
+    - findPaymentNumByOrderId 메서드는 orderId를 통해 sql 쿼리문에서 결제 번호를 조회한 데이터 값을 이 메서드에 저장하여 service에 전달하는 역할을 합니다. 
 
     ---
 
@@ -7784,11 +8492,11 @@ export default BuyInfo;
 
     <br/>
 
-    -
+    - 사용자가 구매한 상품의 id를 통해 결제번호를 조회하는 sql 쿼리문입니다. 
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - **accessTokenMutation 함수**
 
@@ -7812,9 +8520,9 @@ export default BuyInfo;
 
     - 이 코드는 post 요청을 사용하여 서버에서 accessToken을 받아오는 비동기 작업을 처리하는 역할을 합니다. 
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - **구매 상태 기능**
 
@@ -7938,6 +8646,8 @@ export default BuyInfo;
 
     ```
 
+    <br/>
+
     - paymentId를 이용하여 구매한 상품의 결제상태를 수정하는 sql 쿼리문입니다. 
 
     ---
@@ -7961,6 +8671,8 @@ export default BuyInfo;
     </select>
 
     ```
+
+    <br/>
 
     - 해당 사용자가 구매한 상품의 항목들을 paymentId를 이용하여여 조회하는 sql 쿼리문입니다. 
 
@@ -8007,9 +8719,9 @@ export default BuyInfo;
 
     - 사용자가 구매한 상품의 결제상태에 따라 해당 상품의 재고 수와 수량이 업데이트되는 방식으로 구현한 sql 쿼리문입니다. 
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - **구매 결제 취소 기능**
 
@@ -8084,9 +8796,9 @@ export default BuyInfo;
     - 결제 취소할 시 취소 사유와 취소 금액을 포함한 데이터를 전송합니다. 
     - 결제 취소가 성공될 시 취소 사유와 취소 금액을 포함한 데이터를 전송하고 결제가 취소가 되며 결제한 금액이 본인에게 돌아오도록 설정하였습니다. 
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
 - **구매 후기 작성 기능**
 
@@ -8566,14 +9278,16 @@ export default ReviewInfo;
 
     ```
 
+    <br/>
+
     - 해당 로그인한 사용자의 아이디를 조건으로 본인이 쓴 구매한 후기 목록을 조회하는 sql 쿼리문입니다.
     - 날짜를 최신순으로 정렬하며 보여주고 있습니다.
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
-    - **구매후기 수정 기능**
+- **구매후기 수정 기능**
 
     **프론트**
 
@@ -8812,11 +9526,11 @@ export default ReviewInfo;
 
     - 해당 사용자가 구매한 상품의 구매후기한 Id 값을 통해 평점, 제목, 내용을 수정하는 sql 쿼리문입니다. 
 
-    ---
+---
 
-    <br/><br/>
+<br/><br/>
 
-    - **구매후기 삭제 기능**
+- **구매후기 삭제 기능**
 
     **프론트**
 
@@ -8949,9 +9663,9 @@ export default ReviewInfo;
     - 이 코드는 사용자가 작성한 구매후기를 삭제하는 sql 쿼리문입니다.
     - 사용자가 구매한 상품의 후기에 Id 값을 이용하여 리뷰를 삭제하도록 설정하였습니다.
 
-    ---
+ ---
 
-    <br/><br/>
+<br/><br/>
 
 #### 회원탈퇴  
 
@@ -9190,17 +9904,979 @@ int deleteUserRole(Long userId);
 
 ### 주문 페이지
 
+#### 전체 코드
+
 **프론트**
 
 ```jsx
 
+function OrderPage(props) {
+    const [searchParams] = useSearchParams();
 
+    const [orderProducts, setOrderProducts] = useState([]);
+
+    useEffect(() => {
+        let orderProducts = [];
+        searchParams.getAll("cartId").forEach((cartId, index) => {
+            if (!orderProducts[index]) {
+                orderProducts = [
+                    ...orderProducts,
+                    {
+                        cartId,
+                    },
+                ];
+            } else {
+                orderProducts = orderProducts.map((orderProduct, index2) => {
+                    if (index === index2) {
+                        return {
+                            ...orderProduct,
+                            cartId,
+                        };
+                    }
+                    return orderProduct;
+                });
+            }
+        });
+
+        searchParams.getAll("cartItemId").forEach((cartItemId, index) => {
+            if (!orderProducts[index]) {
+                orderProducts = [
+                    ...orderProducts,
+                    {
+                        cartItemId,
+                    },
+                ];
+            } else {
+                orderProducts = orderProducts.map((orderProduct, index2) => {
+                    if (index === index2) {
+                        return {
+                            ...orderProduct,
+                            cartItemId,
+                        };
+                    }
+                    return orderProduct;
+                });
+            }
+        });
+
+        searchParams.getAll("quantity").forEach((quantity, index) => {
+            if (!orderProducts[index]) {
+                orderProducts = [
+                    ...orderProducts,
+                    {
+                        quantity,
+                    },
+                ];
+            } else {
+                orderProducts = orderProducts.map((orderProduct, index2) => {
+                    if (index === index2) {
+                        return {
+                            ...orderProduct,
+                            quantity,
+                        };
+                    }
+                    return orderProduct;
+                });
+            }
+        });
+
+        setOrderProducts(orderProducts);
+    }, []);
+
+    // 결제 상태
+    const [payMentState, setPayMentState] = useState("");
+
+    const [productList, setProductList] = useState([]);
+
+    const [userInfo, setUserInfo] = useState({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        point: 0,
+        address: {
+            address: "",
+            detailAddress: "",
+            zipCode: "",
+        },
+        message: "",
+    });
+
+    // 가겨 * 수량 함수
+    const calculateTotalPrice = (product) => {
+        return product.product.price * product.quantity;
+    };
+
+    const calculateTotals = () => {
+        let totalProductAmount = 0;
+        let deliveryFee = 0;
+        let totalAmount = 0;
+
+        if (Array.isArray(productList) && productList.length > 0) {
+            totalProductAmount = productList.reduce((total, product) => {
+                return total + calculateTotalPrice(product);
+            }, 0);
+        }
+
+        deliveryFee = totalProductAmount >= 30000 ? 0 : 3000;
+        totalAmount = totalProductAmount + deliveryFee;
+
+        return { totalProductAmount, totalAmount, deliveryFee };
+    };
+
+    const { totalProductAmount, totalAmount, deliveryFee } = calculateTotals();
+
+    const {
+        data: userInfoData,
+        isLoading: isUserInfoLoading,
+        isError: isUserInfoError,
+    } = useQuery(
+        "userInfo",
+        async () => {
+            return await instance.get("/user"); // 유저 정보 가져오는 API 호출
+        },
+        {
+            onSuccess: (response) => {
+                setUserInfo(response.data); // 성공 시 userInfo 상태 업데이트
+            },
+            retry: 0,
+            refetchOnWindowFocus: false,
+        }
+    );
+
+    // 다건 조회시 사용하는 쿼리
+    const {
+        data: products,
+        isLoading: isProductsLoading,
+        isError: isProductsError,
+    } = useQuery(
+        ["selectedProducts"],
+        async () => {
+            const cartItemIds = orderProducts.map((item) => item.cartItemId);
+            return await instance.get("/user/cart/order", {
+                params: { id: cartItemIds.join(",") },
+            });
+        },
+        {
+            onSuccess: (response) => {
+                setProductList(response.data.cartItemList);
+            },
+            enabled: orderProducts.length > 0,
+            retry: 0,
+            refetchOnWindowFocus: false,
+        }
+    );
+
+    if (isProductsLoading) {
+        return <div>로딩 중...</div>;
+    }
+
+    if (isProductsError) {
+        return <div>데이터를 불러오는 중 에러가 발생했습니다.</div>;
+    }
+
+    return (
+        <div css={s.layout}>
+            <div css={s.mainBox}>
+                <UserInfo
+                    userInfo={userInfo}
+                    setUserInfo={setUserInfo}
+                    isUserInfoLoading={isUserInfoLoading}
+                    isUserInfoError={isUserInfoError}
+                />
+                <ProductInfo
+                    productList={productList}
+                    deliveryFee={deliveryFee}
+                    point={userInfo.point}
+                />
+                <PaymentMethod setPayMentState={setPayMentState} />
+            </div>
+            <OrderSummary
+                totalProductAmount={totalProductAmount}
+                deliveryFee={deliveryFee}
+                totalAmount={totalAmount}
+                userInfo={userInfo}
+                payMentState={payMentState}
+                productList={productList}
+            />
+        </div>
+    );
+}
+
+export default OrderPage;
 
 ```
 
 <br/>
 
--
+- 이 코드는 장바구니에서 상품을 구매하기 버튼을 클릭하였을 때 이동되는 상품을 주문(결제)하는 페이지 입니다.
+- 사용자의 정보는 useQuery를 이용하여 조회하는 기능을 수행합니다. 
+- 가격 * 수량 함수 파트는 결제 할 총 합계를 계산한 기능을 구현하였습니다. 
+- 세부적인 것은 밑에서 설명하겠습니다.  
+
+---
+
+<br/><br/>
+
+- **주문 상품 목록을 조회하는 기능**
+
+    **프론트**
+
+    ```jsx
+
+    useEffect(() => {
+        let orderProducts = [];
+        searchParams.getAll("cartId").forEach((cartId, index) => {
+            if (!orderProducts[index]) {
+                orderProducts = [
+                    ...orderProducts,
+                    {
+                        cartId,
+                    },
+                ];
+            } else {
+                orderProducts = orderProducts.map((orderProduct, index2) => {
+                    if (index === index2) {
+                        return {
+                            ...orderProduct,
+                            cartId,
+                        };
+                    }
+                    return orderProduct;
+                });
+            }
+        });
+
+        searchParams.getAll("cartItemId").forEach((cartItemId, index) => {
+            if (!orderProducts[index]) {
+                orderProducts = [
+                    ...orderProducts,
+                    {
+                        cartItemId,
+                    },
+                ];
+            } else {
+                orderProducts = orderProducts.map((orderProduct, index2) => {
+                    if (index === index2) {
+                        return {
+                            ...orderProduct,
+                            cartItemId,
+                        };
+                    }
+                    return orderProduct;
+                });
+            }
+        });
+
+        searchParams.getAll("quantity").forEach((quantity, index) => {
+            if (!orderProducts[index]) {
+                orderProducts = [
+                    ...orderProducts,
+                    {
+                        quantity,
+                    },
+                ];
+            } else {
+                orderProducts = orderProducts.map((orderProduct, index2) => {
+                    if (index === index2) {
+                        return {
+                            ...orderProduct,
+                            quantity,
+                        };
+                    }
+                    return orderProduct;
+                });
+            }
+        });
+
+        setOrderProducts(orderProducts);
+    }, []);
+
+    ```
+
+    <br/>
+
+    - 이 코드는 주문 페이지에서 useEffect 훅을 사용하여 URL의 쿼리 파라미터를 읽고, 이를 바탕으로 주문 상품 목록을 설정하는 코드입니다.
+    - 각 파트 searchParams.getAll() 는 URL의 쿼리 문자열에서 특정 파라미터(예 : cartId, cartItemId, quantity)의 모든 값을 배열로 반환하기 위해 forEach 반복문을 돌고 있으며 각 쿼리 파라미터 값은 index와 함께 전달되어, 각 항목을 하나씩 처리합니다. 
+    - 각 쿼리 파라미터 값을 orderProducts 배열에 순서대로 추가하거나 업데이트하고 모든 값이 추가된 후, setOrderProducts를 사용해 orderProducts를 상태로 설정하고, 주문 상품 목록을 마운트될 때마다 업데이트하는 역할을 합니다. 
+
+ ---
+
+<br/><br/>
+
+- **주문 상품 다건 조회**
+
+    **프론트**
+
+    ```jsx
+
+    // 다건 조회시 사용하는 쿼리
+    const {
+        data: products,
+        isLoading: isProductsLoading,
+        isError: isProductsError,
+    } = useQuery(
+        ["selectedProducts"],
+        async () => {
+            const cartItemIds = orderProducts.map((item) => item.cartItemId);
+            return await instance.get("/user/cart/order", {
+                params: { id: cartItemIds.join(",") },
+            });
+        },
+        {
+            onSuccess: (response) => {
+                setProductList(response.data.cartItemList);
+            },
+            enabled: orderProducts.length > 0,
+            retry: 0,
+            refetchOnWindowFocus: false,
+        }
+    );
+
+    ```
+
+    <br/>
+
+    - 사용자가 구매할려는 상품을 여러개 조회하는 기능을 합니다. 
+    - cartItemIds 는 orderProducts(구매할려는 상품들)을 map을 돌려 그 데이터 값을 저장한 함수입니다.
+    - 서버에 파라미터로 cartItemIds 배열에 여러개가 들어 있으면 ","를 join 하여 id 형태로 데이터를 넘기고 get 요청을 보냅니다. 
+    - 성공적으로 응답이 오면 productList 상태를 업데이트하여 구매할 상품을 조회하도록 구현하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @GetMapping("/cart/order") // 장바구니에서 체크 한 상품만 결제창으로
+    public ResponseEntity<?> getCartOrder(ReqCartListDto dto) {
+        return ResponseEntity.ok().body(orderService.getCartOrderList(dto));
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에 get 요청을 받아 장바구니에 체크 한 상품만 조회하는 작업을 수행합니다.
+    - 체크된 상품의 정보를 dto로 변환하고 service에 넘겨 성공적으로 데이터를 받게 되면 클라이언트에 응답을 반환합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **ReqCartListDto**
+
+    ```java
+
+    @Data
+    public class ReqCartListDto {
+        private List<Long> id;
+        private String address;
+        private String detailAddress;
+        private String zipCode;
+
+        public Address toAddress(Long userId) {
+            return Address.builder()
+                    .userId(userId)
+                    .address(address)
+                    .detailAddress(detailAddress)
+                    .zipCode(zipCode)
+                    .build();
+        }
+    }
+
+    ```
+
+    <br/>
+
+    - 장바구니에 체크한 상품의 정보와 사용자의 주소를 담는 dto 입니다. 
+    - toAddress 메서드는 ReqCartListDto의 데이터를 바탕으로 사용자의 주소를 조회하기 위한 Address 객체를 반환하여 이 메서드에 저장합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **RespCartOrderDto**
+
+    ```java
+
+    @Builder
+    @Data
+    public class RespCartOrderDto {
+        private Long userId;
+        private String name;
+        private String email;
+        private Long addressId;
+        private String address;
+        private String detailAddress;
+        private String zipCode;
+        private List<CartItem> cartItemList;
+    }
+
+    ```
+
+    <br/>
+
+    - 주문할려는 해당 사용자의 정보와 선택된 장바구니의 상품의 정보를 담는 dto 입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    public RespCartOrderDto getCartOrderList(ReqCartListDto dto) {
+        PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User user = userMapper.findUserByUserId(principalUser.getId());
+        List<CartItem> cartItemList = cartItemMapper.findCartItemList(principalUser.getId(), dto.getId());
+        Address address = addressMapper.findAddressByUserId(principalUser.getId());
+
+        return RespCartOrderDto.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .addressId(address.getAddressId())
+                .address(address.getAddress())
+                .detailAddress(address.getDetailAddress())
+                .zipCode(address.getZipCode())
+                .cartItemList(cartItemList)
+                .build();
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 선택한 장바구니의 상품을 조회하고 해당 사용자의 정보도 조회하여 그 데이터를 controller에 전달하는 service 입니다. 
+    - user, cartItemList, address 변수는 로그인한 사용자의 정보의 id를 이용하여 mapper를 통해 조회하여 그 데이터 값을 각 변수에 저장합니다.
+    - 저장한 해당 변수들을 이용하여 RespCartOrderDto의 빌더 패턴을 사용하여 controller에 응답을 반환하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    List<CartItem> findCartItemList(Long userId, List<Long> cartItemIdList);
+
+    Address findAddressByUserId(Long userId);
+
+    ```
+
+    <br/>
+
+    - findCartItemList 메서드는 체크한 장바구니의 리스트와 해당 userId를 sql 쿼리문에 넘겨 조회하여 그 데이터를 이 메서드에 저장하여 service에 전달하는 역할을 합니다.
+    - findAddressByUserId 메서드는 해당 userId를 이용하여 사용자의 주소를 조회하여 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **cart_item.xml**
+
+    ```java
+
+    <select id="findCartItemList" resultMap="cartItemResultMap">
+        select
+            cit.cart_item_id,
+            cit.quantity,
+            cit.product_id,
+            pt.title,
+            pt.price,
+            pt.thumbnail_img
+        from
+            cart_items_tb cit
+            left outer join cart_tb ct on (cit.cart_id = ct.cart_id)
+            left outer join products_tb pt on (cit.product_id = pt.product_id)
+            left outer join users_tb ut on (ut.user_id = ct.user_id)
+        where
+            ut.user_id = #{userId}
+            and cit.cart_item_id in
+            <foreach item="id" index="index" collection="cartItemIdList" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+    </select>
+
+    ```
+
+    <br/>
+
+    - 장바구니에서 선택된 상품의 리스트와 해당 사용자의 id를 이용하여 상품의 정보를 조회하는 sql 쿼리문입니다.  
+    - 상품의 정보는 사용자가 장바구니에서 구매할려는 상품의 수량과 제목, 가격, 상세 이미지로 구현되어 있습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **address.xml**
+
+    ```java
+
+    <select id="findAddressByUserId" resultMap="addressResultMap">
+        select
+            address_id,
+            address,
+            detail_address,
+            zip_code
+        from
+            shipping_addresses_tb
+        where
+            user_id = #{userId}
+        limit 1
+    </select>
+
+    ```
+
+    <br/>
+
+    - 이 코드는 사용자의 id를 이용하여 주소를 하나만 조회하는 sql 쿼리문입니다.  
+
+---
+
+<br/><br/>
+
+#### UserInfo
+
+**프론트**
+
+```jsx
+
+function UserInfo({
+    userInfo,
+    setUserInfo,
+    isUserInfoLoading,
+    isUserInfoError,
+}) {
+    // 주소 선택 완료 시 호출될 함수
+    const handleAddressComplete = (address) => {
+        setUserInfo((user) => ({
+            ...user,
+            address: {
+                address: address.address, // 지역 주소 업데이트
+                detailAddress: address.detailAddress, // 나머지 주소 업데이트
+                zipCode: address.zipCode,
+            },
+        }));
+    };
+
+    // 유저 정보 변경 시 사용
+    const handleInputChange = (e) => {
+        setUserInfo((user) => ({
+            ...user,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    // 로딩 상태 처리
+    if (isUserInfoLoading) {
+        return <div>로딩 중...</div>;
+    }
+
+    // 에러 발생 시 처리
+    if (isUserInfoError) {
+        return <div>데이터를 불러오는 중 에러가 발생했습니다.</div>;
+    }
+
+    console.log(userInfo);
+
+    return (
+        <>
+            <div css={s.userInfo}>
+                <h2>주문자 정보</h2>
+                <div css={s.inputBox}>
+                    <span>이름 : </span>
+                    <input
+                        onChange={handleInputChange}
+                        type="text"
+                        name="name"
+                        defaultValue={userInfo.name}
+                        placeholder="이름을 입력해 주세요"
+                    />
+                </div>
+                <div css={s.inputBox}>
+                    <label htmlFor="email">이메일 : </label>
+                    <input
+                        onChange={handleInputChange}
+                        type="text"
+                        name="email"
+                        defaultValue={userInfo.email}
+                        placeholder="이메일 주소를 입력해 주세요"
+                    />
+                </div>
+                <div css={s.inputBox}>
+                    <label htmlFor="phoneNumber">연락처 : </label>
+                    <input
+                        onChange={handleInputChange}
+                        type="text"
+                        name="phoneNumber"
+                        defaultValue={userInfo.phoneNumber}
+                        placeholder="연락처를 입력해 주세요"
+                    />
+                </div>
+                <div css={s.addressInput}>
+                    <p css={s.adressButton}>
+                        <DaumPost onComplete={handleAddressComplete} />
+                    </p>
+                    <input
+                        type="text"
+                        name="zipCode"
+                        readOnly
+                        value={userInfo?.address?.zipCode}
+                    />
+                </div>
+                <div css={s.adressInputBox}>
+                    <label htmlFor="address">지역 주소 : </label>
+                    <input
+                        onChange={handleInputChange}
+                        type="text"
+                        name="address"
+                        defaultValue={userInfo?.address?.address}
+                        placeholder="배송지 입력해 주세요"
+                    />
+                </div>
+                <div css={s.adressInputBox}>
+                    <label htmlFor="detailAddress">나머지 주소 : </label>
+                    <input
+                        onChange={handleInputChange}
+                        type="text"
+                        name="detailAddress"
+                        defaultValue={userInfo?.address?.detailAddress}
+                        placeholder="배송지 입력해 주세요"
+                    />
+                </div>
+            </div>
+        </>
+    );
+}
+
+export default UserInfo;
+
+```
+
+<br/>
+
+- 주문 페이지에서 조회한 사용자의 정보를 받아 해당 컴포넌트에 입력되는 방식으로 구현하였습니다.
+- 해당 사용자가 주소가 저장이 안되어 있는 경우 DaumPost 컴포넌트를 이용하여 주소를 추가할 수 있게 하였습니다.
+
+---
+
+<br/><br/>
+
+#### ProductInfo
+
+**프론트**
+
+```jsx
+
+// 주문상품 정보 불러오는 기능
+function ProductInfo({productList, deliveryFee }) {
+
+  return (
+    <div css={s.productInfo}>
+      <h2>주문상품 정보</h2>
+      <table css={s.productTable}>
+        {/* 다건 조회 */}
+        {productList.map((product) => (
+          <tr key={product.product.cartItemId}>
+            <td>
+              <img src={product.product.thumbnailImg} alt={product.title} />
+            </td>
+            <td>{product.product.title}</td>
+            <td>수량: {product.quantity}</td>
+            <td>상품금액: {product.product.price.toLocaleString()}원</td>
+            <td>할인금액: 0원</td>
+            <td>
+              합계금액:{" "}
+              {(product.product.price * product.quantity).toLocaleString()}원
+            </td>
+          </tr>
+        ))}
+      </table>
+      <p>배송비 : {deliveryFee.toLocaleString()}원</p>
+    </div>
+  );
+}
+
+export default ProductInfo;
+
+```
+
+<br/>
+
+- 장바구니에 체크한 상품의 정보와 배송비 정보를 받아 조회하는 컴포넌트입니다. 
+
+---
+
+<br/><br/>
+
+#### PaymentMethod
+
+**프론트**
+
+```jsx
+
+// 결제창 띄우는 기능
+function PaymentMethod({ setPayMentState }) {
+
+    // 신용카드
+    const [ cardRedOutLine, setCardRedOutLine ] = useState(false);
+
+    const handleCardClick = () => {
+        setPayMentState("CARD");
+        setCardRedOutLine(true); // 카드의 상태가 true로 바뀌면서 테두리 o
+    };
+
+    return (
+        <div css={s.payInfo}>
+            <h2>결제수단 선택</h2>
+            <button css={s.selectClick(cardRedOutLine)} 
+                onClick={handleCardClick}>신용카드</button>
+        </div>
+    );
+}
+
+export default PaymentMethod;
+
+```
+
+<br/>
+
+- 해당 결제 상태를 주문페이지에서 받고 결제수단을 선택하는 컴포넌트입니다.
+- 결제수단에서 신용카드 선택할 시 "CARD" 상태로 업데이트하여 카드로 결제할 수 있게 구현하였습니다. 
+
+---
+
+<br/><br/>
+
+#### OrderSummary
+
+**프론트**
+
+```jsx
+
+// 오른쪽 결제 박스
+function OrderSummary({ productList, payMentState, userInfo, totalAmount, deliveryFee, totalProductAmount }) {
+    const [products, setProducts] = useState([]);
+    const navigate = useNavigate();
+
+    const [orderData, setOrderData] = useState({
+        customerId: "",
+        fullName: "",
+        products: [],
+        totalAmount: 0,
+        orderItemCount: 0,
+        orderName: "",
+        zipCode: "",
+        addressDefault: "",
+        addressDetail: "",
+        phoneNumber: "",
+        email: "",
+        request: "",
+        paymentId: "", //포트원에서 받아온 아이디
+        paymentMethod: "",
+        payMethod: "",
+        currency: "",
+        country: "",
+        card: ""
+    });
+
+    const portoneData = {
+        storeId: "store-da6c7cb4-5165-42e3-8184-e54dd94d2b78",
+        paymentId: crypto.randomUUID(), // 랜덤uuid 
+        orderName: "Cuisson",
+        totalAmount: totalAmount,
+        currency: 'CURRENCY_KRW',
+        products: products
+    };
+
+    useEffect(() => {
+        setOrderData({
+            customerId: userInfo.userId,
+            fullName: userInfo.name,
+            products: productList.map((item) => ({
+                productId: item.productId.toString(),
+                name: item.product.title,
+                price: item.product.price,
+                quantity: item.quantity,
+            })),
+            totalAmount: totalAmount,
+            orderItemCount: productList.length,
+            orderName: "Cuisson",
+            zipCode: userInfo.address.zipCode,
+            address: userInfo.address.address,
+            detailAddress: userInfo.address.detailAddress,
+            phoneNumber: userInfo.phoneNumber,
+            email: userInfo.email,
+            paymentId: "", //포트원에서 받아온 아이디
+            payMethod: payMentState,
+            currency: "KRW",
+            country: "KR",
+            card: "CARD"
+        })
+    }, [userInfo, productList, payMentState])
+
+    const registerOrderMutaion = useMutation(
+        async (registerOrderData) => await instance.post("/user/order", registerOrderData),
+        {
+            onSuccess: response => console.log(response), //결제완료창 띄우기
+            onError: error => console.log(error)
+        }
+    );
+
+    const isEmpty = () => {
+        if(!userInfo.name || !userInfo.phoneNumber 
+            || !userInfo.address.zipCode || !userInfo.address.address 
+            || !userInfo.address.detailAddress
+            || !userInfo.email) {
+                Swal.fire({
+                    icon:"error",
+                    text: "주문정보를 확인하세요",
+                    timer: 1500,
+                    confirmButtonColor: "#9d6c4c",
+                    confirmButtonText: "확인",
+                });
+                return true;
+        }
+        if (!payMentState || !channelKey) {
+            Swal.fire({
+                icon:"error",
+                text: "결제방법을 선택하세요",
+                timer: 1500,
+                confirmButtonColor: "#9d6c4c",
+                confirmButtonText: "확인",
+            });
+            return true;
+        }
+        return false;
+    }
+
+
+    const handlePaymentButtonOnClick = () => {
+        if (isEmpty()) {
+            return;
+        }
+        const requestData = {
+            ...portoneData,
+            paymentId: crypto.randomUUID(),
+            channelKey: channelKey,
+            payMethod: payMentState,
+            totalAmount: totalAmount,
+            customer: {
+                userId: userInfo?.userId,
+                fullName: userInfo.name,
+                phoneNumber: userInfo.phoneNumber,
+                email: userInfo.email,
+            },
+            products: products,
+            productType: "PRODUCT_TYPE_REAL",
+        }
+        PortOne.requestPayment(requestData).then(response => {
+            if (!response.code) { //성공했을 때
+                //(추가)결제완료창 만들어서 넘기기
+                setOrderData(order => ({
+                    ...order,
+                    paymentId: response.paymentId
+                }));
+                const registerOrderData = {
+                    ...orderData,
+                    paymentId: response.paymentId
+                }
+
+                registerOrderMutaion.mutateAsync(registerOrderData);
+
+                let timerInterval;
+                Swal.fire({
+                    title: "결제가 완료되었습니다!",
+                    color: "#9d6c4c",
+                    html: "<b>5</b>초 뒤 자동으로 홈화면으로 이동합니다!",
+                    timer: 5000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        const b = Swal.getHtmlContainer().querySelector('b');
+                        timerInterval = setInterval(() => {
+                            b.textContent = Math.ceil(Swal.getTimerLeft() / 1000);
+                        }, 1000)
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                }).then(result => {
+                    navigate("/");
+                })
+            }
+        }
+        ).catch(error => {
+            Swal.fire({
+                icon: "error",
+                text: "결제에 실패했습니다.",
+                timer: 1500,
+                confirmButtonColor: "#9d6c4c",
+                confirmButtonText: "확인"
+            });
+        });
+    };
+
+    return  (
+        <div css={s.rightBox}>
+            <div css={s.payInfoMain}>
+                <div css={s.payinfo}>
+                    <h2>결제금액</h2>
+                </div>
+                <div css={s.payinfo}>
+                    <p>상품 금액 : </p>
+                    <p>{totalProductAmount.toLocaleString()}원</p>
+                </div>
+                <div css={s.payinfo}>
+                    <p>할인 금액 : </p>
+                    <p>0원</p>
+                </div>
+                <div css={s.payinfo}>
+                    <p>배송비 : </p>
+                    <p>{deliveryFee.toLocaleString()}원</p>
+                </div>
+                <div css={s.payinfo}>
+                    <p>적립금 : </p>
+                    <p>{deliveryFee.toLocaleString()}원</p>
+                </div>
+                <div css={s.payinfo}>
+                    <p>총 결제 금액 : </p>
+                    <p>{totalAmount.toLocaleString()}원</p>
+                </div>
+            </div>
+            <div css={s.submitButton}>
+                <button onClick={handlePaymentButtonOnClick}>결제하기</button>
+            </div>
+        </div>
+    );
+}
+
+export default OrderSummary;
+
+```
+
+<br/>
+
+- 이 코드는 주문 페이지에서 사용되는 컴포넌트인 OrderSummary이며 사용자가 결제를 진행하는 단계에서, 결제 정보와 결제 버튼을 보여주고 결제 처리를 담당하는 로직이 포함되어 있습니다.
+- PortOne 결제 시스템을 위한 데이터 구조이며 storeId는 결제 시스템에 등록된 상점 ID, paymentId는 결제 고유 ID (랜덤 UUID), orderName은 주문명, totalAmount는 결제 총액, currency는 화폐 단위, products는 주문한 상품들의 정보를 담고 있습니다.
+- useEffect 훅은 사용자 정보, 제품 리스트, 결제 방법 상태가 변경될 때마다 orderData 상태를 업데이트하며 productList.map을 사용하여 상품들의 정보를 orderData에 맞게 변환하여 저장합니다.
+- userInfo와 payMentState를 기반으로 주문 정보를 세팅합니다.
+- registerOrderMutaion 함수는 mutation 훅을 사용하여 상품을 결제하기 위해 서버에 post 요청을 보내고 성공적으로 응답이 오면 결제 완료창을 띄우도록 구현하였습니다. 
+- isEmpty 함수는 주문 정보를 확인하여 필수 정보가 빠지지 않았는지 체크하여 사용자의 이름, 전화번호, 주소, 이메일 등이 없으면 오류 메시지를 띄우고, 결제 방법이 선택되지 않은 경우에도 오류 메시지를 띄웁니다. 필요한 정보가 다 채워져 있으면 false를 반환하고, 그렇지 않으면 true를 반환하여 결제 처리를 중단합니다.
+- handlePaymentButtonOnClick 함수는 결제하기 버튼을 클릭했을 때 실행되며 isEmpty 함수로 필수 정보를 체크하고, 정보가 모두 올바르면 결제 요청 데이터 를 준비합니다.
+- PortOne.requestPayment(requestData)를 호출하여 결제를 처리하고 결제 성공 시, 결제 완료 화면을 띄우고, registerOrderMutaion.mutateAsync를 사용하여 주문을 데이터베이스에 저장합니다.
+- 결제가 완료되면 5초 후에 홈 화면으로 이동합니다.
 
 ---
 
@@ -9212,41 +10888,179 @@ int deleteUserRole(Long userId);
 
 ```java
 
-
+@PostMapping("/order")
+public ResponseEntity<?> addOrder(@RequestBody ReqOrderDto dto) {
+    orderService.addOrder(dto);
+    return ResponseEntity.ok().body(true);
+}
 
 ```
 
 <br/>
 
--
+- 클라이언트에 post요청을 받아 사용자가 장바구니에서 선택된 상품을 결제하는 로직을 처리하는 controller 입니다.
+- ReqOrderDto 객체로 변환하여 service에 넘겨 결제 기능을 수행하고 성공적으로 응답을 받아 클라이언트에 반환합니다.
 
 ---
+
+<br/><br/>
+
+**Dto**
+
+```java
+
+@Data
+public class ReqOrderDto {
+    private String customerId;
+    private String fullName;
+    private Long totalAmount;
+    private List<OrderItem> products;
+    private String payMethod;
+    private String paymentId;
+    private int orderItemCount;
+    private String address;
+    private String detailAddress;
+    private String zipCode;
+
+    public Order toOrder() {
+        return Order.builder()
+                .userId(Long.parseLong(customerId))
+                .totalAmount(totalAmount)
+                .build();
+    }
+
+    public Payment toPayment(Long orderId) {
+        return Payment.builder()
+                .orderId(orderId)
+                .paymentMethod(payMethod)
+                .paymentStatus("completed")
+                .paymentNum(paymentId)
+                .amount(totalAmount)
+                .build();
+    }
+
+    public Address toAddress(Long userId) {
+        return Address.builder()
+                .userId(userId)
+                .address(address)
+                .detailAddress(detailAddress)
+                .zipCode(zipCode)
+                .build();
+    }
+}
+
+```
+
+<br/>
+
+- 사용자의 정보, 결제 정보, 결제할려는 상품의 정보를 담는 dto 입니다.
+- toOrder 메서드는 ReqOrderDto의 데이터를 바탕으로 주문을 생성한 고객의 id와 상품의 총 가격의 정보를 Order 객체로 변환하여 이 메서드에 저장합니다. 
+- toPayment 메서드는 ReqOrderDto의 데이터를 바탕으로 주문한 상품의 id와 결제수단, 결제상태, 결제 번호, 총 상품의 가격의 정보 등을 Payment 객체로 변환하여 이 메서드에 저장합니다. 
+- toAddress 메서드는 ReqOrderDto의 데이터를 바탕으로 해당 사용자의 주소 정보를 Address 객체로 변환하여 이 메서드에 저장합니다.  
+
+---
+
+<br/><br/>
 
 **Service**
 
 ```java
 
+@Transactional(rollbackFor = SQLException.class)
+public void addOrder(ReqOrderDto dto) {
+    PrincipalUser principalUser = (PrincipalUser) SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getPrincipal();
+    Order order = dto.toOrder();
 
+    orderMapper.addOrder(order);
+    orderItemMapper.addOrderItem(order.getOrderId(), dto.getProducts());
+    paymentsMapper.addPayment(dto.toPayment(order.getOrderId()));
+    productMapper.updateSalesCountAndStock(dto.getProducts());
+
+    if (addressMapper.findAddressByUserId(principalUser.getId()) == null) {
+        addressMapper.addAddress(dto.toAddress(principalUser.getId()));
+        return;
+    }
+
+    addressMapper.updateAddress(dto.toAddress(principalUser.getId()));
+
+}
 
 ```
 
 <br/>
 
--
+- 이 코드는 해당 상품을 결제하는 로직을 mapper를 통해 처리하고 처리한 데이터를 응답받아 controller에 전달하는 역할을 합니다.  
 
 ---
 
-**Mapper**
+<br/><br/>
+
+**orderMapper**
 
 ```java
 
+int addOrder(Order order);
+
+```
+
+<br/>
+
+- order 객체를 sql 쿼리문에 넘겨 주문에 대한 기본 정보를 addOrder 메서드에 저장하고 service에 전달하는 역할을 합니다. 
+
+---
+
+<br/><br/>
+
+**orderItemMapper**
+
+```java
+
+@Mapper
+public interface OrderItemMapper {
+    int addOrderItem (Long orderId, List<OrderItem> orderItemList);
+}
 
 
 ```
 
 <br/>
 
--
+- addOrderItem 메서드는 결제할려는 상품의 id와 상품의 항목들을 sql 쿼리문에 넘겨 각 상품의 항목을 데이터베이스에 추가하는 로직을 처리하고 이 메서드에 저장하여 service에 전달하는 역할을 합니다.   
+
+---
+
+<br/><br/>
+
+**paymentsMapper**
+
+```java
+
+int addPayment (Payment payment);
+
+```
+
+<br/>
+
+- addPayment 메서드는 결제 정보를 sql 쿼리문에 넘겨 상품을 결제하는 로직을 처리하여 이 메서드에 저장하여 service에 전달하는 역할을 합니다.
+
+---
+
+<br/><br/>
+
+**productMapper**
+
+```java
+
+int updateSalesCountAndStock(List<OrderItem> orderItemList);
+
+```
+
+<br/>
+
+- updateSalesCountAndStock 메서드는 각 주문할려는 각 상품의 항목을 sql 쿼리문에 넘겨 상품의 판매 수량과 재고를 업데이트하여 이 메서드에 저장하고 service에 전달하는 역할을 합니다.
 
 ---
 
@@ -9256,11 +11070,101 @@ int deleteUserRole(Long userId);
 
 ```java
 
-
+<insert id="addOrder" useGeneratedKeys="true" keyProperty="orderId">
+    insert into orders_tb (order_id, user_id, total_amount, created_at)
+    values(0, #{userId}, #{totalAmount}, now())
+</insert>
 
 ```
 
--
+<br/>
+
+- 해당 사용자의 id와 총 상품의 금액과 날짜를 생성하여 주문의 기본 정보를 데이터베이스에 추가하고 성공적으로 추가가 되면 mapper에 전달한는 sql 쿼리문입니다. 
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
+
+<insert id="addOrderItem">
+    insert into order_items_tb
+    values
+    <foreach collection="orderItemList" item="item" index="index" open="(" separator="),(" close=")">
+        0, #{orderId}, #{item.productId}, #{item.quantity}, #{item.price}
+    </foreach>
+</insert>
+
+```
+
+<br/>
+
+- 사용자가 구매할려는 각 상품의 항목의 정보(수량, 가격 등)를 데이터베이스에 추가하는 로직을 처리하는 sql 쿼리문입니다.  
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
+
+<insert id="addPayment">
+    insert into payments_tb
+    values (0, #{orderId}, #{paymentMethod}, #{paymentStatus}, #{amount}, #{paymentNum}, now())
+</insert>
+
+```
+
+<br/>
+
+- 사용자가 선택한 결제 수단과 결제 상태, 상품의 총 가격, 결제 번호, 날짜 등의 정보를 데이터베이스에 추가하여 결제 로직을 처리하는 sql 쿼리문입니다. 
+
+---
+
+<br/><br/>
+
+**xml**
+
+```java
+
+<update id="updateSalesCountAndStock" parameterType="java.util.List">
+    update products_tb
+    set
+        sales_count =
+        case
+            <foreach collection="orderItemList" item="item" separator=" ">
+                when product_id = #{item.productId}
+                then sales_count + #{item.quantity}
+            </foreach>
+            else sales_count
+        end,
+
+        stock =
+        case
+            <foreach collection="orderItemList" item="item" separator=" ">
+                when product_id = #{item.productId}
+                then stock - #{item.quantity}
+            </foreach>
+            else stock
+        end
+
+    where
+        product_id in(
+            <foreach collection="orderItemList" item="item" separator=",">
+                #{item.productId}
+            </foreach>
+        )
+</update>
+
+```
+
+<br/>
+
+- 사용자가 구매할려는 상품의 재고와 수량을 월래 상품의 재고와 상품의 수량(1)에서 업데이트하여 사용자가 원하는 상품을 원하는 수만큼 구매하도록 처리한 sql 쿼리문입니다. 
+- 사용자가 구매한 상품의 수량이 아무 변화가 없으면 그대로 두면서 상품을 결제할 수 있도록 구현하였습니다.  
 
 ---
 
@@ -9274,13 +11178,84 @@ int deleteUserRole(Long userId);
 
 ```jsx
 
+function AdminSignin(props) {
+    const [admin, setAdmin] = useState({
+        username: "",
+        password: "",
+    });
 
+    const handleInputOnChange = (e) => {
+        setAdmin((admin) => ({
+            ...admin,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleSubminOnClick = async () => {
+        const signinData = await adminSigninApi(admin);
+        if (!signinData.isSuccess) {
+            // 로그인 실패하면?
+            if (signinData.errorStatus === "loginError" || "fieldError") {
+                alert("로그인 실패");
+            }
+            return;
+        }
+        localStorage.setItem("accessToken", "Bearer " + signinData.token.accessToken);
+
+        // role 값을 localStorage에 저장
+        localStorage.setItem("role", signinData.role.name)
+
+        instance.interceptors.request.use(config => {
+            config.headers["Authorization"] = localStorage.getItem("accessToken");
+            return config;
+        });
+        window.confirm(signinData.successMessage);
+        window.location.replace("/admin/main");
+
+    };
+
+    const handleLoginOnkeyDown = async(e) => {
+        if(e.keyCode === 13) {
+            handleSubminOnClick();
+        }
+    }
+
+    return (
+        <div css={s.container}>
+            <div css={s.signin}>
+                <div css={s.signinHeader}>
+                    <h1>관리자 페이지</h1>
+                </div>
+                <input
+                    type="text"
+                    value={admin.username}
+                    onChange={handleInputOnChange}
+                    name="username"
+                    placeholder="아이디"
+                />
+                <input
+                    type="password"
+                    value={admin.password}
+                    onChange={handleInputOnChange}
+                    onKeyDown={handleLoginOnkeyDown}
+                    name="password"
+                    placeholder="비밀번호"
+                />
+                <button onClick={handleSubminOnClick}>로그인</button>
+            </div>
+        </div>
+    );
+}
+
+export default AdminSignin;
 
 ```
 
 <br/>
 
--
+- 이 코드는 따로 관리자 페이지를 관리하기 위한 관리자 로그인 화면입니다. 
+- 로그인 버튼이나 비밀번호 창에서 엔터키를 누를 시 adminSigninApi를 통해 로그인이 되어 관리자 메인페이지로 이동합니다. 
+- 유저 로그인 기능을 구현한 흐름과 같습니다. 
 
 ---
 
@@ -9292,59 +11267,143 @@ int deleteUserRole(Long userId);
 
 ```java
 
+@RestController
+@RequestMapping("/admin")
+public class AdminAuthController {
 
+    @Autowired
+    private AuthService authService;
 
-```
+    @PostMapping("/signin")
+    public ResponseEntity<?> signin(@Valid @RequestBody ReqSigninDto dto) {
+        return ResponseEntity.ok().body(authService.signin(dto));
+    }
 
-<br/>
-
--
-
----
-
-**Service**
-
-```java
-
-
+}
 
 ```
 
 <br/>
 
--
+- 클라이언트에서 api를 이용하여 post 요청을 받아 관리자 로그인 로직을 처리합니다. 
+- service를 통해 로그인 기능 작업을 수행하여 성공적으로 응답이 오면 클라이언트에 반환하는 controller 입니다. 
 
 ---
+
+**그 외**
+
+<br/>
+
+- dto 부터해서 sql 쿼리문 까지 위에 유저 로그인한 백엔드와 같은 흐름입입니다.
 
 <br/><br/>
 
-**Mapper**
+#### 관리자 메인 페이지
 
-```java
+**프론트**
 
+```jsx
 
+const menus = [
+    {
+        id: 1,
+        name: "상품 등록",
+        path: "/admin/main/product/register",
+        icon: <IoBagAddOutline />,
+    },
+    {
+        id: 2,
+        name: "상품 관리",
+        path: "/admin/main/product",
+        icon: <RiProductHuntLine />,
+    },
+    {
+        id: 3,
+        name: "매출 관리",
+        path: "/admin/main/sales",
+        icon: <IoBusinessOutline />,
+    },
+    {
+        id: 4,
+        name: "주문 관리",
+        path: "/admin/main/order",
+        icon: <IoBusinessOutline />,
+    },
+    {
+        id: 5,
+        name: "직원 관리",
+        path: "/admin/main/staff",
+        icon: <PiUsersFourLight />,
+    },
+    {
+        id: 6,
+        name: "유저 관리",
+        path: "/admin/main/user",
+        icon: <LuUser />,
+    },
+];
+
+function AdminMainPage(props) {
+    const location = useLocation();
+    const pathname = location.pathname;
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("accessToken"); // 로컬 스토리지에서 토큰 삭제
+        localStorage.removeItem("role");
+        navigate("/admin");
+        window.location.reload(); // 페이지를 새로 고침하여 상태를 초기화
+    };
+
+    return (
+        <div css={s.layout}>
+            <div css={s.mainBox}>
+                <div css={s.menuBox}>
+                    {/* 메뉴 선택 페이지 */}
+                    <Link to={"/admin"} css={s.logo}>
+                        LOGO
+                    </Link>
+                    {menus.map((menu) => (
+                        <Link
+                            key={menu.id}
+                            to={menu.path}
+                            css={s.selectedMenu(pathname === menu.path)}
+                        >
+                            {menu.icon} <span>{menu.name}</span>
+                        </Link>
+                    ))}
+                    <div css={s.menuBotton}>
+                        <button css={s.logoutButton} onClick={handleLogout}>
+                            <IoLogOutOutline />
+                            로그아웃
+                        </button>
+                    </div>
+                </div>
+                <div css={s.contentBox}>
+                    <Routes>
+                        <Route path="/" element={<DefaultComponent />} />
+                        <Route path="/product/register" element={<ProductRegister />} />
+                        <Route path="/product" element={<ProductEdit />} />
+                        <Route path="/sales" element={<Management />} />
+                        <Route path="/order" element={< ProductOrder />} />
+                        <Route path="/staff" element={<StaffManagement />} />
+                        <Route path="/user" element={<UserView />} />
+                    </Routes>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default AdminMainPage;
 
 ```
 
 <br/>
 
--
-
----
-
-<br/><br/>
-
-**xml**
-
-```java
-
-
-
-```
-
-<br/>
-
--
+- 관리자가 해당 웹페이지를 관리할 수 있게 상품 등록, 상품 관리, 매출 관리, 직원 관리, 유저 관리를 구현한 관리자 메인 페이지 입니다. 
+- 라운트를 사용하여 상품 등록, 상품 관리, 매출 관리, 직원 관리, 유저 관리 등을 이동하여 처리할 수 있게 구현하였습니다.
+- 로그아웃 버튼을 클릭 시 관리자 메인 페이지를 들어갈 수 없고 다시 로그인하면 들어올 수 있게 하였습니다. 
 
 ---
 
@@ -9356,13 +11415,368 @@ int deleteUserRole(Long userId);
 
 ```jsx
 
+function ProductRegister(props) {
+
+    const [isUploading, setUploading] = useState(false);
+
+    const [product, setProduct] = useState({
+        title: "",
+        price: 0,
+        stock: 0,
+        categoryId: 0,
+        semiCategoryId: 0,
+        description: "",
+        origin: "대한민국",
+        thumbnailImg: "",
+        contentsImg: []
+    });
+
+    const handleMainCategoryChange = (e) => {
+        const selectedId = parseInt(e.target.value, 10);
+        setProduct((product) => ({
+            ...product,
+            categoryId: selectedId,
+            semiCategoryId: 0
+        }));
+    };
+
+    const handleSubCategoryChange = (e) => {
+        const selectedId = parseInt(e.target.value, 10);
+        setProduct((prevProduct) => ({
+            ...prevProduct,
+            semiCategoryId: selectedId
+        }));
+    };
+
+    const inputOnChange = (e) => {
+        const { name, value } = e.target;
+
+        // 금액 입력일 때 숫자만 허용
+        if (name === "price" && isNaN(value)) {
+            return; // 숫자가 아닐 경우 아무 것도 하지 않음
+        }
+        if (name === "stock" && isNaN(value)) {
+            return; // 숫자가 아닐 경우 아무 것도 하지 않음
+        }
+        setProduct((product) => ({
+            ...product,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleSubmitOnClick = async () => {
+        try {
+            const response = await instance.post("/admin/product/add", product);
+            alert("상품 등록이 완료되었습니다.");
+        } catch (e) {
+            console.error(e);
+            // 중복되었을때 에러
+        }
+        setProduct({
+            title: "",
+            price: 0,
+            stock: 0,
+            categoryId: 0,
+            semiCategoryId: 0,
+            description: "",
+            origin: "대한민국",
+            thumbnailImg: "",
+            contentsImg: []
+        });
+    };
+
+
+    const handleImageUpload = useCallback((type) => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+
+        if (type === "contentsImg") {
+            input.setAttribute('multiple', 'multiple');
+        }
+
+        input.click();
+
+        input.onchange = async () => {
+            const files = Array.from(input.files);
+            const urls = [];
+
+            if (type === "contentsImg" && files.length > 4) {
+                alert(`최대 4장의 이미지만 업로드할 수 있습니다.`);
+                return;
+            }
+
+            const storage = getStorage();
+            setUploading(true);
+
+            files.forEach((file) => {
+                const storageRef = ref(storage, `admin/product/${uuid()}_${file.name}`);
+                const task = uploadBytesResumable(storageRef, file);
+
+                task.on(
+                    'state_changed',
+                    () => { }, // 업로드 중 상태 핸들링 (옵션)
+                    (e) => {
+                        console.error(e);
+                        setUploading(false);
+                    },
+                    async () => {
+                        try {
+                            const url = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
+                            urls.push(url);
+
+                            if (type === "thumbnailImg" && urls.length === 1) {
+                                setProduct((product) => ({
+                                    ...product,
+                                    thumbnailImg: urls[0]
+                                }));
+            
+                            } else if (type === "contentsImg") {
+                                setProduct((product) => ({
+                                    ...product,
+                                    contentsImg:  [...new Set([...product.contentsImg, ...urls])]
+                                }));
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        } finally {
+                            setUploading(true);
+                        }
+                    }
+                );
+            });
+        };
+    }, []);
+
+    return (
+
+        <div css={s.layout}>
+            <h1>상품 등록</h1>
+            <div css={s.mainBox}>
+                <div css={s.registerBox}>
+                    <div css={s.inputBox}>
+                        <div>
+                            <label for="category">카테고리</label>
+                            <select
+                                name="categoryId"
+                                value={product.categoryId}
+                                onChange={handleMainCategoryChange}
+                                css={s.selectBox}
+                            >
+                                {
+                                    menus[0].subMenus.map(category => (
+                                        <option value={category.id}>{category.name}</option>
+                                    ))
+                                }
+                            </select>
+                            <label for="semiCategory">서브 카테고리</label>
+                            <select
+                                name="semiCategoryId"
+                                value={product.semiCategoryId}
+                                onChange={handleSubCategoryChange}
+                                css={s.selectBox}
+                            >
+                                {
+                                    menus[0].subMenus.find(menu => menu.id === product.categoryId)?.subSideMenus.map((subMenu) => (
+                                        <option key={subMenu.id} value={subMenu.id}>
+                                            {subMenu.name}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label for="title">상품명</label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={product.title}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="price">금액</label>
+                            <input
+                                type="number"
+                                name="price"
+                                value={product.price}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="description">상품 설명</label>
+                            <input
+                                type="text"
+                                name="description"
+                                value={product.description}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="origin">원산지</label>
+                            <input
+                                type="text"
+                                name="origin"
+                                value={product.origin}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="stock">재고</label>
+                            <input
+                                type="number"
+                                name="stock"
+                                value={product.stock}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div >
+                            <label>상품 이미지</label>
+                            <button onClick={() => handleImageUpload("thumbnailImg")}>상품 이미지 등록</button>
+                        </div>
+                        <div>
+                            <label>상세 이미지</label>
+                            <button onClick={() => handleImageUpload("contentsImg")}>상세 이미지 등록</button>
+                        </div>
+                    </div>
+                    <div css={s.buttonBox}>
+                        <button onClick={handleSubmitOnClick}>상품 등록</button>
+                    </div>
+                </div>
+                <div css={s.rightBox}>
+                    {
+                        // 상품 이미지(thumbnailImg) 등록을 눌렀을 때 이미지가 옆으로 뜨도록 설정 
+                        isUploading && (
+                            <>
+                                <p>상품 이미지</p>
+                                <div css={s.thumbnailImgBox}>
+                                    {/* 이미지 등록 시 다른 이미지의 경계선이 보이지 않도록 설정 */}
+                                    {product.thumbnailImg && <img src={product.thumbnailImg} />}
+                                </div>
+                            </>
+                        )
+                    }
+                    {
+                        // 상세 이미지(contentsImg) 등록을 눌렀을 때 이미지가 옆으로 뜨도록 설정
+                        isUploading && ( 
+                            <>
+                                <div css={s.contentsImgLayout}>
+                                    <div css={s.contentsImgBox}>
+                                        {/* 이미지 등록 시 다른 이미지의 경계선이 보이지 않도록 설정 */}
+                                        { product.contentsImg[0] && <img src={product.contentsImg[0]} />} 
+                                        { product.contentsImg[1] && <img src={product.contentsImg[1]} /> }
+                                        { product.contentsImg[2] &&<img src={product.contentsImg[2]} /> }
+                                        { product.contentsImg[3] && <img src={product.contentsImg[3]} /> }
+                                    </div>  
+                                </div>
+                            </>
+                        )
+                    }
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default ProductRegister;
+
+```
+
+<br/>
+
+- 이 코드는 새로운 상품을 등록하는 코드입니다.
+- select 를 이용하여 메인 카테고리(안주, 밀키드 등), 서브 카테고리(냉동, 냉장)를 변경할 수 있도록 하였고 서브 카테고리는 메인 카테고리인 밀키트가 아니면 선택이 안뜨게 하였습니다. 
+- 상품 등록은 카테고리 선택, 상품명, 금액, 상품 설명, 원산지, 재고, 상품 이미지, 상세 이미지 등으로 구성 되어있습니다. 
+- 금액을 입력할 시 숫자만 입력할 수 있도록 설정하였습니다. 
+- 상품 등록 버튼을 클릭할 시 서버에 post 요청을 보내고 성공적으로 응답이 오면 product 상태를 업데이트하여 상품이 등록되도록 설정하였습니다. 
+
+
+---
+
+<br/><br/>
+
+**handleImageUpload 함수**
+
+```jsx
+
+const handleImageUpload = useCallback((type) => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+
+    if (type === "contentsImg") {
+        input.setAttribute('multiple', 'multiple');
+    }
+
+    input.click();
+
+    input.onchange = async () => {
+        const files = Array.from(input.files);
+        const urls = [];
+
+        if (type === "contentsImg" && files.length > 4) {
+            alert(`최대 4장의 이미지만 업로드할 수 있습니다.`);
+            return;
+        }
+
+        const storage = getStorage();
+        setUploading(true);
+
+        files.forEach((file) => {
+            const storageRef = ref(storage, `admin/product/${uuid()}_${file.name}`);
+            const task = uploadBytesResumable(storageRef, file);
+
+            task.on(
+                'state_changed',
+                () => { }, // 업로드 중 상태 핸들링 (옵션)
+                (e) => {
+                    console.error(e);
+                    setUploading(false);
+                },
+                async () => {
+                    try {
+                        const url = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
+                        urls.push(url);
+
+                        if (type === "thumbnailImg" && urls.length === 1) {
+                            setProduct((product) => ({
+                                ...product,
+                                thumbnailImg: urls[0]
+                            }));
+        
+                        } else if (type === "contentsImg") {
+                            setProduct((product) => ({
+                                ...product,
+                                contentsImg:  [...new Set([...product.contentsImg, ...urls])]
+                            }));
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    } finally {
+                        setUploading(true);
+                    }
+                }
+            );
+        });
+    };
+}, []);
 
 
 ```
 
 <br/>
 
--
+- 이 함수는 이미지 업로드 기능을 구현한 함수입니다. 
+- input 요소를 동적으로 생성하여 type = "file"로 설정되어 있어 관리자가 파일을 업로드할 수 있게 설정하였습니다. 
+- 상세 이미지 등록은 여러개 파일을 선택할 수 있게 하였고 최대 4장까지 업로드 할 수 있습니다. 만약 4장 초과되면 경고 알람창을 띄웁니다.
+- input.click()를 호출하여 파일 선택 창을 자동으로 엽니다. 
+- 파일선택이 완료되면 onchange 이벤트가 발생하고 선택된 파일들은 files 배열로 가져옵니다.
+- urls 배열은 업로드된 파일들의 URL을 저장하기 위해 사용됩니다.
+- Firebase Storage에 파일을 업로드하기 위해, 먼저 getStorage()로 스토리지 인스턴스를 가져와 setUploading(true)로 업로드 상태를 true로 설정합니다
+- 각 파일에 대해 storageRef를 생성하고, uploadBytesResumable를 사용하여 파일을 업로드합니다. 
+- uuid()는 각 파일 이름을 고유하게 만들어 충돌을 방지하는 역할을 합니다. 
+- 업로드 상태(state_changed)가 변화할 때마다 실행되는 콜백 함수이며 실패 시, 에러를 콘솔에 출력하고 setUploading(false)로 업로드 상태를 종료하고 성공 시, getDownloadURL을 호출하여 Firebase Storage에서 업로드된 파일의 URL을 가져옵니다.
+- type이 "thumbnailImg"인 경우: 업로드된 첫 번째 이미지를 thumbnailImg(상세 이미지)에 저장합니다.
+- type이 "contentsImg"인 경우: 여러 개의 이미지를 contentsImg 배열에 추가하고 중복을 방지하기 위해 new Set([...product.contentsImg, ...urls])를 사용합니다.
+- 파일 업로드 중 발생할 수 있는 오류를 catch로 처리하고, finally에서는 setUploading(true)를 호출하여 업로드 상태를 유지합니다. 
 
 ---
 
@@ -9374,59 +11788,181 @@ int deleteUserRole(Long userId);
 
 ```java
 
-
+@PostMapping("/add")
+public ResponseEntity<?> addProduct(@Valid  @RequestBody ReqAddProductDto dto, BindingResult bindingResult) {
+    adminProductService.addProduct(dto);
+    return ResponseEntity.ok().body(true);
+}
 
 ```
 
 <br/>
 
--
+- 클라이언트에서 상품을 추가하는 post 요청을 받아 처리합니다. 
+- adminProuductService를 이용하여 상품이 성공적으로 추가가 되면 클라이언트에 응답을 true로 반환합니다.  
 
 ---
+
+<br/><br/>
+
+**Dto**
+
+```java
+
+@Data
+public class ReqAddProductDto {
+    @NotBlank(message = "상품명은 공백일 수 없습니다.")
+    private String title;
+    @NotBlank(message = "가격은 공백일 수 없습니다.")
+    private int price;
+    @NotBlank(message = "재고는 공백일 수 없습니다.")
+    private int stock;
+    @NotBlank(message = "설명은 공백일 수 없습니다.")
+    private String description;
+    @NotBlank(message = "원산지는 공백일 수 없습니다.")
+    private String origin;
+    @NotBlank(message = "카테고리는 공백일 수 없습니다.")
+    private int categoryId;
+    private int semiCategoryId;
+    @NotBlank(message = "이미지는 공백일 수 없습니다.")
+    private String thumbnailImg;
+    private List<String> contentsImg;
+
+    public Product toProduct(String contentsImg1, String contentsImg2, String contentsImg3, String contentsImg4) {
+        return Product.builder()
+                .title(title)
+                .price(price)
+                .stock(stock)
+                .description(description)
+                .origin(origin)
+                .thumbnailImg(thumbnailImg)
+                .contentsImg1(contentsImg1)
+                .contentsImg2(contentsImg2)
+                .contentsImg3(contentsImg3)
+                .contentsImg4(contentsImg4)
+                .build();
+    }
+}
+
+```
+
+<br/>
+
+- 이 dto는 상품명, 금액, 재고, 상품 설명, 원산지, 카테고리, 이미지 등의 정보를 담는 dto이고 입력할 시엔 공백으로 작성할 수 없게 설정하였습니다. 
+- toProduct 메서드는 ReqAddProductDto의 데이터를 바탕으로 상품을 새로 추가하기 위해 Product 객체로 반환하여 이 메서드에 저장합니다.
+
+---
+
+<br/><br/>
 
 **Service**
 
 ```java
 
+@Transactional(rollbackFor = SQLException.class)
+public void addProduct(ReqAddProductDto dto) {
+    String[] images = dto.getContentsImg().stream()
+            .toArray(String[]::new);
 
+    String img1 = images.length > 0 ? images[0] : null;
+    String img2 = images.length > 1 ? images[1] : null;
+    String img3 = images.length > 2 ? images[2] : null;
+    String img4 = images.length > 3 ? images[3] : null;
+
+    Product product = dto.toProduct(img1, img2, img3, img4);
+    adminProductMapper.addProduct(product);
+
+    ProductCategory productCategory = ProductCategory.builder()
+            .productId(product.getProductId())
+            .categoryId(dto.getCategoryId())
+            .semiCategoryId(dto.getSemiCategoryId())
+            .build();
+    adminProductMapper.addProductCategory(productCategory);
+}
 
 ```
 
 <br/>
 
--
+- 이 코드는 새로운 상품을 추가하기 위한 메서드(addProduct)입니다. 
+- 이미지 배열 처리 : getContentsImg() 메서드에서 받은 이미지 URL들을 배열로 변환한 후, 최대 4개의 이미지를 img1, img2, img3, img4에 각각 할당합니다.
+- dto를 사용하여 product 객체를 생성하고 이미지 URL들을 Product 객체로 전달합니다.
+- 상품 추가 : adminProductMapper.addProduct(product)를 호출하여 새 상품을 데이터베이스에 추가하는 역할을 합니다.
+- 상품 카테고리 추가 : 상품이 추가된 후, 해당 상품의 카테고리 정보를 ProductCategory 객체로 만들어 adminProductMapper.addProductCategory(productCategory)로 데이터베이스에 추가하는 역할을 합니다.
 
 ---
 
 <br/><br/>
 
-**Mapper**
+**adminProductMapper**
 
 ```java
 
-
+int addProduct(Product product);
 
 ```
 
 <br/>
 
--
+- addProduct 메서드는 product 객체를 이용하여 데이터베이스에서 새로운 상품을 추가한 데이터 결과값을 이 메서드에 담아 service에 전달합니다. 
 
 ---
 
 <br/><br/>
 
-**xml**
+**adminProductMapper**
 
 ```java
 
-
+int addProductCategory(ProductCategory productCategory);
 
 ```
 
 <br/>
 
--
+- addProductCategory 메서드는 productCategory 객체를 이용하여 데이터베이스에서 카테고리별로 상품을 새로 추가한 데이터 결과값을 이 메서드에 담아 service에 전달합니다.
+
+---
+
+<br/><br/>
+
+**admin_product.xml**
+
+```java
+
+ <insert id="addProduct" useGeneratedKeys="true" keyProperty="productId">
+    insert into products_tb(product_id, title, price, stock, description, origin, thumbnail_img
+    , contents_img1, contents_img2, contents_img3, contents_img4, created_date)
+    values(
+        0, #{title}, #{price}, #{stock}, #{description}, #{origin}, #{thumbnailImg},
+            #{contentsImg1}, #{contentsImg2}, #{contentsImg3}, #{contentsImg4}, now()
+        )
+</insert>
+
+```
+
+<br/>
+
+- 상품명, 금액, 재고, 상품 설명, 원산지, 이미지, 날짜 등의 정보를 이용하여 새로운 상품을 추가하는 sql 쿼리문입니다. 
+
+---
+
+<br/><br/>
+
+**admin_product.xml**
+
+```java
+
+<insert id="addProductCategory">
+    insert into product_categories_tb
+    values(0, #{productId}, #{categoryId}, #{semiCategoryId})
+</insert>
+
+```
+
+<br/>
+
+- 이 코드는 카테고리 별로 새로운 상품을 추가하는 sql 쿼리문입니다. 
 
 ---
 
@@ -9434,81 +11970,1485 @@ int deleteUserRole(Long userId);
 
 #### 상품 관리
 
+**전체 코드**
+
 **프론트**
 
 ```jsx
 
+function ProductEdit(props) {
+    const navigate = useNavigate();
+    const [productList, setProductList] = useState([]);
+    const [checkedIds, setCheckedIds] = useState([]);
+    const [searchParam] = useSearchParams();
+    const keyword = searchParam.get("keyword");
+    console.log(keyword)
+    const [selectPage, setSelectPage] = useState(1);
+    const [pageCount, setPageCount] = useState(1);
+    const limit = 20;
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    // 모달을 여는 함수
+    const openModal = () => setIsModalOpen(true);
+    const [isUploading, setUploading] = useState(false);
 
+    const [product, setProduct] = useState({
+        checkedIds: 0,
+        title: "",
+        price: 0,
+        stock: 0,
+        categoryId: 0,
+        semiCategoryId: 0,
+        description: "",
+        origin: "대한민국",
+        thumbnailImg: "",
+        contentsImg: []
+    });
+
+    // 상품 불러오는 쿼리
+    const productQuery = useQuery(
+        ["productQuery", selectPage],
+        async () => {
+            const response = await instance.get(`/admin/product?page=${selectPage}&limit=${limit}`);
+            setProductList(response?.data?.products);
+            return response?.data;
+        },
+        {
+            enabled: !keyword,
+            retry: 0,
+            refetchOnWindowFocus: 0,
+        }
+    );
+
+    // 상품 검색 쿼리
+    const searchProduct = useQuery(
+        ["searchQuery", keyword, selectPage],
+        async () => {
+            const response = await instance.get(`/admin/product/search?page=${selectPage}&keyword=${keyword}&limit=${limit}`);
+            setProductList(response?.data?.products);
+        },
+        {
+            enabled: !!keyword,
+            refetchOnWindowFocus: false,
+            retry: 0,
+        }
+    );
+
+    useEffect(() => {
+        if (productQuery.data) {
+            const calculatedPageCount = productQuery.data?.count % limit === 0
+                ? productQuery.data?.count / limit
+                : Math.floor(productQuery.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+        if (searchProduct.data) {
+            const calculatedPageCount = searchProduct.data?.count % limit === 0
+                ? searchProduct.data?.count / limit
+                : Math.floor(searchProduct.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+    }, [productQuery.data, searchProduct.data]);
+
+    const handleCheckBoxOnChange = (product) => {
+        const productId = product.productId;
+
+        setCheckedIds((ids) => {
+            if (ids.includes(productId)) {
+                return ids.filter(id => id !== productId);
+            } else {
+                return [...ids, productId];
+            }
+        });
+        setProduct({
+            checkedIds: product.productId,
+            title: product.title,
+            price: product.price,
+            stock: product.stock,
+            categoryId: product.productCategories[0].category.categoryId,
+            semiCategoryId: product.semiCategories[0].semiCategoryId,
+            description: product.description,
+            origin: product.origin,
+            thumbnailImg: product.thumbnailImg,
+            contentsImg: [product.contentsImg1, product.contentsImg2, product.contentsImg3, product.contentsImg4]
+        })
+    };
+
+
+
+    const deleteMutation = useMutation(
+        async () => {
+            await instance.delete("/admin/product", { data: { checkedIds } });
+        },
+        {
+            retry: 0,
+            refetchOnWindowFocus: false,
+            onSuccess: (response) => {
+                alert("삭제가 완료되었습니다.");
+                setPageCount(selectPage ? parseInt(selectPage) : 1);
+                productQuery.refetch();
+            }
+        }
+    );
+
+
+    const handleOnPageChange = (e) => {
+        setSelectPage(e.selected + 1);
+        navigate(`/admin/main/product?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
+    }
+
+    const handleMainCategoryChange = (e) => {
+        const selectedId = parseInt(e.target.value, 10);
+        setProduct((product) => ({
+            ...product,
+            categoryId: selectedId,
+            semiCategoryId: 0
+        }));
+    };
+
+    const handleSubCategoryChange = (e) => {
+        const selectedId = parseInt(e.target.value, 10);
+        setProduct((prevProduct) => ({
+            ...prevProduct,
+            semiCategoryId: selectedId
+        }));
+    };
+
+    const inputOnChange = (e) => {
+        const { name, value } = e.target;
+
+        // 금액 입력일 때 숫자만 허용
+        if (name === "price" && isNaN(value)) {
+            return; // 숫자가 아닐 경우 아무 것도 하지 않음
+        }
+        if (name === "stock" && isNaN(value)) {
+            return; // 숫자가 아닐 경우 아무 것도 하지 않음
+        }
+        setProduct((product) => ({
+            ...product,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleSubmitOnClick = async () => {
+        try {
+            const response = await instance.put("/admin/product/edit", product);
+            alert("상품 수정이 완료되었습니다.");
+        } catch (e) {
+            console.error(e);
+            // 중복되었을때 에러
+        }
+        setProduct({
+            checkedIds: 0,
+            title: "",
+            price: 0,
+            stock: 0,
+            categoryId: 0,
+            semiCategoryId: 0,
+            description: "",
+            origin: "대한민국",
+            thumbnailImg: "",
+            contentsImg: []
+        });
+        setPageCount(selectPage ? parseInt(selectPage) : 1);
+        productQuery.refetch();
+        setIsModalOpen(false);
+    };
+
+
+    const handleImageUpload = useCallback((type) => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+
+        if (type === "contentsImg") {
+            input.setAttribute('multiple', 'multiple');
+        }
+
+        input.click();
+
+        input.onchange = async () => {
+            const files = Array.from(input.files);
+            const urls = [];
+
+            if (type === "contentsImg" && files.length > 4) {
+                alert(`최대 4장의 이미지만 업로드할 수 있습니다.`);
+                return;
+            }
+
+            const storage = getStorage();
+            setUploading(true);
+            files.forEach((file) => {
+                const storageRef = ref(storage, `admin/product/${uuid()}_${file.name}`);
+                const task = uploadBytesResumable(storageRef, file);
+                task.on(
+                    'state_changed',
+                    () => { }, // 업로드 중 상태 핸들링 (옵션)
+                    (e) => {
+                        console.error(e);
+                        setUploading(false);
+                    },
+                    async () => {
+                        try {
+                            const url = await getDownloadURL(storageRef); // 업로드 완료 후 URL 가져오기
+                            urls.push(url);
+
+                            if (type === "thumbnailImg" && urls.length === 1) {
+                                setProduct((product) => ({
+                                    ...product,
+                                    thumbnailImg: urls[0]
+                                }));
+
+                            } else if (type === "contentsImg") {
+                                setProduct((product) => ({
+                                    ...product,
+                                    contentsImg: [...new Set([...product.contentsImg, ...urls])]
+                                }));
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        } finally {
+                            setUploading(false); // false로 할 시 이미지가 자동으로 사라짐 
+                        }
+                    }
+                );
+            });
+        };
+    }, []);
+
+
+    return (
+        <div css={s.layout}>
+            <h1>상품 관리</h1>
+            <AdminSearch setPageCount={setPageCount} type={"title"} />
+            <div css={s.buttonLayout}>
+                <button onClick={openModal} disabled={checkedIds.length !== 1}>수정</button>
+                <ReactModal
+                    isOpen={isModalOpen}
+                    onRequestClose={() => setIsModalOpen(false)}
+                    style={{
+                        overlay: {
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        },
+                        content: {
+                            position: "static",
+                            backgroundColor: "white",
+                            padding: "20px",
+                            borderRadius: "5px",
+                            width: "400px",
+                            maxWidth: "90%",
+                            overflow: "auto",
+                            inset: "auto",
+                        },
+                    }}
+                >
+                    <div css={s.modalLayout}>
+                        <h1>상품 수정</h1>
+                        <div css={s.mainBox}>
+                            <div css={s.registerBox}>
+                                <div css={s.inputBox}>
+                                    <div>
+                                        <label for="category">카테고리</label>
+                                        <select
+                                            name="categoryId"
+                                            value={product.categoryId}
+                                            onChange={handleMainCategoryChange}
+                                            css={s.selectBox}
+                                        >
+                                            {
+                                                menus[0].subMenus.map(category => 
+                                                    <option key={category.id} value={category.id}>{category.name}</option>      
+                                                )
+                                            }
+                                        </select>
+                                        <label for="semiCategory">서브 카테고리</label>
+                                        <select
+                                            name="semiCategoryId"
+                                            value={product.semiCategoryId}
+                                            onChange={handleSubCategoryChange}
+                                            css={s.selectBox}
+                                        >
+                                            {
+                                                menus[0].subMenus.find(menu => menu.id === product.categoryId)?.subSideMenus.map((semiCategory) => 
+                                                    <option key={semiCategory.id} value={semiCategory.id}>{semiCategory.name}</option>
+                                                )
+                                            }
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="title">상품명</label>
+                                        <input
+                                            type="text"
+                                            name="title"
+                                            value={product.title}
+                                            onChange={inputOnChange}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label for="price">금액</label>
+                                        <input
+                                            type="number"
+                                            name="price"
+                                            value={product.price}
+                                            onChange={inputOnChange}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label for="description">상품 설명</label>
+                                        <input
+                                            type="text"
+                                            name="description"
+                                            value={product.description}
+                                            onChange={inputOnChange}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label for="origin">원산지</label>
+                                        <input
+                                            type="text"
+                                            name="origin"
+                                            value={product.origin}
+                                            onChange={inputOnChange}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label for="stock">재고</label>
+                                        <input
+                                            type="number"
+                                            name="stock"
+                                            value={product.stock}
+                                            onChange={inputOnChange}
+                                        />
+                                    </div>
+                                    <div >
+                                        <label>상품 이미지</label>
+                                        <button onClick={() => handleImageUpload("thumbnailImg")}>상품 이미지 등록</button>
+                                    </div>
+                                    <div>
+                                        <label>상세 이미지</label>
+                                        <button onClick={() => handleImageUpload("contentsImg")}>상세 이미지 등록</button>
+                                    </div>
+                                </div>
+                                <div css={s.buttonBox}>
+                                    <button onClick={handleSubmitOnClick}>수정</button>
+                                    <button onClick={() => setIsModalOpen(false)}>취소</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ReactModal>
+                <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
+            </div>
+            <div css={s.container}>
+                <table css={s.theadLayout}>
+                    <tr>
+                        <td css={s.theadItems}>선택</td>
+                        <td css={s.theadItems}>카테고리</td>
+                        <td css={s.theadItems}>서브 카테고리</td>
+                        <td css={s.theadItems}>이름</td>
+                        <td css={s.theadItems}>원산지</td>
+                        <td css={s.theadItems}>가격</td>
+                        <td css={s.theadItems}>재고</td>
+                        <td css={s.theadItems}>판매량</td>
+                        <td css={s.theadItems}>등록일자</td>
+                    </tr>
+                </table>
+                <table css={s.tableLayout}>
+                    {productList?.map(product => (
+                        product?.productCategories?.map(() => (
+                            <tr key={product.id}>
+                                <td css={s.productItem}>
+                                    <input
+                                        type="checkbox"
+                                        onChange={() => handleCheckBoxOnChange(product)}
+                                        checked={checkedIds.includes(product.productId)}
+                                    />
+                                </td>
+                                {
+                                    product?.productCategories?.map(category => (
+                                        <td css={s.productItem} key={category.category.categoryId}>{category.category.name}</td> // 카테고리
+                                    ))
+                                }
+                                {
+                                    product?.productCategories?.semiCategoryId === 0
+                                        ?
+                                        <td css={s.productItem}></td>
+                                        :
+                                        product?.semiCategories?.map(category => ( // 데이터가 없을때 빈 td
+                                            <td css={s.productItem} key={category.semiCategoryId}>{category.name}</td> /* 서브카테고리 */
+                                        ))
+                                }
+                                <td css={s.productItem}>{product.title}</td> {/* 상품명 */}
+                                <td css={s.productItem}>{product.origin}</td>
+                                <td css={s.productItem}>{product.price.toLocaleString()}</td>
+                                <td css={s.productItem}>{product.stock}</td>
+                                <td css={s.productItem}>{product.salesCount}</td>
+                                <td css={s.productItem}>{product.createdDate}</td>
+                            </tr>
+
+                        ))
+                    ))}
+                </table>
+            </div>
+            <div css={s.pageNumber}>
+                <ReactPaginate
+                    breakLabel="..."
+                    previousLabel={<><MdNavigateBefore /></>}
+                    nextLabel={<><MdNavigateNext /></>}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={3}
+                    pageRangeDisplayed={5}
+                    onPageChange={handleOnPageChange}
+                />
+            </div>
+        </div>
+    );
+}
+
+export default ProductEdit;
 
 ```
 
 <br/>
 
--
+- 이 코드는 상품을 조회, 검색, 삭제, 수정 기능을 넣은 상품관리 코드입니다. 
+- 이미지 업로드 함수는 상품등록 파트에서 설명한 내용과 같습니다. 
 
 ---
 
 <br/><br/>
 
-**백엔드**
+- **상품 조회 기능**
 
-**Controller**
+    **프론트**
 
-```java
+    ```jsx
 
+    // 상품 불러오는 쿼리
+    const productQuery = useQuery(
+        ["productQuery", selectPage],
+        async () => {
+            const response = await instance.get(`/admin/product?page=${selectPage}&limit=${limit}`);
+            setProductList(response?.data?.products);
+            return response?.data;
+        },
+        {
+            enabled: !keyword,
+            retry: 0,
+            refetchOnWindowFocus: 0,
+        }
+    );
 
+    useEffect(() => {
+        if (productQuery.data) {
+            const calculatedPageCount = productQuery.data?.count % limit === 0
+                ? productQuery.data?.count / limit
+                : Math.floor(productQuery.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+        if (searchProduct.data) {
+            const calculatedPageCount = searchProduct.data?.count % limit === 0
+                ? searchProduct.data?.count / limit
+                : Math.floor(searchProduct.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+    }, [productQuery.data, searchProduct.data]);
 
-```
+    ```
 
-<br/>
+    <br/>
 
--
+    - 이 코드는 useQuery를 사용하여 등록된 상품들의 목록을 조회하는 작업을 수행하고 있습니다.
+    - useEffect를 사용하여 producjtQuery가 한번 씩 바뀔 때마다 한 페이지당 조회되는 상품의 갯 수만큼 나오게 하였고 20개까지 나올 수 있도록 구현하였습니다.
 
----
+    ---
 
-**Service**
+    <br/><br/>
 
-```java
+    **백엔드**
 
+    **Controller**
 
+    ```java
 
-```
+    @GetMapping("")
+    public ResponseEntity<?> getAllProducts(ReqSearchDto dto) {
+        return ResponseEntity.ok().body(productService.getAllProducts(dto));
+    }
 
-<br/>
+    ```
 
--
+    <br/>
+
+    - 클라이언트에서 get 요청을 받아 service에 dto 정보를 넘겨 성공적으로 조회된 결과값을 getAllProducts 메서드에 담아 응답을 클라이언트에 반환하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Dto**
+
+    ```java
+
+    @Data
+    public class ReqSearchDto {
+        private int page;
+        private String keyword;
+        private int limit;
+        private String categoryId;
+    }
+
+    ```
+
+    <br/>
+
+    - 이 dto는 상품을 조회하기 위한 필요한 정보를 담는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    public RespSearchProductDto getAllProducts(ReqSearchDto dto) {
+        int startIndex = (dto.getPage() - 1) * dto.getLimit();
+
+        Map<String, Object> paging = Map.of(
+                "startIndex", startIndex,
+                "limit", dto.getLimit()
+        );
+
+        List<Product> productList = productMapper.findAllProductsList(startIndex, dto.getLimit());
+
+        int productCount = productMapper.findAllProductCount();
+
+        return RespSearchProductDto.builder()
+                .products(productList)
+                .count(productCount)
+                .build();
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 한 페이지 마다 상품의 갯 수를 최대 20개까지 조회하는 service 입니다. 
+    - startIndex 는 시작 페이지 숫자를 1로 시작해서 총 상품의 갯 수대로 페이지의 수가 나오도록 지정하였습니다.
+    - productList는 startIndex와 limit(한 페이지 당 상품 제한 수)을 넘겨 데이터베이스에서 상품을 조회한 결과값을 이 변수에 저장합니다.
+    - productCount는 mapper를 통해 상품의 총 갯수를 가지고와 저장합니다. 
+    - dto의 builder 패턴을 통해 productList와 productCount를 controller에 반환합니다.  
+
+    ---
+
+    <br/><br/>
+
+    **ProductMapper**
+
+    ```java
+
+    List<Product> findAllProductsList(int startIndex, int limit);
+
+    ```
+
+    <br/>
+
+    - findAllProductsList 메서드는 service에서 받은 startIndex 값과 limit을 이용하여 상품을 sql 쿼리문에서 조회하여 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **ProductMapper**
+
+    ```java
+
+    Integer findAllProductCount();
+
+    ```
+
+    <br/>
+
+    - findAllProductCount 메서드는 상품의 총 갯수를 sql 쿼리문에서 조회하고 이 메서드에 저장하여 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **product.xml**
+
+    ```java
+
+    <select id="findAllProductsList" resultMap="productResultMap">
+        select
+            pt.product_id,
+            pt.title,
+            pt.price,
+            pt.stock,
+            pt.sales_count,
+            pt.description,
+            pt.origin,
+            pt.thumbnail_img,
+            pt.contents_img1,
+            pt.contents_img2,
+            pt.contents_img3,
+            pt.contents_img4,
+            pt.created_date,
+            ct.category_id as ct_category_id,
+            ct.name,
+            sct.semi_category_id,
+            sct.name as sct_name
+        from
+            products_tb pt
+            left outer join product_categories_tb pct on (pt.product_id = pct.product_id)
+            left outer join categories_tb ct on (pct.category_id = ct.category_id)
+            left outer join semi_categories_tb sct on (sct.semi_category_id = pct.semi_category_id)
+        group by
+            pt.product_id
+        limit #{startIndex}, #{limit}
+    </select>
+
+    ```
+
+    <br/>
+
+    - 이 코드는 상품들을 그룹으로 묶어 한 페이지당 상품이 20개씩 나올 수 있도록 조회한 sql 쿼리문입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **product.xml**
+
+    ```java
+
+    <select id="findAllProductCount" resultType="java.lang.Integer">
+        select
+            count(*)
+        from
+            products_tb
+    </select>
+
+    ```
+
+    <br/>
+
+    - 상품의 총 갯수를 조회한 sql 쿼리문입니다. 
 
 ---
 
 <br/><br/>
 
-**Mapper**
+- **상품 검색 기능**
 
-```java
+    **프론트**
 
+    ```jsx
 
+    // 상품 검색 쿼리
+    const searchProduct = useQuery(
+        ["searchQuery", keyword, selectPage],
+        async () => {
+            const response = await instance.get(`/admin/product/search?page=${selectPage}&keyword=${keyword}&limit=${limit}`);
+            setProductList(response?.data?.products);
+        },
+        {
+            enabled: !!keyword,
+            refetchOnWindowFocus: false,
+            retry: 0,
+        }
+    );
 
-```
+    useEffect(() => {
+        if (productQuery.data) {
+            const calculatedPageCount = productQuery.data?.count % limit === 0
+                ? productQuery.data?.count / limit
+                : Math.floor(productQuery.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+        if (searchProduct.data) {
+            const calculatedPageCount = searchProduct.data?.count % limit === 0
+                ? searchProduct.data?.count / limit
+                : Math.floor(searchProduct.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+    }, [productQuery.data, searchProduct.data]);
 
-<br/>
+    return (
+        ...
 
--
+        <h1>상품 관리</h1>
+        <AdminSearch setPageCount={setPageCount} type={"title"} />
+
+        ...
+
+    )
+
+    ```
+
+    <br/>
+
+    - useQuery를 이용하여 상품 검색 기능을 처리하였습니다.
+    - 서버에 get요청을 보내 성공적으로 응답이오면 검색한 값(keyword)의 상품이 조회되도록 구현하였습니다.
+    - 검색하였을 때 한 페이지 당 상품이 20개 까지 나오도록 설정하였습니다.
+
+    ---
+
+    <br/><br/>
+
+    **AdminSearch**
+
+    ```jsx
+
+    function AdminSearch({ setPageCount, type }) {
+        const navigate = useNavigate();
+        const limit = 20;
+
+        const [searchProduct, setSearchProduct] = useState({
+            title: "", // 카테고리
+            name: ""  // 고객 이름
+        });
+
+        const handleSearchOnChange = (e) => {
+            setSearchProduct({
+                [e.target.name]: e.target.value,
+            });
+        };
+
+        const handleSubmitButtonOnClick = () => {
+            if(type === "title") {
+                navigate(`/admin/main/product?page=1&keyword=${searchProduct.title}&limit=${limit}`);
+            }
+
+            if(type === "name") {
+                navigate(`/admin/main/user?page=1&name=${searchProduct.name}&limit=${limit}`)
+            }
+            setPageCount(1);
+            setSearchProduct({
+                title: "",
+                name: ""
+            });
+        };
+
+        const handleOnKeyDownEnter = (e) => {
+            if(e.keyCode === 13) {
+                handleSubmitButtonOnClick();
+            }
+        }
+
+        return (
+            <div css={s.layout}>
+                <div css={s.searchSection}>
+                    <input
+                        type="text"
+                        name={type}
+                        value={type === "title" ? searchProduct.title : searchProduct.name}
+                        onChange={handleSearchOnChange}
+                        onKeyDown={handleOnKeyDownEnter}
+                        placeholder="검색어를 입력하세요"
+                        css={s.searchInput}
+                    />
+                    <button onClick={handleSubmitButtonOnClick} css={s.searchButton}>
+                        검색
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    export default AdminSearch;
+
+    ```
+
+    <br/>
+
+    - 타입을 지정하여 이 컴포넌트를 여러 곳(유저관리 등)에서도 검색할 수 있게 구현하였습니다. 
+    - 나머지는 통합검색 파트에서 MainSerch 부분의 설명과 비슷하기에 생략하겠습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    <br/>
+
+    - 검색파트의 백엔드는 통합검색의 백엔드와 요청 url 빼고는 코드가 다 비슷하므로 생략하겠습니다. 
 
 ---
 
 <br/><br/>
 
-**xml**
+- **상품 체크박스 기능**
 
-```java
+    **프론트**
+
+    ```jsx
+
+    const handleCheckBoxOnChange = (product) => {
+        const productId = product.productId;
+
+        setCheckedIds((ids) => {
+            if (ids.includes(productId)) {
+                return ids.filter(id => id !== productId);
+            } else {
+                return [...ids, productId];
+            }
+        });
+        setProduct({
+            checkedIds: product.productId,
+            title: product.title,
+            price: product.price,
+            stock: product.stock,
+            categoryId: product.productCategories[0].category.categoryId,
+            semiCategoryId: product.semiCategories[0].semiCategoryId,
+            description: product.description,
+            origin: product.origin,
+            thumbnailImg: product.thumbnailImg,
+            contentsImg: [product.contentsImg1, product.contentsImg2, product.contentsImg3, product.contentsImg4]
+        })
+    };
+
+    return (
+
+        ...
+
+        <td css={s.productItem}>
+            <input
+                type="checkbox"
+                onChange={() => handleCheckBoxOnChange(product)}
+                checked={checkedIds.includes(product.productId)}
+            />
+        </td>
+        
+        ...
+
+    )
+
+    ```
+
+    <br/>
+
+    - 조회된 상품들을 체크하여 수정이나 삭제를 할 수 있게 하기 위한 목적으로 구현하였습니다.
+    - 선택한 상품을 구별하기 위해 productId를 사용하였습니다. 
+    - setCheckedIds 라는 상태는 현재 선택된 상품들의 ID를 저장하는 배열 checkedIds 상태를 갱신합니다. 
+    - checkedIds 배열에 중복되는 productId가 있을 경우 productId를 제거하여 체크박스를 해제하고 중복되지 않은 경우 productId를 추가하여 체크박스를 체크하는 역할을 합니다. 
+    - setProduct 상태는 선택한 상품의 여러 속성들(productId, title, price, stock 등)을 상태로 설정합니다.
+
+---
+
+<br/><br/>
+
+- **상품 삭제 기능**
+
+    **프론트**
+
+    ```jsx
+
+    const deleteMutation = useMutation(
+        async () => {
+            await instance.delete("/admin/product", { data: { checkedIds } });
+        },
+        {
+            retry: 0,
+            refetchOnWindowFocus: false,
+            onSuccess: (response) => {
+                alert("삭제가 완료되었습니다.");
+                setPageCount(selectPage ? parseInt(selectPage) : 1);
+                productQuery.refetch();
+            }
+        }
+    );
+
+    return (
+        <button onClick={() => deleteMutation.mutateAsync()}>삭제</button>
+    )
+
+    ```
+
+    <br/>
+
+    - mutation 훅을 사용하여 서버에 체크된 상품의 항목을 전달하고 delete 요청을 보냅니다.
+    - 성공적으로 응답이 오면 해당 상품이 삭제되었다는 알람이 뜨고 페이지의 갯수도 상품의 갯수에 따라 상태를 업데이트하도록 설정하였고 refetch를 이용하여 바로 데이터를 새로 불러오도록 하였습니다. 
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @DeleteMapping("")
+    public ResponseEntity<?> deleteProduct(@RequestBody ReqDeleteCheckDto dto) {
+        adminProductService.deleteProduct(dto);
+        return ResponseEntity.ok().body(true);
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에서 체크된 상품의 항목들을 전달받아 삭제 처리하여 성공적으로 삭제처리가 되면 응답을 true로 반환합니다.
+    - 체크된 항목 상품 정보를 dto에서 받아 service에 전달하여 해당 상품의 삭제를 처리합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Dto**
+
+    ```java
+
+    @Data
+    public class ReqDeleteCheckDto {
+        private List<Long> checkedIds;
+    }
+
+    ```
+
+    <br/>
+
+    - 체크된 상품의 항목들을 리스트로 받아 이 dto에 저장합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void deleteProduct(ReqDeleteCheckDto dto) {
+        adminProductMapper.deleteProductById(dto.getCheckedIds());
+        adminProductMapper.deleteProductCategoryById(dto.getCheckedIds());
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 mapper를 통해 체크된 상품을 데이터베이스에서 삭제하여 그 데이터값을 전달받아 controller에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    int deleteProductById(List<Long> checkedIds);
+
+    int deleteProductCategoryById(List<Long> checkedIds);
+
+    ```
+
+    <br/>
+
+    - deleteProductById 메서드는 체크된 상품항목을 가지고 sql 쿼리문에서 삭제 처리하여 이 메서드에 담아 service에 전달합니다.
+    - deleteProductCategoryById 메서드는 체크된 해당 상품의 카테고리도 sql 쿼리문에서 삭제 처리하여 이 메서드에 담아 service에 전달합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <delete id="deleteProductById">
+        delete from products_tb
+        where product_id in
+        <foreach item="id" collection="checkedIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    ```
+
+    <br/>
+
+    - 체크된 상품의 항목들을 foreach를 이용하여 삭제 처리하는 sql 쿼리문입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <delete id="deleteProductCategoryById">
+        delete from product_categories_tb
+        where product_id in
+        <foreach item="id" collection="checkedIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    ```
+
+    <br/>
+
+    - 체크된 상품의 카테고리를 삭제하는 sql 쿼리문입니다. 
+
+---
+
+<br/><br/>
+
+- **상품 수정 기능**
+
+    **프론트**
+
+    ```jsx
+
+    const handleMainCategoryChange = (e) => {
+        const selectedId = parseInt(e.target.value, 10);
+        setProduct((product) => ({
+            ...product,
+            categoryId: selectedId,
+            semiCategoryId: 0
+        }));
+    };
+
+    const handleSubCategoryChange = (e) => {
+        const selectedId = parseInt(e.target.value, 10);
+        setProduct((prevProduct) => ({
+            ...prevProduct,
+            semiCategoryId: selectedId
+        }));
+    };
+
+    const inputOnChange = (e) => {
+        const { name, value } = e.target;
+
+        // 금액 입력일 때 숫자만 허용
+        if (name === "price" && isNaN(value)) {
+            return; // 숫자가 아닐 경우 아무 것도 하지 않음
+        }
+        if (name === "stock" && isNaN(value)) {
+            return; // 숫자가 아닐 경우 아무 것도 하지 않음
+        }
+        setProduct((product) => ({
+            ...product,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleSubmitOnClick = async () => {
+        try {
+            const response = await instance.put("/admin/product/edit", product);
+            alert("상품 수정이 완료되었습니다.");
+        } catch (e) {
+            console.error(e);
+            // 중복되었을때 에러
+        }
+        setProduct({
+            checkedIds: 0,
+            title: "",
+            price: 0,
+            stock: 0,
+            categoryId: 0,
+            semiCategoryId: 0,
+            description: "",
+            origin: "대한민국",
+            thumbnailImg: "",
+            contentsImg: []
+        });
+        setPageCount(selectPage ? parseInt(selectPage) : 1);
+        productQuery.refetch();
+        setIsModalOpen(false);
+    };
+
+    ```
+
+    <br/>
+
+    - 이 코드는 모달 창을 띄워 상품의 정보를 수정하는 기능들을 구현하였습니다. 
+    - 위에 체크 기능을 통해 하나의 상품을 선택하고 수정을 누를 수 있고 여러개 체크됐을 땐 수정 버튼이 안보이도록 설정하였고 수정을 클릭할 시 선택한 상품의 정보들을 가지고와 수정할 수 있게 하였습니다. 
+    - handleMainCategoryChange, handleSubCategoryChange 함수는 상품의 카테고리를 바꾸는 기능을 합니다.
+    - inputOnChange 함수는 금액이나 재고를 입력하였을 때 숫자가 아닐 경우 입력이 안되도록 하였습니다. 
+    - handleSumitOnClick 함수는 상품 수정이 완료 버튼을 클릭할 시 작동이 됩니다.
+    - 이 함수는 put 요청을 서버에 보내 성공적으로 응답이 오면 수정이 완료되었다는 알람을 띄우고 페이지 수도 업데이트 해주고 refetch를 이용하여 데이터를 다시 불러오고 모달창이 자동으로 닫히게 구현하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **모달**
+
+    ```jsx
+
+    <button onClick={openModal} disabled={checkedIds.length !== 1}>수정</button>
+    <ReactModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        style={{
+            overlay: {
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+            },
+            content: {
+                position: "static",
+                backgroundColor: "white",
+                padding: "20px",
+                borderRadius: "5px",
+                width: "400px",
+                maxWidth: "90%",
+                overflow: "auto",
+                inset: "auto",
+            },
+        }}
+    >
+        <div css={s.modalLayout}>
+            <h1>상품 수정</h1>
+            <div css={s.mainBox}>
+                <div css={s.registerBox}>
+                    <div css={s.inputBox}>
+                        <div>
+                            <label for="category">카테고리</label>
+                            <select
+                                name="categoryId"
+                                value={product.categoryId}
+                                onChange={handleMainCategoryChange}
+                                css={s.selectBox}
+                            >
+                                {
+                                    menus[0].subMenus.map(category => 
+                                        <option key={category.id} value={category.id}>{category.name}</option>      
+                                    )
+                                }
+                            </select>
+                            <label for="semiCategory">서브 카테고리</label>
+                            <select
+                                name="semiCategoryId"
+                                value={product.semiCategoryId}
+                                onChange={handleSubCategoryChange}
+                                css={s.selectBox}
+                            >
+                                {
+                                    menus[0].subMenus.find(menu => menu.id === product.categoryId)?.subSideMenus.map((semiCategory) => 
+                                        <option key={semiCategory.id} value={semiCategory.id}>{semiCategory.name}</option>
+                                    )
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label for="title">상품명</label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={product.title}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="price">금액</label>
+                            <input
+                                type="number"
+                                name="price"
+                                value={product.price}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="description">상품 설명</label>
+                            <input
+                                type="text"
+                                name="description"
+                                value={product.description}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="origin">원산지</label>
+                            <input
+                                type="text"
+                                name="origin"
+                                value={product.origin}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div>
+                            <label for="stock">재고</label>
+                            <input
+                                type="number"
+                                name="stock"
+                                value={product.stock}
+                                onChange={inputOnChange}
+                            />
+                        </div>
+                        <div >
+                            <label>상품 이미지</label>
+                            <button onClick={() => handleImageUpload("thumbnailImg")}>상품 이미지 등록</button>
+                        </div>
+                        <div>
+                            <label>상세 이미지</label>
+                            <button onClick={() => handleImageUpload("contentsImg")}>상세 이미지 등록</button>
+                        </div>
+                    </div>
+                    <div css={s.buttonBox}>
+                        <button onClick={handleSubmitOnClick}>수정</button>
+                        <button onClick={() => setIsModalOpen(false)}>취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ReactModal>
+
+    ```
+
+    <br/>
+
+    - 카테고리, 서브 카테고리, 상품명, 금액, 상품 설명, 원산지, 재고, 상품 이미지, 상세 이미지 등 상품의 정보를 수정하는 모달창입니다. 
+    - 선택한 상품의 정보가 모달창에 그대로 가지고 오도록 구현하였습니다. 
+
+    ---
+
+    <br/><br/>
+
+    **백엔드**
+
+    **Controller**
+
+    ```java
+
+    @PutMapping("/edit")
+    public ResponseEntity<?> modifyProduct(@RequestBody ReqModifyProductDto dto) {
+        adminProductService.modifyProduct(dto);
+        return ResponseEntity.ok().body(true);
+    }
+
+    ```
+
+    <br/>
+
+    - 클라이언트에 요청을 받아 dto로 변환하여 service에 전달하고 성공적으로 응답이 오면 true로 클라이언트에 응답을 반환합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Dto**
+
+    ```java
+
+    @Builder
+    @Data
+    public class ReqModifyProductDto {
+        private Long checkedIds;
+        private String title;
+        private int price;
+        private int stock;
+        private String description;
+        private String origin;
+        private String thumbnailImg;
+        private List<String> contentsImg;
+        private int categoryId;
+        private int semiCategoryId;
+
+        public Product toProduct(String contentsImg1, String contentsImg2, String contentsImg3, String contentsImg4) {
+            return Product.builder()
+                    .productId(checkedIds)
+                    .title(title)
+                    .price(price)
+                    .stock(stock)
+                    .description(description)
+                    .origin(origin)
+                    .thumbnailImg(thumbnailImg)
+                    .contentsImg1(contentsImg1)
+                    .contentsImg2(contentsImg2)
+                    .contentsImg3(contentsImg3)
+                    .contentsImg4(contentsImg4)
+                    .build();
+        }
+
+        public ProductCategory toProductCategory() {
+            return ProductCategory.builder()
+                    .categoryId(categoryId)
+                    .semiCategoryId(semiCategoryId)
+                    .productId(checkedIds)
+                    .build();
+        }
+    }
+
+    ```
+
+    <br/>
+
+    - 상품의 정보를 수정하기 위한 필요한 정보를 담는 dto 입니다.
+    - toProduct 메서드는 상품의 정보를 빌더 패턴을 이용하여 product 객체로 반환하여 이 메서드에 저장합니다. 
+    - toProductCategory 메서드는 상품의 카테고리 정보를 빌더 패턴을 이용하여 ProductCategory 객체로 반환하여 이 메서드에 저장합니다.
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void modifyProduct(ReqModifyProductDto dto) {
+        String[] images = dto.getContentsImg().stream()
+                .toArray(String[]::new);
+
+        String img1 = images.length > 0 ? images[0] : null;
+        String img2 = images.length > 1 ? images[1] : null;
+        String img3 = images.length > 2 ? images[2] : null;
+        String img4 = images.length > 3 ? images[3] : null;
+
+        Product product = dto.toProduct(img1, img2, img3, img4);
+        adminProductMapper.updateProduct(product);
+        adminProductMapper.updateProductCategory(dto.toProductCategory());
+    }
+
+    ```
+
+    <br/>
+
+    - 이 코드는 상품의 정보를 수정하기 위해 mapper를 통해 데이터베이스에서 수정처리한 데이터 값을 받아 controller에 전달하는 역할을 합니다.
+    - 이미지 파일을 img1, img2, img3, img4 변수에 할당한 뒤, Product 객체를 생성하여 수정된 이미지들을 product 변수에 저장합니다.
+
+    ---
+
+    <br/><br/>
+
+    **adminProductMapper**
+
+    ```java
+
+    int updateProduct(Product product);
+
+    int updateProductCategory(ProductCategory productCategory);
+
+    ```
+
+    <br/>
+
+    - updateProduct 메서드는 product 객체를 받아 sql 쿼리문에서 상품의 정보를 수정하여 이 메서드에 담고 service에 전달하는 역할을 합니다.
+    - updateProductCategory 메서드는 productCategory 객체를 받아 sql 쿼리문에서 상품의 카테고리 정보를 수정하여 이 메서드에 담고 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **admin_product.xml**
+
+    ```java
+
+    <update id="updateProduct">
+        update products_tb
+        set
+            title = #{title},
+            price = #{price},
+            stock = #{stock},
+            description = #{description},
+            origin = #{origin},
+            thumbnail_img = #{thumbnailImg},
+            contents_img1 = #{contentsImg1},
+            contents_img2 = #{contentsImg2},
+            contents_img3 = #{contentsImg3},
+            contents_img4 = #{contentsImg4}
+        where
+            product_id = #{productId}
+    </update>
+
+    ```
+
+    <br/>
+
+    - 이 코드는 체크된 상품의 Id로 상품의 정보를 수정하는 sql 쿼리문입니다.
+
+    ---
+
+    <br/><br/>
+
+     **admin_product.xml**
+
+    ```java
+
+    <update id="updateProductCategory">
+        update product_categories_tb
+        set
+            category_id = #{categoryId},
+            semi_category_id = #{semiCategoryId}
+        where
+            product_id = #{productId}
+    </update>
+
+    ```
+
+    <br/>
+
+    - 체크된 상품의 아이디를 통해 상품의 카테고리를 별도로 수정하는 sql 쿼리문입니다. 
+
+---
+
+<br/><br/>
+
+- **페이징처리 기능**
+
+    **프론트**
+
+    ```jsx
+
+    const handleOnPageChange = (e) => {
+        setSelectPage(e.selected + 1);
+        navigate(`/admin/main/product?page=${e.selected + 1}${keyword ? `&keyword=${keyword}` : ''}&limit=${limit}`);
+    }
+
+    return (
+
+        ...
+
+        <div css={s.pageNumber}>
+            <ReactPaginate
+                breakLabel="..."
+                previousLabel={<><MdNavigateBefore /></>}
+                nextLabel={<><MdNavigateNext /></>}
+                pageCount={pageCount}
+                marginPagesDisplayed={3}
+                pageRangeDisplayed={5}
+                onPageChange={handleOnPageChange}
+            />
+        </div>
+
+        ...
+
+    )
+
+    ```
+
+    <br/>
+
+    - 한 페이지 당 상품이 20개 씩 나오도록 하는 기능은 paginate를 사용하여 구현하였고 페이지를 넘길 때 상품의 다음 목록이 나오도록 설정하였습니다. 
+
+---
+
+<br/><br/>
 
 
-
-```
+#### 직원 관리, 주문 관리, 유저 관리
 
 <br/>
 
--
+- 상품 관리 코드의 설명과 방식이 똑같아 설명은 생략하겠습니다. 
 
 ---
 
@@ -9516,245 +13456,552 @@ int deleteUserRole(Long userId);
 
 #### 매출 관리
 
-**프론트**
-
-```jsx
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**백엔드**
-
-**Controller**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-**Service**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**Mapper**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-**xml**
-
-```java
-
-
-
-```
-
-<br/>
-
--
-
----
-
-<br/><br/>
-
-#### 직원 관리
+**전체 코드**
 
 **프론트**
 
 ```jsx
 
+function Management(props) {
+    const navigate = useNavigate();
+    const [sales, setSales] = useState([]);
+    const [graph, setGraph] = useState([]);
+    const [searchParam, setSearchParam] = useSearchParams();
+    const [pageCount, setPageCount] = useState(1);
+    const limit = 10;
 
+    const graphData = useQuery(
+        ["graphDataQuery"],
+        async () => {
+            const response = await instance.get("admin/sales/graph")
+            return response?.data?.products
+        },
+        {
+            enabled: true,
+            retry: 0,
+            refetchOnWindowFocus: 0,
+            onSuccess: (response) => {
+                const newTop5FoodsData = [];
+                try {
+                    for (let i = 0; i < 5; i++) {
+                        newTop5FoodsData.push({
+                            name: response[i]?.title,
+                            amt: response[i]?.stock
+                        })
+                        setGraph(newTop5FoodsData);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+    )
+
+    const businessData = useQuery(
+        ["businessDataQuery", searchParam.get("page")],
+        async () => {
+            return await instance.get(`admin/sales?page=${searchParam.get("page")}&limit=${limit}`)
+        },
+        {
+            enabled: !!searchParam.get("page"),
+            retry: 0,
+            refetchOnWindowFocus: 0,
+            onSuccess: (resopnse) => {
+                setSales(resopnse?.data?.paymentList);
+            }
+        }
+    )
+    
+    useEffect(() => {
+        if (businessData.data) {
+            const calculatedPageCount = businessData.data?.data?.count % limit === 0
+                ? businessData.data?.data?.count / limit
+                : Math.floor(businessData.data?.data?.count / limit) + 1;
+            setPageCount(calculatedPageCount);
+        }
+    }, [businessData.data])
+
+    useEffect(() => {
+        if(!searchParam.get("page")) {
+            setSearchParam(searchParam => ({
+                ...searchParam,
+                page: 1
+            }))
+        }
+    },[])
+
+    const truncate = (str, n) => {
+        return str.length > n ? str.substr(0, n - 1) + '...' : str;
+    };
+
+    const handleOnPageChange = (e) => {
+        navigate(`/admin/main/sales?page=${e.selected + 1}`);
+    }
+
+    return (
+        <div css={s.mainBox}>
+            <h1>매출 관리</h1>
+            <div css={s.contentsBox}>
+                <div css={s.topBox}>
+                    <h3>매출량 TOP5</h3>
+                    <LineChart width={1000} height={500} data={graph}>
+                        <XAxis dataKey="name" tick={{ fontSize: 20 }} tickFormatter={(name) => truncate(name, 10)} />
+                        <YAxis />
+                        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="amt" stroke="#8884d8" />
+                    </LineChart>
+                </div>
+                <div css={s.container}>
+                    <table css={s.theadLayout}>
+                        <tr>
+                            <td css={s.productItem}>
+                                <input type="checkbox" />
+                            </td>
+                            <td css={s.theadItems}>주문ID</td>
+                            <td css={s.theadItems}>주문방법</td>
+                            <td css={s.theadItems}>결제상태</td>
+                            <td css={s.theadItems}>구매자</td>
+                            <td css={s.theadItems}>주문 상품</td>
+                            <td css={s.theadItems}>수량</td>
+                            <td css={s.theadItems}>금액</td>
+                            <td css={s.theadItems}>주문 날짜</td>
+                        </tr>
+                    </table>
+                    <table css={s.theadLayout}>
+                        {sales?.map(sales => {
+                            return (
+                                <tr key={sales.paymentId}>
+                                    <td css={s.productItem}>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td css={s.productItem}>{sales?.paymentId}</td>
+                                    <td css={s.productItem}>{sales?.paymentStatus}</td>
+                                    <td css={s.productItem}>{sales?.paymentMethod}</td>
+                                    <td css={s.productItem}>{sales?.order?.userList[0]?.name}</td>
+                                    <td css={s.productItem}>{sales?.orderItem?.product?.title}</td>
+                                    <td css={s.productItem}>{sales?.orderItem?.quantity}</td>
+                                    <td css={s.productItem}>{sales?.amount}</td>
+                                    <td css={s.productItem}>{sales?.paymentDate}</td>
+                                </tr>
+                            )
+                        })}
+                    </table>
+                </div>
+                <div css={s.pageNumber}>
+                    <ReactPaginate
+                        breakLabel="..."
+                        previousLabel={<><MdNavigateBefore /></>}
+                        nextLabel={<><MdNavigateNext /></>}
+                        pageCount={pageCount}
+                        marginPagesDisplayed={3}
+                        pageRangeDisplayed={5}
+                        onPageChange={handleOnPageChange}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Management;
 
 ```
 
 <br/>
 
--
+- 이 코드는 상품의 판매량을 이용하여 그래프와 표로 매출을 나탄낸 코드 입니다. 
 
 ---
 
 <br/><br/>
 
-**백엔드**
+- **grapData 함수(그래프 기능)**
 
-**Controller**
+    **프론트**
 
-```java
+    ```jsx
+
+    const graphData = useQuery(
+        ["graphDataQuery"],
+        async () => {
+            const response = await instance.get("admin/sales/graph")
+            return response?.data?.products
+        },
+        {
+            enabled: true,
+            retry: 0,
+            refetchOnWindowFocus: 0,
+            onSuccess: (response) => {
+                const newTop5FoodsData = [];
+                try {
+                    for (let i = 0; i < 5; i++) {
+                        newTop5FoodsData.push({
+                            name: response[i]?.title,
+                            amt: response[i]?.stock
+                        })
+                        setGraph(newTop5FoodsData);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+    )
+
+    const truncate = (str, n) => {
+        return str.length > n ? str.substr(0, n - 1) + '...' : str;
+    };
+
+    return (
+
+        ...
+
+            <h3>매출량 TOP5</h3>
+            <LineChart width={1000} height={500} data={graph}>
+                <XAxis dataKey="name" tick={{ fontSize: 20 }} tickFormatter={(name) => truncate(name, 10)} />
+                <YAxis />
+                <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="amt" stroke="#8884d8" />
+            </LineChart>
+
+        ...
+
+    )
 
 
+    ```
 
-```
+    <br/>
 
-<br/>
+    - 이 코드는 useQuery를 사용하여 데이터를 비동기적으로 가져오고, 성공적으로 데이터를 가져온 후 그래프 데이터를 설정하는 코드입니다. 
+    - 서버에 get요청을 보내 성공적으로 데이터를 가지고 오면 상위 5개의 상품의 title과 stock을 추출하여 newTop5FoodsData 배열에 추가하고, 이를 setGraph를 통해 상태로 설정하여 그래프 데이터를 업데이트합니다.
+    - truncate 함수는 문자열(str)을 주어진 길이(n)로 자르는 함수 입니다. 
+    - LineCart 태그를 이용하여 그래프를 구현하였습니다. 
 
--
+    ---
 
----
+    <br/><br/>
 
-**Service**
+    **백엔드**
 
-```java
+    **Controller**
 
+    ```java
 
+    @GetMapping("/graph")
+    public ResponseEntity<?> getGraphData() {
+        return ResponseEntity.ok().body(adminSalesService.getGraphData());
+    }
 
-```
+    ```
 
-<br/>
+    <br/>
 
--
+    - 클라이언트에 get 요청을 받아 service를 통해 판매량을 이용하여 그래프 데이터를 조회하고 전달을 받아 클라이언트에 응답을 반환합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Dto**
+
+    ```java
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public class RespGraphDataDto {
+
+        private List<Product> products;
+
+    }
+
+    ```
+
+    <br/>
+
+    - 상품의 정보를 담는 dto입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Service**
+
+    ```java
+
+    public RespGraphDataDto getGraphData() {
+        List<Product> productList = paymentsMapper.getGraphData();
+        return RespGraphDataDto.builder()
+                .products(productList)
+                .build();
+    }
+
+    ```
+
+    <br/>
+
+    - mapper를 통해 그래프의 데이터를 조회한 값을 가지고와 prductList에 담고 controller에 응답을 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **Mapper**
+
+    ```java
+
+    List<Product> getGraphData();
+
+    ```
+
+    <br/>
+
+    - getGraphData 메서드는 sql 쿼리문에서 판매량을 이용하여 그래프 데이터를 조회하여 이 메서드에 저장하고 service에 전달하는 역할을 합니다. 
+
+    ---
+
+    <br/><br/>
+
+    **xml**
+
+    ```java
+
+    <select id="getGraphData" resultMap="productResultMap">
+        select
+            title,
+            stock
+        from
+            products_tb
+        order by
+            stock desc
+        limit 5
+    </select>
+
+    ```
+
+    <br/>
+
+    - 판매량이 많은 순으로 5개 까지만 상품 데이터를 조회하는 sql 쿼리문입니다. 
 
 ---
 
 <br/><br/>
 
-**Mapper**
+- **businessData(표)**
 
-```java
+    **프론트**
 
+    ```jsx
 
+    const businessData = useQuery(
+        ["businessDataQuery", searchParam.get("page")],
+        async () => {
+            return await instance.get(`admin/sales?page=${searchParam.get("page")}&limit=${limit}`)
+        },
+        {
+            enabled: !!searchParam.get("page"),
+            retry: 0,
+            refetchOnWindowFocus: 0,
+            onSuccess: (resopnse) => {
+                setSales(resopnse?.data?.paymentList);
+            }
+        }
+    )
 
-```
+    ```
 
-<br/>
+    <br/>
 
--
+    - 이 함수는 useQueyr를 이용하여 전체적인 매출 데이터를 한 페이지당 10개까지 상품의 판매량을 조회기능을 처리하는 비동기 함수입니다. 
+    - 서버에 get 요청을 보내 성공적으로 응답이 오면 매출 데이터를 조회하는 역할을 합니다. 
 
----
+    ---
 
-<br/><br/>
+    <br/><br/>
 
-**xml**
+    **백엔드**
 
-```java
+    **Controller**
 
+    ```java
 
+    @GetMapping("")
+    public ResponseEntity<?> getSales(ReqSearchSalesDto dto) {
+        return ResponseEntity.ok().body(adminSalesService.getSalesList(dto));
+    }
 
-```
+    ```
 
-<br/>
+    <br/>
 
--
+    - 클라이언트에 요청을 받아 dto 정보를 service에 넘겨 성공적으로 조회되면 응답을 받아 응답을 클라이언트 반환합니다. 
 
----
+    ---
 
-<br/><br/>
+    <br/><br/>
 
-#### 유저 관리
+    **ReqSearchSalesDto**
 
-**프론트**
+    ```java
 
-```jsx
+    @Data
+    public class ReqSearchSalesDto {
+        private int page;
+        private int limit;
+    }
 
+    ```
 
+    <br/>
 
-```
+    - 이 dto는 페이지 수, 상품의 제한 수의 정보를 담는 코드입니다. 
 
-<br/>
+    ---
 
--
+    <br/><br/>
 
----
+    **RespSearchSalesDto**
 
-<br/><br/>
+    ```java
 
-**백엔드**
+    @Builder
+    @Data
+    public class RespSearchSalesDto {
+        private List<Payment> paymentList;
+        private int count;
+    }
 
-**Controller**
+    ```
 
-```java
+    <br/>
 
+    - 이 dto는 결제 정보를 담는 코드입니다. 
 
+    ---
 
-```
+    <br/><br/>
 
-<br/>
+    **Service**
 
--
+    ```java
 
----
+    public RespSearchSalesDto getSalesList(ReqSearchSalesDto dto) {
+        String paymentStatus = "completed";
+        int startIndex = (dto.getPage() - 1) * dto.getLimit();
 
-**Service**
+        return RespSearchSalesDto.builder()
+                .paymentList(paymentsMapper.findPaymentList(dto.getLimit(), paymentStatus, startIndex))
+                .count(paymentsMapper.findPaymentCount(paymentStatus))
+                .build();
+    }
 
-```java
+    ```
 
+    <br/>
 
+    - 이 코드는 전체 상품의 매출량을 mapper를 통해 조회하여 controller에 전달하는 역할을 합니다. 
 
-```
+    ---
 
-<br/>
+    <br/><br/>
 
--
+    **PaymentsMapper**
 
----
+    ```java
 
-<br/><br/>
+    List<Payment> findPaymentList(@Param("limit") int limit, @Param("paymentStatus") String paymentStatus, @Param("startIndex") int startIndex); // 일 별 매출 목록
 
-**Mapper**
+    ```
 
-```java
+    <br/>
 
+    - 한 페이지 당 상품의 항목의 제한 수와 결제상태를 sql 쿼리문으로 넘겨 매출량을 조회하고 결과 값을 전달받아 service에 반환하는 역할을 합니다. 
 
+    ---
 
-```
+    <br/><br/>
 
-<br/>
+    **PaymentsMapper**
 
--
+    ```java
 
----
+    int findPaymentCount(String paymentStatus);
 
-<br/><br/>
+    ```
 
-**xml**
+    <br/>
 
-```java
+    - 상품을 구매한 결제 상태를 이용하여 판매 수를 조회한 데이터를 응답받아 sevice에 전달하는 역할을 합니다. 
 
+    ---
 
+    <br/><br/>
 
-```
+    **payments.xml**
 
-<br/>
+    ```java
 
--
+    <select id="findPaymentList" resultMap="paymentResultMap">
+        select
+            pt.payment_id,
+            pt.order_id,
+            pt.payment_method,
+            pt.payment_status,
+            pt.amount,
+            pt.payment_date,
+            ot.order_status,
+            ot.total_amount,
+            ut.user_id,
+            ut.username,
+            ut.name,
+            oit.quantity,
+            oit.price,
+            prt.title
+        from
+            payments_tb pt
+            left outer join orders_tb ot on(ot.order_id = pt.order_id)
+            left outer join order_items_tb oit on(oit.order_id = pt.order_id)
+            left outer join users_tb ut on(ut.user_id = ot.user_id)
+            left outer join products_tb prt on(prt.product_id = oit.product_id)
+        where
+            payment_status = #{paymentStatus}
+        limit #{startIndex}, #{limit}
+    </select>
+
+    ```
+
+    <br/>
+
+    - 결제 상태와 한 페이지 당 정해진 제한 수를 이용하여 상품을 조회하는 sql 쿼리문입니다. 
+
+    ---
+
+    <br/><br/>
+
+    **payments.xml**
+
+    ```java
+
+    <select id="findPaymentCount" resultType="java.lang.Integer">
+        select
+            count(*)
+        from
+            payments_tb
+        where
+            payment_status = #{paymentStatus}
+    </select>
+
+    ```
+
+    <br/>
+
+    - 사용자 구매한 상품의 결제 상태의 갯수를 조회한 sql 쿼리문입니다. 
 
 ---
 
